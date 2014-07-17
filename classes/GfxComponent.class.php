@@ -8,21 +8,20 @@
  */
 class GfXComponent implements Linkable, Resizeable
 {
-<<<<<<< HEAD
 
-    protected $x, $y;
-=======
+    private $x, $y;
+    private $width, $height;
     private $fXPos;
     private $fYPos;
     private $fWidth;
     private $fHeight;
     private $sId;
->>>>>>> 84d3f2cf74596f7ff2912828dcf7ab2e18a696c9
+    private $color;
 
     public function __construct()
     {
-        $this->fXPos = 0;
-        $this->fYPos = 0;
+        $this->setX(0);
+        $this->setY(0);
     }
 
     public function create()
@@ -30,8 +29,39 @@ class GfXComponent implements Linkable, Resizeable
         echo 'Now I\'m here ... ' . $this->fXPos . '/' . $this->fYPos . "\n";
     }
 
-<<<<<<< HEAD
+    public function setId($sId)
+    {
+        $this->sId =$sId;
+    }
+
+    public function getId()
+    {
+        return $this->sId;
+    }
+
+    public function getX()
+    {
+        return $this->x;
+    }
+
+    public function getY()
+    {
+        return $this->y;
+    }
+
+    public function getWidth()
+    {
+        return $this->width;
+    }
+
+    public function getHeight()
+    {
+        return $this->height;
+    }
+
     public function render($canvas) {}
+
+    public function createLink($sUrl) {}
 
     public function setPosition($x, $y)
     {
@@ -63,49 +93,18 @@ class GfXComponent implements Linkable, Resizeable
     public function setHeight($height)
     {
         $this->height = $height;
-=======
-    public function createLink($sUrl) {}
-
-    public function setPosition($x, $y)
-    {
-        $this->fXPos = $x;
-        $this->fYPos = $y;
     }
 
-    public function setSize($fWidth, $fHeight)
+    public function getColor()
     {
-        $this->fWidth = $fWidth;
-        $this->fHeight = $fHeight;
->>>>>>> 84d3f2cf74596f7ff2912828dcf7ab2e18a696c9
+        return $this->color;
     }
 
-    public function getX()
+    public function setColor($color)
     {
-        return $this->fXPos;
+        if(is_a($color, 'Color')) {
+            $this->color = $color;
+        }
     }
 
-    public function getY()
-    {
-        return $this->fYPos;
-    }
-
-    public function getWidth()
-    {
-        return $this->fWidth;
-    }
-
-    public function getHeight()
-    {
-        return $this->fHeight();
-    }
-
-    public function setId($sId)
-    {
-        $this->sId =$sId;
-    }
-
-    public function getId()
-    {
-        return $this->sId;
-    }
 }
