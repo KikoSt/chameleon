@@ -7,10 +7,7 @@
  * Time: 09:01
  */
 
-class GfxRectangle extends GfxShape
+interface Linkable
 {
-    public function __construct()
-    {
-
-    }
-}
+    public function createLink($sUrl);
+} 

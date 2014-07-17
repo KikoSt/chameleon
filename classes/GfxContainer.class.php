@@ -1,12 +1,28 @@
 <?php
 /**
- * Created by IntelliJ IDEA.
- * User: thomas
- * Date: 17.07.14
+ * Comment here
+ *
+ * User: thomas.hummel@mediadecision.com
+ * Date: 17/07/2014
  * Time: 07:30
  */
 
 class GfxContainer implements Renderable
 {
-    public function render() {}
+    private $sId;
+
+    public function render()
+    {
+
+    }
+
+    public function setId($sId)
+    {
+        $this->sId =$sId;
+    }
+
+    public function getId()
+    {
+        return $this->sId;
+    }
 } 
