@@ -20,8 +20,8 @@ class GfXComponent implements Linkable, Resizeable
 
     public function __construct()
     {
-        $this->setX(0);
-        $this->setY(0);
+        $this->x = 0;
+        $this->y = 0;
     }
 
     public function create()
