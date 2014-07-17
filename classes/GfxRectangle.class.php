@@ -1,16 +1,16 @@
 <?php
+/**
+ * Comment here
+ *
+ * User: thomas.hummel@mediadecision.com
+ * Date: 17/07/2014
+ * Time: 09:01
+ */
 
 class GfxRectangle extends GfxShape
 {
     public function __construct()
     {
-    }
-
-    public function render($canvas)
-    {
-        echo 'Now I\'m here ... ' . $this->x . '/' . $this->y . "\n";
-    }
-
 
     public function create()
     {
@@ -38,8 +38,4 @@ class GfxRectangle extends GfxShape
 
         return $rect;
     }
-
 }
-
-
-?>

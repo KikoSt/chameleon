@@ -1,10 +1,12 @@
 <?php
 
+$color = new GfxColor();
+$color->setColorHex('#1Z3fFZ');
+echo ($color->getColorHex());
+
 $test = new GfxRectangle();
 $test->setPosition(10, 200);
-$test->render();
-
-
+$test->create();
 
 function __autoload($className) {
     if(file_exists('classes/' . $className . '.class.php')) {
@@ -13,4 +15,3 @@ function __autoload($className) {
         require_once('interfaces/' . $className . '.interface.php');
     }
 }
-?>

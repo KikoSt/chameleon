@@ -1,6 +1,15 @@
 <?php
-class GfxContainer
+/**
+ * Comment here
+ *
+ * User: thomas.hummel@mediadecision.com
+ * Date: 17/07/2014
+ * Time: 07:30
+ */
+
+class GfxContainer # implements Creatable
 {
+    private $sId;
     protected $elements;
 
     public function __construct()
@@ -8,6 +17,15 @@ class GfxContainer
         $this->elements = array();
     }
 
+    public function setId($sId)
+    {
+        $this->sId =$sId;
+    }
+
+    public function getId()
+    {
+        return $this->sId;
+    }
 
     public function addElement($element)
     {
@@ -18,7 +36,10 @@ class GfxContainer
             echo 'No!';
         }
     }
+
+    public function render()
+    {
+
+    }
 }
-
-
 ?>
