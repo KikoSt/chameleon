@@ -15,15 +15,15 @@ class GfxColor
 
     public function setColorHex($sColorHex)
     {
-        $this->sColorHex = $sColorHex;
+        if(preg_match("/^#([0-9a-fA-F]{3}){1,2}$/", $sColorHex))  {
+            $this->sColorHex = $sColorHex;
+        } else {
+            echo 'Wrong!' . "\n";
+        }
     }
 
     public function getColorHex()
     {
-        if(!preg_match("^#(?:[0-9a-fA-F]{3}){1,2}$", $this->sColorHex));
-        {
-            return "You're doing it wrong";
-        }
         return $this->sColorHex;
     }
 
