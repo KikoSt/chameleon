@@ -11,17 +11,37 @@ class GfXComponent
         $this->y = 0;
     }
 
-    public function render() {}
+    public function render($canvas) {}
 
     public function setPosition($x, $y)
     {
-        $this->x = $x;
-        $this->y = $y;
+        $this->setX($x);
+        $this->setY($y);
     }
 
     public function setSize($width, $height)
     {
+        $this->setWidth($width);
+        $this->setHeight($height);
+    }
+
+    public function setX($x)
+    {
+        $this->x = $x;
+    }
+
+    public function setY($y)
+    {
+        $this->y = $y;
+    }
+
+    public function setWidth($width)
+    {
         $this->width = $width;
+    }
+
+    public function setHeight($height)
+    {
         $this->height = $height;
     }
 
