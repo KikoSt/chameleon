@@ -1,49 +1,48 @@
 <?php
-
 class GfXComponent
 {
-
-    var $x, $y;
+    private $fXPos;
+    private $fYPos;
+    private $fWidth;
+    private $fHeight;
 
     public function __construct()
     {
-        $this->x = 0;
-        $this->y = 0;
+        $this->fXPos = 0;
+        $this->fYPos = 0;
     }
 
     public function render() {}
 
     public function setPosition($x, $y)
     {
-        $this->x = $x;
-        $this->y = $y;
+        $this->fXPos = $x;
+        $this->fYPos = $y;
     }
 
-    public function setSize($width, $height)
+    public function setSize($fWidth, $fHeight)
     {
-        $this->width = $width;
-        $this->height = $height;
+        $this->fWidth = $fWidth;
+        $this->fHeight = $fHeight;
     }
 
     public function getX()
     {
-        return $this->x;
+        return $this->fXPos;
     }
 
     public function getY()
     {
-        return $this->y;
+        return $this->fYPos;
     }
 
     public function getWidth()
     {
-        return $this->width;
+        return $this->fWidth;
     }
 
     public function getHeight()
     {
-        return $this->height();
+        return $this->fHeight();
     }
 }
-
-?>
