@@ -9,6 +9,7 @@
 
 class GfxShape extends GfxComponent
 {
+    protected $color;
     private $fWidth;
     private $fHeight;
 
