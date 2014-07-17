@@ -41,5 +41,14 @@ class GfxContainer # implements Renderable ;)
     {
 
     }
+
+    public function __toString()
+    {
+        $string = '';
+        foreach($this->elements AS $element) {
+            $string .= print_r($element, true);
+        }
+        return $string;
+    }
 }
 ?>
