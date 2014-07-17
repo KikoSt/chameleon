@@ -9,12 +9,21 @@
 
 class GfxShape extends GfxComponent
 {
-    private $sColorHex;
     private $fWidth;
     private $fHeight;
 
     public function setFillColor($sColorHex)
     {
 
+    }
+
+    public function setWidth($fWidth)
+    {
+        $this->fWidth = $fWidth;
+    }
+
+    public function setHeight($fHeight)
+    {
+        $this->fHeight = $fHeight;
     }
 }

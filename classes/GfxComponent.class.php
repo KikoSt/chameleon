@@ -20,7 +20,7 @@ class GfXComponent implements Linkable, Resizeable
         $this->fYPos = 0;
     }
 
-    public function render()
+    public function create()
     {
         echo 'Now I\'m here ... ' . $this->fXPos . '/' . $this->fYPos . "\n";
     }

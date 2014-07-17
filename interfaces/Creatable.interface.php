@@ -6,8 +6,8 @@
  * Date: 17/07/2014
  * Time: 09:01
  */
-interface Renderable
+interface Creatable
 {
-    public function render();
+    public function create();
 }
 
