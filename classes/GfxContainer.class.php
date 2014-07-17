@@ -66,4 +66,3 @@ class GfxContainer # implements Renderable ;)
         return $string;
     }
 }
-?>
