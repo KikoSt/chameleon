@@ -11,17 +11,18 @@ class GfxRectangle extends GfxShape
 {
     public function __construct()
     {
+    }
 
     public function create()
     {
         $rect = new SWFShape();
 
-        $r = $this->getR();
-        $g = $this->getG();
-        $b = $this->getB();
+        // $r = $this->getColor()->getR();
+        // $g = $this->getColor()->getG();
+        // $b = $this->getColor()->getB();
 
-        $fill = $rect->addFill($r, $g, $b);
-        $rect->setRightFill($fill);
+        // $fill = $rect->addFill($r, $g, $b);
+        // $rect->setRightFill($fill);
 
         // calculation of top left and bottom right values might change when the transformationCenter is changed
         // (top left of rect for now)
