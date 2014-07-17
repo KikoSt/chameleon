@@ -3,7 +3,7 @@
 class GfXComponent
 {
 
-    var $x, $y;
+    protected $x, $y;
 
     public function __construct()
     {
