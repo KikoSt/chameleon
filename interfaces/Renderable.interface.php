@@ -1,5 +1,5 @@
 <?php
 interface Renderable {
-    public function render();
+    public function render($canvas);
 }
 ?>
