@@ -6,13 +6,12 @@
  * Date: 17/07/2014
  * Time: 09:01
  */
-class GfXComponent implements Linkable, Resizeable
+class GfXComponent implements Linkable, Resizeable, Creatable
 {
     private $fXPos;
     private $fYPos;
     private $fWidth;
     private $fHeight;
-    private $sId;
 
     public function __construct()
     {
@@ -57,15 +56,5 @@ class GfXComponent implements Linkable, Resizeable
     public function getHeight()
     {
         return $this->fHeight();
-    }
-
-    public function setId($sId)
-    {
-        $this->sId =$sId;
-    }
-
-    public function getId()
-    {
-        return $this->sId;
     }
 }

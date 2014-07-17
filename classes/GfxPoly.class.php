@@ -6,6 +6,7 @@
  * Time: 11:39
  */
 
-class GfxPoly extends GfxShape{
+class GfxPoly extends GfxShape
+{
 
 } 

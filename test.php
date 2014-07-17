@@ -1,7 +1,7 @@
 <?php
 
 $color = new GfxColor();
-$color->setColorHex('#1Z3fFZ');
+$color->setColorHex("#1a3faf");
 echo ($color->getColorHex());
 
 $test = new GfxRectangle();

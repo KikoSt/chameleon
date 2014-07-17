@@ -7,7 +7,7 @@
  * Time: 07:30
  */
 
-class GfxContainer implements Creatable
+class GfxContainer
 {
     private $sId;
 
