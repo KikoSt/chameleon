@@ -105,4 +105,38 @@ class GfXComponent implements Linkable, Resizeable
         }
     }
 
+    public function getCurrentWidth()
+    {
+        // TODO: Implement getCurrentWidth() method.
+    }
+
+    public function getCurrentHeight()
+    {
+        // TODO: Implement getCurrentHeight() method.
+    }
+
+    public function setNewWidth($width)
+    {
+        // TODO: Implement setNewWidth() method.
+    }
+
+    public function setNewHeight($height)
+    {
+        // TODO: Implement setNewHeight() method.
+    }
+
+    public function getNewWidth()
+    {
+        // TODO: Implement getNewWidth() method.
+    }
+
+    public function getNewHeight()
+    {
+        // TODO: Implement getNewHeight() method.
+    }
+
+    public function resize()
+    {
+        // TODO: Implement resize() method.
+    }
 }

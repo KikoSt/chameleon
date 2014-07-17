@@ -6,6 +6,13 @@
  * Time: 09:04
  */
 
-interface Resizeable {
-
+interface Resizeable
+{
+    public function getCurrentWidth();
+    public function getCurrentHeight();
+    public function setNewWidth($width);
+    public function setNewHeight($height);
+    public function getNewWidth();
+    public function getNewHeight();
+    public function resize();
 } 
