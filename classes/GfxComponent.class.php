@@ -6,17 +6,20 @@
  * Date: 17/07/2014
  * Time: 09:01
  */
-class GfXComponent implements Linkable, Resizeable, Creatable
+class GfXComponent implements Linkable, Resizeable
 {
+
+    private $x, $y;
+    private $width, $height;
     private $fXPos;
     private $fYPos;
-    private $fWidth;
-    private $fHeight;
+    private $sId;
+    private $color;
 
     public function __construct()
     {
-        $this->fXPos = 0;
-        $this->fYPos = 0;
+        $this->x = 0;
+        $this->y = 0;
     }
 
     public function create()
@@ -24,37 +27,82 @@ class GfXComponent implements Linkable, Resizeable, Creatable
         echo 'Now I\'m here ... ' . $this->fXPos . '/' . $this->fYPos . "\n";
     }
 
-    public function createLink($sUrl) {}
-
-    public function setPosition($x, $y)
+    public function setId($sId)
     {
-        $this->fXPos = $x;
-        $this->fYPos = $y;
+        $this->sId =$sId;
     }
 
-    public function setSize($fWidth, $fHeight)
+    public function getId()
     {
-        $this->fWidth = $fWidth;
-        $this->fHeight = $fHeight;
+        return $this->sId;
     }
 
     public function getX()
     {
-        return $this->fXPos;
+        return $this->x;
     }
 
     public function getY()
     {
-        return $this->fYPos;
+        return $this->y;
     }
 
     public function getWidth()
     {
-        return $this->fWidth;
+        return $this->width;
     }
 
     public function getHeight()
     {
-        return $this->fHeight();
+        return $this->height;
     }
+
+    public function render($canvas) {}
+
+    public function createLink($sUrl) {}
+
+    public function setPosition($x, $y)
+    {
+        $this->setX($x);
+        $this->setY($y);
+    }
+
+    public function setSize($width, $height)
+    {
+        $this->setWidth($width);
+        $this->setHeight($height);
+    }
+
+    public function setX($x)
+    {
+        $this->x = $x;
+    }
+
+    public function setY($y)
+    {
+        $this->y = $y;
+    }
+
+    public function setWidth($width)
+    {
+        $this->width = $width;
+    }
+
+    public function setHeight($height)
+    {
+        $this->height = $height;
+    }
+
+    public function getColor()
+    {
+        return $this->color;
+    }
+
+    public function setColor($color)
+    {
+        if(is_a($color, 'Color')) {
+            $this->color = $color;
+        }
+    }
+
 }

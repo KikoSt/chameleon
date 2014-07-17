@@ -10,10 +10,12 @@
 class GfxContainer
 {
     private $sId;
+    protected $elements;
+    private $target;
 
-    public function render()
+    public function __construct()
     {
-
+        $this->elements = array();
     }
 
     public function setId($sId)
@@ -25,4 +27,43 @@ class GfxContainer
     {
         return $this->sId;
     }
-} 
+
+    public function addElement($element)
+    {
+        if(is_a($element, 'GfxComponent')) {
+            $this->elements[] = $element;
+            echo 'Success!';
+        } else {
+            echo 'No!';
+        }
+    }
+
+    public function render()
+    {
+
+    }
+
+    public function setTarget($target)
+    {
+        if(!in_array($target, $this->allowedTargets)) {
+            die('What a terrible death!');
+        } else {
+            $this->target = $target;
+        }
+    }
+
+    public function getTarget()
+    {
+        return $this->target;
+    }
+
+    public function __toString()
+    {
+        $string = '';
+        foreach($this->elements AS $element) {
+            $string .= print_r($element, true);
+        }
+        return $string;
+    }
+}
+?>
