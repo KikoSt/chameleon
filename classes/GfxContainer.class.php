@@ -11,6 +11,7 @@ class GfxContainer # implements Renderable ;)
 {
     private $sId;
     protected $elements;
+    private $target;
 
     public function __construct()
     {
@@ -40,6 +41,20 @@ class GfxContainer # implements Renderable ;)
     public function render()
     {
 
+    }
+
+    public function setTarget($target)
+    {
+        if(!in_array($target, $this->allowedTargets)) {
+            die('What a terrible death!');
+        } else {
+            $this->target = $target;
+        }
+    }
+
+    public function getTarget()
+    {
+        return $this->target;
     }
 
     public function __toString()
