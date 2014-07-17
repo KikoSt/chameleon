@@ -20,11 +20,6 @@ class GfxColor
 
     public function getColorHex()
     {
-        if(!empty($this->iR) && !empty($this->iG) && !empty($this->iB))
-        {
-            $this->concatenateColorHex();
-        }
-
         if(!preg_match("^#(?:[0-9a-fA-F]{3}){1,2}$", $this->sColorHex));
         {
             return "You're doing it wrong";
@@ -56,10 +51,8 @@ class GfxColor
         }
     }
 
-    private function concatenateColorHex()
+    private function limitColorHex()
     {
-        $sConcateColorHex = "#". $this->iR . $this->iB . $this->iG;
 
-        $this->setColorHex($sConcateColorHex);
     }
 } 
