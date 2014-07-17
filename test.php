@@ -3,7 +3,7 @@
 $myContainer = new GfxContainer();
 
 $color = new GfxColor();
-$color->setColorHex('#1Z3fFZ');
+$color->setColorHex('#ffcc00');
 echo ($color->getColorHex());
 
 $test = new GfxRectangle();
@@ -17,6 +17,7 @@ $t2->setPosition(123, 815);
 $myContainer->addElement($t1);
 $myContainer->addElement($t2);
 
+echo $myContainer;
 
 
 function __autoload($className) {
