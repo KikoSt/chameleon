@@ -3,14 +3,9 @@
 $myContainer = new GfxContainer();
 
 $color = new GfxColor();
-<<<<<<< HEAD
 $color->setColorHex('#ffcc00');
-echo ($color->getColorHex());
-=======
-$color->setHex('#ffcc00');
 $color->setHex('#ffcc00');
 $color->setRGB(0,204,204);
->>>>>>> hummel_develop
 
 $test = new GfxRectangle();
 $test->setPosition(10, 200);
