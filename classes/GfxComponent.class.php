@@ -30,9 +30,9 @@ class GfXComponent implements Linkable, Resizeable
         return $this->stroke;
     }
 
-    public function setStroke($stroke)
+    public function setStroke(GfxColor $oColor)
     {
-        $this->stroke = $stroke;
+        $this->stroke = $oColor;
     }
 
     public function setId($id)
@@ -97,5 +97,16 @@ class GfXComponent implements Linkable, Resizeable
     public function setColor(GfxColor $oColor)
     {
         $this->color = $oColor;
+    }
+
+
+    /* *************************
+            Magic Methods
+    ************************* */
+    public function __toString()
+    {
+        $string = '';
+        $string .= get_class($this);
+        return $string;
     }
 }

@@ -8,7 +8,7 @@
 
 class GfxText extends GfxComponent
 {
-    private $sText;
+    private $text;
     private $oFont;
     private $sFontWeight;
     private $iFontVariant;
@@ -28,20 +28,51 @@ class GfxText extends GfxComponent
 
     }
 
+
+    public function getTextWidth() {
+        $text = new SWFText();
+        $text->setFont($this->getFont());
+        $text->setHeight($this->getHeight());
+        $width = $text->getWidth($this->getText());
+        unset($text);
+        return($width);
+    }
+
+
+    public function renderSWF($canvas)
+    {
+        $text = new SWFText();
+        $text->setFont($this->getFont());
+        $text->setColor($this->getColor()->getR(), $this->getColor()->getG(), $this->getColor()->getB());
+        $text->setHeight($this->getHeight());
+        $tWidth = $text->getWidth($this->getText());
+        // position: CENTERED!
+        $text->moveTo($this->getX(), $this->getY());
+        $text->addString($this->getText());
+
+        $handle = $canvas->add($text);
+
+        return($canvas);
+    }
+
+
+
+
+
     /**
      * @return mixed
      */
     public function getText()
     {
-        return $this->sText;
+        return $this->text;
     }
 
     /**
-     * @param mixed $sText
+     * @param mixed $text
      */
-    public function setText($sText)
+    public function setText($text)
     {
-        $this->sText = $sText;
+        $this->text = $text;
     }
 
 
@@ -156,7 +187,7 @@ class GfxText extends GfxComponent
      */
     public function setFontFamily($sFontFamily)
     {
-        $aAllowedValues = array("sans", "serif");
+        $aAllowedValues = array("sans", "serif", "sans-serif");
 
         if(in_array(strtolower($sFontFamily), $aAllowedValues, true))
         {
@@ -188,7 +219,7 @@ class GfxText extends GfxComponent
 //            $this->iFontVariant = $sFontSize;
 //        }
 
-        if(is_numeric($iFontSize))
+        if(!empty($iFontSize))
         {
             $this->iFontSize = $iFontSize;
         }
@@ -252,6 +283,6 @@ class GfxText extends GfxComponent
      */
     private function throwException($sParam)
     {
-        throw new InvalidArgumentException('Setting font family failed. Invalid parameter ('.$sParam.') given.');
+        throw new InvalidArgumentException('Invalid parameter ('.$sParam.') given.');
     }
-} 
+}

@@ -24,4 +24,4 @@ class Debug
     {
         print_r($elements);
     }
-} 
+}

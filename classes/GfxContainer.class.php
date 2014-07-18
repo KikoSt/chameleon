@@ -13,10 +13,15 @@ class GfxContainer
     protected $elements;
     private $target;
     private $sSource;
+    private $canvasWidth;
+    private $canvasHeight;
+
+    private $allowedTargets;
 
     public function __construct()
     {
         $this->elements = array();
+        $this->allowedTargets = array('SWF', 'GIF');
     }
 
     public function setSource($sSource)
@@ -50,23 +55,71 @@ class GfxContainer
 
     public function addElement($element)
     {
-        if(is_a($element, 'GfxComponent')) {
+        if(is_a($element, 'GfxComponent'))
+        {
             $this->elements[] = $element;
-            echo 'Success!';
-        } else {
-            echo 'No!';
+        }
+        else
+        {
+            throw new InvalidArgumentException();
         }
     }
 
+
+
+
     public function render()
     {
+        if($this->target === 'SWF') {
+            $this->renderSWF();
+        } else if($this->target === 'GIF') {
+            $this->renderGIF();
+        }
+    }
+
+    private function renderSWF()
+    {
+        $fonts = array();
+        $swf = new SWFMovie();
+        $swf->setDimension($this->getCanvasWidth(), $this->getCanvasHeight());
+        $swf->setFrames(30);
+        $swf->setRate(10);
+        $swf->setBackground(0, 0, 0);
+
+        $fonts['normal'] = new SWFFont('fdb/bvs.fdb');
+
+        $count = 0;
+        $texts = array();
+
+        foreach($this->elements AS $element) {
+            if(is_a($element, 'GfxRectangle') || is_a($element, 'GfxText')) {
+                $element->renderSWF($swf);
+            }
+        }
+        $swf->save('output.swf');
 
     }
 
+    private function renderGIF()
+    {
+    }
+
+
+
+
+
+
+
+
+
+
+    /* **************************************
+              Accessors
+    ***************************************** */
     public function setTarget($target)
     {
         if(!in_array($target, $this->allowedTargets)) {
-            die('What a terrible death!');
+            throw new Exception('Unknown format ' . $target . ' for GfxContainer');
         } else {
             $this->target = $target;
         }
@@ -77,6 +130,32 @@ class GfxContainer
         return $this->target;
     }
 
+    public function getCanvasWidth()
+    {
+        return $this->canvasWidth;
+    }
+
+    public function getCanvasHeight()
+    {
+        return $this->canvasHeight;
+    }
+    public function setCanvasWidth($newCanvasWidth)
+    {
+        $this->canvasWidth = $newCanvasWidth;
+    }
+
+    public function setCanvasHeight($newCanvasHeight)
+    {
+        $this->canvasHeight = $newCanvasHeight;
+    }
+
+    public function setCanvasSize($newCanvasWidth, $newCanvasHeight)
+    {
+        $this->canvasWidth = $newCanvasWidth;
+        $this->canvasHeight = $newCanvasHeight;
+    }
+
+    // Magic Methods
     public function __toString()
     {
         $string = '';
@@ -106,7 +185,7 @@ class GfxContainer
                 }
                 case "text":
                 {
-//                    $this->createGfxText($oSingleComponent, $oComponent);
+                    $this->createGfxText($aSingleComponent, $oComponent);
                     break;
                 }
                 case "image":
@@ -121,42 +200,79 @@ class GfxContainer
                 }
             }
         }
+        Debug::browser($this->elements);
     }
 
-    private function createGfxText($oSingleComponent, $oComponent)
+    private function createGfxText($aComponent, $oCoreComponent)
     {
-//        foreach($aText as $key => $sSingleText)
-//        {
-//            $aAttributes = $oComponent->g->text[$key];
-//
-//            Debug::browser($aAttributes, true);
-//
-//            $oGfxText = new GfxText();
-//
-//            if(isset($sSingleText))
-//            {
-//                $oGfxText->setText($sSingleText);
-//            }
-//            else
-//            {
-//                throw new InvalidArgumentException();
-//            }
-//
-//            if(isset($aAttributes->id))
-//            {
-//                $oGfxText->setId($aAttributes->id);
-//            }
-//        }
+        $oGfxText = new GfxText();
 
+        foreach($aComponent as $key => $text)
+        {
+            $oGfxText->setText($text);
 
-        //$oText = new GfxText($color);
-//$oText->setId("headline");
-//$oText->setText("das ist ein toller text");
-//$oText->setFont(new SWFFont('fdb/bvs.fdb'));
-//$oText->setColor($color);
-//$oText->setHeight(10);
-//$oText->setPosition($oText->getWidth(), 0);
-//$oText->create();
+            $aAttributes = $oCoreComponent->g->text[$key]->attributes();
+
+            foreach ($aAttributes as $key => $value)
+            {
+                if (!empty($value))
+                {
+                    switch($key)
+                    {
+                        case "id":
+                        {
+                            $oGfxText->setId($value);
+                            break;
+                        }
+                        case "stroke":
+                        {
+                            $oColor = new GfxColor();
+                            $oColor->setHex($value);
+                            $oGfxText->setStroke($oColor);
+                            break;
+                        }
+                        case "x":
+                        {
+                            $oGfxText->setX($value);
+                            break;
+                        }
+                        case "y":
+                        {
+                            $oGfxText->setY($value);
+                            break;
+                        }
+                        case "fill":
+                        {
+                            $oColor = new GfxColor();
+                            $oColor->setHex($value);
+                            $oGfxText->setColor($oColor);
+                            break;
+                        }
+                        case "width":
+                        {
+                            $oGfxText->setWidth($value);
+                            break;
+                        }
+                        case "height":
+                        {
+                            $oGfxText->setHeight($value);
+                            break;
+                        }
+                        case "font-family":
+                        {
+                            $oGfxText->setFontFamily($value);
+                            break;
+                        }
+                        case "font-size":
+                        {
+                            $oGfxText->setFontSize($value);
+                            break;
+                        }
+                    }
+                }
+            }
+            $this->addElement($oGfxText);
+        }
     }
 
     private function createGfxRectangle($aComponent)
@@ -169,8 +285,6 @@ class GfxContainer
 
             foreach($aSingleComponent as $key => $value)
             {
-                Debug::browser($key." - ".$value);
-
                 if(!empty($value))
                 {
                     switch($key)
@@ -182,7 +296,9 @@ class GfxContainer
                         }
                         case "stroke":
                         {
-                            $oGfxRectangle->setStroke($value);
+                            $oColor = new GfxColor();
+                            $oColor->setHex($value);
+                            $oGfxRectangle->setStroke($oColor);
                             break;
                         }
                         case "x":
@@ -197,29 +313,42 @@ class GfxContainer
                         }
                         case "fill":
                         {
-
+                            $oColor = new GfxColor();
+                            $oColor->setHex($value);
+                            $oGfxRectangle->setColor($oColor);
                             break;
                         }
                         case "width":
                         {
-
+                            $oGfxRectangle->setWidth($value);
                             break;
                         }
                         case "height":
                         {
-
+                            $oGfxRectangle->setHeight($value);
                             break;
                         }
                     }
                 }
+            }
+            $this->addElement($oGfxRectangle);
+        }
+    }
 
+    /**
+     * TODO just for development
+     */
+    private function getMethods($class)
+    {
+        $aMethods = get_class_methods($class);
+
+        foreach($aMethods as $key => $aSingleMethod)
+        {
+            if(!preg_match("/^set[a-zA-Z]*/", $aSingleMethod))
+            {
+                unset($aMethods[$key]);
             }
         }
-
-//        private $x, $y;
-//    private $width, $height;
-//    private $id;
-//    private $color;
-//    private $stroke;
+        Debug::browser($aMethods);
     }
 }
