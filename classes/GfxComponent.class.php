@@ -6,13 +6,11 @@
  * Date: 17/07/2014
  * Time: 09:01
  */
-class GfXComponent implements Linkable, Resizeable, Creatable
+class GfXComponent implements Linkable, Resizeable
 {
 
     private $x, $y;
     private $width, $height;
-    private $fWidth;
-    private $fHeight;
     private $sId;
     private $color;
 
@@ -67,10 +65,42 @@ class GfXComponent implements Linkable, Resizeable, Creatable
         $this->setY($y);
     }
 
-    public function setSize($width, $height)
+    public function getPosition()
     {
-        $this->setWidth($width);
-        $this->setHeight($height);
+        $oPosition = new stdClass();
+        $oPosition->x = $this->getX();
+        $oPosition->y = $this->getY();
+        return $oPosition;
+    }
+
+    public function setX($x)
+    {
+        $this->x = $x;
+    }
+
+    public function setY($y)
+    {
+        $this->y = $y;
+    }
+
+    public function setWidth($width)
+    {
+        $this->width = $width;
+    }
+
+    public function setHeight($height)
+    {
+        $this->height = $height;
+    }
+
+    public function getColor()
+    {
+        return $this->color;
+    }
+
+    public function setColor(GfxColor $oColor)
+    {
+        $this->color = $oColor;
     }
 
     public function setX($x)
