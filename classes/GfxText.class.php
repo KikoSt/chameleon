@@ -8,7 +8,8 @@
 
 class GfxText extends GfXComponent
 {
-    private $oColor;
+    private $sText;
+    private $oFont;
     private $sFontWeight;
     private $iFontVariant;
     private $sFontStyle;
@@ -17,21 +18,57 @@ class GfxText extends GfXComponent
     private $iFontSize;
     private $sFontFamily;
 
-    public function __construct(GfxColor $oColor)
+    public function __construct()
     {
-        $this->oColor = $oColor;
+
     }
 
     public function create()
     {
-        //TODO to be defined
+        //todo just for testing
+        $oSwfText = new SWFText();
+        $oSwfText->setFont($this->getFont());
+        $oSwfText->setColor($this->getColor()->getRGB());
+        $oSwfText->setHeight($this->getHeight());
+        $this->setWidth($oSwfText->getWidth($this->getText()));
+        $oSwfText->moveTo($this->getPosition()->x, $this->getPosition()->y);
+        $oSwfText->addString($this->getText());
+
+        return $oSwfText;
     }
 
-    public function setFillColor($sFillColor)
+    /**
+     * @return mixed
+     */
+    public function getText()
     {
-        $this->oColor->setColor($sFillColor);
-        //TODO depends on the input (color picker etc.)
-        return $this->oColor->getColorHex();
+        return $this->sText;
+    }
+
+    /**
+     * @param mixed $sText
+     */
+    public function setText($sText)
+    {
+        $this->sText = $sText;
+    }
+
+
+
+    /**
+     * @return mixed
+     */
+    public function getFont()
+    {
+        return $this->oFont;
+    }
+
+    /**
+     * @param mixed $oFont
+     */
+    public function setFont(SWFFont $oFont)
+    {
+        $this->oFont = $oFont;
     }
 
     /**

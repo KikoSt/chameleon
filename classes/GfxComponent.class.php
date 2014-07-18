@@ -67,6 +67,14 @@ class GfXComponent implements Linkable, Resizeable
         $this->setY($y);
     }
 
+    public function getPosition()
+    {
+        $oPosition = new stdClass();
+        $oPosition->x = $this->getX();
+        $oPosition->y = $this->getY();
+        return $oPosition;
+    }
+
     public function setSize($width, $height)
     {
         $this->setWidth($width);
@@ -98,11 +106,9 @@ class GfXComponent implements Linkable, Resizeable
         return $this->color;
     }
 
-    public function setColor($color)
+    public function setColor(GfxColor $oColor)
     {
-        if(is_a($color, 'Color')) {
-            $this->color = $color;
-        }
+        $this->color = $oColor;
     }
 
     public function getCurrentWidth()
