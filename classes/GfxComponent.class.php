@@ -6,7 +6,7 @@
  * Date: 17/07/2014
  * Time: 09:01
  */
-class GfXComponent implements Linkable
+class GfXComponent implements Linkable, Resizeable
 {
 
     private $x, $y;
@@ -103,35 +103,14 @@ class GfXComponent implements Linkable
         $this->color = $oColor;
     }
 
-//    public function setX($x)
-//    {
-//        $this->x = $x;
-//    }
-//
-//    public function setY($y)
-//    {
-//        $this->y = $y;
-//    }
-//
-//    public function setWidth($width)
-//    {
-//        $this->width = $width;
-//    }
-//
-//    public function setHeight($height)
-//    {
-//        $this->height = $height;
-//    }
-//
-//    public function getColor()
-//    {
-//        return $this->color;
-//    }
-//
-//    public function setColor($color)
-//    {
-//        if(is_a($color, 'Color')) {
-//            $this->color = $color;
-//        }
-//    }
+
+    /* *************************
+            Magic Methods
+    ************************* */
+    public function __toString()
+    {
+        $string = '';
+        $string .= get_class($this);
+        return $string;
+    }
 }

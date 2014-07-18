@@ -8,14 +8,15 @@
 
 class GfxColor
 {
-    private $sColorHex;
-    private $oColorRGB;
+    private $r, $g, $b;
 
-    public function setHex($sColorHex)
+    public function setHex($colorHex)
     {
-        if(preg_match("/^#([0-9a-fA-F]{3}){1,2}$/", $sColorHex))
+        if(preg_match("/^#([0-9a-fA-F]{3}){1,2}$/", $colorHex))
         {
-            $this->sColorHex = $sColorHex;
+            $this->setR(hexdec(substr($colorHex, 1, 2)));
+            $this->setG(hexdec(substr($colorHex, 3, 2)));
+            $this->setB(hexdec(substr($colorHex, 5, 2)));
         }
         else
         {
@@ -25,19 +26,18 @@ class GfxColor
 
     public function getHex()
     {
-        return $this->sColorHex;
+        return '#' . (sprintf('%02x', $this->getR())) . sprintf('%02x', $this->getG()) . sprintf('%02x', $this->getB());
     }
 
-    public function setRGB($iR, $iG, $iB)
+    public function setRGB($r, $g, $b)
     {
-        if(is_numeric($iR) && is_numeric($iG) && is_numeric($iB))
+        // check ALL values before changing any to prevent unexpected colors ... ;)
+        if(is_numeric($r) && is_numeric($g) && is_numeric($b))
         {
-            $oRGB = new stdClass();
-            $oRGB->R = $iR;
-            $oRGB->G = $iG;
-            $oRGB->B = $iB;
+            $this->setR($r);
+            $this->setG($g);
+            $this->setB($b);
 
-            $this->oRGB = $oRGB;
         }
         else
         {
@@ -45,35 +45,46 @@ class GfxColor
         }
     }
 
-    public function getRGB()
+    public function getR()
     {
-        return $this->oColorRGB;
+        return $this->r;
     }
 
-    public function setR($iR)
+    public function getG()
     {
-        if(is_numeric($iR))
-        {
-            $this->iR = $iR;
+        return $this->g;
+    }
+
+    public function getB()
+    {
+        return $this->b;
+    }
+
+    public function setR($r)
+    {
+        $this->r = $this->checkColorValue($r);
+    }
+
+    public function setG($g)
+    {
+        $this->g = $this->checkColorValue($g);
+    }
+
+    public function setB($b)
+    {
+        $this->b = $this->checkColorValue($b);
+    }
+
+    private function checkColorValue($value)
+    {
+        if(!is_numeric($value)) {
+            return false;
         }
-    }
+        if($value < 0) $value = 0;
+        if($value > 255) $value = 255;
 
-    public function setB($iB)
-    {
-        if(is_numeric($iB))
-        {
-            $this->iB = $iB;
-        }
+        return $value;
     }
-
-    public function setG($iG)
-    {
-        if(is_numeric($iG))
-        {
-            $this->iG = $iG;
-        }
-    }
-
     private function limitColorHex()
     {
 
