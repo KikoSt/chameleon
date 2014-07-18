@@ -7,7 +7,7 @@
  * Time: 07:30
  */
 
-class GfxContainer # implements Renderable ;)
+class GfxContainer // implements Renderable ;)
 {
     private $sId;
     protected $elements;
@@ -66,4 +66,3 @@ class GfxContainer # implements Renderable ;)
         return $string;
     }
 }
-?>

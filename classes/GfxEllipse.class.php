@@ -8,5 +8,40 @@
 
 class GfxEllipse extends GfxShape
 {
+    private $fYRadius;
+    private $fXRadius;
+
+    /**
+     * @return mixed
+     */
+    public function getXRadius()
+    {
+        return $this->fXRadius;
+    }
+
+    /**
+     * @param mixed $fXRadius
+     */
+    public function setXRadius($fXRadius)
+    {
+        $this->fXRadius = $fXRadius;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getYRadius()
+    {
+        return $this->fYRadius;
+    }
+
+    /**
+     * @param mixed $fYRadius
+     */
+    public function setYRadius($fYRadius)
+    {
+        $this->fYRadius = $fYRadius;
+    }
+
 
 } 

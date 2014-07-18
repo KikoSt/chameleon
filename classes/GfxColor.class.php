@@ -9,22 +9,45 @@
 class GfxColor
 {
     private $sColorHex;
-    private $iR;
-    private $iG;
-    private $iB;
+    private $oColorRGB;
 
-    public function setColorHex($sColorHex)
+    public function setHex($sColorHex)
     {
-        if(preg_match("/^#([0-9a-fA-F]{3}){1,2}$/", $sColorHex))  {
+        if(preg_match("/^#([0-9a-fA-F]{3}){1,2}$/", $sColorHex))
+        {
             $this->sColorHex = $sColorHex;
-        } else {
-            echo 'Wrong!' . "\n";
+        }
+        else
+        {
+            throw new InvalidArgumentException("regex");
         }
     }
 
-    public function getColorHex()
+    public function getHex()
     {
         return $this->sColorHex;
+    }
+
+    public function setRGB($iR, $iG, $iB)
+    {
+        if(is_numeric($iR) && is_numeric($iG) && is_numeric($iB))
+        {
+            $oRGB = new stdClass();
+            $oRGB->R = $iR;
+            $oRGB->G = $iG;
+            $oRGB->B = $iB;
+
+            $this->oRGB = $oRGB;
+        }
+        else
+        {
+            throw new InvalidArgumentException();
+        }
+    }
+
+    public function getRGB()
+    {
+        return $this->oColorRGB;
     }
 
     public function setR($iR)
@@ -55,4 +78,4 @@ class GfxColor
     {
 
     }
-} 
+}
