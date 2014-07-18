@@ -10,8 +10,8 @@
 class GfxShape extends GfxComponent
 {
     protected $color;
-    private $fWidth;
-    private $fHeight;
+    private $width;
+    private $height;
 
     public function __construct()
     {
@@ -22,13 +22,23 @@ class GfxShape extends GfxComponent
 
     }
 
-    public function setWidth($fWidth)
+    public function setWidth($width)
     {
-        $this->fWidth = $fWidth;
+        $this->width = $width;
     }
 
-    public function setHeight($fHeight)
+    public function setHeight($height)
     {
-        $this->fHeight = $fHeight;
+        $this->height = $height;
+    }
+
+    public function getWidth()
+    {
+        return $this->width;
+    }
+
+    public function getHeight()
+    {
+        return $this->height;
     }
 }
