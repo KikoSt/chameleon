@@ -8,13 +8,11 @@
  */
 class GfXComponent implements Linkable, Resizeable
 {
-
     private $x, $y;
     private $width, $height;
-    private $fXPos;
-    private $fYPos;
-    private $sId;
+    private $id;
     private $color;
+    private $stroke;
 
     public function __construct()
     {
@@ -24,17 +22,27 @@ class GfXComponent implements Linkable, Resizeable
 
     public function create()
     {
-        echo 'Now I\'m here ... ' . $this->fXPos . '/' . $this->fYPos . "\n";
+        echo 'Now I\'m here ... ' . $this->x . '/' . $this->y . "\n";
     }
 
-    public function setId($sId)
+    public function getStroke()
     {
-        $this->sId =$sId;
+        return $this->stroke;
+    }
+
+    public function setStroke($stroke)
+    {
+        $this->stroke = $stroke;
+    }
+
+    public function setId($id)
+    {
+        $this->id = $id;
     }
 
     public function getId()
     {
-        return $this->sId;
+        return $this->id;
     }
 
     public function getX()
@@ -60,26 +68,6 @@ class GfXComponent implements Linkable, Resizeable
     public function render($canvas) {}
 
     public function createLink($sUrl) {}
-
-    public function setPosition($x, $y)
-    {
-        $this->setX($x);
-        $this->setY($y);
-    }
-
-    public function getPosition()
-    {
-        $oPosition = new stdClass();
-        $oPosition->x = $this->getX();
-        $oPosition->y = $this->getY();
-        return $oPosition;
-    }
-
-    public function setSize($width, $height)
-    {
-        $this->setWidth($width);
-        $this->setHeight($height);
-    }
 
     public function setX($x)
     {
@@ -109,40 +97,5 @@ class GfXComponent implements Linkable, Resizeable
     public function setColor(GfxColor $oColor)
     {
         $this->color = $oColor;
-    }
-
-    public function getCurrentWidth()
-    {
-        // TODO: Implement getCurrentWidth() method.
-    }
-
-    public function getCurrentHeight()
-    {
-        // TODO: Implement getCurrentHeight() method.
-    }
-
-    public function setNewWidth($width)
-    {
-        // TODO: Implement setNewWidth() method.
-    }
-
-    public function setNewHeight($height)
-    {
-        // TODO: Implement setNewHeight() method.
-    }
-
-    public function getNewWidth()
-    {
-        // TODO: Implement getNewWidth() method.
-    }
-
-    public function getNewHeight()
-    {
-        // TODO: Implement getNewHeight() method.
-    }
-
-    public function resize()
-    {
-        // TODO: Implement resize() method.
     }
 }

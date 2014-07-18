@@ -6,7 +6,7 @@
  * Time: 11:33
  */
 
-class GfxText extends GfXComponent
+class GfxText extends GfxComponent
 {
     private $sText;
     private $oFont;
@@ -25,16 +25,7 @@ class GfxText extends GfXComponent
 
     public function create()
     {
-        //todo just for testing
-        $oSwfText = new SWFText();
-        $oSwfText->setFont($this->getFont());
-        $oSwfText->setColor($this->getColor()->getRGB());
-        $oSwfText->setHeight($this->getHeight());
-        $this->setWidth($oSwfText->getWidth($this->getText()));
-        $oSwfText->moveTo($this->getPosition()->x, $this->getPosition()->y);
-        $oSwfText->addString($this->getText());
 
-        return $oSwfText;
     }
 
     /**
