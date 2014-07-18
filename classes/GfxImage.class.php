@@ -6,7 +6,11 @@
  * Time: 11:33
  */
 
-class GfxImage extends GfXComponent
+class GfxImage extends GfXComponent implements Resizeable
 {
+    public function __construct()
+    {
+    }
 
-} 
+
+}
