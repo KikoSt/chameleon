@@ -66,4 +66,3 @@ class GfxContainer
         return $string;
     }
 }
-?>
