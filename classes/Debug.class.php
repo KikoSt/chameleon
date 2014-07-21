@@ -11,7 +11,7 @@ class Debug
     public static function browser($value, $bExit = false)
     {
         echo("<pre>");
-        print_r($value);
+        var_dump($value);
         echo("</pre>");
 
         if($bExit)
@@ -22,6 +22,6 @@ class Debug
 
     public static function console($elements)
     {
-        var_dump($elements);
+        print_r($elements);
     }
 }

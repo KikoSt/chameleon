@@ -7,11 +7,12 @@
  * Time: 07:30
  */
 
-class GfxContainer // implements Renderable ;)
+class GfxContainer
 {
     private $sId;
     protected $elements;
     private $target;
+    private $sSource;
     private $canvasWidth;
     private $canvasHeight;
 
@@ -24,11 +25,44 @@ class GfxContainer // implements Renderable ;)
         $this->allowedTargets = array('SWF', 'GIF');
     }
 
+    public function setSource($sSource)
+    {
+        if(file_exists($sSource))
+        {
+            $this->sSource = $sSource;
+        }
+        else
+        {
+            throw new FileNotFoundException('File '.$sSource.' not found !');
+        }
+    }
+
+    public function parse()
+    {
+        $svg = new SimpleXMLElement(file_get_contents($this->sSource));
+
+        $this->createGfxComponents($svg);
+    }
+
+    public function setId($sId)
+    {
+        $this->sId =$sId;
+    }
+
+    public function getId()
+    {
+        return $this->sId;
+    }
+
     public function addElement($element)
     {
-        if(is_a($element, 'GfxComponent')) {
+        if(is_a($element, 'GfxComponent'))
+        {
             $this->elements[] = $element;
-        } else {
+        }
+        else
+        {
+            throw new InvalidArgumentException();
         }
     }
 
@@ -122,17 +156,6 @@ class GfxContainer // implements Renderable ;)
         $this->canvasHeight = $newCanvasHeight;
     }
 
-    public function setId($sId)
-    {
-        $this->sId =$sId;
-    }
-
-    public function getId()
-    {
-        return $this->sId;
-    }
-
-
     // Magic Methods
     public function __toString()
     {
@@ -143,6 +166,132 @@ class GfxContainer // implements Renderable ;)
         return $string;
     }
 
+    private function createGfxComponents($oSvg)
+    {
+        if(empty($oSvg))
+        {
+            throw new InvalidArgumentException();
+        }
 
+        $aComponentSecondGen = (array)$oSvg->children()->children();
 
+        foreach($aComponentSecondGen as $key => $aSingleComponent)
+        {
+            switch($key)
+            {
+                case "rect":
+                {
+                    $this->createGfxRectangle($aSingleComponent);
+                    break;
+                }
+                case "text":
+                {
+                    $this->createGfxText($aSingleComponent, $oSvg);
+                    break;
+                }
+                case "image":
+                {
+                    $this->createGfxImage($aSingleComponent);
+                    break;
+                }
+                case "ellipse":
+                {
+
+                    break;
+                }
+            }
+        }
+    }
+
+    private function createGfxText($aComponent, $oCoreComponent)
+    {
+        $oGfxText = new GfxText();
+
+        foreach($aComponent as $key => $text)
+        {
+            $oGfxText->setText($text);
+
+            $aAttributes = $oCoreComponent->g->text[$key]->attributes();
+
+            foreach ($aAttributes as $attributeKey => $value)
+            {
+                if (!empty($value))
+                {
+                    $this->useDynamicSetter($oGfxText, $attributeKey, $value);
+                }
+            }
+            $this->addElement($oGfxText);
+        }
+    }
+
+    private function createGfxRectangle($aComponent)
+    {
+        $oGfxRectangle = new GfxRectangle();
+
+        foreach($aComponent as $oSingleComponent)
+        {
+            $aSingleComponent = $oSingleComponent->attributes();
+
+            foreach($aSingleComponent as $key => $value)
+            {
+                if (!empty($value))
+                {
+                    $this->useDynamicSetter($oGfxRectangle, $key, $value);
+                }
+            }
+            $this->addElement($oGfxRectangle);
+        }
+    }
+
+    private function createGfxImage($aComponent)
+    {
+        $oGfxImage = new GfxImage();
+
+        foreach($aComponent as $oSingleComponent)
+        {
+            $aSingleComponent = $oSingleComponent->attributes();
+
+            foreach($aSingleComponent as $key => $value)
+            {
+                if (!empty($value))
+                {
+                    $this->useDynamicSetter($oGfxImage, $key, $value);
+                }
+            }
+            $this->addElement($oGfxImage);
+        }
+    }
+
+    public function useDynamicSetter(GfXComponent $oComponent, $sFuncName, $param)
+    {
+        if(strpos($sFuncName, "-") !== false)
+        {
+            $aFuncName = explode("-", $sFuncName);
+
+            $sFuncName = '';
+
+            foreach($aFuncName as $part)
+            {
+                $sFuncName .= ucwords($part);
+            }
+        }
+
+        if($sFuncName === "stroke" || $sFuncName === "fill")
+        {
+            $oColor = new GfxColor();
+            $oColor->setHex($param);
+            $param = $oColor;
+        }
+
+        $func = "set".ucwords($sFuncName);
+
+        if(method_exists($oComponent, $func))
+        {
+            $oComponent->$func($param);
+        }
+        else
+        {
+            //throw new BadMethodCallException();
+        }
+    }
 }

@@ -6,7 +6,7 @@
  * Time: 11:33
  */
 
-class GfxText extends GfXComponent
+class GfxText extends GfxComponent
 {
     private $text;
     private $oFont;
@@ -25,16 +25,7 @@ class GfxText extends GfXComponent
 
     public function create()
     {
-        //todo just for testing
-        $oSwfText = new SWFText();
-        $oSwfText->setFont($this->getFont());
-        $oSwfText->setColor($this->getColor()->getRGB());
-        $oSwfText->setHeight($this->getHeight());
-        $this->setWidth($oSwfText->getWidth($this->getText()));
-        $oSwfText->moveTo($this->getPosition()->x, $this->getPosition()->y);
-        $oSwfText->addString($this->getText());
 
-        return $oSwfText;
     }
 
 
@@ -196,7 +187,7 @@ class GfxText extends GfXComponent
      */
     public function setFontFamily($sFontFamily)
     {
-        $aAllowedValues = array("sans", "serif");
+        $aAllowedValues = array("sans", "serif", "sans-serif");
 
         if(in_array(strtolower($sFontFamily), $aAllowedValues, true))
         {
@@ -228,7 +219,7 @@ class GfxText extends GfXComponent
 //            $this->iFontVariant = $sFontSize;
 //        }
 
-        if(is_numeric($iFontSize))
+        if(!empty($iFontSize))
         {
             $this->iFontSize = $iFontSize;
         }
@@ -292,6 +283,6 @@ class GfxText extends GfXComponent
      */
     private function throwException($sParam)
     {
-        throw new InvalidArgumentException('Setting font family failed. Invalid parameter ('.$sParam.') given.');
+        throw new InvalidArgumentException('Invalid parameter ('.$sParam.') given.');
     }
 }

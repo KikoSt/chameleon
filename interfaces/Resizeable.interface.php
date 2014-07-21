@@ -8,13 +8,5 @@
 
 interface Resizeable
 {
-    public function setWidth($newWidth);
-    public function setHeight($newHeight);
-//    public function getCurrentWidth();
-//    public function getCurrentHeight();
-//    public function setNewWidth($width);
-//    public function setNewHeight($height);
-//    public function getNewWidth();
-//    public function getNewHeight();
-//    public function resize();
-}
+
+} 

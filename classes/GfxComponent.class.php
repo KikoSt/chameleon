@@ -8,11 +8,11 @@
  */
 class GfXComponent implements Linkable, Resizeable
 {
-
     private $x, $y;
     private $width, $height;
-    private $sId;
+    private $id;
     private $color;
+    private $stroke;
 
     public function __construct()
     {
@@ -24,17 +24,27 @@ class GfXComponent implements Linkable, Resizeable
 
     public function create()
     {
-        echo 'Now I\'m here ... ' . $this->fXPos . '/' . $this->fYPos . "\n";
+        echo 'Now I\'m here ... ' . $this->x . '/' . $this->y . "\n";
     }
 
-    public function setId($sId)
+    public function getStroke()
     {
-        $this->sId =$sId;
+        return $this->stroke;
+    }
+
+    public function setStroke(GfxColor $oColor)
+    {
+        $this->stroke = $oColor;
+    }
+
+    public function setId($id)
+    {
+        $this->id = $id;
     }
 
     public function getId()
     {
-        return $this->sId;
+        return $this->id;
     }
 
     public function getX()
@@ -61,20 +71,6 @@ class GfXComponent implements Linkable, Resizeable
 
     public function createLink($sUrl) {}
 
-    public function setPosition($x, $y)
-    {
-        $this->setX($x);
-        $this->setY($y);
-    }
-
-    public function getPosition()
-    {
-        $oPosition = new stdClass();
-        $oPosition->x = $this->getX();
-        $oPosition->y = $this->getY();
-        return $oPosition;
-    }
-
     public function setX($x)
     {
         $this->x = $x;
@@ -95,12 +91,12 @@ class GfXComponent implements Linkable, Resizeable
         $this->height = $height;
     }
 
-    public function getColor()
+    public function getFill()
     {
         return $this->color;
     }
 
-    public function setColor(GfxColor $oColor)
+    public function setFill(GfxColor $oColor)
     {
         $this->color = $oColor;
     }
