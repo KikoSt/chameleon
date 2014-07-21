@@ -23,9 +23,25 @@ class GfXComponent implements Linkable, Resizeable
         $this->height = 0;
     }
 
-    public function create()
+    public function create($svgRootNode)
     {
-        echo 'Now I\'m here ... ' . $this->x . '/' . $this->y . "\n";
+        $attr = $svgRootNode->attributes();
+
+        $this->setX((float) $attr->x);
+        $this->setY((float) $attr->y);
+        $this->setWidth((float) $attr->width);
+        $this->setHeight((float) $attr->height);
+
+        $fill = new GfxColor();
+        $fill->setHex((string) $attr->fill);
+        $this->setFill($fill);
+
+        // $stroke = new GfxStroke();
+        // $stroke->setHex((string) $attr->stroke);
+        // $this->setStroke($stroke);
+
+        $this->setId((string) $attr->id);
+//        var_dump($this);
     }
 
     public function getStroke()

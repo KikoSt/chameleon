@@ -12,5 +12,12 @@ class GfxShape extends GfxComponent
     public function __construct()
     {
         parent::__construct();
+        $this->color = new GfxColor();
     }
+
+    public function create($svgRootNode)
+    {
+        parent::create($svgRootNode);
+    }
+
 }

@@ -9,30 +9,54 @@
 class GfxText extends GfxComponent
 {
     private $text;
+    private $color;
     private $oFont;
     private $sFontWeight;
     private $iFontVariant;
     private $sFontStyle;
     private $sFontStretch;
     private $sFontSizeAdjust;
-    private $iFontSize;
+    private $fontSize;
     private $sFontFamily;
 
     public function __construct()
     {
         parent::__construct();
+        $this->oFont = new SWFFont('fdb/Bitstream Vera Serif.fdb');
     }
 
-    public function create()
+    public function create($svgRootNode)
     {
+        parent::create($svgRootNode);
 
+        $this->setText((string) $svgRootNode);
+
+        $attr = $svgRootNode->attributes();
+
+        var_dump($attr);
+
+        $this->setFontSize((float) $attr->{"font-size"});
+
+        if(null !== ((string) $attr->{"font-weight"}) && !empty((string) $attr->{"font-weight"})) {
+            $fontWeight = (string) $attr->{"font-weight"};
+        } else {
+            $fontWeight = 'normal';
+        }
+        $this->setFontWeight($fontWeight);
+
+        if(null !== ((string) $attr->{"font-variant"}) && !empty((string) $attr->{"font-variant"})) {
+            $fontVariant = (string) $attr->{"font-variant"};
+        } else {
+            $fontVariant = 'normal';
+        }
+        $this->setFontVariant($fontVariant);
     }
 
 
     public function getTextWidth() {
         $text = new SWFText();
         $text->setFont($this->getFont());
-        $text->setHeight($this->getHeight());
+        $text->setFontSize($this->getFontSize());
         $width = $text->getWidth($this->getText());
         unset($text);
         return($width);
@@ -42,13 +66,39 @@ class GfxText extends GfxComponent
     public function renderSWF($canvas)
     {
         $text = new SWFText();
-        $text->setFont($this->getFont());
-        $text->setColor($this->getColor()->getR(), $this->getColor()->getG(), $this->getColor()->getB());
-        $text->setHeight($this->getHeight());
+        if(null !== $this->getFont()) {
+            $text->setFont($this->getFont());
+        } else {
+            die('No font set!');
+        }
+        try {
+            $curFill = $this->getFill();
+        } catch(Exception $e) {
+            echo 'Error trying to get color';
+            return false;
+        }
+        try {
+            $text->setColor($curFill->getR(), $curFill->getG(), $curFill->getB());
+        } catch(Exception $e) {
+            echo 'Error trying to set color!';
+            return false;
+        }
+        var_dump($this->getFontSize());
+        $text->setHeight($this->getFontSize());
         $tWidth = $text->getWidth($this->getText());
         // position: CENTERED!
         $text->moveTo($this->getX(), $this->getY());
         $text->addString($this->getText());
+
+
+        echo $this->getText();
+        echo "\n";
+        echo $this->getX() . '\\' . $this->getY();
+        echo "\n";
+//        var_dump($this->getFill());
+        echo $this->getFontSize();
+        echo "\n";
+
 
         $handle = $canvas->add($text);
 
@@ -204,14 +254,14 @@ class GfxText extends GfxComponent
      */
     public function getFontSize()
     {
-        return $this->iFontSize;
+        return $this->fontSize;
     }
 
     /**
-     * @param $iFontSize
+     * @param $fontSize
      * @throws InvalidArgumentException
      */
-    public function setFontSize($iFontSize)
+    public function setFontSize($fontSize)
     {
 //        $aAllowedValues = array("larger", "smaller", "xx-small", "x-small", "small", "medium", "large", "x-large", "xx-large", "inherit");
 //        if(in_array($sFontSize, $aAllowedValues, true))
@@ -219,13 +269,13 @@ class GfxText extends GfxComponent
 //            $this->iFontVariant = $sFontSize;
 //        }
 
-        if(!empty($iFontSize))
+        if(!empty($fontSize))
         {
-            $this->iFontSize = $iFontSize;
+            $this->fontSize = $fontSize;
         }
         else
         {
-            $this->throwException($iFontSize);
+            $this->throwException($fontSize);
         }
     }
 
@@ -238,17 +288,17 @@ class GfxText extends GfxComponent
     }
 
     /**
-     * @param mixed $iFontSizeAdjust
+     * @param mixed $fontSizeAdjust
      */
-    public function setFontSizeAdjust($iFontSizeAdjust)
+    public function setFontSizeAdjust($fontSizeAdjust)
     {
-        if(is_numeric($iFontSizeAdjust) || $iFontSizeAdjust === null)
+        if(is_numeric($fontSizeAdjust) || $fontSizeAdjust === null)
         {
-            $this->iFontVariant = $iFontSizeAdjust;
+            $this->iFontVariant = $fontSizeAdjust;
         }
         else
         {
-            $this->throwException($iFontSizeAdjust);
+            $this->throwException($fontSizeAdjust);
         }
     }
 

@@ -7,6 +7,8 @@
  * Time: 07:30
  */
 
+require_once('GfxComponent.class.php');
+
 class GfxContainer
 {
     private $sId;
@@ -40,7 +42,19 @@ class GfxContainer
     {
         $svg = new SimpleXMLElement(file_get_contents($this->sSource));
 
-        $this->createGfxComponents($svg);
+        $main = $svg->children();
+
+        $this->setCanvasWidth((float) $svg->attributes()->width);
+        $this->setCanvasHeight((float) $svg->attributes()->height);
+
+        foreach($main->children() AS $child) {
+            $gfxInstance = $this->getGfxInstance($child->getName());
+            if($gfxInstance) {
+                $gfxInstance->create($child);
+                $this->addElement($gfxInstance);
+            }
+            unset($gfxInstance);
+        }
     }
 
     public function setId($sId)
@@ -106,7 +120,107 @@ class GfxContainer
     }
 
 
+    private function getGfxInstance($type)
+    {
+        // easily extendable, just add new types here
+        $componentTypes = array(    'rect' => 'GfxRectangle',
+                                    'text' => 'GfxText',
+                                    'image' => 'GfxImage',
+                                    'ellipse' => 'GfxEllipse');
+        if(array_key_exists($type, $componentTypes)) {
+            // create instance of requested class based on the above mapping
+            $gfxInstance = new $componentTypes[$type]();
+        } else {
+            return false;
+        }
+        return $gfxInstance;
+    }
 
+
+    private function createGfxComponents($oSvg)
+    {
+        if(empty($oSvg))
+        {
+            throw new InvalidArgumentException();
+        }
+
+        $aComponentSecondGen = (array)$oSvg->children()->children();
+
+        foreach($aComponentSecondGen as $key => $aSingleComponent)
+        {
+            continue;
+            $gfxInstance = $this->getGfxInstance($key);
+            if($gfxInstance) {
+                $this->createSingleComponent($gfxInstance, $aSingleComponent, $oSvg);
+            }
+        }
+        Debug::console($this->elements);
+    }
+
+
+
+    private function createSingleComponent($gfxInstance, $aComponent, $oSvg)
+    {
+        foreach($aComponent as $key => $oSingleComponent)
+        {
+            if(is_a($gfxInstance, 'GfxText'))
+            {
+                $gfxInstance->setText($oSingleComponent);
+            }
+
+            // $gfxInstance->setLink($oSvg->g->image[$key]->attributes('xlink', true)->href);
+
+            $aAttributes = $oSvg->g->text[$key]->attributes();
+
+            foreach ($aAttributes as $attributeKey => $value)
+            {
+                if (!empty($value))
+                {
+                    $this->useDynamicSetter($gfxInstance, $attributeKey, $value);
+                }
+            }
+            $this->addElement($gfxInstance);
+        }
+    }
+
+    public function useDynamicSetter($oComponent, $sFuncName, $param)
+    {
+        // using simplexmlelements here, this "reduces" the simplexmlelement object
+        // to the mere value
+        $param = (string)$param;
+
+        if(strpos($sFuncName, "-") !== false)
+        {
+            $aFuncName = explode("-", $sFuncName);
+
+            $sFuncName = '';
+
+            foreach($aFuncName as $part)
+            {
+                $sFuncName .= ucwords($part);
+            }
+        }
+
+        if($sFuncName === "stroke" || $sFuncName === "fill")
+        {
+            $oColor = new GfxColor();
+            $oColor->setHex($param);
+            $param = $oColor;
+        }
+
+        $func = "set".ucwords($sFuncName);
+
+        echo get_class($oComponent) . ': ' . $func . '; ' . print_r($param, 1) . "\n\n";
+
+        if(method_exists($oComponent, $func))
+        {
+            $oComponent->$func($param);
+        }
+        else
+        {
+            //throw new BadMethodCallException();
+        }
+    }
 
 
 
@@ -166,100 +280,5 @@ class GfxContainer
         return $string;
     }
 
-    private function createGfxComponents($oSvg)
-    {
-        if(empty($oSvg))
-        {
-            throw new InvalidArgumentException();
-        }
 
-        $aComponentSecondGen = (array)$oSvg->children()->children();
-
-        foreach($aComponentSecondGen as $key => $aSingleComponent)
-        {
-            $oClass = new GfXComponent();
-            switch($key)
-            {
-                case "rect":
-                {
-                    $oClass = new GfxRectangle();
-                    break;
-                }
-                case "text":
-                {
-                    $oClass = new GfxText();
-                    break;
-                }
-                case "image":
-                {
-                    $oClass = new GfxImage();
-                    break;
-                }
-                case "ellipse":
-                {
-                    //TODO nothing for now
-                    break;
-                }
-            }
-            $this->createSingleComponent($oClass, $aSingleComponent, $oSvg);
-        }
-        Debug::browser($this->elements);
-    }
-
-    private function createSingleComponent($class, $aComponent, $oSvg)
-    {
-        foreach($aComponent as $key => $oSingleComponent)
-        {
-            if(is_a($class, 'GfxText'))
-            {
-                $class->setText($oSingleComponent);
-            }
-
-            $class->setLink($oSvg->g->image[$key]->attributes('xlink', true)->href);
-
-            $aAttributes = $oSvg->g->text[$key]->attributes();
-
-            foreach ($aAttributes as $attributeKey => $value)
-            {
-                if (!empty($value))
-                {
-                    $this->useDynamicSetter($class, $attributeKey, $value);
-                }
-            }
-            $this->addElement($class);
-        }
-    }
-
-    public function useDynamicSetter(GfXComponent $oComponent, $sFuncName, $param)
-    {
-        if(strpos($sFuncName, "-") !== false)
-        {
-            $aFuncName = explode("-", $sFuncName);
-
-            $sFuncName = '';
-
-            foreach($aFuncName as $part)
-            {
-                $sFuncName .= ucwords($part);
-            }
-        }
-
-        if($sFuncName === "stroke" || $sFuncName === "fill")
-        {
-            $oColor = new GfxColor();
-            $oColor->setHex($param);
-            $param = $oColor;
-        }
-
-        $func = "set".ucwords($sFuncName);
-
-        if(method_exists($oComponent, $func))
-        {
-            $oComponent->$func($param);
-        }
-        else
-        {
-            //throw new BadMethodCallException();
-        }
-    }
 }

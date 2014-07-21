@@ -62,6 +62,4 @@ class GfxImage extends GfXComponent
     {
         return $this->imageUrl;
     }
-
-
 }
