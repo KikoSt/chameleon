@@ -15,6 +15,7 @@ class GfxShape extends GfxComponent
 
     public function __construct()
     {
+        parent::__construct();
     }
 
     public function setFillColor($sColorHex)
