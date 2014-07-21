@@ -102,6 +102,7 @@ class GfxContainer
 
     private function renderGIF()
     {
+
     }
 
 
@@ -176,88 +177,56 @@ class GfxContainer
 
         foreach($aComponentSecondGen as $key => $aSingleComponent)
         {
+            $oClass = new GfXComponent();
             switch($key)
             {
                 case "rect":
                 {
-                    $this->createGfxRectangle($aSingleComponent);
+                    $oClass = new GfxRectangle();
                     break;
                 }
                 case "text":
                 {
-                    $this->createGfxText($aSingleComponent, $oSvg);
+                    $oClass = new GfxText();
                     break;
                 }
                 case "image":
                 {
-                    $this->createGfxImage($aSingleComponent);
+                    $oClass = new GfxImage();
                     break;
                 }
                 case "ellipse":
                 {
-
+                    //TODO nothing for now
                     break;
                 }
             }
+            $this->createSingleComponent($oClass, $aSingleComponent, $oSvg);
         }
+        Debug::browser($this->elements);
     }
 
-    private function createGfxText($aComponent, $oCoreComponent)
+    private function createSingleComponent($class, $aComponent, $oSvg)
     {
-        $oGfxText = new GfxText();
-
-        foreach($aComponent as $key => $text)
+        foreach($aComponent as $key => $oSingleComponent)
         {
-            $oGfxText->setText($text);
+            if(is_a($class, 'GfxText'))
+            {
+                $class->setText($oSingleComponent);
+            }
 
-            $aAttributes = $oCoreComponent->g->text[$key]->attributes();
+            $class->setLink($oSvg->g->image[$key]->attributes('xlink', true)->href);
+
+            $aAttributes = $oSvg->g->text[$key]->attributes();
 
             foreach ($aAttributes as $attributeKey => $value)
             {
                 if (!empty($value))
                 {
-                    $this->useDynamicSetter($oGfxText, $attributeKey, $value);
+                    $this->useDynamicSetter($class, $attributeKey, $value);
                 }
             }
-            $this->addElement($oGfxText);
-        }
-    }
-
-    private function createGfxRectangle($aComponent)
-    {
-        $oGfxRectangle = new GfxRectangle();
-
-        foreach($aComponent as $oSingleComponent)
-        {
-            $aSingleComponent = $oSingleComponent->attributes();
-
-            foreach($aSingleComponent as $key => $value)
-            {
-                if (!empty($value))
-                {
-                    $this->useDynamicSetter($oGfxRectangle, $key, $value);
-                }
-            }
-            $this->addElement($oGfxRectangle);
-        }
-    }
-
-    private function createGfxImage($aComponent)
-    {
-        $oGfxImage = new GfxImage();
-
-        foreach($aComponent as $oSingleComponent)
-        {
-            $aSingleComponent = $oSingleComponent->attributes();
-
-            foreach($aSingleComponent as $key => $value)
-            {
-                if (!empty($value))
-                {
-                    $this->useDynamicSetter($oGfxImage, $key, $value);
-                }
-            }
-            $this->addElement($oGfxImage);
+            $this->addElement($class);
         }
     }
 

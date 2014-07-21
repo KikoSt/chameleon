@@ -13,6 +13,7 @@ class GfXComponent implements Linkable, Resizeable
     private $id;
     private $color;
     private $stroke;
+    private $url;
 
     public function __construct()
     {
@@ -69,7 +70,10 @@ class GfXComponent implements Linkable, Resizeable
 
     public function render($canvas) {}
 
-    public function createLink($sUrl) {}
+    public function setLink($url)
+    {
+        $this->url = $url;
+    }
 
     public function setX($x)
     {
