@@ -59,7 +59,7 @@ class GfxContainer // implements Renderable ;)
         $texts = array();
 
         foreach($this->elements AS $element) {
-            if(is_a($element, 'GfxRectangle') || is_a($element, 'GfxText')) {
+            if(is_a($element, 'GfxComponent')) {
                 $element->renderSWF($swf);
             }
         }
