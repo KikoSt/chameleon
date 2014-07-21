@@ -285,4 +285,14 @@ class GfxText extends GfxComponent
     {
         throw new InvalidArgumentException('Invalid parameter ('.$sParam.') given.');
     }
+
+    public function getFill()
+    {
+        return $this->fill;
+    }
+
+    public function setFill(GfxColor $fill)
+    {
+        $this->fill = $fill;
+    }
 }

@@ -11,7 +11,7 @@ class GfXComponent implements Linkable, Resizeable
     private $x, $y;
     private $width, $height;
     private $id;
-    private $color;
+    private $fill;
     private $stroke;
     private $url;
 
@@ -97,12 +97,12 @@ class GfXComponent implements Linkable, Resizeable
 
     public function getFill()
     {
-        return $this->color;
+        return $this->fill;
     }
 
-    public function setFill(GfxColor $oColor)
+    public function setFill(GfxColor $color)
     {
-        $this->color = $oColor;
+        $this->fill = $color;
     }
 
 
