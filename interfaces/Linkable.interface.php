@@ -9,5 +9,5 @@
 
 interface Linkable
 {
-    public function createLink($sUrl);
+    public function setLink($sUrl);
 } 
