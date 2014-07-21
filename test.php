@@ -3,6 +3,8 @@
 $myContainer = new GfxContainer();
 $myContainer->setSource('svg/test.svg');
 $myContainer->parse();
+$myContainer->setTarget('SWF');
+$myContainer->render();
 
 function __autoload($className) {
     if(file_exists('classes/' . $className . '.class.php')) {
