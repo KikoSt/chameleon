@@ -41,7 +41,7 @@ $t2->setText("get active");
 $t2->setFont(new SWFFont('fdb/bvs.fdb'));
 $t2->setColor($c1);
 $t2->setHeight(20);
-$t2->setPosition(($canvasWidth / 2) - ($t2->getTextWidth() / 2), $canvasHeight - 175);
+$t2->setPosition(($canvasWidth / 2) - ($t2->getTextWidth() / 2), $canvasHeight - 125);
 
 $t3 = new GfxText();
 $t3->setId("tagline2");
@@ -49,7 +49,32 @@ $t3->setText("NOW!");
 $t3->setFont(new SWFFont('fdb/bvs.fdb'));
 $t3->setColor($c3);
 $t3->setHeight(28);
-$t3->setPosition(($canvasWidth / 2) - ($t3->getTextWidth() / 2), $canvasHeight - 125);
+$t3->setPosition(($canvasWidth / 2) - ($t3->getTextWidth() / 2), $canvasHeight - 85);
+
+
+
+
+$i1 = new GfxImage();
+$i1->setX(12.5);
+$i1->setY(35);
+$i1->setWidth(125);
+$i1->setHeight(125);
+$i1->setImageURL('https://media1.globetrotter.de/products/i181166.jpg');
+
+$i2 = new GfxImage();
+$i2->setX(12.5);
+$i2->setY(175);
+$i2->setWidth(125);
+$i2->setHeight(125);
+$i2->setImageURL('https://media1.globetrotter.de/products/i172281.jpg');
+
+
+
+
+
+
+
+
 
 $myContainer->setCanvasSize($canvasWidth, $canvasHeight);
 
@@ -58,6 +83,8 @@ $myContainer->addElement($r2);
 $myContainer->addElement($t1);
 $myContainer->addElement($t2);
 $myContainer->addElement($t3);
+$myContainer->addElement($i1);
+$myContainer->addElement($i2);
 // END OF CONTAINER CODE
 
 
