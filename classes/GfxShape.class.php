@@ -18,6 +18,17 @@ class GfxShape extends GfxComponent
     public function create($svgRootNode)
     {
         parent::create($svgRootNode);
+
+        $attr = $svgRootNode->attributes();
+
+        $fill = new GfxColor();
+        $fill->setHex((string) $attr->fill);
+        $this->setFill($fill);
+
+        // $stroke = new GfxStroke();
+        // $stroke->setHex((string) $attr->stroke);
+        // $this->setStroke($stroke);
+
     }
 
 }

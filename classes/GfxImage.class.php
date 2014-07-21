@@ -16,6 +16,15 @@ class GfxImage extends GfXComponent
     }
 
 
+    public function create($svgRootNode)
+    {
+        parent::create($svgRootNode);
+        $attr = $svgRootNode->attributes();
+        $imageUrl = (string) $svgRootNode->attributes('xlink', true)->href;
+        $this->setImageUrl($imageUrl);
+        $this->setWidth(1);
+        $this->setHeight(1);
+    }
 
     public function renderSWF($canvas)
     {
@@ -42,15 +51,17 @@ class GfxImage extends GfXComponent
         ImageJPEG($output, $imgPath);
 
         $image = new SWFBitmap(fopen($imgPath, "rb"));
-        $handle = $canvas->add($image);
-        $handle->moveTo($this->getX(), $this->getY());
-
+        // $handle = $canvas->add($image);
+        // $handle->moveTo($this->getX(), $this->getY());
+        // $handle->moveTo(0, 0);
+        return $canvas;
     }
 
     public function setImageUrl($imageUrl)
     {
-        $fileHeaders = @get_headers($imageUrl);
-        if($fileHeaders[0] == 'HTTP/1.1 200 OK') {
+        $fileHeaders = get_headers($imageUrl);
+        // TODO: make this more robust!!!
+        if(substr($fileHeaders[0], -6) == '200 OK') {
             $this->imageUrl = $imageUrl;
         } else {
             echo 'File not found' . "\n";

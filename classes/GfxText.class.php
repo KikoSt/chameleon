@@ -33,7 +33,9 @@ class GfxText extends GfxComponent
 
         $attr = $svgRootNode->attributes();
 
-        var_dump($attr);
+        $fill = new GfxColor();
+        $fill->setHex((string) $attr->fill);
+        $this->setFill($fill);
 
         $this->setFontSize((float) $attr->{"font-size"});
 
@@ -56,7 +58,7 @@ class GfxText extends GfxComponent
     public function getTextWidth() {
         $text = new SWFText();
         $text->setFont($this->getFont());
-        $text->setFontSize($this->getFontSize());
+        $text->setHeight($this->getFontSize());
         $width = $text->getWidth($this->getText());
         unset($text);
         return($width);
@@ -87,22 +89,12 @@ class GfxText extends GfxComponent
         $text->setHeight($this->getFontSize());
         $tWidth = $text->getWidth($this->getText());
         // position: CENTERED!
-        $text->moveTo($this->getX(), $this->getY());
+        $text->moveTo($this->getX() - ($this->getTextWidth()/2), $this->getY());
         $text->addString($this->getText());
-
-
-        echo $this->getText();
-        echo "\n";
-        echo $this->getX() . '\\' . $this->getY();
-        echo "\n";
-//        var_dump($this->getFill());
-        echo $this->getFontSize();
-        echo "\n";
-
 
         $handle = $canvas->add($text);
 
-        return($canvas);
+        return $canvas;
     }
 
 
