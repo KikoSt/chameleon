@@ -49,4 +49,4 @@ class GfxEllipse extends GfxShape
     }
 
 
-} 
+}

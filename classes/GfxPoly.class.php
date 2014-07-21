@@ -31,4 +31,4 @@ class GfxPoly extends GfxShape
         $this->aCoordinate = $aCoordinate;
     }
 
-} 
+}
