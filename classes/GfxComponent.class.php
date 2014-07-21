@@ -89,12 +89,12 @@ class GfXComponent implements Linkable, Resizeable
         $this->height = $height;
     }
 
-    public function getColor()
+    public function getFill()
     {
         return $this->color;
     }
 
-    public function setColor(GfxColor $oColor)
+    public function setFill(GfxColor $oColor)
     {
         $this->color = $oColor;
     }

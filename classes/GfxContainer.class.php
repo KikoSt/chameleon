@@ -165,14 +165,14 @@ class GfxContainer
         return $string;
     }
 
-    private function createGfxComponents($oComponent)
+    private function createGfxComponents($oSvg)
     {
-        if(empty($oComponent))
+        if(empty($oSvg))
         {
             throw new InvalidArgumentException();
         }
 
-        $aComponentSecondGen = (array)$oComponent->children()->children();
+        $aComponentSecondGen = (array)$oSvg->children()->children();
 
         foreach($aComponentSecondGen as $key => $aSingleComponent)
         {
@@ -185,12 +185,12 @@ class GfxContainer
                 }
                 case "text":
                 {
-                    $this->createGfxText($aSingleComponent, $oComponent);
+                    $this->createGfxText($aSingleComponent, $oSvg);
                     break;
                 }
                 case "image":
                 {
-
+                    $this->createGfxImage($aSingleComponent);
                     break;
                 }
                 case "ellipse":
@@ -200,7 +200,6 @@ class GfxContainer
                 }
             }
         }
-        Debug::browser($this->elements);
     }
 
     private function createGfxText($aComponent, $oCoreComponent)
@@ -213,62 +212,11 @@ class GfxContainer
 
             $aAttributes = $oCoreComponent->g->text[$key]->attributes();
 
-            foreach ($aAttributes as $key => $value)
+            foreach ($aAttributes as $attributeKey => $value)
             {
                 if (!empty($value))
                 {
-                    switch($key)
-                    {
-                        case "id":
-                        {
-                            $oGfxText->setId($value);
-                            break;
-                        }
-                        case "stroke":
-                        {
-                            $oColor = new GfxColor();
-                            $oColor->setHex($value);
-                            $oGfxText->setStroke($oColor);
-                            break;
-                        }
-                        case "x":
-                        {
-                            $oGfxText->setX($value);
-                            break;
-                        }
-                        case "y":
-                        {
-                            $oGfxText->setY($value);
-                            break;
-                        }
-                        case "fill":
-                        {
-                            $oColor = new GfxColor();
-                            $oColor->setHex($value);
-                            $oGfxText->setColor($oColor);
-                            break;
-                        }
-                        case "width":
-                        {
-                            $oGfxText->setWidth($value);
-                            break;
-                        }
-                        case "height":
-                        {
-                            $oGfxText->setHeight($value);
-                            break;
-                        }
-                        case "font-family":
-                        {
-                            $oGfxText->setFontFamily($value);
-                            break;
-                        }
-                        case "font-size":
-                        {
-                            $oGfxText->setFontSize($value);
-                            break;
-                        }
-                    }
+                    $this->useDynamicSetter($oGfxText, $attributeKey, $value);
                 }
             }
             $this->addElement($oGfxText);
@@ -285,70 +233,64 @@ class GfxContainer
 
             foreach($aSingleComponent as $key => $value)
             {
-                if(!empty($value))
+                if (!empty($value))
                 {
-                    switch($key)
-                    {
-                        case "id":
-                        {
-                            $oGfxRectangle->setId($value);
-                            break;
-                        }
-                        case "stroke":
-                        {
-                            $oColor = new GfxColor();
-                            $oColor->setHex($value);
-                            $oGfxRectangle->setStroke($oColor);
-                            break;
-                        }
-                        case "x":
-                        {
-                            $oGfxRectangle->setX($value);
-                            break;
-                        }
-                        case "y":
-                        {
-                            $oGfxRectangle->setY($value);
-                            break;
-                        }
-                        case "fill":
-                        {
-                            $oColor = new GfxColor();
-                            $oColor->setHex($value);
-                            $oGfxRectangle->setColor($oColor);
-                            break;
-                        }
-                        case "width":
-                        {
-                            $oGfxRectangle->setWidth($value);
-                            break;
-                        }
-                        case "height":
-                        {
-                            $oGfxRectangle->setHeight($value);
-                            break;
-                        }
-                    }
+                    $this->useDynamicSetter($oGfxRectangle, $key, $value);
                 }
             }
             $this->addElement($oGfxRectangle);
         }
     }
 
-    /**
-     * TODO just for development
-     */
-    private function getMethods($class)
+    private function createGfxImage($aComponent)
     {
-        $aMethods = get_class_methods($class);
+        $oGfxImage = new GfxImage();
 
-        foreach($aMethods as $key => $aSingleMethod)
+        foreach($aComponent as $oSingleComponent)
         {
-            if(!preg_match("/^set[a-zA-Z]*/", $aSingleMethod))
+            $aSingleComponent = $oSingleComponent->attributes();
+
+            foreach($aSingleComponent as $key => $value)
             {
-                unset($aMethods[$key]);
+                if (!empty($value))
+                {
+                    $this->useDynamicSetter($oGfxImage, $key, $value);
+                }
+            }
+            $this->addElement($oGfxImage);
+        }
+    }
+
+    public function useDynamicSetter(GfXComponent $oComponent, $sFuncName, $param)
+    {
+        if(strpos($sFuncName, "-") !== false)
+        {
+            $aFuncName = explode("-", $sFuncName);
+
+            $sFuncName = '';
+
+            foreach($aFuncName as $part)
+            {
+                $sFuncName .= ucwords($part);
             }
         }
-        Debug::browser($aMethods);
+
+        if($sFuncName === "stroke" || $sFuncName === "fill")
+        {
+            $oColor = new GfxColor();
+            $oColor->setHex($param);
+            $param = $oColor;
+        }
+
+        $func = "set".ucwords($sFuncName);
+
+        if(method_exists($oComponent, $func))
+        {
+            $oComponent->$func($param);
+        }
+        else
+        {
+            //throw new BadMethodCallException();
+        }
     }
 }
