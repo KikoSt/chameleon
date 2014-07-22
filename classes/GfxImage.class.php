@@ -59,23 +59,7 @@ class GfxImage extends GfXComponent
     {
         $imgPath = 'tmp/file.jpg';
 
-        copy($this->getImageUrl(), $imgPath);
-
-        $size = GetImageSize($imgPath);
-        $iHeight=round($this->getWidth() * $size[1] / $size[0]);
-
-        $input = ImageCreateFromJPEG($imgPath);
-        $photoX = ImagesX($input);
-        $photoY = ImagesY($input);
-
-        $dist = ($this->getWidth() - $iHeight) / 2;
-
-        $output = ImageCreateTrueColor($this->getWidth(), $this->getHeight());
-
-        $bgcolor = imagecolorAllocate($output, 255, 255, 255);
-        imagefill($output, 0, 0, $bgcolor);
-
-        ImageCopyResampled($output, $input, 0, $dist, 0, 0, $this->getWidth() + 1, $iHeight + 1, $photoX, $photoY);
+        $output = $this->resize_image($this->getImageUrl(), $this->getWidth(), $this->getHeight(), false);
 
         ImageJPEG($output, $imgPath);
 
