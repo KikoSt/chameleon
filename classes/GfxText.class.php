@@ -98,18 +98,16 @@ class GfxText extends GfxComponent
         return $canvas;
     }
 
-    public function renderGif($canvas)
+    public function renderGif($canvas, $canvasWidth)
     {
         $textColor = imagecolorallocate($canvas,$this->getFill()->getR(),$this->getFill()->getG(),$this->getFill()->getB());
 
         $tb = imagettfbbox($this->getFontSize(), 0, $GLOBALS['fontlist']['GIF'][$this->getFontFamily()], $this->getText());
 
-        $x = ceil(($this->getTextWidth() - $tb[0]) / 2);
+        $x = ceil(($canvasWidth - $tb[2]) / 2 );
 
-        Debug::console('>>>' . $this->getFontFamily());
-        Debug::browser($GLOBALS['fontlist']['GIF'][$this->getFontFamily()]);
-
-        imagettftext($canvas, $this->getFontSize(), 0, $x, $this->getY(), $textColor, $GLOBALS['fontlist']['GIF'][$this->getFontFamily()],
+        imagettftext($canvas, $this->getFontSize(), 0, $x, $this->getY(), $textColor,
+            $GLOBALS['fontlist']['GIF'][$this->getFontFamily()],
             $this->getText());
 
         return $canvas;
@@ -147,17 +145,6 @@ class GfxText extends GfxComponent
         $font = new SWFFont($GLOBALS['fontlist']['SWF'][$this->getFontFamily()]);
         return $font;
     }
-
-
-
-    /**
-     * @param mixed $font
-     */
-// UNUSED!
-//    public function setSWFFont(SWFFont $font)
-//    {
-//        $this->swfFont = $font;
-//    }
 
     /**
      * @param $fontWeight

@@ -135,10 +135,7 @@ class GfxContainer
 
         foreach($this->elements as $element)
         {
-            if(is_a($element, 'GfxRectangle') || is_a($element, 'GfxText'))
-            {
-                $updatedCanvas = $element->renderGif($this->getCanvas());
-            }
+            $updatedCanvas = $element->renderGif($this->getCanvas(), $this->getCanvasWidth());
         }
 
         $this->setCanvas($updatedCanvas);

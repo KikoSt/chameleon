@@ -22,6 +22,6 @@ class Debug
 
     public static function console($elements)
     {
-        print_r($elements);
+        var_dump($elements);
     }
 }
