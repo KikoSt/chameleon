@@ -149,6 +149,8 @@ class GfxText extends GfxComponent
         return $font;
     }
 
+
+
     /**
      * @param mixed $font
      */
@@ -244,7 +246,7 @@ class GfxText extends GfxComponent
     public function setFontFamily($fontFamily)
     {
         // check if font file exists
-        if(key_exists($fontFamily, $GLOBALS['fontlist']['SWF']) || key_exists($fontFamily, $GLOBALS['fontlist']['SWF'])) {
+        if(array_key_exists($fontFamily, $GLOBALS['fontlist']['SWF']) || array_key_exists($fontFamily, $GLOBALS['fontlist']['SWF'])) {
             $this->fontFamily = $fontFamily;
         } else {
             $this->throwException($fontFamily);
@@ -339,15 +341,5 @@ class GfxText extends GfxComponent
     private function throwException($sParam)
     {
         throw new InvalidArgumentException('Invalid parameter ('.$sParam.') given.');
-    }
-
-    public function getFill()
-    {
-        return $this->fill;
-    }
-
-    public function setFill(GfxColor $fill)
-    {
-        $this->fill = $fill;
     }
 }
