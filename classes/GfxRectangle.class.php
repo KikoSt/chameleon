@@ -42,4 +42,24 @@ class GfxRectangle extends GfxShape
         return $canvas;
     }
 
+    public function renderGIF($canvas)
+    {
+        $x2 = $this->getX() + $this->getWidth();
+        $y2 = $this->getY() + $this->getHeight();
+
+        if($this->getFill()->getR() !== null)
+        {
+            $textColour = imagecolorallocatealpha($canvas, $this->getFill()->getR(), $this->getFill()->getG(), $this->getFill()->getB(), 0);
+            imagefilledrectangle($canvas, $this->getX(), $this->getY(), $x2, $y2, $textColour);
+        }
+        else
+        {
+            $textColour = imagecolorallocatealpha($canvas, $this->getStroke()->getR(), $this->getStroke()->getB(),
+                $this->getStroke()->getG(),
+                0);
+            imagerectangle($canvas, $this->getX(), $this->getY(), $x2, $y2, $textColour);
+        }
+        return $canvas;
+    }
+
 }

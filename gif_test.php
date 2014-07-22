@@ -3,7 +3,7 @@
 $myContainer = new GfxContainer();
 $myContainer->setSource('svg/test.svg');
 $myContainer->parse();
-$myContainer->setTarget('SWF');
+$myContainer->setTarget('GIF');
 $myContainer->render();
 
 function __autoload($className) {

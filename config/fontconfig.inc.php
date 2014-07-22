@@ -19,9 +19,9 @@ $fontlist['GIF']['BITSTREAM_VERA_SANS_B']        = 'fonts/ttf/Vera-Bold.ttf';
 $fontlist['GIF']['BITSTREAM_VERA_SANS_I']        = 'fonts/ttf/Vera-Italic.ttf';
 $fontlist['GIF']['BITSTREAM_VERA_SANS_B_I']      = 'fonts/ttf/Vera-Bold-Italic.ttf';
 $fontlist['GIF']['BITSTREAM_VERA_SANS_MONO']     = 'fonts/ttf/VeraMono.ttf';
-$fontlist['GIF']['BITSTREAM_VERA_SANS_MONO_B']   = 'fonts/ttf/VeraMono-B.ttf';
-$fontlist['GIF']['BITSTREAM_VERA_SANS_MONO_I']   = 'fonts/ttf/VeraMono-I.ttf';
-$fontlist['GIF']['BITSTREAM_VERA_SANS_MONO_B_I'] = 'fonts/ttf/VeraMono-B-I.ttf';
+$fontlist['GIF']['BITSTREAM_VERA_SANS_MONO_B']   = 'fonts/ttf/VeraMono-Bold.ttf';
+$fontlist['GIF']['BITSTREAM_VERA_SANS_MONO_I']   = 'fonts/ttf/VeraMono-Italic.ttf';
+$fontlist['GIF']['BITSTREAM_VERA_SANS_MONO_B_I'] = 'fonts/ttf/VeraMono-Bold-Italic.ttf';
 $fontlist['GIF']['BITSTREAM_VERA_SERIF']         = 'fonts/ttf/VeraSerif.ttf';
 $fontlist['GIF']['BITSTREAM_VERA_SERIF_B']       = 'fonts/ttf/VeraSerif-Bold.ttf';
 
