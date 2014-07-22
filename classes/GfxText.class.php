@@ -18,6 +18,7 @@ class GfxText extends GfxComponent
     private $sFontSizeAdjust;
     private $fontSize;
     private $sFontFamily;
+    private $fill;
 
     public function __construct()
     {
@@ -94,6 +95,11 @@ class GfxText extends GfxComponent
         $handle = $canvas->add($text);
 
         return $canvas;
+    }
+
+    public function renderGIF($canvas)
+    {
+
     }
 
 
