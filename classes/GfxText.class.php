@@ -226,7 +226,7 @@ class GfxText extends GfxComponent
     public function setFontFamily($fontFamily)
     {
         // check if font file exists
-        if(array_key_exists($fontFamily, $GLOBALS['fontlist']['SWF']) || array_key_exists($fontFamily, $GLOBALS['fontlist']['SWF'])) {
+        if(array_key_exists($fontFamily, $GLOBALS['fontlist']['SWF']) || array_key_exists($fontFamily, $GLOBALS['fontlist']['GIF'])) {
             $this->fontFamily = $fontFamily;
         } else {
             $this->throwException($fontFamily);
