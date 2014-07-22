@@ -42,4 +42,9 @@ class GfxRectangle extends GfxShape
         return $canvas;
     }
 
+    public function renderGIF($canvas)
+    {
+
+    }
+
 }
