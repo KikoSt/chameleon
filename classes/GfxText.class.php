@@ -5,24 +5,24 @@
  * Date: 17.07.14
  * Time: 11:33
  */
+require_once('config/fontconfig.inc.php');
 
 class GfxText extends GfxComponent
 {
     private $text;
-    private $color;
-    private $oFont;
-    private $sFontWeight;
-    private $iFontVariant;
-    private $sFontStyle;
-    private $sFontStretch;
-    private $sFontSizeAdjust;
+//     private $color;
+//    private $oFont;
+    private $fontWeight;
+    private $fontVariant;
+    private $fontStyle;
+    private $fontStretch;
+    private $fontSizeAdjust;
     private $fontSize;
-    private $sFontFamily;
+    private $fontFamily;
 
     public function __construct()
     {
         parent::__construct();
-        $this->oFont = new SWFFont('fdb/Bitstream Vera Serif.fdb');
     }
 
     public function create($svgRootNode)
@@ -52,12 +52,13 @@ class GfxText extends GfxComponent
             $fontVariant = 'normal';
         }
         $this->setFontVariant($fontVariant);
+        $this->setFontFamily((string) $attr->{'font-family'});
     }
 
 
     public function getTextWidth() {
         $text = new SWFText();
-        $text->setFont($this->getFont());
+        $text->setFont($this->getSWFFont());
         $text->setHeight($this->getFontSize());
         $width = $text->getWidth($this->getText());
         unset($text);
@@ -68,10 +69,10 @@ class GfxText extends GfxComponent
     public function renderSWF($canvas)
     {
         $text = new SWFText();
-        if(null !== $this->getFont()) {
-            $text->setFont($this->getFont());
+        if(null !== $this->getSWFFont()) {
+            $text->setFont($this->getSWFFont());
         } else {
-            die('No font set!');
+            throw new Exception('No font set!');
         }
         try {
             $curFill = $this->getFill();
@@ -86,18 +87,16 @@ class GfxText extends GfxComponent
             return false;
         }
         $text->setHeight($this->getFontSize());
-        $tWidth = $text->getWidth($this->getText());
+//        $tWidth = $text->getWidth($this->getText());
         // position: CENTERED!
         $text->moveTo($this->getX() - ($this->getTextWidth()/2), $this->getY());
         $text->addString($this->getText());
 
         $handle = $canvas->add($text);
+        unset($handle);
 
         return $canvas;
     }
-
-
-
 
 
     /**
@@ -119,36 +118,40 @@ class GfxText extends GfxComponent
 
 
     /**
-     * @return mixed
+     * getFont
+     *
+     * returns an MEH!
+     *
+     * @access public
+     * @return void
      */
-    public function getFont()
+    public function getSWFFont()
     {
-        return $this->oFont;
+        $font = new SWFFont($GLOBALS['fontlist']['SWF'][$this->getFontFamily()]);
+        return $font;
     }
 
     /**
-     * @param mixed $oFont
+     * @param mixed $font
      */
-    public function setFont(SWFFont $oFont)
-    {
-        $this->oFont = $oFont;
-    }
+// UNUSED!
+//    public function setSWFFont(SWFFont $font)
+//    {
+//        $this->swfFont = $font;
+//    }
 
     /**
-     * @param $sFontWeight
+     * @param $fontWeight
      * @throws InvalidArgumentException
      */
-    public function setFontWeight($sFontWeight)
+    public function setFontWeight($fontWeight)
     {
-        $aAllowedValues = array("normal", "bold", "bolder", "lighter", "100", "200", "300", "400", "500", "600", "700", "800", "900");
+        $aAllowedValues = array('normal', 'bold', 'bolder', 'lighter', '100', '200', '300', '400', '500', '600', '700', '800', '900');
 
-        if(in_array(strtolower($sFontWeight), $aAllowedValues, true))
-        {
-            $this->sFontWeight = $sFontWeight;
-        }
-        else
-        {
-            $this->throwException($sFontWeight);
+        if(in_array(strtolower($fontWeight), $aAllowedValues, true)) {
+            $this->fontWeight = $fontWeight;
+        } else {
+            $this->throwException($fontWeight);
         }
     }
 
@@ -157,24 +160,21 @@ class GfxText extends GfxComponent
      */
     public function getFontWeight()
     {
-        return $this->sFontWeight;
+        return $this->fontWeight;
     }
 
     /**
-     * @param $sFontVariant
+     * @param $fontVariant
      * @throws InvalidArgumentException
      */
-    public function setFontVariant($sFontVariant)
+    public function setFontVariant($fontVariant)
     {
         $aAllowedValues = array("normal", "small-caps");
 
-        if(in_array(strtolower($sFontVariant), $aAllowedValues, true))
-        {
-            $this->iFontVariant = $sFontVariant;
-        }
-        else
-        {
-            $this->throwException($sFontVariant);
+        if(in_array(strtolower($fontVariant), $aAllowedValues, true)) {
+            $this->fontVariant = $fontVariant;
+        } else {
+            $this->throwException($fontVariant);
         }
     }
 
@@ -183,7 +183,7 @@ class GfxText extends GfxComponent
      */
     public function getFontVariant()
     {
-        return $this->iFontVariant;
+        return $this->fontVariant;
     }
 
 
@@ -192,24 +192,21 @@ class GfxText extends GfxComponent
      */
     public function getFontStyle()
     {
-        return $this->sFontStyle;
+        return $this->fontStyle;
     }
 
     /**
-     * @param $sFontStyle
+     * @param $fontStyle
      * @throws InvalidArgumentException
      */
-    public function setFontStyle($sFontStyle)
+    public function setFontStyle($fontStyle)
     {
-        $aAllowedValues = array("normal", "italic", "oblique");
+        $allowedValues = array("normal", "italic", "oblique");
 
-        if(in_array(strtolower($sFontStyle), $aAllowedValues, true))
-        {
-            $this->iFontVariant = $sFontStyle;
-        }
-        else
-        {
-            $this->throwException($sFontStyle);
+        if(in_array(strtolower($fontStyle), $allowedValues, true)) {
+            $this->fontStyle = $fontStyle;
+        } else {
+            $this->throwException($fontStyle);
         }
     }
 
@@ -219,24 +216,20 @@ class GfxText extends GfxComponent
      */
     public function getFontFamily()
     {
-        return $this->sFontFamily;
+        return $this->fontFamily;
     }
 
     /**
-     * @param $sFontFamily
+     * @param $fontFamily
      * @throws InvalidArgumentException
      */
-    public function setFontFamily($sFontFamily)
+    public function setFontFamily($fontFamily)
     {
-        $aAllowedValues = array("sans", "serif", "sans-serif");
-
-        if(in_array(strtolower($sFontFamily), $aAllowedValues, true))
-        {
-            $this->iFontVariant = $sFontFamily;
-        }
-        else
-        {
-            $this->throwException($sFontFamily);
+        // check if font file exists
+        if(file_exists($GLOBALS['fontlist']['SWF'][$fontFamily])) {
+            $this->fontFamily = $fontFamily;
+        } else {
+            $this->throwException($fontFamily);
         }
     }
 
@@ -257,9 +250,9 @@ class GfxText extends GfxComponent
 //        $aAllowedValues = array("larger", "smaller", "xx-small", "x-small", "small", "medium", "large", "x-large", "xx-large", "inherit");
 //        if(in_array($sFontSize, $aAllowedValues, true))
 //        {
-//            $this->iFontVariant = $sFontSize;
+//            $this->fontVariant = $sFontSize;
 //        }
-
+        // TODO: check if $fontSize is a string, if yes, compare with whitelist, if not it must be numeric!
         if(!empty($fontSize))
         {
             $this->fontSize = $fontSize;
@@ -271,11 +264,14 @@ class GfxText extends GfxComponent
     }
 
     /**
-     * @return mixed
+     * getFontSizeAdjust
+     *
+     * @access public
+     * @return int
      */
     public function getFontSizeAdjust()
     {
-        return $this->sFontSizeAdjust;
+        return $this->fontSizeAdjust;
     }
 
     /**
@@ -285,7 +281,7 @@ class GfxText extends GfxComponent
     {
         if(is_numeric($fontSizeAdjust) || $fontSizeAdjust === null)
         {
-            $this->iFontVariant = $fontSizeAdjust;
+            $this->fontSizeAdjust = $fontSizeAdjust;
         }
         else
         {
@@ -298,23 +294,23 @@ class GfxText extends GfxComponent
      */
     public function getFontStretch()
     {
-        return $this->sFontStretch;
+        return $this->fontStretch;
     }
 
     /**
-     * @param mixed $sFontStretch
+     * @param mixed $fontStretch
      */
-    public function setFontStretch($sFontStretch)
+    public function setFontStretch($fontStretch)
     {
         $aAllowedValues = array("normal", "wider", "narrower", "ultra-condensed", "extra-condensed", "condensed", "semi-condensed", "semi-expanded", "expanded", "extra-expanded", "ultra-expanded");
 
-        if(in_array(strtolower($sFontStretch), $aAllowedValues, true))
+        if(in_array(strtolower($fontStretch), $aAllowedValues, true))
         {
-            $this->iFontVariant = $sFontStretch;
+            $this->fontStretch = $fontStretch;
         }
         else
         {
-            $this->throwException($sFontStretch);
+            $this->throwException($fontStretch);
         }
     }
 
