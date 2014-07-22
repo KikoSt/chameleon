@@ -97,9 +97,22 @@ class GfxText extends GfxComponent
         return $canvas;
     }
 
-    public function renderGIF($canvas)
+    public function renderGif($canvas)
     {
+        $textColor = imagecolorallocate($canvas,$this->getFill()->getR(),$this->getFill()->getG(),$this->getFill()->getB());
 
+        $container = new GfxContainer();
+
+        $canvasWidth = $container->getCanvasWidth();
+        $tb = imagettfbbox($this->getFontSize(), 0, '/var/www/chameleon/font.ttf', $this->getText());
+
+        $x = ceil(($this->getTextWidth() - $tb[2]) / 2);
+
+        Debug::browser($x);
+
+        imagettftext($canvas, $this->getX(), 0, $x, $this->getY(), $textColor, '/var/www/chameleon/font.ttf', $this->getText());
+
+        return $canvas;
     }
 
 
