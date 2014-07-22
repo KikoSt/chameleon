@@ -100,8 +100,6 @@ class GfxContainer
         $swf->setRate(10);
         $swf->setBackground(0, 0, 0);
 
-        $fonts['normal'] = new SWFFont('fdb/bvs.fdb');
-
         $count = 0;
         $texts = array();
 
