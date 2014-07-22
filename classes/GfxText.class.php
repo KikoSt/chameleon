@@ -102,16 +102,15 @@ class GfxText extends GfxComponent
     {
         $textColor = imagecolorallocate($canvas,$this->getFill()->getR(),$this->getFill()->getG(),$this->getFill()->getB());
 
-        $container = new GfxContainer();
+        $tb = imagettfbbox($this->getFontSize(), 0, $GLOBALS['fontlist']['GIF'][$this->getFontFamily()], $this->getText());
 
-        $canvasWidth = $container->getCanvasWidth();
-        $tb = imagettfbbox($this->getFontSize(), 0, '/var/www/chameleon/font.ttf', $this->getText());
+        $x = ceil(($this->getTextWidth() - $tb[0]) / 2);
 
-        $x = ceil(($this->getTextWidth() - $tb[2]) / 2);
+        Debug::console('>>>' . $this->getFontFamily());
+        Debug::browser($GLOBALS['fontlist']['GIF'][$this->getFontFamily()]);
 
-        Debug::browser($x);
-
-        imagettftext($canvas, $this->getX(), 0, $x, $this->getY(), $textColor, '/var/www/chameleon/font.ttf', $this->getText());
+        imagettftext($canvas, $this->getFontSize(), 0, $x, $this->getY(), $textColor, $GLOBALS['fontlist']['GIF'][$this->getFontFamily()],
+            $this->getText());
 
         return $canvas;
     }
@@ -246,7 +245,7 @@ class GfxText extends GfxComponent
     public function setFontFamily($fontFamily)
     {
         // check if font file exists
-        if(array_key_exists($fontFamily, $GLOBALS['fontlist']['SWF']) || array_key_exists($fontFamily, $GLOBALS['fontlist']['SWF'])) {
+        if(array_key_exists($fontFamily, $GLOBALS['fontlist']['SWF']) || array_key_exists($fontFamily, $GLOBALS['fontlist']['GIF'])) {
             $this->fontFamily = $fontFamily;
         } else {
             $this->throwException($fontFamily);
