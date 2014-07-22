@@ -6,6 +6,7 @@
  * Time: 11:33
  */
 require_once('config/fontconfig.inc.php');
+define('FLASH_FONT_SCALE_FACTOR', 1.32);
 
 class GfxText extends GfxComponent
 {
@@ -18,7 +19,7 @@ class GfxText extends GfxComponent
     private $fontStretch;
     private $fontSizeAdjust;
     private $fontSize;
-    private $sFontFamily;
+    private $fontFamily;
 
     public function __construct()
     {
@@ -59,7 +60,7 @@ class GfxText extends GfxComponent
     public function getTextWidth() {
         $text = new SWFText();
         $text->setFont($this->getSWFFont());
-        $text->setHeight($this->getFontSize());
+        $text->setHeight($this->getFontSize() * FLASH_FONT_SCALE_FACTOR);
         $width = $text->getWidth($this->getText());
         unset($text);
         return($width);
@@ -86,8 +87,7 @@ class GfxText extends GfxComponent
             echo 'Error trying to set color!';
             return false;
         }
-        $text->setHeight($this->getFontSize());
-//        $tWidth = $text->getWidth($this->getText());
+        $text->setHeight($this->getFontSize() * FLASH_FONT_SCALE_FACTOR);
         // position: CENTERED!
         $text->moveTo($this->getX() - ($this->getTextWidth()/2), $this->getY());
         $text->addString($this->getText());
