@@ -17,6 +17,7 @@ class GfxContainer
     private $sSource;
     private $canvasWidth;
     private $canvasHeight;
+    private $canvas;
 
     private $allowedTargets;
 
@@ -24,6 +25,22 @@ class GfxContainer
     {
         $this->elements = array();
         $this->allowedTargets = array('SWF', 'GIF');
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCanvas()
+    {
+        return $this->canvas;
+    }
+
+    /**
+     * @param mixed $canvas
+     */
+    public function setCanvas($canvas)
+    {
+        $this->canvas = $canvas;
     }
 
     public function setSource($sSource)
