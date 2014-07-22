@@ -58,7 +58,7 @@
             fill="#000000">globetrotter</text>
         <image xlink:href="https://media1.globetrotter.de/products/i124898.jpg"
                id="img_2"
-               height=""
+               height="123"
                width="123"
                y="220"
                x="12.5"/>
