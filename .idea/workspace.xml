@@ -2,8 +2,30 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ab6269e0-f79f-4c48-a971-3a24b7cc24db" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/fonts/ttf/Vera-Bold-Italic.ttf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/fonts/ttf/Vera-Bold.ttf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/fonts/ttf/Vera-Italic.ttf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/fonts/ttf/Vera.ttf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/fonts/ttf/VeraMono-Bold-Italic.ttf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/fonts/ttf/VeraMono-Bold.ttf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/fonts/ttf/VeraMono-Italic.ttf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/fonts/ttf/VeraMono.ttf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/fonts/ttf/VeraSerif-Bold.ttf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/fonts/ttf/VeraSerif.ttf" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/fdb/Bitstream Vera Sans Mono-B-I.fdb" afterPath="$PROJECT_DIR$/fonts/fdb/Bitstream Vera Sans Mono-B-I.fdb" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/fdb/Bitstream Vera Sans Mono-B.fdb" afterPath="$PROJECT_DIR$/fonts/fdb/Bitstream Vera Sans Mono-B.fdb" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/fdb/Bitstream Vera Sans Mono-I.fdb" afterPath="$PROJECT_DIR$/fonts/fdb/Bitstream Vera Sans Mono-I.fdb" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/fdb/Bitstream Vera Sans Mono.fdb" afterPath="$PROJECT_DIR$/fonts/fdb/Bitstream Vera Sans Mono.fdb" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/fdb/Bitstream Vera Sans-B-I.fdb" afterPath="$PROJECT_DIR$/fonts/fdb/Bitstream Vera Sans-B-I.fdb" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/fdb/Bitstream Vera Sans-B.fdb" afterPath="$PROJECT_DIR$/fonts/fdb/Bitstream Vera Sans-B.fdb" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/fdb/Bitstream Vera Sans-I.fdb" afterPath="$PROJECT_DIR$/fonts/fdb/Bitstream Vera Sans-I.fdb" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/fdb/Bitstream Vera Sans.fdb" afterPath="$PROJECT_DIR$/fonts/fdb/Bitstream Vera Sans.fdb" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/fdb/Bitstream Vera Serif-B.fdb" afterPath="$PROJECT_DIR$/fonts/fdb/Bitstream Vera Serif-B.fdb" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/fdb/Bitstream Vera Serif.fdb" afterPath="$PROJECT_DIR$/fonts/fdb/Bitstream Vera Serif.fdb" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/fdb/bvs.fdb" afterPath="$PROJECT_DIR$/fonts/fdb/bvs.fdb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classes/GfxContainer.class.php" afterPath="$PROJECT_DIR$/classes/GfxContainer.class.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classes/GfxText.class.php" afterPath="$PROJECT_DIR$/classes/GfxText.class.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/svg/test.svg" afterPath="$PROJECT_DIR$/svg/test.svg" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="chameleon.iws" />
@@ -30,9 +52,11 @@
       <file leaf-file-name="GfxText.class.php" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/classes/GfxText.class.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.70848054" vertical-offset="1525" max-vertical-offset="6462">
-              <caret line="112" column="43" selection-start-line="112" selection-start-column="43" selection-end-line="112" selection-end-column="43" />
-              <folding />
+            <state vertical-scroll-proportion="0.83568907" vertical-offset="1543" max-vertical-offset="6372">
+              <caret line="117" column="36" selection-start-line="117" selection-start-column="0" selection-end-line="117" selection-end-column="0" />
+              <folding>
+                <element signature="e#6#91#0#PHP" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -62,8 +86,8 @@
       <file leaf-file-name="GfxContainer.class.php" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/classes/GfxContainer.class.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-11.666667" vertical-offset="2133" max-vertical-offset="4032">
-              <caret line="142" column="114" selection-start-line="142" selection-start-column="13" selection-end-line="142" selection-end-column="13" />
+            <state vertical-scroll-proportion="-11.666667" vertical-offset="2079" max-vertical-offset="3996">
+              <caret line="139" column="114" selection-start-line="139" selection-start-column="73" selection-end-line="139" selection-end-column="73" />
               <folding />
             </state>
           </provider>
@@ -496,12 +520,12 @@
       <workItem from="1406005264403" duration="3702000" />
       <workItem from="1406010441168" duration="42000" />
       <workItem from="1406010525265" duration="14000" />
-      <workItem from="1406010569899" duration="14928000" />
+      <workItem from="1406010569899" duration="15238000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="95090000" />
+    <option name="totallyTimeSpent" value="95400000" />
   </component>
   <component name="TodoView" selected-index="0">
     <todo-panel id="selected-file">
@@ -525,7 +549,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="49" y="24" width="1871" height="1056" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3290461" sideWeight="0.49972603" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3290461" sideWeight="0.49972603" order="6" side_tool="false" content_ui="tabs" />
@@ -538,7 +562,7 @@
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.329863" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3290461" sideWeight="0.49972603" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.31832796" sideWeight="0.49972603" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.31832796" sideWeight="0.49972603" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24876712" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -702,17 +726,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/classes/GfxContainer.class.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-11.666667" vertical-offset="2133" max-vertical-offset="4032">
-          <caret line="142" column="114" selection-start-line="142" selection-start-column="13" selection-end-line="142" selection-end-column="13" />
+        <state vertical-scroll-proportion="-11.666667" vertical-offset="2079" max-vertical-offset="3996">
+          <caret line="139" column="114" selection-start-line="139" selection-start-column="73" selection-end-line="139" selection-end-column="73" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/classes/GfxText.class.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.70848054" vertical-offset="1525" max-vertical-offset="6462">
-          <caret line="112" column="43" selection-start-line="112" selection-start-column="43" selection-end-line="112" selection-end-column="43" />
-          <folding />
+        <state vertical-scroll-proportion="0.83568907" vertical-offset="1543" max-vertical-offset="6372">
+          <caret line="117" column="36" selection-start-line="117" selection-start-column="0" selection-end-line="117" selection-end-column="0" />
+          <folding>
+            <element signature="e#6#91#0#PHP" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
