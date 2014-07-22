@@ -85,7 +85,6 @@ class GfxText extends GfxComponent
             echo 'Error trying to set color!';
             return false;
         }
-        var_dump($this->getFontSize());
         $text->setHeight($this->getFontSize());
         $tWidth = $text->getWidth($this->getText());
         // position: CENTERED!
