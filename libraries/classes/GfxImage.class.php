@@ -69,9 +69,15 @@ class GfxImage extends GfXComponent
         return $canvas;
     }
 
+    /**
+     * render GIF
+     *
+     * @param $canvas
+     * @return mixed
+     */
     public function renderGIF($canvas)
     {
-        $dst = $this->resizeImage($this->getImageUrl());
+        $dst = $this->resizeImage($this->getImageUrl(),true);
 
         imagecopyresampled($canvas, $dst, $this->getX(), $this->getY(), 0, 0, $this->getWidth(), $this->getHeight(), $this->getWidth(),
             $this->getHeight());
@@ -79,6 +85,13 @@ class GfxImage extends GfXComponent
         return $canvas;
     }
 
+    /**
+     * resize image
+     *
+     * @param $file
+     * @param bool $crop
+     * @return resource
+     */
     public function resizeImage($file, $crop=false)
     {
         list($originalWidth, $originalHeight) = getimagesize($file);
@@ -103,36 +116,64 @@ class GfxImage extends GfXComponent
         {
             if (($resizedWidth/$resizedHeight) > $r)
             {
-                $resizedWidth *= $r;
+                $resizedWidth = $this->getHeight() * $r;
             }
             else
             {
-                $resizedWidth /= $r;
+                $resizedWidth = $this->getWidth() / $r;
             }
         }
 
         $x = ($this->getWidth()-$resizedWidth) / 2;
 
-        $originalImage = imagecreatefromjpeg($file);
+        $originalImage = $this->createImageFromSourceFile($file);
 
         //canvas for resized image
         $resizedImage = imagecreatetruecolor($this->getWidth(), $this->getHeight());
-        //adding resized image () to the canvas
+        imagealphablending($resizedImage, true);
 
-        $white = imagecolorallocate($resizedImage, 255, 255, 255);
-        imagefill($resizedImage, 0, 0, $white);
+        $bgcolor = imagecolorallocatealpha($resizedImage, 255, 255, 255, 0);
+        imagefill($resizedImage, 0, 0, $bgcolor);
 
         imagecopyresampled($resizedImage, $originalImage, $x, 0, 0, 0, $resizedWidth, $resizedHeight, $originalWidth, $originalHeight);
+        imagealphablending($resizedImage, false);
+        imagesavealpha($resizedImage,true);
 
         return $resizedImage;
     }
 
+    private function createImageFromSourceFile($file)
+    {
+        list( $dirname, $basename, $extension, $filename ) = array_values( pathinfo($file) );
+
+        $image = null;
+
+        switch($extension)
+        {
+            case "jpg":
+            {
+                $image = imagecreatefromjpeg($file);
+                break;
+            }
+            case "png":
+            {
+                $image = imagecreatefrompng($file);
+                break;
+            }
+            case "gif":
+            {
+                $image = imagecreatefromgif($file);
+                break;
+            }
+        }
+        return $image;
+    }
+
     /**
-     * setImageUrl
+     * check if file exists and set image url
      *
-     * @param mixed $imageUrl
-     * @access public
-     * @return void
+     * @param $imageUrl
+     * @throws FileNotFoundException
      */
     public function setImageUrl($imageUrl)
     {
@@ -144,17 +185,6 @@ class GfxImage extends GfXComponent
         {
             throw new FileNotFoundException($imageUrl);
         }
-
-//        $fileHeaders = get_headers($imageUrl);
-//        // TODO: make this more robust!!!
-//        if(substr($fileHeaders[0], -6) == '200 OK')
-//        {
-//            $this->imageUrl = $imageUrl;
-//        }
-//        else
-//        {
-//
-//        }
     }
 
     /**
