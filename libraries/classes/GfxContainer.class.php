@@ -154,7 +154,7 @@ class GfxContainer
 
         $this->setCanvas($updatedCanvas);
 
-        imagegif($updatedCanvas, 'output/' . $this->getOutputDestination());
+        imagegif($updatedCanvas, $this->getOutputDestination());
     }
 
 

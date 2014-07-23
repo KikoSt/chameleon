@@ -77,7 +77,7 @@ class GfxImage extends GfXComponent
      */
     public function renderGIF($canvas)
     {
-        $dst = $this->resizeImage($this->getImageUrl());
+        $dst = $this->resizeImage($this->getImageUrl(),true);
 
         imagecopyresampled($canvas, $dst, $this->getX(), $this->getY(), 0, 0, $this->getWidth(), $this->getHeight(), $this->getWidth(),
             $this->getHeight());
@@ -116,28 +116,59 @@ class GfxImage extends GfXComponent
         {
             if (($resizedWidth/$resizedHeight) > $r)
             {
-                $resizedWidth *= $r;
+                $resizedWidth = $this->getHeight() * $r;
             }
             else
             {
-                $resizedWidth /= $r;
+                $resizedWidth = $this->getWidth() / $r;
             }
         }
 
         $x = ($this->getWidth()-$resizedWidth) / 2;
 
-        $originalImage = imagecreatefromjpeg($file);
+        $originalImage = $this->createImageFromSourceFile($file);
+
+        Debug::console($originalImage);
 
         //canvas for resized image
         $resizedImage = imagecreatetruecolor($this->getWidth(), $this->getHeight());
-        //adding resized image () to the canvas
+        imagealphablending($resizedImage, true);
 
-        $white = imagecolorallocate($resizedImage, 255, 255, 255);
-        imagefill($resizedImage, 0, 0, $white);
+        $bgcolor = imagecolorallocatealpha($resizedImage, 255, 255, 255, 0);
+        imagefill($resizedImage, 0, 0, $bgcolor);
 
         imagecopyresampled($resizedImage, $originalImage, $x, 0, 0, 0, $resizedWidth, $resizedHeight, $originalWidth, $originalHeight);
+        imagealphablending($resizedImage, false);
+        imagesavealpha($resizedImage,true);
 
         return $resizedImage;
+    }
+
+    private function createImageFromSourceFile($file)
+    {
+        list( $dirname, $basename, $extension, $filename ) = array_values( pathinfo($file) );
+
+        $image = null;
+
+        switch($extension)
+        {
+            case "jpg":
+            {
+                $image = imagecreatefromjpeg($file);
+                break;
+            }
+            case "png":
+            {
+                $image = imagecreatefrompng($file);
+                break;
+            }
+            case "gif":
+            {
+                $image = imagecreatefromgif($file);
+                break;
+            }
+        }
+        return $image;
     }
 
     /**
