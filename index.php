@@ -1,22 +1,25 @@
 <?php
-$myContainer = new GfxContainer();
-$myContainer->setSource('svg/test.svg');
-$myContainer->parse();
-$myContainer->setTarget('SWF');
-$myContainer->render();
-$myContainer->setTarget('GIF');
-$myContainer->render();
-
-die();
 // TODO: this will be _POST later; _REQUEST for development only
 $page = $_REQUEST['page'];
 
-$modules = array('test');
+$modules = array('overview', 'editor');
 
 if(in_array($page, $modules))
 {
-    $overview = new Overview();
-    echo $overview->create();
+    switch($page)
+    {
+        case 'overview':
+        {
+            $overview = new Overview();
+            echo $overview->create();
+            break;
+        }
+        case "editor":
+        {
+
+        }
+    }
+
 }
 
 function __autoload($className)

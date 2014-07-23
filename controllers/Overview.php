@@ -12,8 +12,6 @@ class Overview extends Controller
     {
         $view = $this->setTemplate('views/overview.php')->getView();
 
-        Debug::console(glob('output/*.gif'));
-
         $view->templates = glob('output/*.gif');
 
         return $view;
