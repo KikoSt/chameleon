@@ -30,7 +30,7 @@ class GfxText extends GfxComponent
     {
         parent::create($svgRootNode);
 
-        $this->setText((string) $svgRootNode);
+        $this->setText(utf8_decode((string) $svgRootNode));
 
         $attr = $svgRootNode->attributes();
 
