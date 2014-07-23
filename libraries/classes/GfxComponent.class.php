@@ -13,7 +13,7 @@ class GfXComponent implements Linkable, Resizeable
     private $id;
     private $fill;
     private $stroke;
-    private $url;
+    private $linkUrl;
 
     public function __construct()
     {
@@ -44,6 +44,16 @@ class GfXComponent implements Linkable, Resizeable
     public function setStroke(GfxColor $oColor)
     {
         $this->stroke = $oColor;
+    }
+
+    public function setLinkUrl($linkUrl)
+    {
+        $this->linkUrl = $linkUrl;
+    }
+
+    public function getLinkUrl()
+    {
+        return $this->linkUrl;
     }
 
     public function setId($id)

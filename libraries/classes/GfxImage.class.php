@@ -41,6 +41,10 @@ class GfxImage extends GfXComponent
         parent::create($svgRootNode);
         $attr = $svgRootNode->attributes();
         $imageUrl = (string) $svgRootNode->attributes('xlink', true)->href;
+        if((string) $svgRootNode->attributes()->linkurl !== '')
+        {
+            $this->setLinkUrl((string) $svgRootNode->attributes()->linkurl);
+        }
         $this->setImageUrl($imageUrl);
         $this->setX((float) $attr->x);
         $this->setY((float) $attr->y);
@@ -63,9 +67,30 @@ class GfxImage extends GfXComponent
 
         ImageJPEG($output, $imgPath);
 
-        $image = new SWFBitmap(fopen($imgPath, "rb"));
+        $image = new SWFBitmap(fopen($this->getImageUrl(), "rb"));
         $handle = $canvas->add($image);
         $handle->moveTo($this->getX(), $this->getY());
+        if(!empty($this->getLinkUrl()))
+        {
+            $hit = new SWFShape();
+            $hit->setRightFill($hit->addFill(255,0,0));
+            $hit->movePenTo(0, 0);
+            // $hit->drawLine($this->getWidth(), 0);
+            // $hit->drawLine($this->getWidth(), $this->getHeight());
+            // $hit->drawLine(0, $this->getHeight());
+            $hit->drawLineTo($this->getWidth(), 0);
+            $hit->drawLineTo($this->getWidth(), $this->getHeight());
+            $hit->drawLineTo(0, $this->getHeight());
+            $hit->drawLineTo(0, 0);
+
+            $button = new SWFButton();
+            $button->addShape($hit, SWFBUTTON_HIT);
+            $linkUrl = $this->getLinkUrl();
+            $button->addAction(new SWFAction("getURL('$linkUrl','_blank');"), SWFBUTTON_MOUSEUP);
+            $handle = $canvas->add($button);
+            $handle->moveTo($this->getX(), $this->getY());
+            echo 'Button added!';
+        }
         return $canvas;
     }
 

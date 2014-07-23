@@ -30,7 +30,8 @@ class GfxText extends GfxComponent
     {
         parent::create($svgRootNode);
 
-        $this->setText(utf8_decode((string) $svgRootNode));
+        //$this->setText(utf8_decode((string) $svgRootNode));
+        $this->setText(((string) $svgRootNode));
 
         $attr = $svgRootNode->attributes();
 
@@ -91,7 +92,7 @@ class GfxText extends GfxComponent
         // position: CENTERED!
         $text->moveTo($this->getX() - ($this->getTextWidth()/2), $this->getY());
         $text->moveTo($this->getX(), $this->getY());
-        $text->addString($this->getText());
+        $text->addString(utf8_decode($this->getText()));
 
         $handle = $canvas->add($text);
         unset($handle);
