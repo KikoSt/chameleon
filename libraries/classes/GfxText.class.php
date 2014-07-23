@@ -90,6 +90,7 @@ class GfxText extends GfxComponent
         $text->setHeight($this->getFontSize() * FLASH_FONT_SCALE_FACTOR);
         // position: CENTERED!
         $text->moveTo($this->getX() - ($this->getTextWidth()/2), $this->getY());
+        $text->moveTo($this->getX(), $this->getY());
         $text->addString($this->getText());
 
         $handle = $canvas->add($text);
@@ -105,6 +106,7 @@ class GfxText extends GfxComponent
         $tb = imagettfbbox($this->getFontSize(), 0, $GLOBALS['fontlist']['GIF'][$this->getFontFamily()], $this->getText());
 
         $x = ceil(($canvasWidth - $tb[2]) / 2 );
+        $x = $this->getX();
 
         imagettftext($canvas, $this->getFontSize(), 0, $x, $this->getY(), $textColor,
             $GLOBALS['fontlist']['GIF'][$this->getFontFamily()],
