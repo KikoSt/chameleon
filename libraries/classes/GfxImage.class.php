@@ -128,8 +128,6 @@ class GfxImage extends GfXComponent
 
         $originalImage = $this->createImageFromSourceFile($file);
 
-        Debug::console($originalImage);
-
         //canvas for resized image
         $resizedImage = imagecreatetruecolor($this->getWidth(), $this->getHeight());
         imagealphablending($resizedImage, true);
