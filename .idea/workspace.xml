@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ab6269e0-f79f-4c48-a971-3a24b7cc24db" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/svg/test.svg" afterPath="$PROJECT_DIR$/svg/test.svg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output.swf" afterPath="$PROJECT_DIR$/output.swf" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classes/GfxImage.class.php" afterPath="$PROJECT_DIR$/classes/GfxImage.class.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="chameleon.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -35,11 +37,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GfxImage.class.php" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="GfxImage.class.php" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/classes/GfxImage.class.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="18.88889" vertical-offset="2202" max-vertical-offset="3456">
-              <caret line="94" column="104" selection-start-line="94" selection-start-column="23" selection-end-line="94" selection-end-column="23" />
+            <state vertical-scroll-proportion="0.7512953" vertical-offset="2679" max-vertical-offset="3474">
+              <caret line="173" column="9" selection-start-line="173" selection-start-column="9" selection-end-line="173" selection-end-column="9" />
               <folding />
             </state>
           </provider>
@@ -55,10 +57,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="test.svg" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="test.svg" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/svg/test.svg">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.43564355" vertical-offset="798" max-vertical-offset="1404">
+            <state vertical-scroll-proportion="0.0" vertical-offset="324" max-vertical-offset="1404">
               <caret line="59" column="72" selection-start-line="59" selection-start-column="72" selection-end-line="59" selection-end-column="72" />
               <folding />
             </state>
@@ -76,7 +78,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="develop" />
+        <entry key="$PROJECT_DIR$" value="developmerge" />
       </map>
     </option>
   </component>
@@ -108,8 +110,8 @@
         <option value="$PROJECT_DIR$/classes/GfxContainer.class.php" />
         <option value="$PROJECT_DIR$/gif_test.php" />
         <option value="$PROJECT_DIR$/exception/FileNotFoundException.exception.php" />
-        <option value="$PROJECT_DIR$/classes/GfxImage.class.php" />
         <option value="$PROJECT_DIR$/svg/test.svg" />
+        <option value="$PROJECT_DIR$/classes/GfxImage.class.php" />
       </list>
     </option>
   </component>
@@ -529,12 +531,12 @@
       <workItem from="1406005264403" duration="3702000" />
       <workItem from="1406010441168" duration="42000" />
       <workItem from="1406010525265" duration="14000" />
-      <workItem from="1406010569899" duration="29275000" />
+      <workItem from="1406010569899" duration="29826000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="109437000" />
+    <option name="totallyTimeSpent" value="109988000" />
   </component>
   <component name="TodoView" selected-index="0">
     <todo-panel id="selected-file">
@@ -558,7 +560,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="49" y="24" width="1871" height="1056" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3290461" sideWeight="0.49972603" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3290461" sideWeight="0.49972603" order="6" side_tool="false" content_ui="tabs" />
@@ -801,18 +803,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/classes/GfxImage.class.php">
+    <entry file="file://$PROJECT_DIR$/svg/test.svg">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="18.88889" vertical-offset="2202" max-vertical-offset="3456">
-          <caret line="94" column="104" selection-start-line="94" selection-start-column="23" selection-end-line="94" selection-end-column="23" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="324" max-vertical-offset="1404">
+          <caret line="59" column="72" selection-start-line="59" selection-start-column="72" selection-end-line="59" selection-end-column="72" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/svg/test.svg">
+    <entry file="file://$PROJECT_DIR$/classes/GfxImage.class.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.43564355" vertical-offset="798" max-vertical-offset="1404">
-          <caret line="59" column="72" selection-start-line="59" selection-start-column="72" selection-end-line="59" selection-end-column="72" />
+        <state vertical-scroll-proportion="0.7512953" vertical-offset="2679" max-vertical-offset="3474">
+          <caret line="173" column="9" selection-start-line="173" selection-start-column="9" selection-end-line="173" selection-end-column="9" />
           <folding />
         </state>
       </provider>

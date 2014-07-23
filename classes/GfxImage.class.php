@@ -85,9 +85,15 @@ class GfxImage extends GfXComponent
         return $canvas;
     }
 
+    /**
+     * render GIF
+     *
+     * @param $canvas
+     * @return mixed
+     */
     public function renderGIF($canvas)
     {
-        $dst = $this->resize_image($this->getImageUrl());
+        $dst = $this->resizeImage($this->getImageUrl());
 
         imagecopyresampled($canvas, $dst, $this->getX(), $this->getY(), 0, 0, $this->getWidth(), $this->getHeight(), $this->getWidth(),
             $this->getHeight());
@@ -95,6 +101,13 @@ class GfxImage extends GfXComponent
         return $canvas;
     }
 
+    /**
+     * resize image
+     *
+     * @param $file
+     * @param bool $crop
+     * @return resource
+     */
     public function resizeImage($file, $crop=false)
     {
         list($originalWidth, $originalHeight) = getimagesize($file);
@@ -144,11 +157,10 @@ class GfxImage extends GfXComponent
     }
 
     /**
-     * setImageUrl
+     * check if file exists and set image url
      *
-     * @param mixed $imageUrl
-     * @access public
-     * @return void
+     * @param $imageUrl
+     * @throws FileNotFoundException
      */
     public function setImageUrl($imageUrl)
     {
@@ -160,17 +172,6 @@ class GfxImage extends GfXComponent
         {
             throw new FileNotFoundException($imageUrl);
         }
-
-//        $fileHeaders = get_headers($imageUrl);
-//        // TODO: make this more robust!!!
-//        if(substr($fileHeaders[0], -6) == '200 OK')
-//        {
-//            $this->imageUrl = $imageUrl;
-//        }
-//        else
-//        {
-//
-//        }
     }
 
     /**
