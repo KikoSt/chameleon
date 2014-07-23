@@ -87,49 +87,60 @@ class GfxImage extends GfXComponent
 
     public function renderGIF($canvas)
     {
-        $dst = $this->resize_image($this->getImageUrl(), $this->getWidth(), $this->getHeight(), true);
+        $dst = $this->resize_image($this->getImageUrl());
 
-        imagecopyresampled($canvas, $dst, $this->getX(), $this->getY(), 0, 0, $this->getWidth(), $this->getHeight(), $this->getWidth(), $this->getHeight());
+        imagecopyresampled($canvas, $dst, $this->getX(), $this->getY(), 0, 0, $this->getWidth(), $this->getHeight(), $this->getWidth(),
+            $this->getHeight());
 
         return $canvas;
     }
 
-    public function resize_image($file, $w, $h, $crop=FALSE)
+    public function resizeImage($file, $crop=false)
     {
-        list($width, $height) = getimagesize($file);
+        list($originalWidth, $originalHeight) = getimagesize($file);
 
-        $r = $width / $height;
+        $r = $originalWidth / $originalHeight;
+
+        $resizedWidth = $this->getWidth();
+        $resizedHeight = $this->getHeight();
 
         if ($crop)
         {
-            if ($width > $height)
+            if ($originalWidth > $originalHeight)
             {
-                $width = ceil($width-($width*abs($r-$w/$h)));
+                $originalWidth = ceil($originalWidth-($originalWidth*abs($r-($resizedWidth / $resizedHeight))));
             }
             else
             {
-                $height = ceil($height-($height*abs($r-$w/$h)));
-            }
-            $newwidth = $w;
-            $newheight = $h;
-        } else
-        {
-            if ($w/$h > $r)
-            {
-                $newwidth = $h*$r;
-                $newheight = $h;
-            }
-            else
-            {
-                $newheight = $w/$r;
-                $newwidth = $w;
+                $originalHeight = ceil($originalHeight-($originalHeight*abs($r-($resizedWidth / $resizedHeight))));
             }
         }
-        $src = imagecreatefromjpeg($file);
-        $dst = imagecreatetruecolor($newwidth, $newheight);
-        imagecopyresampled($dst, $src, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
+        else
+        {
+            if (($resizedWidth/$resizedHeight) > $r)
+            {
+                $resizedWidth *= $r;
+            }
+            else
+            {
+                $resizedWidth /= $r;
+            }
+        }
 
-        return $dst;
+        $x = ($this->getWidth()-$resizedWidth) / 2;
+
+        $originalImage = imagecreatefromjpeg($file);
+
+        //canvas for resized image
+        $resizedImage = imagecreatetruecolor($this->getWidth(), $this->getHeight());
+        //adding resized image () to the canvas
+
+        $white = imagecolorallocate($resizedImage, 255, 255, 255);
+        imagefill($resizedImage, 0, 0, $white);
+
+        imagecopyresampled($resizedImage, $originalImage, $x, 0, 0, 0, $resizedWidth, $resizedHeight, $originalWidth, $originalHeight);
+
+        return $resizedImage;
     }
 
     /**
@@ -141,14 +152,25 @@ class GfxImage extends GfXComponent
      */
     public function setImageUrl($imageUrl)
     {
-        $fileHeaders = get_headers($imageUrl);
-        // TODO: make this more robust!!!
-        if(substr($fileHeaders[0], -6) == '200 OK') {
+        if(fopen($imageUrl, "r"))
+        {
             $this->imageUrl = $imageUrl;
-        } else {
-            echo 'File not found' . "\n";
-            return false;
         }
+        else
+        {
+            throw new FileNotFoundException($imageUrl);
+        }
+
+//        $fileHeaders = get_headers($imageUrl);
+//        // TODO: make this more robust!!!
+//        if(substr($fileHeaders[0], -6) == '200 OK')
+//        {
+//            $this->imageUrl = $imageUrl;
+//        }
+//        else
+//        {
+//
+//        }
     }
 
     /**
