@@ -96,8 +96,26 @@ class GfxContainer
         }
     }
 
+    /**
+     * getOutputFilename
+     *
+     * @access private
+     * @return string
+     */
+    private function getOutputFilename()
+    {
+        $filename = '';
+        $filename .= time() . '.' . strtolower($this->getTarget());
+
+        return $filename;
+    }
 
 
+    private function getOutputDestination()
+    {
+        $destination = 'output/' . $this->getOutputFilename();
+        return $destination;
+    }
 
     public function render()
     {
@@ -110,22 +128,18 @@ class GfxContainer
 
     private function renderSWF()
     {
-        $fonts = array();
         $swf = new SWFMovie();
         $swf->setDimension($this->getCanvasWidth(), $this->getCanvasHeight());
         $swf->setFrames(30);
         $swf->setRate(10);
         $swf->setBackground(0, 0, 0);
 
-        $count = 0;
-        $texts = array();
-
         foreach($this->elements AS $element) {
             if(is_a($element, 'GfxComponent')) {
                 $element->renderSWF($swf);
             }
         }
-        $swf->save('output.swf');
+        $swf->save($this->getOutputDestination());
 
     }
 
@@ -140,7 +154,7 @@ class GfxContainer
 
         $this->setCanvas($updatedCanvas);
 
-        imagegif($updatedCanvas, 'output.gif');
+        imagegif($updatedCanvas, 'output/' . $this->getOutputDestination());
     }
 
 
