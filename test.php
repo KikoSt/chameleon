@@ -1,7 +1,7 @@
 <?php
 
 $myContainer = new GfxContainer();
-$myContainer->setSource('svg/ttest_3.svg');
+$myContainer->setSource('svg/ttest_4.svg');
 $myContainer->parse();
 $myContainer->setTarget('SWF');
 $myContainer->render();
