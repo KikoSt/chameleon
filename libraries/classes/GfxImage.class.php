@@ -61,13 +61,14 @@ class GfxImage extends GfXComponent
      */
     public function renderSWF($canvas)
     {
-        $imgPath = 'tmp/file.jpg';
+        $imgPath = 'tmp/file' . time() . rand() . '.jpg';
 
         $output = $this->resizeImage($this->getImageUrl(), $this->getWidth(), $this->getHeight(), false);
 
         ImageJPEG($output, $imgPath);
 
         $image = new SWFBitmap(fopen($this->getImageUrl(), "rb"));
+        $image = new SWFBitmap(fopen($imgPath, "rb"));
         $handle = $canvas->add($image);
         $handle->moveTo($this->getX(), $this->getY());
         $canvas = $this->addClickableLink($canvas);
