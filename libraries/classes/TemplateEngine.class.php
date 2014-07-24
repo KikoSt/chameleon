@@ -29,6 +29,9 @@ class TemplateEngine
     public function __toString()
     {
         extract($this->variables);
+
+
+
         chdir(dirname($this->template));
         ob_start();
 
