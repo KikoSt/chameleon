@@ -121,8 +121,10 @@ class GfxContainer
         }
         else
         {
-            $filename = time() . '.' . strtolower($this->getTarget());
+            $filename = time();
         }
+
+        $filename .= '.' . strtolower($this->getTarget());
 
         return $filename;
     }
