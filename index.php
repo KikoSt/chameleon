@@ -1,43 +1,38 @@
+<body>
+<head>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+</head>
+<html>
 <?php
-// TODO: this will be _POST later; _REQUEST for development only
-$page = $_REQUEST['page'];
+    session_start();
 
-$modules = array('overview', 'editor');
+    $myIndex = new Index();
 
-if(in_array($page, $modules))
-{
-    switch($page)
+    $redirect = $myIndex->getRedirect($_REQUEST['page']);
+
+    echo $redirect->create();
+?>
+</html>
+</body>
+<?php
+    function __autoload($className)
     {
-        case 'overview':
+        if(file_exists('libraries/classes/' . $className . '.class.php'))
         {
-            $overview = new Overview();
-            echo $overview->create();
-            break;
+            require_once('libraries/classes/' . $className . '.class.php');
         }
-        case "editor":
+        else if(file_exists('libraries/interfaces/' . $className . '.interface.php'))
         {
-
+            require_once('libraries/interfaces/' . $className . '.interface.php');
+        }
+        else if(file_exists('libraries/exception/' . $className . '.exception.php'))
+        {
+            require_once('libraries/exception/' . $className . '.exception.php');
+        }
+        else if(file_exists('controllers/' . $className . '.php'))
+        {
+            require_once('controllers/' . $className . '.php');
         }
     }
-
-}
-
-function __autoload($className)
-{
-    if(file_exists('libraries/classes/' . $className . '.class.php'))
-    {
-        require_once('libraries/classes/' . $className . '.class.php');
-    }
-    else if(file_exists('libraries/interfaces/' . $className . '.interface.php'))
-    {
-        require_once('libraries/interfaces/' . $className . '.interface.php');
-    }
-    else if(file_exists('libraries/exception/' . $className . '.exception.php'))
-    {
-        require_once('libraries/exception/' . $className . '.exception.php');
-    }
-    else if(file_exists('controllers/' . $className . '.php'))
-    {
-        require_once('controllers/' . $className . '.php');
-    }
-}
