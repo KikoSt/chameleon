@@ -36,6 +36,29 @@ class GfXComponent implements Linkable, Resizeable
 //        var_dump($this);
     }
 
+    protected function addClickableLink($canvas)
+    {
+        if(!empty($this->getLinkUrl()))
+        {
+            $hit = new SWFShape();
+            $hit->setRightFill($hit->addFill(255,0,0));
+            $hit->movePenTo(0, 0);
+            $hit->drawLineTo($this->getWidth(), 0);
+            $hit->drawLineTo($this->getWidth(), $this->getHeight());
+            $hit->drawLineTo(0, $this->getHeight());
+            $hit->drawLineTo(0, 0);
+
+            $button = new SWFButton();
+            $button->addShape($hit, SWFBUTTON_HIT);
+            $linkUrl = $this->getLinkUrl();
+            $button->addAction(new SWFAction("getURL('$linkUrl','_blank');"), SWFBUTTON_MOUSEUP);
+            $handle = $canvas->add($button);
+            $handle->moveTo($this->getX(), $this->getY());
+            echo 'Button added!';
+        }
+        return $canvas;
+    }
+
     public function getStroke()
     {
         return $this->stroke;
