@@ -92,7 +92,10 @@ class GfxText extends GfxComponent
         // position: CENTERED!
         $text->moveTo($this->getX() - ($this->getTextWidth()/2), $this->getY());
         $text->moveTo($this->getX(), $this->getY());
-        $text->addString(utf8_decode($this->getText()));
+
+        $tempText = ereg_replace("€", " Euro", $this->getText());
+
+        $text->addString(utf8_decode($tempText));
 
         $handle = $canvas->add($text);
         unset($handle);

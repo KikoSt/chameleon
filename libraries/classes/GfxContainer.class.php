@@ -147,11 +147,13 @@ class GfxContainer
 
     private function renderSWF()
     {
+        ming_useswfversion(8);
         $swf = new SWFMovie();
         $swf->setDimension($this->getCanvasWidth(), $this->getCanvasHeight());
         $swf->setFrames(30);
         $swf->setRate(10);
         $swf->setBackground(0, 0, 0);
+        $swf->add(new SWFAction("System.useCodepage=false;"));
 
         foreach($this->elements AS $element) {
             if(is_a($element, 'GfxComponent')) {

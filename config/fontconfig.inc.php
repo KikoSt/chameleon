@@ -25,4 +25,30 @@ $fontlist['GIF']['BITSTREAM_VERA_SANS_MONO_B_I'] = 'fonts/ttf/VeraMono-Bold-Ital
 $fontlist['GIF']['BITSTREAM_VERA_SERIF']         = 'fonts/ttf/VeraSerif.ttf';
 $fontlist['GIF']['BITSTREAM_VERA_SERIF_B']       = 'fonts/ttf/VeraSerif-Bold.ttf';
 
+// TEMP!
+$fontlist['SWF']['BITSTREAM_VERA_SANS']          = 'fonts/ttf/armalite_rifle.ttf';
+$fontlist['SWF']['BITSTREAM_VERA_SANS_B']        = 'fonts/ttf/armalite_rifle.ttf';
+$fontlist['SWF']['BITSTREAM_VERA_SANS_I']        = 'fonts/ttf/armalite_rifle.ttf';
+$fontlist['SWF']['BITSTREAM_VERA_SANS_B_I']      = 'fonts/ttf/armalite_rifle.ttf';
+$fontlist['SWF']['BITSTREAM_VERA_SANS_MONO']     = 'fonts/ttf/armalite_rifle.ttf';
+$fontlist['SWF']['BITSTREAM_VERA_SANS_MONO_B']   = 'fonts/ttf/armalite_rifle.ttf';
+$fontlist['SWF']['BITSTREAM_VERA_SANS_MONO_I']   = 'fonts/ttf/armalite_rifle.ttf';
+$fontlist['SWF']['BITSTREAM_VERA_SANS_MONO_B_I'] = 'fonts/ttf/armalite_rifle.ttf';
+$fontlist['SWF']['BITSTREAM_VERA_SERIF']         = 'fonts/ttf/armalite_rifle.ttf';
+$fontlist['SWF']['BITSTREAM_VERA_SERIF_B']       = 'fonts/ttf/armalite_rifle.ttf';
+
+$fontlist['GIF']['BITSTREAM_VERA_SANS']          = 'fonts/ttf/armalite_rifle.ttf';
+$fontlist['GIF']['BITSTREAM_VERA_SANS_B']        = 'fonts/ttf/armalite_rifle.ttf';
+$fontlist['GIF']['BITSTREAM_VERA_SANS_I']        = 'fonts/ttf/armalite_rifle.ttf';
+$fontlist['GIF']['BITSTREAM_VERA_SANS_B_I']      = 'fonts/ttf/armalite_rifle.ttf';
+$fontlist['GIF']['BITSTREAM_VERA_SANS_MONO']     = 'fonts/ttf/armalite_rifle.ttf';
+$fontlist['GIF']['BITSTREAM_VERA_SANS_MONO_B']   = 'fonts/ttf/armalite_rifle.ttf';
+$fontlist['GIF']['BITSTREAM_VERA_SANS_MONO_I']   = 'fonts/ttf/armalite_rifle.ttf';
+$fontlist['GIF']['BITSTREAM_VERA_SANS_MONO_B_I'] = 'fonts/ttf/armalite_rifle.ttf';
+$fontlist['GIF']['BITSTREAM_VERA_SERIF']         = 'fonts/ttf/armalite_rifle.ttf';
+$fontlist['GIF']['BITSTREAM_VERA_SERIF_B']       = 'fonts/ttf/armalite_rifle.ttf';
+
+$fontlist['GIF']['ARIAL']       = 'fonts/ttf/arial.ttf';
+$fontlist['SWF']['ARIAL']       = 'fonts/ttf/arial.ttf';
+
 $GLOBALS['fontlist'] = $fontlist;

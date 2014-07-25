@@ -12,6 +12,8 @@ for($i=1; $i<6;$i++)
     $myContainer->render();
 }
 
+exit();
+
 $myContainer = new GfxContainer();
 $myContainer->setSource('svg/ttest_crit.svg');
 $myContainer->setOutputName('output_crit');
