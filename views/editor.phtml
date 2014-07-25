@@ -1,17 +1,8 @@
-<div class="navbar navbar-default navbar-fixed-top" role="navigation">
-    <div class="container" style="width: 100%">
-        <div class="navbar-header" style="height: 60px;">
-            <img class="navbar-brand" src="image/MediaDecision_logo_small.png" style="height: 60px;"/>
-
-        </div>
-        <p class="navbar-text"><nobr><h3><?php echo ucwords($_REQUEST['page']);?></h3></nobr></p>
-    </div>
-</div>
-
 <div class="row" style="margin-top: 70px; padding-left: 10px; padding-right: 10px;">
-    <div class="col-md-6">
+    <div class="col-md-6" width="100%">
         <img src="<?php echo $this->gif;?>" alt="">
     </div>
+    <form id="editor" action="post" method="#">
     <div class="col-md-6">
 <!--        Currently static for development-->
         <div class="panel-group" id="accordion">
@@ -20,17 +11,45 @@
                     <h3 class="panel-title">
                         <a data-toggle="collapse" data-target="#collapseOne"
                            href="#collapseOne">
-                            Collapsible Group Item #1
+                            Rectangle 1
                         </a>
                     </h3>
                 </div>
                 <div id="collapseOne" class="panel-collapse collapse"
                     <div class="panel-body">
                         <ul class="list-group">
-                            <li class="list-group-item">Fill *add color picker*</li>
-                            <li class="list-group-item">Stroke *add colorpicker*</li>
-                            <li class="list-group-item">X coordinate: *add text input* Y coordinate: *add text input*</li>
-                            <li class="list-group-item">Width: *add text input* Height: *add text input*</li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Fill:</label>
+                                        <input id="fill" type="text" class="form-control" value="e2ddcf" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Stroke:</label>
+                                        <input id="stroke" type="text" class="form-control" value="e2ddcf" />
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label>X coordinate:</label>
+                                        <input type="text" class="form-control" placeholder="<?php echo 'given value';?>"/>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Y coordinate:</label>
+                                        <input type="text" class="form-control" placeholder="<?php echo 'given value';?>"/>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Width:</label>
+                                        <input type="text" class="form-control" placeholder="<?php echo 'given value';?>"/>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Height:</label>
+                                        <input type="text" class="form-control" placeholder="<?php echo 'given value';?>"/>
+                                    </div>
+                                </div>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -78,5 +97,14 @@
 
     <!--        Currently static for development-->
         </div>
+        </form>
     </div>
 </div>
+
+<script type="text/javascript">
+    $(document).ready(
+        function()
+        {
+            $('#fill').jPicker();
+        });
+</script>

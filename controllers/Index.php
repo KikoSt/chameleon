@@ -15,25 +15,15 @@ class Index extends Controller
         {
             switch($page)
             {
-                case 'overview':
+                case "overview":
                 {
                     return new Overview();
+                    break;
                 }
                 case "editor":
                 {
-                    $editor = new Editor();
-
-                    if($_REQUEST['id'] === null)
-                    {
-                        $editor->setTemplate($_SESSION['gif']);
-                    }
-                    else
-                    {
-                        $editor->setTemplate($_REQUEST['id']);
-                        $_SESSION['gif'] = $_REQUEST['id'];
-                    }
-
-                    return $editor;
+                    return new Editor();
+                    break;
                 }
             }
         }

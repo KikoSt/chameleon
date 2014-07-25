@@ -12,7 +12,7 @@ class Editor extends Controller
     {
         $view = $this->setLayout('views/editor.phtml')->getView();
 
-        $view->gif = $this->getTemplate();
+        $view->gif = $_REQUEST['id'];
 
         if($view->gif === null)
         {

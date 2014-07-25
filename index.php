@@ -2,9 +2,19 @@
 <head>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://localhost/chameleon/js/jpicker-1.1.6/jpicker-1.1.6.min.js"></script>
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 </head>
 <html>
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container" style="width: 100%">
+            <div class="navbar-header" style="height: 60px;">
+                <img class="navbar-brand" src="images/MediaDecision_logo_small.png" style="height: 60px;"/>
+
+            </div>
+            <p class="navbar-text"><nobr><h3><?php echo ucwords($_REQUEST['page']);?></h3></nobr></p>
+        </div>
+    </div>
 <?php
     session_start();
 
@@ -14,6 +24,7 @@
 
     echo $redirect->create();
 ?>
+
 </html>
 </body>
 <?php
