@@ -129,6 +129,7 @@ class GfxContainer
         return $filename;
     }
 
+
     private function getOutputDestination()
     {
         $destination = 'output/' . $this->getOutputFilename();

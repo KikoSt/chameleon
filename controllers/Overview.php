@@ -8,6 +8,7 @@
 
 class Overview extends Controller
 {
+    private $path;
 
     public function create()
     {
@@ -17,21 +18,31 @@ class Overview extends Controller
         $this->setCompany('exampleCompany');
         $this->setUser('Mustermann');
 
-        $path = 'tmp/'. $this->getCompany() .'/'. $this->getUser();
+        $company = $this->getCompany();
+        $user = $this->getUser();
 
-        if(!is_dir($path))
+        $this->path = "output/$company/";
+
+        if(!is_dir($this->path))
         {
-            mkdir($path);
+            if(!mkdir($this->path, 0777, true))
+            {
+                die($this->path.' mkdir failed');
+            }
+            chmod($this->path, 0777);
         }
 
-        $templates = $this->fetchTemplates();
+        //get templates and parse them into a corresponding directory (company / user)
+//        $templates = $this->fetchTemplates();
+//        foreach($templates as $template)
+//        {
+//            $container->setSource($template);
+//            $container->parse();
+//            $container->setTarget('GIF');
+//            $container->render();
+//        }
 
-        foreach($templates as $template)
-        {
-            $container->setSource($template);
-            $container->setTarget('output/' . $path);
-
-        }
+        $view->templates = $this->getRenderedFiles();
 
         return $view;
     }
@@ -42,6 +53,11 @@ class Overview extends Controller
 
         //TODO get templates from database depending on user, company and so on
         return glob('svg/*.svg');
+    }
+
+    private function getRenderedFiles()
+    {
+        return glob('output/*.gif');
     }
 
 } 

@@ -30,8 +30,6 @@ class TemplateEngine
     {
         extract($this->variables);
 
-
-
         chdir(dirname($this->template));
         ob_start();
 
