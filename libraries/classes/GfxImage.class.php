@@ -41,6 +41,10 @@ class GfxImage extends GfXComponent
         parent::create($svgRootNode);
         $attr = $svgRootNode->attributes();
         $imageUrl = (string) $svgRootNode->attributes('xlink', true)->href;
+        if((string) $svgRootNode->attributes()->linkurl !== '')
+        {
+            $this->setLinkUrl((string) $svgRootNode->attributes()->linkurl);
+        }
         $this->setImageUrl($imageUrl);
         $this->setX((float) $attr->x);
         $this->setY((float) $attr->y);
@@ -57,15 +61,17 @@ class GfxImage extends GfXComponent
      */
     public function renderSWF($canvas)
     {
-        $imgPath = 'tmp/file.jpg';
+        $imgPath = 'tmp/file' . time() . rand() . '.jpg';
 
         $output = $this->resizeImage($this->getImageUrl(), $this->getWidth(), $this->getHeight(), false);
 
         ImageJPEG($output, $imgPath);
 
+        $image = new SWFBitmap(fopen($this->getImageUrl(), "rb"));
         $image = new SWFBitmap(fopen($imgPath, "rb"));
         $handle = $canvas->add($image);
         $handle->moveTo($this->getX(), $this->getY());
+        $canvas = $this->addClickableLink($canvas);
         return $canvas;
     }
 
