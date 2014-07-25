@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <svg width="970" height="250" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg"
      xmlns:xlink="http://www.w3.org/1999/xlink">
     <g>
@@ -39,15 +40,15 @@
         <rect fill="#bbbbbb"
               stroke="#000000"
               x="480"
-              y="33"
+              y="203"
               width="200"
               height="18"
               id="img_1"/>
         <rect fill="#f98901"
               stroke="#000000"
-              x="480"
-              y="29"
-              width="200"
+              x="478"
+              y="199"
+              width="204"
               height="20"
               id="img_1"/>
         <text id="text_1"
@@ -94,13 +95,13 @@
             text-anchor="middle"
             font-family="BITSTREAM_VERA_SANS_B"
             font-size="12"
-            y="45"
-            x="485"
+            y="215"
+            x="522"
             stroke-linecap="null"
             stroke-linejoin="null"
             stroke-dasharray="null"
             stroke-width="0"
             stroke="#000000"
-            fill="#000000">219,95€</text>
+            fill="#000000"><![CDATA[219,95 €]]></text>
     </g>
 </svg>
