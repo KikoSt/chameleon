@@ -1,6 +1,6 @@
 <?php
 
-for($i=1; $i<5;$i++)
+for($i=1; $i<6;$i++)
 {
     $myContainer = new GfxContainer();
     $myContainer->setSource('svg/ttest_' . $i . '.svg');
@@ -11,6 +11,15 @@ for($i=1; $i<5;$i++)
     $myContainer->setTarget('GIF');
     $myContainer->render();
 }
+
+$myContainer = new GfxContainer();
+$myContainer->setSource('svg/ttest_crit.svg');
+$myContainer->setOutputName('output_crit');
+$myContainer->parse();
+$myContainer->setTarget('SWF');
+$myContainer->render();
+$myContainer->setTarget('GIF');
+$myContainer->render();
 
 function __autoload($className) {
     if(file_exists('libraries/classes/' . $className . '.class.php')) {
