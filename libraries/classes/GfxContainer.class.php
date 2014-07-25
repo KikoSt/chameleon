@@ -18,6 +18,7 @@ class GfxContainer
     private $canvasWidth;
     private $canvasHeight;
     private $canvas;
+    private $outputName; // default name if not set!
 
     private $allowedTargets;
 
@@ -41,6 +42,16 @@ class GfxContainer
     public function setCanvas($canvas)
     {
         $this->canvas = $canvas;
+    }
+
+    public function setOutputName($outputName)
+    {
+        $this->outputName = $outputName;
+    }
+
+    public function getOutputName()
+    {
+        return $this->outputName;
     }
 
     public function setSource($sSource)
@@ -104,8 +115,16 @@ class GfxContainer
      */
     private function getOutputFilename()
     {
-        $filename = '';
-        $filename .= time() . '.' . strtolower($this->getTarget());
+        if($this->getOutputName() !== '')
+        {
+            $filename = $this->getOutputName();
+        }
+        else
+        {
+            $filename = time();
+        }
+
+        $filename .= '.' . strtolower($this->getTarget());
 
         return $filename;
     }
