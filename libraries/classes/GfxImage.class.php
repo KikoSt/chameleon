@@ -83,7 +83,7 @@ class GfxImage extends GfXComponent
      */
     public function renderGIF($canvas)
     {
-        $dst = $this->resizeImage($this->getImageUrl(),true);
+        $dst = $this->resizeImage($this->getImageUrl());
 
         imagecopyresampled($canvas, $dst, $this->getX(), $this->getY(), 0, 0, $this->getWidth(), $this->getHeight(), $this->getWidth(),
             $this->getHeight());

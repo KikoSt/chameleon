@@ -8,41 +8,35 @@
 
 class Overview extends Controller
 {
-    private $path;
-
     public function create()
     {
         $container = new GfxContainer();
         $view = $this->setLayout('views/overview.phtml')->getView();
 
+
+
         $this->setCompany('exampleCompany');
-        $this->setUser('Mustermann');
+        $this->setAdvertiser('Mustermann');
 
         $company = $this->getCompany();
-        $user = $this->getUser();
+        $advertiser = $this->getAdvertiser();
 
-        $this->path = "output/$company/";
+        $destinationDir = $container->createDestinationDir("$company/$advertiser");
 
-        if(!is_dir($this->path))
+        $this->clearOutputDirectory($destinationDir);
+
+        $templates = $this->fetchTemplates();
+
+        foreach($templates as $template)
         {
-            if(!mkdir($this->path, 0777, true))
-            {
-                die($this->path.' mkdir failed');
-            }
-            chmod($this->path, 0777);
+            $container->setSource($template);
+            $container->parse();
+            $container->setTarget('GIF');
+            $container->setOutputDestination($destinationDir);
+            $container->render();
         }
 
-        //get templates and parse them into a corresponding directory (company / user)
-//        $templates = $this->fetchTemplates();
-//        foreach($templates as $template)
-//        {
-//            $container->setSource($template);
-//            $container->parse();
-//            $container->setTarget('GIF');
-//            $container->render();
-//        }
-
-        $view->templates = $this->getRenderedFiles();
+        $view->templates = $this->getRenderedFiles($destinationDir);
 
         return $view;
     }
@@ -55,9 +49,25 @@ class Overview extends Controller
         return glob('svg/*.svg');
     }
 
-    private function getRenderedFiles()
+    private function getRenderedFiles($destinationDir)
     {
-        return glob('output/*.gif');
+        return glob($destinationDir . '*.gif');
+    }
+
+    private function clearOutputDirectory($path, $erase=true)
+    {
+        if($erase)
+        {
+            $files = glob($path.'*.*');
+
+            foreach($files as $file)
+            {
+                if(is_file($file))
+                {
+                    unlink($file);
+                }
+            }
+        }
     }
 
 } 

@@ -19,6 +19,7 @@ class GfxContainer
     private $canvasHeight;
     private $canvas;
     private $outputName; // default name if not set!
+    private $destination;
 
     private $allowedTargets;
 
@@ -115,7 +116,7 @@ class GfxContainer
      */
     private function getOutputFilename()
     {
-        if($this->getOutputName() !== '')
+        if(null !== $this->getOutputName() && $this->getOutputName() !== '')
         {
             $filename = $this->getOutputName();
         }
@@ -129,10 +130,15 @@ class GfxContainer
         return $filename;
     }
 
+    public function setOutputDestination($destination)
+    {
+        $this->destination = $destination;
+    }
+
 
     private function getOutputDestination()
     {
-        $destination = 'output/' . $this->getOutputFilename();
+        $destination = $this->destination . $this->getOutputFilename();
         return $destination;
     }
 
@@ -174,6 +180,31 @@ class GfxContainer
         $this->setCanvas($updatedCanvas);
 
         imagegif($updatedCanvas, $this->getOutputDestination());
+
+        chmod($this->getOutputDestination(), 0777);
+    }
+
+    public function createDestinationDir($path)
+    {
+        $partParts =  explode("/", $path);
+
+        $dir = 'output/';
+
+        foreach($partParts as $singleDir)
+        {
+            $dir .= $singleDir.'/';
+
+            if(!is_dir($dir))
+            {
+                if(!mkdir($dir, 0777, true))
+                {
+                    die($dir.' mkdir failed');
+                }
+                chmod($dir, 0777);
+            }
+        }
+
+        return $dir;
     }
 
 
