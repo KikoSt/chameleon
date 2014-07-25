@@ -50,18 +50,3 @@ echo 'Advertiser ' . $advertiserId . ' has ' . $connector->getNumTemplates($adve
 
 exit(0);
 
-for($i=1; $i<6;$i++)
-{
-    $myContainer = new GfxContainer();
-    $myContainer->setCompanyId(4);
-    $myContainer->setAdvertiserId(122);
-    $myContainer->setId($i);
-    $myContainer->setSource('ttest_' . $i . '.svg');
-    // $myContainer->setOutputName('output_' . $i);
-    $myContainer->parse();
-    $myContainer->setTarget('SWF');
-    $myContainer->render();
-    $myContainer->setTarget('GIF');
-    $myContainer->render();
-}
-
