@@ -8,20 +8,40 @@
 
 class Overview extends Controller
 {
+
     public function create()
     {
+        $container = new GfxContainer();
         $view = $this->setLayout('views/overview.phtml')->getView();
 
-        $view->templates = $this->fetchTemplates();
+        $this->setCompany('exampleCompany');
+        $this->setUser('Mustermann');
+
+        $path = 'tmp/'. $this->getCompany() .'/'. $this->getUser();
+
+        if(!is_dir($path))
+        {
+            mkdir($path);
+        }
+
+        $templates = $this->fetchTemplates();
+
+        foreach($templates as $template)
+        {
+            $container->setSource($template);
+            $container->setTarget('output/' . $path);
+
+        }
 
         return $view;
     }
 
-    public function fetchTemplates()
+    private function fetchTemplates()
     {
         // fetch all templates depending on the user, company, category
 
         //TODO get templates from database depending on user, company and so on
-        return glob('output/*.gif');
+        return glob('svg/*.svg');
     }
+
 } 
