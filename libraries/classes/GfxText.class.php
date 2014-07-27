@@ -71,6 +71,30 @@ class GfxText extends GfxComponent
     public function renderSWF($canvas)
     {
         $text = new SWFText();
+
+        if($this->getShadowColor() !== null)
+        {
+            $shadow = new GfxText();
+            $shadow->setWidth($this->getWidth());
+            $shadow->setHeight($this->getHeight());
+            $shadow->setX($this->getX() + (int) $this->getShadowDist());
+            $shadow->setY($this->getY() + (int) $this->getShadowDist());
+
+            if(null !== $this->getSWFFont()) {
+                $shadow->setFontFamily($this->getFontFamily());
+            } else {
+                throw new Exception('No font set!');
+            }
+
+            $shadowColor = $this->getShadowColor();
+            $shadowColor->setAlpha(128); // currently not working, most likely due to the text type!
+            $shadow->setFill($shadowColor);
+            $shadow->setFontSize($this->getFontSize());
+            $shadow->setText($this->getText());
+            $canvas = $shadow->renderSWF($canvas);
+            echo 'Shadow created!';
+        }
+
         if(null !== $this->getSWFFont()) {
             $text->setFont($this->getSWFFont());
         } else {
