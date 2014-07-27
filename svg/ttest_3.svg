@@ -1,7 +1,7 @@
 <svg width="728" height="90" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg"
      xmlns:xlink="http://www.w3.org/1999/xlink">
     <g>
-        <title>Layer 1</title>
+        <title>globetrotter_leaderboard_1</title>
         <rect fill="#f98901"
               stroke="#000000"
               x="0"
@@ -9,12 +9,14 @@
               width="728"
               height="90"
               id="img_1"/>
+
         <image xlink:href="assets/mountain_river_leader.jpg"
                id="img_2"
                width="718"
                height="80"
                y="5"
                x="5"/>
+
         <image xlink:href="assets/boot_2_ul.jpg"
                linkurl="https://www.globetrotter.de/shop/lowa-camino-gtx-177836/"
                id="img_2"
@@ -23,15 +25,7 @@
                style="stroke:#000000;stroke-width:1"
                y="15"
                x="355"/>
-               <!--
-        <image xlink:href="assets/boot_1_sm.jpg"
-               linkurl="http://www.globetrotter.de/shop/asolo-shiraz-gv-237877/"
-               id="img_2"
-               width="125"
-               height="125"
-               y="15"
-               x="140"/>
-               -->
+
         <image xlink:href="assets/globetrotter_logo_ul.jpg"
                linkurl="http://www.globetrotter.de"
                id="img_3"
@@ -39,72 +33,58 @@
                height="24"
                y="0"
                x="628"/>
+
         <text id="text_1"
-            xml:space="preserve"
-            text-anchor="middle"
-            font-family="BITSTREAM_VERA_SERIF"
-            font-size="36"
-            y="70"
-            x="25"
-            stroke-linecap="null"
-            stroke-linejoin="null"
-            stroke-dasharray="null"
-            stroke-width="0"
-            stroke="#000000"
-            fill="#ffffff">Fernweh ... </text>
-        <text id="text_2a"
-            xml:space="preserve"
-            text-anchor="middle"
-            font-family="BITSTREAM_VERA_SERIF"
-            font-size="12"
-            y="72"
-            x="447"
-            stroke-linecap="null"
-            stroke-linejoin="null"
-            stroke-dasharray="null"
-            stroke-width="0"
-            stroke="#000000"
-            fill="#333333">war noch nie so günstig</text>
-        <text id="text_2b"
-            xml:space="preserve"
-            text-anchor="middle"
-            font-family="BITSTREAM_VERA_SERIF"
-            font-size="12"
-            y="70"
-            x="445"
-            stroke-linecap="null"
-            stroke-linejoin="null"
-            stroke-dasharray="null"
-            stroke-width="0"
-            stroke="#000000"
-            fill="#ffffff">war noch nie so günstig</text>
-        <rect fill="#bbbbbb"
-              stroke="#000000"
-              x="354"
+              xml:space="preserve"
+              text-anchor="middle"
+              font-family="BITSTREAM_VERA_SERIF"
+              font-size="36"
               y="70"
-              width="62"
-              height="10"
-              id="img_1"/>
+              x="25"
+              style="shadow:#000000;shadow-dist:2"
+              stroke-linecap="null"
+              stroke-linejoin="null"
+              stroke-dasharray="null"
+              stroke-width="0"
+              stroke="#000000"
+              fill="#ffffff"><![CDATA[Fernweh ... ]]></text>
+
+        <text id="text_2b"
+              xml:space="preserve"
+              text-anchor="middle"
+              font-family="BITSTREAM_VERA_SERIF"
+              font-size="12"
+              y="70"
+              x="445"
+              style="shadow:#000000;shadow-dist:2"
+              stroke-linecap="null"
+              stroke-linejoin="null"
+              stroke-dasharray="null"
+              stroke-width="0"
+              stroke="#000000"
+              fill="#ffffff"><![CDATA[war noch nie so günstig]]></text>
+
         <rect fill="#f98901"
               stroke="#000000"
               x="352"
               y="68"
+              style="shadow:#999999;shadow-dist:1"
               width="62"
               height="10"
               id="img_1"/>
 
         <text id="text_img_1"
-            xml:space="preserve"
-            text-anchor="middle"
-            font-family="BITSTREAM_VERA_SANS_B"
-            font-size="7"
-            y="76"
-            x="356"
-            stroke-linecap="null"
-            stroke-linejoin="null"
-            stroke-dasharray="null"
-            stroke-width="0"
-            stroke="#000000"
-            fill="#000000">219,95 Eur</text>
+              xml:space="preserve"
+              text-anchor="middle"
+              font-family="BITSTREAM_VERA_SANS_B"
+              font-size="7"
+              y="76"
+              x="356"
+              stroke-linecap="null"
+              stroke-linejoin="null"
+              stroke-dasharray="null"
+              stroke-width="0"
+              stroke="#000000"
+              fill="#000000"><![CDATA[219,95 Eur]]></text>
     </g>
 </svg>
