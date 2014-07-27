@@ -20,6 +20,7 @@
                id="img_2"
                width="90"
                height="90"
+               style="stroke:#000000;stroke-width:1"
                y="55"
                x="170"/>
         <image xlink:href="assets/boot_2.jpg"
@@ -27,6 +28,7 @@
                id="img_2"
                width="90"
                height="90"
+               style="stroke:#000000;stroke-width:1"
                y="55"
                x="34"/>
         <image xlink:href="assets/boot_3.jpg"
@@ -34,6 +36,7 @@
                id="img_2"
                width="90"
                height="90"
+               style="stroke:#000000;stroke-width:1"
                y="150"
                x="170"/>
         <image xlink:href="assets/boot_4.jpg"
@@ -41,6 +44,7 @@
                id="img_2"
                width="90"
                height="90"
+               style="stroke:#000000;stroke-width:1"
                y="150"
                x="34"/>
         <image xlink:href="assets/globetrotter_logo_ul.jpg"
