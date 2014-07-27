@@ -8,7 +8,7 @@
 
 class GfxColor
 {
-    private $r, $g, $b;
+    private $r, $g, $b, $alpha;
 
     public function __construct($rOrHex=null, $g=null, $b=null)
     {
@@ -62,6 +62,16 @@ class GfxColor
         {
             throw new InvalidArgumentException();
         }
+    }
+
+    public function setAlpha($alpha)
+    {
+        $this->alpha = $alpha;
+    }
+
+    public function getAlpha()
+    {
+        return $this->alpha;
     }
 
     public function getR()
