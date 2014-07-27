@@ -59,7 +59,6 @@ class GfxImage extends GfXComponent
     {
         if($this->getStroke() !== null)
         {
-            echo 'Creating stroke!';
             $strokeWidth = $this->getStroke()->getWidth();
             $stroke = new GfxRectangle();
             $stroke->setWidth($this->getWidth() + ($strokeWidth * 2));
