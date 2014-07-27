@@ -46,10 +46,15 @@ class GfXComponent implements Linkable, Resizeable
             }
             if(array_key_exists('stroke', $styles))
             {
-                echo 'STROKE found' . "\n";
+                $strokeColor = new GfxColor();
+                $strokeColor->setHex($styles['stroke']);
+                $strokeWidth = $styles['stroke-width'];
+                $stroke = new GfxStroke($strokeColor, $strokeWidth);
+                $stroke->setColor($strokeColor);
+                $stroke->setWidth($strokeWidth);
+                $this->setStroke($stroke);
             }
         }
-//        var_dump($this);
     }
 
     protected function addClickableLink($canvas)
@@ -70,7 +75,6 @@ class GfXComponent implements Linkable, Resizeable
             $button->addAction(new SWFAction("getURL('$linkUrl','_blank');"), SWFBUTTON_MOUSEUP);
             $handle = $canvas->add($button);
             $handle->moveTo($this->getX(), $this->getY());
-            echo 'Button added!';
         }
         return $canvas;
     }
@@ -80,7 +84,7 @@ class GfXComponent implements Linkable, Resizeable
         return $this->stroke;
     }
 
-    public function setStroke(GfxColor $oColor)
+    public function setStroke(GfxStroke $oColor)
     {
         $this->stroke = $oColor;
     }

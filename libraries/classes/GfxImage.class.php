@@ -46,10 +46,6 @@ class GfxImage extends GfXComponent
             $this->setLinkUrl((string) $svgRootNode->attributes()->linkurl);
         }
         $this->setImageUrl($imageUrl);
-    //    $this->setX((float) $attr->x);
-    //    $this->setY((float) $attr->y);
-    //    $this->setWidth((float) $attr->width);
-    //    $this->setHeight((float) $attr->height);
     }
 
     /**
@@ -61,6 +57,19 @@ class GfxImage extends GfXComponent
      */
     public function renderSWF($canvas)
     {
+        if($this->getStroke() !== null)
+        {
+            echo 'Creating stroke!';
+            $strokeWidth = $this->getStroke()->getWidth();
+            $stroke = new GfxRectangle();
+            $stroke->setWidth($this->getWidth() + ($strokeWidth * 2));
+            $stroke->setHeight($this->getHeight() + ($strokeWidth * 2));
+            $stroke->setX($this->getX() - $strokeWidth);
+            $stroke->setY($this->getY() - $strokeWidth);
+            $stroke->setFill($this->getStroke()->getColor());
+            $stroke->renderSWF($canvas);
+
+        }
         $imgPath = 'tmp/file' . time() . rand() . '.jpg';
 
         $output = $this->resizeImage($this->getImageUrl(), $this->getWidth(), $this->getHeight(), false);

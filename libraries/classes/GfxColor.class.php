@@ -10,6 +10,25 @@ class GfxColor
 {
     private $r, $g, $b;
 
+    public function __construct($rOrHex=null, $g=null, $b=null)
+    {
+        if(preg_match("/^#([0-9a-fA-F]{3}){1,2}$/", $rOrHex))
+        {
+            $hex = $rOrHex;
+            $this->setHex($hex);
+            echo $hex;
+            // hex value passed
+        }
+        else if((int) $rOrHex == $rOrHex)
+        {
+            $r = (int) $rOrHex;
+            echo 'initializing with r=' . $r . "\n";
+            $this->setR($r);
+            $this->setG($g);
+            $this->setB($b);
+        }
+    }
+
     public function setHex($colorHex)
     {
         if(preg_match("/^#([0-9a-fA-F]{3}){1,2}$/", $colorHex))
