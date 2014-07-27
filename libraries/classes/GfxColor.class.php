@@ -16,17 +16,16 @@ class GfxColor
         {
             $hex = $rOrHex;
             $this->setHex($hex);
-            echo $hex;
             // hex value passed
         }
         else if((int) $rOrHex == $rOrHex)
         {
             $r = (int) $rOrHex;
-            echo 'initializing with r=' . $r . "\n";
             $this->setR($r);
             $this->setG($g);
             $this->setB($b);
         }
+        $this->alpha = 255;
     }
 
     public function setHex($colorHex)
