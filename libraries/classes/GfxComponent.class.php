@@ -14,6 +14,8 @@ class GfXComponent implements Linkable, Resizeable
     private $fill;
     private $stroke;
     private $linkUrl;
+    private $shadowColor;
+    private $shadowDist;
 
     public function __construct()
     {
@@ -44,17 +46,44 @@ class GfXComponent implements Linkable, Resizeable
                 list($curKey, $curValue) = explode(':', $curStyle);
                 $styles[$curKey] = $curValue;
             }
+
             if(array_key_exists('stroke', $styles))
             {
-                $strokeColor = new GfxColor();
-                $strokeColor->setHex($styles['stroke']);
-                $strokeWidth = $styles['stroke-width'];
+                $strokeColor = new GfxColor($styles['stroke']);
+                $strokeWidth = (int) $styles['stroke-width'];
                 $stroke = new GfxStroke($strokeColor, $strokeWidth);
                 $stroke->setColor($strokeColor);
                 $stroke->setWidth($strokeWidth);
                 $this->setStroke($stroke);
             }
+            if(array_key_exists('shadow', $styles))
+            {
+                $shadowColor = new GfxColor($styles['shadow']);
+                $shadowDist = (int) $styles['shadow-dist'];
+                $this->setShadowColor($shadowColor);
+                $this->setShadowDist($shadowDist);
+            }
         }
+    }
+
+    public function getShadowColor()
+    {
+        return $this->shadowColor;
+    }
+
+    public function getShadowDist()
+    {
+        return $this->shadowDist;
+    }
+
+    public function setShadowColor(GfxColor $shadowColor)
+    {
+        $this->shadowColor = $shadowColor;
+    }
+
+    public function setShadowDist($shadowDist)
+    {
+        $this->shadowDist = $shadowDist;
     }
 
     protected function addClickableLink($canvas)
