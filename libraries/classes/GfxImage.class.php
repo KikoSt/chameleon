@@ -46,10 +46,10 @@ class GfxImage extends GfXComponent
             $this->setLinkUrl((string) $svgRootNode->attributes()->linkurl);
         }
         $this->setImageUrl($imageUrl);
-        $this->setX((float) $attr->x);
-        $this->setY((float) $attr->y);
-        $this->setWidth((float) $attr->width);
-        $this->setHeight((float) $attr->height);
+    //    $this->setX((float) $attr->x);
+    //    $this->setY((float) $attr->y);
+    //    $this->setWidth((float) $attr->width);
+    //    $this->setHeight((float) $attr->height);
     }
 
     /**

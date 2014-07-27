@@ -33,6 +33,22 @@ class GfXComponent implements Linkable, Resizeable
         $this->setHeight((float) $attr->height);
 
         $this->setId((string) $attr->id);
+
+        if((string) $svgRootNode->attributes()->style !== '')
+        {
+            $styles = array();
+            $style = $svgRootNode->attributes()->style;
+            $stylesList = explode(';', $style);
+            foreach($stylesList AS $curStyle)
+            {
+                list($curKey, $curValue) = explode(':', $curStyle);
+                $styles[$curKey] = $curValue;
+            }
+            if(array_key_exists('stroke', $styles))
+            {
+                echo 'STROKE found' . "\n";
+            }
+        }
 //        var_dump($this);
     }
 
