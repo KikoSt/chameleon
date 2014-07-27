@@ -70,6 +70,20 @@ class GfxImage extends GfXComponent
             $stroke->renderSWF($canvas);
 
         }
+
+        if($this->getShadowColor() !== null)
+        {
+            $shadow = new GfxRectangle();
+            $shadow->setWidth($this->getWidth());
+            $shadow->setHeight($this->getHeight());
+            $shadow->setX($this->getX() + (int) $this->getShadowDist());
+            $shadow->setY($this->getY() + (int) $this->getShadowDist());
+            $shadowColor = $this->getShadowColor();
+            $shadowColor->setAlpha(128);
+            $shadow->setFill($shadowColor);
+            $shadow->renderSWF($canvas);
+
+        }
         $imgPath = 'tmp/file' . time() . rand() . '.jpg';
 
         $output = $this->resizeImage($this->getImageUrl(), $this->getWidth(), $this->getHeight(), false);
