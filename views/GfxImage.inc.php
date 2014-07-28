@@ -3,27 +3,13 @@
         <h3 class="panel-title">
             <a data-toggle="collapse" data-target="#<?php echo $element->getId();?>"
                href="#<?php echo $element->getId();?>">
-                Rectangle: <?php echo $element->getId();?>
+                Image: <?php echo $element->getId();?>
             </a>
         </h3>
     </div>
     <div id="<?php echo $element->getId();?>" class="panel-collapse collapse"
     <div class="panel-body">
         <ul class="list-group">
-            <li class="list-group-item">
-                <div class="row">
-                    <div class="col-md-6">
-                        <label>Fill:</label>
-                        <input id="fill" type="text" class="form-control" value="<?php echo $element->getFill()->getHex();?>" />
-                    </div>
-                    <div class="col-md-6">
-                        <?php if(null !== $element->getStroke()): ?>
-                        <label>Stroke:</label>
-                        <input id="stroke" type="text" class="form-control" value="<?php echo $element->getStroke()->getHex();?>" />
-                        <?php endif; ?>
-                    </div>
-                </div>
-            </li>
             <li class="list-group-item">
                 <div class="row">
                     <div class="col-md-3">
