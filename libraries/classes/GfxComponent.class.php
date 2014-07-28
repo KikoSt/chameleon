@@ -56,6 +56,17 @@ class GfXComponent implements Linkable, Resizeable
                 $stroke->setWidth($strokeWidth);
                 $this->setStroke($stroke);
             }
+            else if($attr->stroke !== null && (int) $attr->{'stroke-width'} !== 0)
+            {
+                echo "STROKE FOUND!\n";
+                $strokeColor = new GfxColor($attr->stroke);
+                $strokeWidth = (int) $attr->{'stroke-width'};
+                $stroke = new GfxStroke($strokeColor, $strokeWidth);
+                $stroke->setColor($strokeColor);
+                $stroke->setWidth($strokeWidth);
+                $this->setStroke($stroke);
+            }
+
             if(array_key_exists('shadow', $styles))
             {
                 $shadowColor = new GfxColor($styles['shadow']);
