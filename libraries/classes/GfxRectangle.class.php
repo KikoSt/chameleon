@@ -18,11 +18,38 @@ class GfxRectangle extends GfxShape
     {
         $rect = new SWFShape();
 
+        if($this->getStroke() !== null)
+        {
+            $strokeWidth = $this->getStroke()->getWidth();
+            $stroke = new GfxRectangle();
+            $stroke->setWidth($this->getWidth() + ($strokeWidth * 2));
+            $stroke->setHeight($this->getHeight() + ($strokeWidth * 2));
+            $stroke->setX($this->getX() - $strokeWidth);
+            $stroke->setY($this->getY() - $strokeWidth);
+            $stroke->setFill($this->getStroke()->getColor());
+            $stroke->renderSWF($canvas);
+
+        }
+
+        if($this->getShadowColor() !== null)
+        {
+            $shadow = new GfxRectangle();
+            $shadow->setWidth($this->getWidth());
+            $shadow->setHeight($this->getHeight());
+            $shadow->setX($this->getX() + (int) $this->getShadowDist());
+            $shadow->setY($this->getY() + (int) $this->getShadowDist());
+            $shadowColor = $this->getShadowColor();
+            $shadowColor->setAlpha(128);
+            $shadow->setFill($shadowColor);
+            $canvas = $shadow->renderSWF($canvas);
+        }
+
         $r = $this->getFill()->getR();
         $g = $this->getFill()->getG();
         $b = $this->getFill()->getB();
+        $a = $this->getFill()->getAlpha();
 
-        $fill = $rect->addFill($r, $g, $b);
+        $fill = $rect->addFill($r, $g, $b, $a);
         $rect->setRightFill($fill);
 
         $x1 = $this->getX();

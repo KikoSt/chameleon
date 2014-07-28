@@ -14,6 +14,8 @@ class GfXComponent implements Linkable, Resizeable
     private $fill;
     private $stroke;
     private $linkUrl;
+    private $shadowColor;
+    private $shadowDist;
 
     public function __construct()
     {
@@ -33,7 +35,55 @@ class GfXComponent implements Linkable, Resizeable
         $this->setHeight((float) $attr->height);
 
         $this->setId((string) $attr->id);
-//        var_dump($this);
+
+        if((string) $svgRootNode->attributes()->style !== '')
+        {
+            $styles = array();
+            $style = $svgRootNode->attributes()->style;
+            $stylesList = explode(';', $style);
+            foreach($stylesList AS $curStyle)
+            {
+                list($curKey, $curValue) = explode(':', $curStyle);
+                $styles[$curKey] = $curValue;
+            }
+
+            if(array_key_exists('stroke', $styles))
+            {
+                $strokeColor = new GfxColor($styles['stroke']);
+                $strokeWidth = (int) $styles['stroke-width'];
+                $stroke = new GfxStroke($strokeColor, $strokeWidth);
+                $stroke->setColor($strokeColor);
+                $stroke->setWidth($strokeWidth);
+                $this->setStroke($stroke);
+            }
+            if(array_key_exists('shadow', $styles))
+            {
+                $shadowColor = new GfxColor($styles['shadow']);
+                $shadowDist = (int) $styles['shadow-dist'];
+                $this->setShadowColor($shadowColor);
+                $this->setShadowDist($shadowDist);
+            }
+        }
+    }
+
+    public function getShadowColor()
+    {
+        return $this->shadowColor;
+    }
+
+    public function getShadowDist()
+    {
+        return $this->shadowDist;
+    }
+
+    public function setShadowColor(GfxColor $shadowColor)
+    {
+        $this->shadowColor = $shadowColor;
+    }
+
+    public function setShadowDist($shadowDist)
+    {
+        $this->shadowDist = $shadowDist;
     }
 
     protected function addClickableLink($canvas)
@@ -54,7 +104,6 @@ class GfXComponent implements Linkable, Resizeable
             $button->addAction(new SWFAction("getURL('$linkUrl','_blank');"), SWFBUTTON_MOUSEUP);
             $handle = $canvas->add($button);
             $handle->moveTo($this->getX(), $this->getY());
-            echo 'Button added!';
         }
         return $canvas;
     }
@@ -64,7 +113,7 @@ class GfXComponent implements Linkable, Resizeable
         return $this->stroke;
     }
 
-    public function setStroke(GfxColor $oColor)
+    public function setStroke(GfxStroke $oColor)
     {
         $this->stroke = $oColor;
     }
