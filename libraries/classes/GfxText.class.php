@@ -92,7 +92,6 @@ class GfxText extends GfxComponent
             $shadow->setFontSize($this->getFontSize());
             $shadow->setText($this->getText());
             $canvas = $shadow->renderSWF($canvas);
-            echo 'Shadow created!';
         }
 
         if(null !== $this->getSWFFont()) {
