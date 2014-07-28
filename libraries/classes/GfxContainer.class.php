@@ -147,12 +147,36 @@ class GfxContainer
 
     private function renderSWF()
     {
+        ming_useswfversion(8);
         $swf = new SWFMovie();
         $swf->setDimension($this->getCanvasWidth(), $this->getCanvasHeight());
-        $swf->setFrames(30);
-        $swf->setRate(10);
-        $swf->setBackground(0, 0, 0);
+        $swf->setFrames(1);
+        $swf->setRate(1);
+        $swf->add(new SWFAction('
 
+        this.createTextField("my_flashvars", this.getNextHighestDepth(), 10, 35, 300, 100);
+        my_flashvars.multiline = true;
+        my_flashvars.wordWrap = true;
+
+        var my_fmt:TextFormat = new TextFormat();
+        my_fmt.color = 0xffffff;
+        my_fmt.underline = false;
+        my_fmt.size = 12;
+        my_fmt.font = "Arial";
+        my_flashvars.text = "tmcampid = " + tmcampid;
+        my_flashvars.text += ";\rtmclickref = " + tmclickref;
+        _root.tmcampid = tmcampid;
+        my_flashvars.setTextFormat(my_fmt);
+
+        var imageLoader:MovieClip = this.createEmptyMovieClip("imageLoader", this.getNextHighestDepth());
+        imageLoader.loadMovie("http://affiliate.mediadecision.com/scripts/test.php");
+//        imageLoader.loadMovie("http://affiliate.mediadecision.com/img/icon_close.png");
+//        imageLoader.loadMovie("http://pfa.levexis.com/mediadecision/tman.cgi");
+
+
+        '));
+
+        $swf->setBackground(0, 0, 0);
         foreach($this->elements AS $element) {
             if(is_a($element, 'GfxComponent')) {
                 $element->renderSWF($swf);
