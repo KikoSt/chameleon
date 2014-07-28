@@ -12,7 +12,6 @@ class Editor extends Controller
     {
         $container = new GfxContainer();
         $database = new Database();
-
         $view = $this->setLayout('views/editor.phtml')->getView();
 
         $template = $database->fetchTemplateById($_REQUEST['id']);
@@ -27,7 +26,11 @@ class Editor extends Controller
         $container->parse();
         $container->setTarget('GIF');
         $container->setOutputDestination($destDir);
-        $container->render();
+
+        if(isset($_REQUEST['submit']))
+        {
+            $container->render();
+        }
 
         $view->elements = $container->getElements();
 

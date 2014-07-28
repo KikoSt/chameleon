@@ -2,8 +2,9 @@
 <head>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="http://localhost/chameleon/js/jpicker-1.1.6/jpicker-1.1.6.min.js"></script>
+    <script type="text/javascript" src="<?php $_SERVER['SERVER_NAME']?>colorpicker/js/bootstrap-colorpicker.js"></script>
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?php $_SERVER['SERVER_NAME']?>colorpicker/css/colorpicker.css">
 </head>
 <html>
     <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -24,9 +25,9 @@
 
     echo $redirect->create();
 ?>
-
 </html>
 </body>
+
 <?php
     function __autoload($className)
     {
