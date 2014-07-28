@@ -38,6 +38,7 @@
 
         <rect fill="#f98901"
               stroke="#000000"
+              stroke-width="1"
               x="478"
               y="199"
               style="shadow:#000000;shadow-dist:2px"
