@@ -101,7 +101,7 @@ class GfXComponent implements Linkable, Resizeable
             $button = new SWFButton();
             $button->addShape($hit, SWFBUTTON_HIT);
             $linkUrl = $this->getLinkUrl();
-            $button->addAction(new SWFAction("getURL('$linkUrl','_blank');"), SWFBUTTON_MOUSEUP);
+            $button->addAction(new SWFAction("getURL('$linkUrl?dummy=' + _root.tmcampid + '&dummy2=' + _root.tmclickref,'_blank');"), SWFBUTTON_MOUSEUP);
             $handle = $canvas->add($button);
             $handle->moveTo($this->getX(), $this->getY());
         }
