@@ -85,6 +85,7 @@ class GfxColor
 
         return $value;
     }
+
     private function limitColorHex()
     {
 

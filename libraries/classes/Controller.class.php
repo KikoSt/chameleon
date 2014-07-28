@@ -10,10 +10,6 @@ class Controller
 {
     private $template;
     private $layout;
-    private $user;
-    private $company;
-    private $advertiser;
-    private $category;
 
     public function __construct()
     {
@@ -55,67 +51,10 @@ class Controller
 
     public function create() {}
 
-    /**
-     * @return mixed
-     */
-    public function getAdvertiser()
+    public function loadPartial($pathToPartial, Array $params)
     {
-        return $this->advertiser;
-    }
+        $partial = file_get_contents($pathToPartial);
 
-    /**
-     * @param mixed $advertiser
-     */
-    public function setAdvertiser($advertiser)
-    {
-        $this->advertiser = $advertiser;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getCategory()
-    {
-        return $this->category;
-    }
-
-    /**
-     * @param mixed $category
-     */
-    public function setCategory($category)
-    {
-        $this->category = $category;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getCompany()
-    {
-        return $this->company;
-    }
-
-    /**
-     * @param mixed $company
-     */
-    public function setCompany($company)
-    {
-        $this->company = $company;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getUser()
-    {
-        return $this->user;
-    }
-
-    /**
-     * @param mixed $user
-     */
-    public function setUser($user)
-    {
-        $this->user = $user;
+        return $partial;
     }
 } 

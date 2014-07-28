@@ -1,110 +1,21 @@
 <div class="row" style="margin-top: 70px; padding-left: 10px; padding-right: 10px;">
+    <form id="editor" action="#" method="post">
     <div class="col-md-6" width="100%">
         <img src="<?php echo $this->gif;?>" alt="">
     </div>
-    <form id="editor" action="post" method="#">
     <div class="col-md-6">
-<!--        Currently static for development-->
         <div class="panel-group" id="accordion">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">
-                        <a data-toggle="collapse" data-target="#collapseOne"
-                           href="#collapseOne">
-                            Rectangle 1
-                        </a>
-                    </h3>
-                </div>
-                <div id="collapseOne" class="panel-collapse collapse"
-                    <div class="panel-body">
-                        <ul class="list-group">
-                            <li class="list-group-item">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label>Fill:</label>
-                                        <input id="fill" type="text" class="form-control" value="e2ddcf" />
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label>Stroke:</label>
-                                        <input id="stroke" type="text" class="form-control" value="e2ddcf" />
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="list-group-item">
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <label>X coordinate:</label>
-                                        <input type="text" class="form-control" placeholder="<?php echo 'given value';?>"/>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label>Y coordinate:</label>
-                                        <input type="text" class="form-control" placeholder="<?php echo 'given value';?>"/>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label>Width:</label>
-                                        <input type="text" class="form-control" placeholder="<?php echo 'given value';?>"/>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label>Height:</label>
-                                        <input type="text" class="form-control" placeholder="<?php echo 'given value';?>"/>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Rectangle 2</h3>
-                </div>
-                <div class="panel-body">
-                    *insert rectangle options here*
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Text 1</h3>
-                </div>
-                <div class="panel-body">
-                    *insert text options here*
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Text 2</h3>
-                </div>
-                <div class="panel-body">
-                    *insert text options here*
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Image 1</h3>
-                </div>
-                <div class="panel-body">
-                    *insert image options here*
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Image 2</h3>
-                </div>
-                <div class="panel-body">
-                    *insert image options here*
-                </div>
-            </div>
-
-    <!--        Currently static for development-->
+                <?php
+                    foreach($this->elements as $element):
+                        $type = get_class($element);
+                        include($type . '.inc.php');
+                    endforeach;
+                ?>
+                <!--        On click render template and show the change-->
+                <button type="submit" class="btn btn-default pull-right" name="preview">Preview</button>
+                <!--        On click render template, show the change and save data to database-->
+                <button type="submit" class="btn btn-default pull-right" name="save">Save</button>
         </div>
-        </form>
     </div>
+    </form>
 </div>
-
-<script type="text/javascript">
-    $(document).ready(
-        function()
-        {
-            $('#fill').jPicker();
-        });
-</script>
