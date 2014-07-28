@@ -16,32 +16,47 @@ class GfxRectangle extends GfxShape
 
     public function renderSWF($canvas)
     {
+        // the sprite is used as a container for links, strokes (at least until stroke implementation uses the SWF
+        // strokes here
+
+        $sprite = new SWFSprite();
+        $sprite->setFrames(30);
         $rect = new SWFShape();
 
-        if($this->getStroke() !== null)
-        {
-            $strokeWidth = $this->getStroke()->getWidth();
-            $stroke = new GfxRectangle();
-            $stroke->setWidth($this->getWidth() + ($strokeWidth * 2));
-            $stroke->setHeight($this->getHeight() + ($strokeWidth * 2));
-            $stroke->setX($this->getX() - $strokeWidth);
-            $stroke->setY($this->getY() - $strokeWidth);
-            $stroke->setFill($this->getStroke()->getColor());
-            $stroke->renderSWF($canvas);
+        // if($this->getStroke() !== null)
+        // {
+        //     $strokeWidth = $this->getStroke()->getWidth();
+        //     // TODO: draw the shape directly here, do NOT use another GfxRectangle (since we do not want another
+        //     // sprite!
+        //     $stroke = new GfxRectangle();
+        //     $stroke->setWidth($this->getWidth() + ($strokeWidth * 2));
+        //     $stroke->setHeight($this->getHeight() + ($strokeWidth * 2));
+        //     $stroke->setX($this->getX() - $strokeWidth);
+        //     $stroke->setY($this->getY() - $strokeWidth);
+        //     $stroke->setFill($this->getStroke()->getColor());
+        //     $stroke->renderSWF($canvas);
 
-        }
+        // }
 
         if($this->getShadowColor() !== null)
         {
-            $shadow = new GfxRectangle();
-            $shadow->setWidth($this->getWidth());
-            $shadow->setHeight($this->getHeight());
-            $shadow->setX($this->getX() + (int) $this->getShadowDist());
-            $shadow->setY($this->getY() + (int) $this->getShadowDist());
-            $shadowColor = $this->getShadowColor();
-            $shadowColor->setAlpha(128);
-            $shadow->setFill($shadowColor);
-            $canvas = $shadow->renderSWF($canvas);
+            $shadow = new SWFShape();
+            // BLACK with 50% opacity for now
+            $shadowFill = $shadow->addFill(0, 0, 0, 128);
+            $shadow->setRightFill($shadowFill);
+
+            $shadowX1 = $this->getX() + $this->getShadowDist();
+            $shadowY1 = $this->getY() + $this->getShadowDist();
+            $shadowX2 = $shadowX1 + $this->getWidth();
+            $shadowY2 = $shadowY1 + $this->getHeight();
+
+            $shadow->movePenTo($shadowX1, $shadowY1);
+            $shadow->drawLineTo($shadowX1, $shadowY2);
+            $shadow->drawLineTo($shadowX2, $shadowY2);
+            $shadow->drawLineTo($shadowX2, $shadowY1);
+            $shadow->drawLineTo($shadowX1, $shadowY1);
+
+            $handle = $sprite->add($shadow);
         }
 
         $r = $this->getFill()->getR();
@@ -63,8 +78,12 @@ class GfxRectangle extends GfxShape
         $rect->drawLineTo($x2, $y1);
         $rect->drawLineTo($x1, $y1);
 
-        $handle = $canvas->add($rect);
-        $handle->moveTo(0, 0);
+        $handle = $sprite->add($rect);
+
+        // this is absolutely required
+        $sprite->nextFrame();
+
+        $handle = $canvas->add($sprite);
 
         return $canvas;
     }
