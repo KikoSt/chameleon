@@ -11,42 +11,32 @@ class Overview extends Controller
     public function create()
     {
         $container = new GfxContainer();
+        $database = new Database();
+
         $view = $this->setLayout('views/overview.phtml')->getView();
 
-
-
-        $this->setCompany('exampleCompany');
-        $this->setAdvertiser('Mustermann');
-
-        $company = $this->getCompany();
-        $advertiser = $this->getAdvertiser();
-
-        $destinationDir = $container->createDestinationDir("$company/$advertiser");
-
-        $this->clearOutputDirectory($destinationDir);
-
-        $templates = $this->fetchTemplates();
+        $templates = $database->fetchTemplates();
 
         foreach($templates as $template)
         {
-            $container->setSource($template);
+            $container->setCompany($template['company']);
+            $container->setAdvertiser($template['advertiser']);
+            $container->setId($template['id']);
+
+            $destDir = $container->createDestinationDir();
+
+            $this->clearOutputDirectory($destDir);
+
+            $container->setSource($template['template']);
             $container->parse();
             $container->setTarget('GIF');
-            $container->setOutputDestination($destinationDir);
+            $container->setOutputDestination($destDir);
             $container->render();
         }
 
-        $view->templates = $this->getRenderedFiles($destinationDir);
+        $view->templates = $this->getRenderedFiles($destDir);
 
         return $view;
-    }
-
-    private function fetchTemplates()
-    {
-        // fetch all templates depending on the user, company, category
-
-        //TODO get templates from database depending on user, company and so on
-        return glob('svg/*.svg');
     }
 
     private function getRenderedFiles($destinationDir)
@@ -69,5 +59,4 @@ class Overview extends Controller
             }
         }
     }
-
 } 
