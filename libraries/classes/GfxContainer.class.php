@@ -247,8 +247,11 @@ class GfxContainer
     }
 
     private function renderSWF()
-    { $swf = new SWFMovie(); $swf->setDimension($this->getCanvasWidth(), $this->getCanvasHeight()); $swf->setFrames(30);
-        $swf->setRate(10);
+    {
+        $swf = new SWFMovie();
+        $swf->setDimension($this->getCanvasWidth(), $this->getCanvasHeight());
+        $swf->setFrames(1);
+        $swf->setRate(1);
         $swf->setBackground(0, 0, 0);
 
         foreach($this->elements AS $element)
