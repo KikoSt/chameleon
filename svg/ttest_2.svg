@@ -103,7 +103,7 @@
               stroke="#000000"
               x="38"
               y="207"
-              style="shadow:#999999;shadow-dist:2"
+              style="shadow:#000000;shadow-dist:2"
               width="129"
               height="14"
               id="img_1"/>
@@ -112,7 +112,7 @@
               stroke="#000000"
               x="188"
               y="207"
-              style="shadow:#999999;shadow-dist:2"
+              style="shadow:#000000;shadow-dist:2"
               width="129"
               height="14"
               id="img_1"/>
@@ -121,7 +121,7 @@
               stroke="#000000"
               x="338"
               y="207"
-              style="shadow:#999999;shadow-dist:2"
+              style="shadow:#000000;shadow-dist:2"
               width="129"
               height="14"
               id="img_1"/>
@@ -130,7 +130,7 @@
               stroke="#000000"
               x="488"
               y="207"
-              style="shadow:#999999;shadow-dist:2"
+              style="shadow:#000000;shadow-dist:2"
               width="129"
               height="14"
               id="img_1"/>
