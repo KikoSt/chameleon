@@ -71,27 +71,31 @@ class GfxText extends GfxComponent
     public function renderSWF($canvas)
     {
         $text = new SWFText();
+        $sprite = new SWFSprite();
 
         if($this->getShadowColor() !== null)
         {
-            $shadow = new GfxText();
-            $shadow->setWidth($this->getWidth());
-            $shadow->setHeight($this->getHeight());
-            $shadow->setX($this->getX() + (int) $this->getShadowDist());
-            $shadow->setY($this->getY() + (int) $this->getShadowDist());
+            $shadow = new SWFText();
 
             if(null !== $this->getSWFFont()) {
-                $shadow->setFontFamily($this->getFontFamily());
+                $shadow->setFont($this->getSWFFont());
             } else {
                 throw new Exception('No font set!');
             }
+            try {
+                $curFill = $this->getFill();
+            } catch(Exception $e) {
+                echo 'Error trying to get color';
+                return false;
+            }
+            $shadow->setColor(0, 0, 0, 128);
 
-            $shadowColor = $this->getShadowColor();
-            $shadowColor->setAlpha(128); // currently not working, most likely due to the text type!
-            $shadow->setFill($shadowColor);
-            $shadow->setFontSize($this->getFontSize());
-            $shadow->setText($this->getText());
-            $canvas = $shadow->renderSWF($canvas);
+            $shadow->setHeight($this->getFontSize() * FLASH_FONT_SCALE_FACTOR);
+            $shadow->moveTo($this->getX() - ($this->getTextWidth()/2) + (int) $this->getShadowDist(), $this->getY());
+            $shadow->moveTo($this->getX() + (int) $this->getShadowDist(), $this->getY() + (int) $this->getShadowDist());
+            $shadow->addString(utf8_decode(str_replace('€', ' Euro', $this->getText())));
+
+            $sprite->add($shadow);
         }
 
         if(null !== $this->getSWFFont()) {
@@ -117,8 +121,14 @@ class GfxText extends GfxComponent
         $text->moveTo($this->getX(), $this->getY());
         $text->addString(utf8_decode(str_replace('€', ' Euro', $this->getText())));
 
-        $handle = $canvas->add($text);
+        $handle = $sprite->add($text);
         unset($handle);
+        $handle = $canvas->add($sprite);
+
+        $aniSprite = new SWFSprite();
+        $handle = $aniSprite->add($sprite);
+
+        $sprite->nextFrame();
 
         return $canvas;
     }
