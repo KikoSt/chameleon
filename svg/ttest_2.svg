@@ -1,0 +1,187 @@
+<svg width="970" height="250" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g>
+        <title>globetrotter_super_leaderboard_2</title>
+
+        <rect fill="#f98901"
+              stroke="#000000"
+              x="0"
+              y="0"
+              width="970"
+              height="250"
+              id="background"/>
+
+        <image xlink:href="assets/mountain_river.jpg"
+               id="background_image"
+               width="960"
+               height="240"
+               y="5"
+               x="5"/>
+
+        <image xlink:href="assets/boot_2_sm.jpg"
+               linkurl="https://www.globetrotter.de/shop/lowa-camino-gtx-177836/"
+               id="product_image_1"
+               width="125"
+               height="125"
+               style="stroke:#000000;stroke-width:1"
+               y="100"
+               x="190"/>
+
+        <image xlink:href="assets/boot_1_sm.jpg"
+               linkurl="http://www.globetrotter.de/shop/asolo-shiraz-gv-237877/"
+               id="product_image_2"
+               width="125"
+               height="125"
+               style="stroke:#000000;stroke-width:1"
+               y="100"
+               x="40"/>
+
+        <image xlink:href="assets/boot_3.jpg"
+               linkurl="https://www.globetrotter.de/shop/hanwag-altai-gtx-199761/"
+               id="product_image_3"
+               width="125"
+               height="125"
+               style="stroke:#000000;stroke-width:1"
+               y="100"
+               x="340"/>
+
+        <image xlink:href="assets/boot_4.jpg"
+               linkurl="https://www.globetrotter.de/shop/salewa-rapace-gtx-177893/"
+               id="product_image_4"
+               width="125"
+               height="125"
+               style="stroke:#000000;stroke-width:1"
+               y="100"
+               x="490"/>
+
+        <image xlink:href="assets/globetrotter_logo_bb.jpg"
+               linkurl="http://www.globetrotter.de"
+               id="logo"
+               width="172"
+               height="87"
+               y="160"
+               x="795"/>
+
+        <text id="head_large"
+              xml:space="preserve"
+              text-anchor="middle"
+              font-family="BITSTREAM_VERA_SERIF"
+              font-size="36"
+              y="70"
+              x="25"
+              style="shadow:#000000;shadow-dist:2"
+              stroke-linecap="null"
+              stroke-linejoin="null"
+              stroke-dasharray="null"
+              stroke-width="0"
+              stroke="#000000"
+              fill="#ffffff"><![CDATA[Fernweh ... ]]></text>
+
+        <text id="head_small"
+              xml:space="preserve"
+              text-anchor="middle"
+              font-family="BITSTREAM_VERA_SERIF"
+              font-size="20"
+              y="70"
+              x="345"
+              style="shadow:#000000;shadow-dist:2"
+              stroke-linecap="null"
+              stroke-linejoin="null"
+              stroke-dasharray="null"
+              stroke-width="0"
+              stroke="#000000"
+              fill="#ffffff"><![CDATA[war noch nie so günstig]]></text>
+
+        <rect fill="#f98901"
+              stroke="#000000"
+              x="38"
+              y="207"
+              style="shadow:#000000;shadow-dist:2"
+              width="129"
+              height="14"
+              id="price_ribbon_1"/>
+
+        <rect fill="#f98901"
+              stroke="#000000"
+              x="188"
+              y="207"
+              style="shadow:#000000;shadow-dist:2"
+              width="129"
+              height="14"
+              id="price_ribbon_2"/>
+
+        <rect fill="#f98901"
+              stroke="#000000"
+              x="338"
+              y="207"
+              style="shadow:#000000;shadow-dist:2"
+              width="129"
+              height="14"
+              id="price_ribbon_3"/>
+
+        <rect fill="#f98901"
+              stroke="#000000"
+              x="488"
+              y="207"
+              style="shadow:#000000;shadow-dist:2"
+              width="129"
+              height="14"
+              id="price_ribbon_4"/>
+
+        <text id="price_1"
+              xml:space="preserve"
+              text-anchor="middle"
+              font-family="BITSTREAM_VERA_SANS_B"
+              font-size="9"
+              y="218"
+              x="65"
+              stroke-linecap="null"
+              stroke-linejoin="null"
+              stroke-dasharray="null"
+              stroke-width="0"
+              stroke="#000000"
+              fill="#000000"><![CDATA[219,95€]]></text>
+
+        <text id="price_2"
+              xml:space="preserve"
+              text-anchor="middle"
+              font-family="BITSTREAM_VERA_SANS_B"
+              font-size="9"
+              y="218"
+              x="215"
+              stroke-linecap="null"
+              stroke-linejoin="null"
+              stroke-dasharray="null"
+              stroke-width="0"
+              stroke="#000000"
+              fill="#000000"><![CDATA[219,95€]]></text>
+
+        <text id="price_3"
+              xml:space="preserve"
+              text-anchor="middle"
+              font-family="BITSTREAM_VERA_SANS_B"
+              font-size="9"
+              y="218"
+              x="365"
+              stroke-linecap="null"
+              stroke-linejoin="null"
+              stroke-dasharray="null"
+              stroke-width="0"
+              stroke="#000000"
+              fill="#000000"><![CDATA[199,95€]]></text>
+
+        <text id="price_4"
+              xml:space="preserve"
+              text-anchor="middle"
+              font-family="BITSTREAM_VERA_SANS_B"
+              font-size="9"
+              y="218"
+              x="515"
+              stroke-linecap="null"
+              stroke-linejoin="null"
+              stroke-dasharray="null"
+              stroke-width="0"
+              stroke="#000000"
+              fill="#000000"><![CDATA[219,95€]]></text>
+    </g>
+</svg>

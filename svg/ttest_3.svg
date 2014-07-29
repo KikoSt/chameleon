@@ -1,57 +1,46 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<svg width="970" height="250" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg"
+<svg width="728" height="90" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg"
      xmlns:xlink="http://www.w3.org/1999/xlink">
     <g>
-        <title>globetrotter_super_leaderboard_1</title>
+        <title>globetrotter_leaderboard_1</title>
 
         <rect fill="#f98901"
               stroke="#000000"
               x="0"
               y="0"
-              width="970"
-              height="250"
+              width="728"
+              height="90"
               id="background"/>
 
-        <image xlink:href="assets/mountain_river.jpg"
+        <image xlink:href="assets/mountain_river_leader.jpg"
                id="background_image"
-               width="960"
-               height="240"
+               width="718"
+               height="80"
                y="5"
                x="5"/>
 
-        <image xlink:href="assets/boot_1.jpg"
-               linkurl="http://www.globetrotter.de/shop/asolo-shiraz-gv-237877/"
+        <image xlink:href="assets/boot_2_ul.jpg"
+               linkurl="https://www.globetrotter.de/shop/lowa-camino-gtx-177836/"
                id="product_image_1"
-               width="200"
-               height="200"
-               style="stroke:#000000;stroke-width:1;shadow:#000000;shadow-dist:4px"
-               y="25"
-               x="480"/>
+               width="60"
+               height="60"
+               style="stroke:#000000;stroke-width:1"
+               y="15"
+               x="355"/>
 
-        <image xlink:href="assets/globetrotter_logo_bb.jpg"
+        <image xlink:href="assets/globetrotter_logo_ul.jpg"
                linkurl="http://www.globetrotter.de"
                id="logo"
-               width="172"
-               height="87"
-               y="160"
-               x="795"/>
-
-        <rect fill="#f98901"
-              stroke="#000000"
-              stroke-width="1"
-              x="478"
-              y="199"
-              style="shadow:#000000;shadow-dist:2px"
-              width="204"
-              height="20"
-              id="price_ribbon_1"/>
+               width="100"
+               height="24"
+               y="0"
+               x="628"/>
 
         <text id="head_large"
               xml:space="preserve"
               text-anchor="middle"
               font-family="BITSTREAM_VERA_SERIF"
               font-size="36"
-              y="140"
+              y="70"
               x="25"
               style="shadow:#000000;shadow-dist:2"
               stroke-linecap="null"
@@ -59,15 +48,15 @@
               stroke-dasharray="null"
               stroke-width="0"
               stroke="#000000"
-              fill="#ffffff"><![CDATA[Fernweh ...]]></text>
+              fill="#ffffff"><![CDATA[Fernweh ... ]]></text>
 
         <text id="head_small"
               xml:space="preserve"
               text-anchor="middle"
               font-family="BITSTREAM_VERA_SERIF"
-              font-size="20"
-              y="180"
-              x="45"
+              font-size="12"
+              y="70"
+              x="445"
               style="shadow:#000000;shadow-dist:2"
               stroke-linecap="null"
               stroke-linejoin="null"
@@ -76,18 +65,27 @@
               stroke="#000000"
               fill="#ffffff"><![CDATA[war noch nie so günstig]]></text>
 
-        <text id="price"
+        <rect fill="#f98901"
+              stroke="#000000"
+              x="354"
+              y="68"
+              style="shadow:#999999;shadow-dist:1"
+              width="62"
+              height="10"
+              id="price_ribbon_1"/>
+
+        <text id="price_1"
               xml:space="preserve"
               text-anchor="middle"
               font-family="BITSTREAM_VERA_SANS_B"
-              font-size="12"
-              y="215"
-              x="522"
+              font-size="7"
+              y="76"
+              x="356"
               stroke-linecap="null"
               stroke-linejoin="null"
               stroke-dasharray="null"
               stroke-width="0"
               stroke="#000000"
-              fill="#000000"><![CDATA[219,95€]]></text>
+              fill="#000000"><![CDATA[219,95 Eur]]></text>
     </g>
 </svg>
