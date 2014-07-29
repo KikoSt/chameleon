@@ -1,0 +1,29 @@
+    <?php
+        if(!is_array($this->templates)):
+    ?>
+            <h1>An error occurred. Please try reloading the page ...</h1>
+    <?php
+        else:
+    ?>
+    <div class="row" style="margin-top: 70px; padding-left: 10px;">
+    <?php
+        foreach($this->templates as $template):
+    ?>
+        <form method="post" action="index.php?page=editor">
+            <div class="col-md-3">
+                <div>
+                    <img src="<?php echo $template; ?>" alt="" width="50%">
+                </div>
+                <input type="hidden" name="id" value="4711">
+                <button type="submit" class="btn btn-default">Edit</button>
+            </div>
+        </form>
+    <?php
+        endforeach;
+        endif;
+    ?>
+    </div>
+
+
+
+

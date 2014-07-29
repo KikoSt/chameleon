@@ -6,12 +6,11 @@
  * Date: 17/07/2014
  * Time: 07:30
  */
-
 require_once('GfxComponent.class.php');
 
 class GfxContainer
 {
-    private $sId;
+    private $id;
     protected $elements;
     private $target;
     private $sSource;
@@ -19,6 +18,11 @@ class GfxContainer
     private $canvasHeight;
     private $canvas;
     private $outputName; // default name if not set!
+    private $destination;
+    private $company;
+    private $advertiser;
+    private $editorOptions;
+
 
     private $allowedTargets;
 
@@ -87,12 +91,17 @@ class GfxContainer
 
     public function setId($sId)
     {
-        $this->sId =$sId;
+        $this->id =$sId;
     }
 
     public function getId()
     {
-        return $this->sId;
+        return $this->id;
+    }
+
+    public function getElements()
+    {
+        return $this->elements;
     }
 
     public function addElement($element)
@@ -100,6 +109,8 @@ class GfxContainer
         if(is_a($element, 'GfxComponent'))
         {
             $this->elements[] = $element;
+
+            //give element to partial
         }
         else
         {
@@ -115,13 +126,18 @@ class GfxContainer
      */
     private function getOutputFilename()
     {
-        if($this->getOutputName() !== '')
+        if(null !== $this->getOutputName() && $this->getOutputName() !== '')
         {
             $filename = $this->getOutputName();
         }
         else
         {
-            $filename = time();
+            $filename = $this->getCompany();
+            $filename .= '_' . $this->getAdvertiser();
+            $filename .= '_' . $this->getCanvasHeight();
+            $filename .= 'x' . $this->getCanvasWidth();
+            $filename .= '_' . time();
+            $filename .= '_' . $this->getId();
         }
 
         $filename .= '.' . strtolower($this->getTarget());
@@ -129,18 +145,26 @@ class GfxContainer
         return $filename;
     }
 
+    public function setOutputDestination($destination)
+    {
+        $this->destination = $destination;
+    }
+
 
     private function getOutputDestination()
     {
-        $destination = 'output/' . $this->getOutputFilename();
+        $destination = $this->destination . $this->getOutputFilename();
         return $destination;
     }
 
     public function render()
     {
-        if($this->target === 'SWF') {
+        if($this->target === 'SWF')
+        {
             $this->renderSWF();
-        } else if($this->target === 'GIF') {
+        }
+        else if($this->target === 'GIF')
+        {
             $this->renderGIF();
         }
     }
@@ -153,8 +177,10 @@ class GfxContainer
         $swf->setRate(10);
         $swf->setBackground(0, 0, 0);
 
-        foreach($this->elements AS $element) {
-            if(is_a($element, 'GfxComponent')) {
+        foreach($this->elements AS $element)
+        {
+            if(is_a($element, 'GfxComponent'))
+            {
                 $element->renderSWF($swf);
             }
         }
@@ -174,6 +200,35 @@ class GfxContainer
         $this->setCanvas($updatedCanvas);
 
         imagegif($updatedCanvas, $this->getOutputDestination());
+
+        chmod($this->getOutputDestination(), 0777);
+    }
+
+    public function createDestinationDir()
+    {
+        $parts = array($this->getCompany(), $this->getAdvertiser());
+
+        $dir = 'output/';
+
+        foreach($parts as $singleDir)
+        {
+            $dir .= $singleDir.'/';
+
+            if(!is_dir($dir) && !file_exists($dir))
+            {
+                if(!mkdir($dir, 0777, true))
+                {
+                    die($dir.' mkdir failed');
+                }
+                chmod($dir, 0777);
+            }
+        }
+        return $dir;
+    }
+
+    public function getOptionsForEditor()
+    {
+        return $this->editorOptions;
     }
 
 
@@ -237,6 +292,40 @@ class GfxContainer
         $this->canvasWidth = $newCanvasWidth;
         $this->canvasHeight = $newCanvasHeight;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getAdvertiser()
+    {
+        return $this->advertiser;
+    }
+
+    /**
+     * @param mixed $advertiser
+     */
+    public function setAdvertiser($advertiser)
+    {
+        $this->advertiser = $advertiser;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCompany()
+    {
+        return $this->company;
+    }
+
+    /**
+     * @param mixed $company
+     */
+    public function setCompany($company)
+    {
+        $this->company = $company;
+    }
+
+
 
     // Magic Methods
     public function __toString()

@@ -1,0 +1,35 @@
+<div class="row" style="margin-top: 70px; padding-left: 10px; padding-right: 10px;">
+    <form id="editor" action="#" method="post">
+    <div class="col-md-6" width="100%">
+        <img src="<?php echo $this->gif;?>" alt="">
+    </div>
+    <div class="col-md-6">
+        <div class="panel-group" id="accordion">
+                <?php
+                    foreach($this->elements as $element):
+                        $type = get_class($element);
+                        include($type . '.inc.php');
+                    endforeach;
+                ?>
+                <!--        On click render template and show the change-->
+                <button type="submit" class="btn btn-default pull-right" name="submit" value="preview">Preview</button>
+                <!--        On click render template, show the change and save data to database-->
+                <button type="submit" class="btn btn-default pull-right" name="submit" value="save">Save</button>
+        </div>
+    </div>
+    </form>
+</div>
+<script type="text/javascript">
+    $('.btn').on('click', function(){
+        $.ajax({
+            type: 'POST',
+            url: '/chameleon/ajax/changeSvg.php',
+            data: $(this).serialize(),
+            success: function(){
+//                location.reload();
+            }
+        });
+    });
+
+    $('.picker').colorpicker();
+</script>
