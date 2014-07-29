@@ -18,6 +18,7 @@ class GfxContainer
     private $canvasWidth;
     private $canvasHeight;
     private $canvas;
+    private $outputName; // default name if not set!
 
     private $allowedTargets;
 
@@ -41,6 +42,16 @@ class GfxContainer
     public function setCanvas($canvas)
     {
         $this->canvas = $canvas;
+    }
+
+    public function setOutputName($outputName)
+    {
+        $this->outputName = $outputName;
+    }
+
+    public function getOutputName()
+    {
+        return $this->outputName;
     }
 
     public function setSource($sSource)
@@ -96,8 +107,34 @@ class GfxContainer
         }
     }
 
+    /**
+     * getOutputFilename
+     *
+     * @access private
+     * @return string
+     */
+    private function getOutputFilename()
+    {
+        if($this->getOutputName() !== '')
+        {
+            $filename = $this->getOutputName();
+        }
+        else
+        {
+            $filename = time();
+        }
+
+        $filename .= '.' . strtolower($this->getTarget());
+
+        return $filename;
+    }
 
 
+    private function getOutputDestination()
+    {
+        $destination = 'output/' . $this->getOutputFilename();
+        return $destination;
+    }
 
     public function render()
     {
@@ -110,22 +147,18 @@ class GfxContainer
 
     private function renderSWF()
     {
-        $fonts = array();
         $swf = new SWFMovie();
         $swf->setDimension($this->getCanvasWidth(), $this->getCanvasHeight());
         $swf->setFrames(30);
         $swf->setRate(10);
         $swf->setBackground(0, 0, 0);
 
-        $count = 0;
-        $texts = array();
-
         foreach($this->elements AS $element) {
             if(is_a($element, 'GfxComponent')) {
                 $element->renderSWF($swf);
             }
         }
-        $swf->save('output.swf');
+        $swf->save($this->getOutputDestination());
 
     }
 
@@ -140,7 +173,7 @@ class GfxContainer
 
         $this->setCanvas($updatedCanvas);
 
-        imagegif($updatedCanvas, 'output.gif');
+        imagegif($updatedCanvas, $this->getOutputDestination());
     }
 
 

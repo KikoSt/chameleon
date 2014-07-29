@@ -1,0 +1,20 @@
+version 0.5
+
+features:
+
+- GfxComponent
+  + GfxShape
+    *GfxRectangle
+  + GfxText
+  + GfxImage
+
+- basic SWF and GIF target creation
+- NO animation
+
+SWF:
+- links for GfxImage
+- shadows for GfxRectangle, GfxImage and GfxText
+- strokes for GfxRectangle and GfxImage
+
+SWF/GIF:
+- source images may be jpeg, gif, png

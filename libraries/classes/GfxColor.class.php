@@ -8,7 +8,25 @@
 
 class GfxColor
 {
-    private $r, $g, $b;
+    private $r, $g, $b, $alpha;
+
+    public function __construct($rOrHex=null, $g=null, $b=null)
+    {
+        if(preg_match("/^#([0-9a-fA-F]{3}){1,2}$/", $rOrHex))
+        {
+            $hex = $rOrHex;
+            $this->setHex($hex);
+            // hex value passed
+        }
+        else if((int) $rOrHex == $rOrHex)
+        {
+            $r = (int) $rOrHex;
+            $this->setR($r);
+            $this->setG($g);
+            $this->setB($b);
+        }
+        $this->alpha = 255;
+    }
 
     public function setHex($colorHex)
     {
@@ -43,6 +61,16 @@ class GfxColor
         {
             throw new InvalidArgumentException();
         }
+    }
+
+    public function setAlpha($alpha)
+    {
+        $this->alpha = $alpha;
+    }
+
+    public function getAlpha()
+    {
+        return $this->alpha;
     }
 
     public function getR()

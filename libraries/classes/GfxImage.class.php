@@ -41,11 +41,11 @@ class GfxImage extends GfXComponent
         parent::create($svgRootNode);
         $attr = $svgRootNode->attributes();
         $imageUrl = (string) $svgRootNode->attributes('xlink', true)->href;
+        if((string) $svgRootNode->attributes()->linkurl !== '')
+        {
+            $this->setLinkUrl((string) $svgRootNode->attributes()->linkurl);
+        }
         $this->setImageUrl($imageUrl);
-        $this->setX((float) $attr->x);
-        $this->setY((float) $attr->y);
-        $this->setWidth((float) $attr->width);
-        $this->setHeight((float) $attr->height);
     }
 
     /**
@@ -57,21 +57,55 @@ class GfxImage extends GfXComponent
      */
     public function renderSWF($canvas)
     {
-        $imgPath = 'tmp/file.jpg';
+        if($this->getStroke() !== null)
+        {
+            $strokeWidth = $this->getStroke()->getWidth();
+            $stroke = new GfxRectangle();
+            $stroke->setWidth($this->getWidth() + ($strokeWidth * 2));
+            $stroke->setHeight($this->getHeight() + ($strokeWidth * 2));
+            $stroke->setX($this->getX() - $strokeWidth);
+            $stroke->setY($this->getY() - $strokeWidth);
+            $stroke->setFill($this->getStroke()->getColor());
+            $stroke->renderSWF($canvas);
+
+        }
+
+        if($this->getShadowColor() !== null)
+        {
+            $shadow = new GfxRectangle();
+            $shadow->setWidth($this->getWidth());
+            $shadow->setHeight($this->getHeight());
+            $shadow->setX($this->getX() + (int) $this->getShadowDist());
+            $shadow->setY($this->getY() + (int) $this->getShadowDist());
+            $shadowColor = $this->getShadowColor();
+            $shadowColor->setAlpha(128);
+            $shadow->setFill($shadowColor);
+            $shadow->renderSWF($canvas);
+
+        }
+        $imgPath = 'tmp/file' . time() . rand() . '.jpg';
 
         $output = $this->resizeImage($this->getImageUrl(), $this->getWidth(), $this->getHeight(), false);
 
         ImageJPEG($output, $imgPath);
 
+        $image = new SWFBitmap(fopen($this->getImageUrl(), "rb"));
         $image = new SWFBitmap(fopen($imgPath, "rb"));
         $handle = $canvas->add($image);
         $handle->moveTo($this->getX(), $this->getY());
+        $canvas = $this->addClickableLink($canvas);
         return $canvas;
     }
 
+    /**
+     * render GIF
+     *
+     * @param $canvas
+     * @return mixed
+     */
     public function renderGIF($canvas)
     {
-        $dst = $this->resizeImage($this->getImageUrl());
+        $dst = $this->resizeImage($this->getImageUrl(),true);
 
         imagecopyresampled($canvas, $dst, $this->getX(), $this->getY(), 0, 0, $this->getWidth(), $this->getHeight(), $this->getWidth(),
             $this->getHeight());
@@ -79,6 +113,13 @@ class GfxImage extends GfXComponent
         return $canvas;
     }
 
+    /**
+     * resize image
+     *
+     * @param $file
+     * @param bool $crop
+     * @return resource
+     */
     public function resizeImage($file, $crop=false)
     {
         list($originalWidth, $originalHeight) = getimagesize($file);
@@ -103,36 +144,64 @@ class GfxImage extends GfXComponent
         {
             if (($resizedWidth/$resizedHeight) > $r)
             {
-                $resizedWidth *= $r;
+                $resizedWidth = $this->getHeight() * $r;
             }
             else
             {
-                $resizedWidth /= $r;
+                $resizedWidth = $this->getWidth() / $r;
             }
         }
 
         $x = ($this->getWidth()-$resizedWidth) / 2;
 
-        $originalImage = imagecreatefromjpeg($file);
+        $originalImage = $this->createImageFromSourceFile($file);
 
         //canvas for resized image
         $resizedImage = imagecreatetruecolor($this->getWidth(), $this->getHeight());
-        //adding resized image () to the canvas
+        imagealphablending($resizedImage, true);
 
-        $white = imagecolorallocate($resizedImage, 255, 255, 255);
-        imagefill($resizedImage, 0, 0, $white);
+        $bgcolor = imagecolorallocatealpha($resizedImage, 255, 255, 255, 0);
+        imagefill($resizedImage, 0, 0, $bgcolor);
 
         imagecopyresampled($resizedImage, $originalImage, $x, 0, 0, 0, $resizedWidth, $resizedHeight, $originalWidth, $originalHeight);
+        imagealphablending($resizedImage, false);
+        imagesavealpha($resizedImage,true);
 
         return $resizedImage;
     }
 
+    private function createImageFromSourceFile($file)
+    {
+        list( $dirname, $basename, $extension, $filename ) = array_values( pathinfo($file) );
+
+        $image = null;
+
+        switch($extension)
+        {
+            case "jpg":
+            {
+                $image = imagecreatefromjpeg($file);
+                break;
+            }
+            case "png":
+            {
+                $image = imagecreatefrompng($file);
+                break;
+            }
+            case "gif":
+            {
+                $image = imagecreatefromgif($file);
+                break;
+            }
+        }
+        return $image;
+    }
+
     /**
-     * setImageUrl
+     * check if file exists and set image url
      *
-     * @param mixed $imageUrl
-     * @access public
-     * @return void
+     * @param $imageUrl
+     * @throws FileNotFoundException
      */
     public function setImageUrl($imageUrl)
     {
@@ -144,17 +213,6 @@ class GfxImage extends GfXComponent
         {
             throw new FileNotFoundException($imageUrl);
         }
-
-//        $fileHeaders = get_headers($imageUrl);
-//        // TODO: make this more robust!!!
-//        if(substr($fileHeaders[0], -6) == '200 OK')
-//        {
-//            $this->imageUrl = $imageUrl;
-//        }
-//        else
-//        {
-//
-//        }
     }
 
     /**
