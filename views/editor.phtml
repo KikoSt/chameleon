@@ -19,3 +19,17 @@
     </div>
     </form>
 </div>
+<script type="text/javascript">
+    $('.btn').on('click', function(){
+        $.ajax({
+            type: 'POST',
+            url: '/chameleon/ajax/changeSvg.php',
+            data: $(this).serialize(),
+            success: function(){
+//                location.reload();
+            }
+        });
+    });
+
+    $('.picker').colorpicker();
+</script>

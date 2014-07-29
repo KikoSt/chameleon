@@ -17,9 +17,10 @@
         </div>
     </div>
 <?php
-    session_start();
-
+    include('config/pathconfig.inc.php');
     $myIndex = new Index();
+
+    session_start();
 
     $redirect = $myIndex->getRedirect($_REQUEST['page']);
 
@@ -29,22 +30,22 @@
 </body>
 
 <?php
-    function __autoload($className)
+function __autoload($className)
+{
+    if(file_exists(CLASS_DIR . $className . '.class.php'))
     {
-        if(file_exists('libraries/classes/' . $className . '.class.php'))
-        {
-            require_once('libraries/classes/' . $className . '.class.php');
-        }
-        else if(file_exists('libraries/interfaces/' . $className . '.interface.php'))
-        {
-            require_once('libraries/interfaces/' . $className . '.interface.php');
-        }
-        else if(file_exists('libraries/exception/' . $className . '.exception.php'))
-        {
-            require_once('libraries/exception/' . $className . '.exception.php');
-        }
-        else if(file_exists('controllers/' . $className . '.php'))
-        {
-            require_once('controllers/' . $className . '.php');
-        }
+        require_once(CLASS_DIR . $className . '.class.php');
     }
+    else if(file_exists(INTERFACE_DIR . $className . '.interface.php'))
+    {
+        require_once(INTERFACE_DIR . $className . '.interface.php');
+    }
+    else if(file_exists(EXCEPTION_DIR . $className . '.exception.php'))
+    {
+        require_once(EXCEPTION_DIR . $className . '.exception.php');
+    }
+    else if(file_exists(CONTROLLER_DIR . $className . '.php'))
+    {
+        require_once(CONTROLLER_DIR . $className . '.php');
+    }
+}

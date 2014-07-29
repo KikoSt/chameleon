@@ -59,6 +59,3 @@
         </ul>
     </div>
 </div>
-<script language="JavaScript">
-    $('.picker').colorpicker();
-</script>
