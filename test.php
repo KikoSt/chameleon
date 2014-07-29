@@ -1,6 +1,6 @@
 <?php
 
-$rest = new RESTCenter();
+$connector = new APIConnector();
 
 $template = new BannerTemplateModel('svg/ttest_1.svg');
 $template->setDescription('first dummy test thingie');
@@ -11,8 +11,11 @@ $template->setIdAdvertiser(122);
 $template->setIdAuditUser(null);
 $template->setSvgContent(simplexml_load_string('<svg><g><title>test</title></g></svg>')->asXml());
 
-$rest->getTemplates(122);
-$rest->sendBannerTemplate($template);
+$connector->getMethodList();
+die();
+
+$connector->getTemplates(122);
+$connector->sendBannerTemplate($template);
 
 exit(0);
 

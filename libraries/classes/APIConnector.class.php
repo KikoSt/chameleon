@@ -1,6 +1,6 @@
 <?php
 
-class RESTCenter
+class APIConnector
 {
     const REST_API_USERNAME = 'chameleon-api';
     const REST_API_PASSWORD = 'BwHwEpJnIqUgWkOv9YDg';
@@ -60,7 +60,7 @@ class RESTCenter
     private function getCurl($serviceUrl, $method)
     {
         $curl = curl_init($serviceUrl);
-        $baseAuthUserPwd = (RESTCenter::REST_API_USERNAME . ':' . RESTCenter::REST_API_PASSWORD);
+        $baseAuthUserPwd = (APIConnector::REST_API_USERNAME . ':' . APIConnector::REST_API_PASSWORD);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_USERPWD, $baseAuthUserPwd);
         if($method === 'GET')
