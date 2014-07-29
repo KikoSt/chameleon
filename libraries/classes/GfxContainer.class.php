@@ -6,7 +6,6 @@
  * Date: 17/07/2014
  * Time: 07:30
  */
-
 require_once('GfxComponent.class.php');
 
 class GfxContainer
@@ -215,7 +214,7 @@ class GfxContainer
         {
             $dir .= $singleDir.'/';
 
-            if(!is_dir($dir))
+            if(!is_dir($dir) && !file_exists($dir))
             {
                 if(!mkdir($dir, 0777, true))
                 {
@@ -224,7 +223,6 @@ class GfxContainer
                 chmod($dir, 0777);
             }
         }
-
         return $dir;
     }
 
