@@ -28,7 +28,7 @@ class GfxContainer
 
     public function __construct()
     {
-        $this->elements = array();
+//        $this->elements = array();
         $this->allowedTargets = array('SWF', 'GIF');
     }
 
@@ -253,6 +253,43 @@ class GfxContainer
         return $gfxInstance;
     }
 
+    public function changeElementValue($formData)
+    {
+        //iterate all svg elements
+        foreach($this->getElements() as $element)
+        {
+            $id = $element->getId();
+
+            //iterate form data
+            foreach($formData as $key => $value)
+            {
+                $cleansedKey = explode('#', $key);
+                $param = $cleansedKey[1];
+
+                // form data containing the current element found?
+                if(strcasecmp($cleansedKey[0], $id) == 0)
+                {
+                    $func="set" . ucwords($param);
+
+                    if($param === "fill" || $param === "stroke")
+                    {
+                        $color = new GfxColor($value);
+                        $element->$func($color);
+                    }
+                    elseif($param === "fontFamily")
+                    {
+                        //do nothing for now
+                        //todo adjust select for fonts at the frontend
+                    }
+                    else
+                    {
+                        $element->$func($value);
+                    }
+                }
+            }
+        }
+    }
+
     /* **************************************
               Accessors
     ***************************************** */
@@ -326,6 +363,8 @@ class GfxContainer
     {
         $this->company = $company;
     }
+
+
 
 
 

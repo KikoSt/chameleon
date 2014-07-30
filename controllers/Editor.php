@@ -10,8 +10,10 @@ class Editor extends Controller
 {
     public function create()
     {
+
         $container = new GfxContainer();
         $database = new Database();
+
         $view = $this->setLayout('views/editor.phtml')->getView();
 
         $template = $database->fetchTemplateById($_REQUEST['id']);
@@ -34,7 +36,7 @@ class Editor extends Controller
 
         $view->elements = $container->getElements();
 
-        $view->gif = $destDir . $this->getLatestFile($destDir);
+        $view->gif = str_replace('/var/www', '', $destDir) . $this->getLatestFile($destDir);
 
         if($view->gif === null)
         {

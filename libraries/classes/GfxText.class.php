@@ -20,6 +20,7 @@ class GfxText extends GfxComponent
     private $fontSizeAdjust;
     private $fontSize;
     private $fontFamily;
+    private $textAnchor;
 
     public function __construct()
     {
@@ -345,6 +346,24 @@ class GfxText extends GfxComponent
             $this->throwException($fontStretch);
         }
     }
+
+    /**
+     * @return mixed
+     */
+    public function getTextAnchor()
+    {
+        return $this->textAnchor;
+    }
+
+    /**
+     * @param mixed $textAnchor
+     */
+    public function setTextAnchor($textAnchor)
+    {
+        $this->textAnchor = $textAnchor;
+    }
+
+
 
     /**
      * @param $sParam
