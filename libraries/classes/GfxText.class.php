@@ -5,7 +5,7 @@
  * Date: 17.07.14
  * Time: 11:33
  */
-require_once('config/fontconfig.inc.php');
+require_once(ROOT_DIR . 'config/fontconfig.inc.php');
 define('FLASH_FONT_SCALE_FACTOR', 1.32);
 
 class GfxText extends GfxComponent

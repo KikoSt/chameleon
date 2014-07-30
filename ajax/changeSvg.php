@@ -7,13 +7,13 @@
  */
 
 include('../config/pathconfig.inc.php');
+require_once('../Bootstrap.php');
+
 
 if(!defined('__ROOT__'))
 {
     define('__ROOT__', '../');
 }
-
-var_dump($_REQUEST);
 
 $container = new GfxContainer();
 $database = new Database();
@@ -28,21 +28,11 @@ foreach($templates as $template)
 
     $destDir = $container->createDestinationDir();
 
+    Debug::console($destDir);
+
     $container->setSource($template['template']);
     $container->parse();
     $container->setTarget('GIF');
     $container->setOutputDestination($destDir);
     $container->render();
-}
-
-function __autoload($className)
-{
-    if(file_exists(__ROOT__ . CLASS_DIR . $className . '.class.php'))
-    {
-        require_once(__ROOT__ . CLASS_DIR . $className . '.class.php');
-    }
-    else if(file_exists(__ROOT__ . INTERFACE_DIR . $className . '.interface.php'))
-    {
-        require_once(__ROOT__ . INTERFACE_DIR . $className . '.interface.php');
-    }
 }

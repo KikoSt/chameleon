@@ -16,7 +16,7 @@ class Database
         return array(0 => array('id' => 4711,
             'user' => 'Zoidberg',
             'company' => 'ACME',
-            'template' => 'svg/test.svg',
+            'template' => 'test.svg',
             'advertiser' => 'dontknow')
         );
     }
@@ -29,7 +29,7 @@ class Database
         return array(0 => array('id' => 4711,
             'user' => 'Zoidberg',
             'company' => 'ACME',
-            'template' => 'svg/ttest_1.svg',
+            'template' => 'ttest_1.svg',
             'advertiser' => 'dontknow')
         );
     }
@@ -41,7 +41,7 @@ class Database
         return array('id' => 4711,
                      'user' => 'Zoidberg',
                      'company' => 'ACME',
-                     'template' => 'svg/test.svg',
+                     'template' => 'test.svg',
                      'advertiser' => 'dontknow'
         );
     }

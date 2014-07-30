@@ -17,6 +17,12 @@
         </div>
     </div>
 <?php
+    require_once('Bootstrap.php');
+
+    if(!defined('__ROOT__'))
+    {
+        define('__ROOT__', './');
+    }
     include('config/pathconfig.inc.php');
     $myIndex = new Index();
 
@@ -29,23 +35,4 @@
 </html>
 </body>
 
-<?php
-function __autoload($className)
-{
-    if(file_exists(CLASS_DIR . $className . '.class.php'))
-    {
-        require_once(CLASS_DIR . $className . '.class.php');
-    }
-    else if(file_exists(INTERFACE_DIR . $className . '.interface.php'))
-    {
-        require_once(INTERFACE_DIR . $className . '.interface.php');
-    }
-    else if(file_exists(EXCEPTION_DIR . $className . '.exception.php'))
-    {
-        require_once(EXCEPTION_DIR . $className . '.exception.php');
-    }
-    else if(file_exists(CONTROLLER_DIR . $className . '.php'))
-    {
-        require_once(CONTROLLER_DIR . $className . '.php');
-    }
-}
+

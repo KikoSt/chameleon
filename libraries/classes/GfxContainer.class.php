@@ -60,6 +60,8 @@ class GfxContainer
 
     public function setSource($sSource)
     {
+        $sSource = SVG_DIR . $sSource;
+
         if(file_exists($sSource))
         {
             $this->sSource = $sSource;
@@ -208,11 +210,11 @@ class GfxContainer
     {
         $parts = array($this->getCompany(), $this->getAdvertiser());
 
-        $dir = 'output/';
+        $dir = OUTPUT_DIR;
 
         foreach($parts as $singleDir)
         {
-            $dir .= $singleDir.'/';
+            $dir .= $singleDir . '/';
 
             if(!is_dir($dir) && !file_exists($dir))
             {
