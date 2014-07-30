@@ -18,21 +18,22 @@ if(!defined('__ROOT__'))
 $container = new GfxContainer();
 $database = new Database();
 
-$templates = $database->fetchTemplatesNext();
+$template = $database->fetchTemplateById($_REQUEST['id']);
 
-foreach($templates as $template)
-{
-    $container->setCompany($template['company']);
-    $container->setAdvertiser($template['advertiser']);
-    $container->setId($template['id']);
+$container->setCompany($template['company']);
+$container->setAdvertiser($template['advertiser']);
+$container->setId($template['id']);
 
-    $destDir = $container->createDestinationDir();
+$container->setSource($template['template']);
+$container->parse();
 
-    Debug::console($destDir);
+$container->changeElementValue($_POST);
 
-    $container->setSource($template['template']);
-    $container->parse();
-    $container->setTarget('GIF');
-    $container->setOutputDestination($destDir);
-    $container->render();
-}
+$container->setTarget('GIF');
+$container->setOutputDestination($container->createDestinationDir());
+$container->render();
+
+
+
+
+
