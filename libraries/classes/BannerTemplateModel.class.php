@@ -9,7 +9,7 @@
  * @author Christoph 'Kiko' Starkmann <christoph.starkmann@mediadecision.com>
  * @license Proprietary/Closed Source
  */
-class BannerTemplateModel
+class BannerTemplateModel implements JsonSerializable
 {
     private $description;
     private $idAdvertiser;
@@ -29,8 +29,8 @@ class BannerTemplateModel
     {
         if($source !== null)
         {
-            // $this->setSource($source);
-            // $this->readSvgFromFile();
+            $this->setSource($source);
+            $this->readSvgFromFile();
         }
     }
 
@@ -42,6 +42,22 @@ class BannerTemplateModel
         }
     }
 
+    public function saveAsSvg($filepath)
+    {
+        if(is_writable($filepath))
+        {
+            if(!$handle = fopen($filepath))
+            {
+                throw new FileException();
+            }
+            else
+            {
+                fwrite($handle, $this->getSvgAsString());
+            }
+        }
+
+    }
+
     public function getSvgAsString()
     {
         return $this->svg->asXML();
@@ -49,10 +65,22 @@ class BannerTemplateModel
 
     private function readSvgFromFile()
     {
-        $this->svg = simplexml_load_file($this->source);
+        $this->svgContent = simplexml_load_file($this->source)->asXml();
     }
 
 
+    public function jsonSerialize()
+    {
+        return [
+                'description' => $this->getDescription(),
+                'idAdvertiser' => $this->getIdAdvertiser(),
+                'idBannerTemplate' => $this->getIdBannerTemplate(),
+                'idParentBannerTemplate' => $this->getIdParentBannerTemplate(),
+                'idAuditUser' => $this->getIdAuditUser(),
+                'name' => $this->getName(),
+                'svgContent' => (string) $this->svgContent
+                ];
+    }
 
 
     public function __toString()
