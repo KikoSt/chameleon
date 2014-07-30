@@ -2,65 +2,37 @@
 
 $advertiserId = 122;
 $userId = 14;
-$counting = array('First', 'Second', 'Third', 'Forth', 'Fifth');
 
 $connector = new APIConnector();
+$container = new GfxContainer();
 
-// for($i = 1; $i<6; $i++)
-// {
-//     $template = new BannerTemplateModel('svg/ttest_' . $i . '.svg');
-//     $template->setDescription($counting[$i-1] . ' dummy test template');
-//     $template->setIdBannerTemplate(null);
-//     $template->setIdParentBannerTemplate(null);
-//     $template->setName('dummy' . $i);
-//     $template->setIdAdvertiser($advertiserId);
-//     $template->setIdAuditUser($userId);
-//
-//     echo 'Advertiser ' . $advertiserId . ' has ' . $connector->getNumTemplates($advertiserId) . ' templates.' . "\n";
-//
-//     // $result = $connector->deleteBannerTemplate(95);
-//    $connector->sendBannerTemplate($template);
-// }
-
-
+// fetch all templates for given advertiser
 $templates = $connector->getTemplates($advertiserId);
 
 foreach($templates AS $template)
 {
-    echo '===============================================' . "\n";
-    echo $template->getName() . ' (id=' . $template->getIdBannerTemplate() . ')' . "\n";
-    echo '\'' . $template->getDescription() . '\'' . "\n";
-    echo '-----------------------------------------------' . "\n";
-    echo $template->getSvgContent() . "\n";
-    echo '===============================================' . "\n";
+    // for now, we stick to the "old" process - reading the svg from a file - in order to prevent more merge
+    // conflicts than necessary; changing the process will be very easy and done after thomas hummel's changes
+    // have been merged
+    $filename = 'svg/rtest_' . $template->getIdBannerTemplate() . '.svg';
+
+    // write the temporary file
+    $fh = fopen($filename, 'w');
+    fwrite($fh, $template->getSvgContent());
+    fclose($fh);
+
+    $container->setSource($filename);
+    $container->setOutputName('output_' . $template->getIdBannerTemplate());
+    $container->parse();
+    $container->setTarget('SWF');
+    $container->render();
+    $container->setTarget('GIF');
+    $container->render();
+
+    unlink($filename);
 }
 
 echo 'Advertiser ' . $advertiserId . ' has ' . $connector->getNumTemplates($advertiserId) . ' templates.' . "\n";
-
-die();
-
-
-
-
-
-$connector->getTemplates($advertiserId);
-//$connector->sendBannerTemplate($template);
-// $result = $connector->deleteBannerTemplate(78);
-
-var_dump($result);
-
-var_dump($template);
-$connector->getTemplates($advertiserId);
-die();
-
-// $connector->getMethodList();
-// die();
-
-$connector->getTemplates($advertiserId);
-var_dump($template);
-//$connector->sendBannerTemplate($template);
-$connector->deleteBannerTemplate(81);
-$connector->getTemplates($advertiserId);
 
 exit(0);
 
@@ -75,15 +47,6 @@ for($i=1; $i<6;$i++)
     $myContainer->setTarget('GIF');
     $myContainer->render();
 }
-
-$myContainer = new GfxContainer();
-$myContainer->setSource('svg/ttest_crit.svg');
-$myContainer->setOutputName('output_crit');
-$myContainer->parse();
-$myContainer->setTarget('SWF');
-$myContainer->render();
-$myContainer->setTarget('GIF');
-$myContainer->render();
 
 function __autoload($className) {
     if(file_exists('libraries/classes/' . $className . '.class.php')) {
