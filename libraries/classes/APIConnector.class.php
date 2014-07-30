@@ -12,8 +12,9 @@ class APIConnector
     {
         $this->serviceUrl = 'http://bidder.mediadecision.lan:8080/chameleon-0.1/rest';
         $this->serviceCalls = array();
-        $this->serviceCalls['getTemplates'] = 'advertiser/{advertiserId}/bannerTemplates';
-        $this->serviceCalls['postTemplate'] = 'bannerTemplates';
+        $this->serviceCalls['getTemplates']   = 'advertiser/{advertiserId}/bannerTemplates';
+        $this->serviceCalls['postTemplate']   = 'bannerTemplate';
+        $this->serviceCalls['deleteTemplate'] = 'bannerTemplate/{templateId}';
     }
 
 
@@ -30,29 +31,60 @@ class APIConnector
         return $response;
     }
 
+    public function getNumTemplates($advertiserId)
+    {
+        $templateCount = count($this->getTemplates($advertiserId));
+        return $templateCount;
+    }
+
     public function getTemplates($advertiserId)
     {
-        $serviceUrl = $this->serviceUrl . '/' . str_replace('{advertiserId}', $advertiserId, $this->serviceCalls['getTemplates']);
-        echo $serviceUrl . "\n\n";
-
-        $curl = $this->getCurl($serviceUrl, 'GET');
+        $resource = $this->serviceUrl . '/' . str_replace('{advertiserId}', $advertiserId, $this->serviceCalls['getTemplates']);
+        $curl = $this->getCurl($resource, 'GET');
 
         $curlResponse = curl_exec($curl);
         curl_close($curl);
-        var_dump($curlResponse);
-        return $curlResponse;
+
+        $templateList = json_decode($curlResponse)->bannerTemplateModels;
+
+        $templates = array();
+
+        foreach($templateList AS $template)
+        {
+            $templ = new BannerTemplateModel();
+            $templ->setIdAdvertiser($advertiserId);
+            $templ->setIdAuditUser((int) $template->idAuditUser);
+            $templ->setDescription((string) $template->description);
+            $templ->setName((string) $template->name);
+            $templ->setIdBannerTemplate((int) $template->idBannerTemplate);
+            $templ->setIdParentBannerTemplate((int) $template->idParentBannerTemplate);
+            $templ->setSvgContent($template->svgContent);
+            $templates[] = $templ;
+        }
+
+        return $templates;
     }
 
     public function sendBannerTemplate($template)
     {
-        $serviceUrl = $this->serviceUrl . '/' . $this->serviceCalls['postTemplate'];
-        $curl = $this->getCurl($serviceUrl, 'POST');
-        curl_setopt($curl, CURLOPT_POSTFIELDS, array('bannerTemplateModel' => json_encode($template)));
+        $template = json_encode($template->jsonSerialize());
+        $resource = $this->serviceUrl . '/' . $this->serviceCalls['postTemplate'];
+        $curl = $this->getCurl($resource, 'POST');
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $template);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
 
         $curlResponse = curl_exec($curl);
         curl_close($curl);
-        echo "\n" . 'Response: ' . "\n";
-        var_dump($curlResponse);
+        return $curlResponse;
+    }
+
+    public function deleteBannerTemplate($templateId)
+    {
+        $resource = $this->serviceUrl . '/' . str_replace('{templateId}', $templateId, $this->serviceCalls['deleteTemplate']);
+        $curl = $this->getCurl($resource, 'DELETE');
+
+        $curlResponse = curl_exec($curl);
+        curl_close($curl);
         return $curlResponse;
     }
 
@@ -74,6 +106,10 @@ class APIConnector
         else if ($method === 'POST')
         {
             curl_setopt($curl, CURLOPT_POST, true);
+        }
+        else if ($method === 'DELETE')
+        {
+            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'DELETE');
         }
 
         return $curl;
