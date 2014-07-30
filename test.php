@@ -1,21 +1,66 @@
 <?php
 
+$advertiserId = 122;
+$userId = 14;
+$counting = array('First', 'Second', 'Third', 'Forth', 'Fifth');
+
 $connector = new APIConnector();
 
-$template = new BannerTemplateModel('svg/ttest_1.svg');
-$template->setDescription('first dummy test thingie');
-$template->setIdBannerTemplate(null);
-$template->setIdParentBannerTemplate(null);
-$template->setName('dummy');
-$template->setIdAdvertiser(122);
-$template->setIdAuditUser(null);
-$template->setSvgContent(simplexml_load_string('<svg><g><title>test</title></g></svg>')->asXml());
+// for($i = 1; $i<6; $i++)
+// {
+//     $template = new BannerTemplateModel('svg/ttest_' . $i . '.svg');
+//     $template->setDescription($counting[$i-1] . ' dummy test template');
+//     $template->setIdBannerTemplate(null);
+//     $template->setIdParentBannerTemplate(null);
+//     $template->setName('dummy' . $i);
+//     $template->setIdAdvertiser($advertiserId);
+//     $template->setIdAuditUser($userId);
+//
+//     echo 'Advertiser ' . $advertiserId . ' has ' . $connector->getNumTemplates($advertiserId) . ' templates.' . "\n";
+//
+//     // $result = $connector->deleteBannerTemplate(95);
+//    $connector->sendBannerTemplate($template);
+// }
 
-$connector->getMethodList();
+
+$templates = $connector->getTemplates($advertiserId);
+
+foreach($templates AS $template)
+{
+    echo '===============================================' . "\n";
+    echo $template->getName() . ' (id=' . $template->getIdBannerTemplate() . ')' . "\n";
+    echo '\'' . $template->getDescription() . '\'' . "\n";
+    echo '-----------------------------------------------' . "\n";
+    echo $template->getSvgContent() . "\n";
+    echo '===============================================' . "\n";
+}
+
+echo 'Advertiser ' . $advertiserId . ' has ' . $connector->getNumTemplates($advertiserId) . ' templates.' . "\n";
+
 die();
 
-$connector->getTemplates(122);
-$connector->sendBannerTemplate($template);
+
+
+
+
+$connector->getTemplates($advertiserId);
+//$connector->sendBannerTemplate($template);
+// $result = $connector->deleteBannerTemplate(78);
+
+var_dump($result);
+
+var_dump($template);
+$connector->getTemplates($advertiserId);
+die();
+
+// $connector->getMethodList();
+// die();
+
+$connector->getTemplates($advertiserId);
+var_dump($template);
+//$connector->sendBannerTemplate($template);
+$connector->deleteBannerTemplate(81);
+$connector->getTemplates($advertiserId);
 
 exit(0);
 
