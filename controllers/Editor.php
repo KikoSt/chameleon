@@ -18,16 +18,15 @@ class Editor extends Controller
 
         $template = $database->fetchTemplateById($_REQUEST['id']);
 
-        $container->setCompany($template['company']);
-        $container->setAdvertiser($template['advertiser']);
+        $container->setCompanyId($template['companyId']);
+        $container->setAdvertiserId($template['advertiserId']);
         $container->setId($template['id']);
 
-        $destDir = $container->createDestinationDir();
+        $destDir = $container->getOutputDir();
 
         $container->setSource($template['template']);
         $container->parse();
         $container->setTarget('GIF');
-        $container->setOutputDestination($destDir);
 
         if(isset($_REQUEST['submit']))
         {
@@ -36,7 +35,10 @@ class Editor extends Controller
 
         $view->elements = $container->getElements();
 
+
+        // ???
         $view->gif = str_replace('/var/www', '', $destDir) . $this->getLatestFile($destDir);
+        $view->gif = $this->getLatestFile($destDir);
 
         if($view->gif === null)
         {
@@ -66,4 +68,4 @@ class Editor extends Controller
 
         return $latestFilename;
     }
-} 
+}

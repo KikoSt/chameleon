@@ -29,7 +29,21 @@
 
     session_start();
 
-    $redirect = $myIndex->getRedirect($_REQUEST['page']);
+    $params = array_keys($_REQUEST);
+
+    if(!in_array('page', $params))
+    {
+        echo 'Overwriting';
+        $page = 'overview';
+    }
+    else
+    {
+        $page = $_REQUEST['page'];
+    }
+
+    echo $page;
+
+    $redirect = $myIndex->getRedirect($page);
 
     echo $redirect->create();
 ?>

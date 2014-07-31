@@ -24,4 +24,3 @@ define('CLASS_DIR', ROOT_DIR . 'libraries/classes/');
 define('INTERFACE_DIR', ROOT_DIR . 'libraries/interfaces/');
 define('EXCEPTION_DIR', ROOT_DIR . 'libraries/exception');
 define('SVG_DIR', ROOT_DIR . 'svg/');
->>>>>>> path workaround

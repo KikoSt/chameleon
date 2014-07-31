@@ -1,5 +1,6 @@
 <div id="awesomeEditor" class="row" style="margin-top: 70px; padding-left: 10px; padding-right: 10px;">
     <div class="col-md-6" width="100%">
+        <?php echo $this->gif; ?>
         <img src="<?php echo $this->gif;?>" alt="">
     </div>
     <div class="col-md-6">
@@ -8,8 +9,6 @@
                 <?php
                     foreach($this->elements as $element):
                         $type = get_class($element);
-
-//                        var_dump($element);
 
                         include($type . '.inc.php');
                     endforeach;

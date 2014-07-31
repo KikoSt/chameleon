@@ -15,9 +15,9 @@ class Database
 
         return array(0 => array('id' => 4711,
             'user' => 'Zoidberg',
-            'company' => 'ACME',
+            'companyId' => '4',
             'template' => 'ttest_2.svg',
-            'advertiser' => 'dontknow')
+            'advertiserId' => '122')
         );
     }
 
@@ -28,9 +28,9 @@ class Database
 
         return array(0 => array('id' => 4711,
             'user' => 'Zoidberg',
-            'company' => 'ACME',
+            'companyId' => '4',
             'template' => 'ttest_2.svg',
-            'advertiser' => 'dontknow')
+            'advertiserId' => '122')
         );
     }
 
@@ -40,9 +40,9 @@ class Database
 
         return array('id' => 4711,
                      'user' => 'Zoidberg',
-                     'company' => 'ACME',
+                     'companyId' => '4',
                      'template' => 'ttest_2.svg',
-                     'advertiser' => 'dontknow'
+                     'advertiserId' => '122'
         );
     }
-} 
+}
