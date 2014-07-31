@@ -10,12 +10,53 @@ class Overview extends Controller
 {
     public function create()
     {
-        $view = $this->setTemplate('views/overview.php')->getView();
+        $container = new GfxContainer();
+        $database = new Database();
 
-        Debug::console(glob('output/*.gif'));
+        $view = $this->setLayout('views/overview.phtml')->getView();
 
-        $view->templates = glob('output/*.gif');
+        $templates = $database->fetchTemplates();
+
+        foreach($templates as $template)
+        {
+            $container->setId($template['id']);
+
+
+            $container->setCompanyId($template['companyId']);
+            $container->setAdvertiserId($template['advertiserId']);
+            $destDir = $container->getOutputDir();
+
+            $container->setSource($template['template']);
+            $container->parse();
+            $container->setTarget('GIF');
+            $container->render();
+        }
+
+        // TODO: use given templates, NOT rendered files here.
+        $previews = $this->getRenderedFiles($destDir);
+
+        $view->previews = $previews;
+
+        var_dump($previews);
 
         return $view;
     }
-} 
+
+    private function getRenderedFiles($destinationDir)
+    {
+        return glob($destinationDir . '/*.gif');
+    }
+
+    private function clearOutputDirectory($path)
+    {
+        $files = glob($path.'*.*');
+
+        foreach($files as $file)
+        {
+            if(is_file($file))
+            {
+                unlink($file);
+            }
+        }
+    }
+}

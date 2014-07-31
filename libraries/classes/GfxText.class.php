@@ -5,7 +5,7 @@
  * Date: 17.07.14
  * Time: 11:33
  */
-require_once('config/fontconfig.inc.php');
+require_once(ROOT_DIR . 'config/fontconfig.inc.php');
 define('FLASH_FONT_SCALE_FACTOR', 1.32);
 
 class GfxText extends GfxComponent
@@ -20,6 +20,7 @@ class GfxText extends GfxComponent
     private $fontSizeAdjust;
     private $fontSize;
     private $fontFamily;
+    private $textAnchor;
 
     public function __construct()
     {
@@ -345,6 +346,24 @@ class GfxText extends GfxComponent
             $this->throwException($fontStretch);
         }
     }
+
+    /**
+     * @return mixed
+     */
+    public function getTextAnchor()
+    {
+        return $this->textAnchor;
+    }
+
+    /**
+     * @param mixed $textAnchor
+     */
+    public function setTextAnchor($textAnchor)
+    {
+        $this->textAnchor = $textAnchor;
+    }
+
+
 
     /**
      * @param $sParam
