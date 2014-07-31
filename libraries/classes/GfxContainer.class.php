@@ -28,7 +28,7 @@ class GfxContainer
 
     public function __construct()
     {
-//        $this->elements = array();
+        $this->elements = array();
         $this->allowedTargets = array('SWF', 'GIF');
     }
 
