@@ -13,6 +13,7 @@ class Editor extends Controller
 
         $container = new GfxContainer();
         $database = new Database();
+        $text = new GfxText();
 
         $view = $this->setLayout('views/editor.phtml')->getView();
 
@@ -37,6 +38,8 @@ class Editor extends Controller
         $view->elements = $container->getElements();
 
         $view->gif = str_replace('/var/www', '', $destDir) . $this->getLatestFile($destDir);
+
+        $view->fontlist = $text->getFontListForOverview();
 
         if($view->gif === null)
         {

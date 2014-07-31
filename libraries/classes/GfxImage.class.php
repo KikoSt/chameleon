@@ -124,6 +124,11 @@ class GfxImage extends GfXComponent
     {
         list($originalWidth, $originalHeight) = getimagesize($file);
 
+        if($originalWidth>$originalHeight)
+        {
+            $crop = true;
+        }
+
         $r = $originalWidth / $originalHeight;
 
         $resizedWidth = $this->getWidth();
@@ -205,7 +210,7 @@ class GfxImage extends GfXComponent
      */
     public function setImageUrl($imageUrl)
     {
-        if(substr($imageUrl, 0, 4) !== 'http' )
+        if(substr($imageUrl, 0, 4) !== 'http')
         {
             $imageUrl = ROOT_DIR . $imageUrl;
         }

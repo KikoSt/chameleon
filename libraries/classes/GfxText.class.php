@@ -59,7 +59,8 @@ class GfxText extends GfxComponent
     }
 
 
-    public function getTextWidth() {
+    public function getTextWidth()
+    {
         $text = new SWFText();
         $text->setFont($this->getSWFFont());
         $text->setHeight($this->getFontSize() * FLASH_FONT_SCALE_FACTOR);
@@ -124,21 +125,51 @@ class GfxText extends GfxComponent
         return $canvas;
     }
 
-    public function renderGif($canvas, $canvasWidth)
+    public function renderGif($canvas)
     {
         $textColor = imagecolorallocate($canvas,$this->getFill()->getR(),$this->getFill()->getG(),$this->getFill()->getB());
 
-        $tb = imagettfbbox($this->getFontSize(), 0, $GLOBALS['fontlist']['GIF'][$this->getFontFamily()], $this->getText());
+var_dump($this->getText(),true);
 
-        $x = ceil(($canvasWidth - $tb[2]) / 2 );
-        $x = $this->getX();
-
-        imagettftext($canvas, $this->getFontSize(), 0, $x, $this->getY(), $textColor,
-            $GLOBALS['fontlist']['GIF'][$this->getFontFamily()],
-            $this->getText());
+        imagettftext($canvas, $this->getFontSize(), 0, $this->getX(), $this->getY(), $textColor,
+            $this->getGIFFont(),
+            utf8_decode(str_replace('€', ' Euro', $this->getText())));
 
         return $canvas;
     }
+
+    public function getFontListForOverview()
+    {
+        $fontlist = $GLOBALS['fontlist']['GIF'];
+
+        $cleansedFontList = array();
+
+        foreach($fontlist as $key => $font)
+        {
+            $fontFile = str_replace(FONT_TTF_DIR, '', $font);
+            $withoutExt = preg_replace('/\\.[^.\\s]{3,4}$/', '', $fontFile);
+            $cleansedFontList[$key] = $withoutExt;
+        }
+        return $cleansedFontList;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTextAnchor()
+    {
+        return $this->textAnchor;
+    }
+
+    /**
+     * @param mixed $textAnchor
+     */
+    public function setTextAnchor($textAnchor)
+    {
+        $this->textAnchor = $textAnchor;
+    }
+
+
 
 
     /**
@@ -171,6 +202,11 @@ class GfxText extends GfxComponent
     {
         $font = new SWFFont($GLOBALS['fontlist']['SWF'][$this->getFontFamily()]);
         return $font;
+    }
+
+    public function getGIFFont()
+    {
+        return $GLOBALS['fontlist']['GIF'][$this->getFontFamily()];
     }
 
     /**
@@ -345,22 +381,6 @@ class GfxText extends GfxComponent
         {
             $this->throwException($fontStretch);
         }
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTextAnchor()
-    {
-        return $this->textAnchor;
-    }
-
-    /**
-     * @param mixed $textAnchor
-     */
-    public function setTextAnchor($textAnchor)
-    {
-        $this->textAnchor = $textAnchor;
     }
 
 
