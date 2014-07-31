@@ -210,7 +210,7 @@ class GfxImage extends GfXComponent
      */
     public function setImageUrl($imageUrl)
     {
-        if(substr($imageUrl, 0, 4) !== 'http')
+        if(substr($imageUrl, 0, 4) !== 'http' )
         {
             $imageUrl = ROOT_DIR . $imageUrl;
         }

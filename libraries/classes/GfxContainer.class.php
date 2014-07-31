@@ -18,9 +18,9 @@ class GfxContainer
     private $canvasHeight;
     private $canvas;
     private $outputName; // default name if not set!
-    private $destination;
-    private $company;
-    private $advertiser;
+    private $outputDir;
+    private $companyId;
+    private $advertiserId;
     private $editorOptions;
 
 
@@ -28,7 +28,6 @@ class GfxContainer
 
     public function __construct()
     {
-        $this->elements = array();
         $this->allowedTargets = array('SWF', 'GIF');
     }
 
@@ -128,17 +127,26 @@ class GfxContainer
      */
     private function getOutputFilename()
     {
-        if(null !== $this->getOutputName() && $this->getOutputName() !== '')
+        if($this->getOutputName() != '')
         {
             $filename = $this->getOutputName();
         }
         else
         {
-            $filename = $this->getCompany();
-            $filename .= '_' . $this->getAdvertiser();
+            if('' === $this->getCompanyId() || '' === $this->getAdvertiserId())
+            {
+                throw new Exception('Company or advertiser id not set');
+            }
+            if('' == $this->getId())
+            {
+                throw new Exception('Template id not set');
+            }
+
+            $filename = $this->getCompanyId();
+            $filename .= '_' . $this->getAdvertiserId();
             $filename .= '_' . $this->getCanvasHeight();
             $filename .= 'x' . $this->getCanvasWidth();
-            $filename .= '_' . time();
+//            $filename .= '_' . time();
             $filename .= '_' . $this->getId();
         }
 
@@ -147,20 +155,76 @@ class GfxContainer
         return $filename;
     }
 
-    public function setOutputDestination($destination)
+    /**
+     * calculateOutputDir
+     * if OUTPUT_DIR = 'output/', company id = 4 and advertiser id = 122, the path to the resulting ads is
+     *
+     * output/4/122/
+     *
+     * @access private
+     * @return string outputDir full path name to output dir based on company and advertiser ids
+     */
+    private function calculateOutputDir()
     {
-        $this->destination = $destination;
+        if('' == $this->getCompanyId() || '' == $this->getAdvertiserId())
+        {
+            throw new Exception('Company or Advertiser ID missing');
+        }
+        // if there is a trailing / in OUTPUT_DIR, remove it, then assemble all parts to output directory path
+        $parts = array(rtrim(OUTPUT_DIR, '/'), $this->getCompanyId(), $this->getAdvertiserId());
+
+        $outputDir = implode('/', $parts);
+
+        return $outputDir;
+    }
+
+    public function createOutputDir()
+    {
+        if('' === $this->getOutputDir())
+        {
+            throw new Exception('Output dir not set');
+        }
+        else
+        {
+            $this->setOutputDir($this->calculateOutputDir());
+        }
+
+        $dir = $this->getOutputDir();
+
+        if(!file_exists($dir))
+        {
+            // set the current umask to 0777
+            $old = umask(0);
+            if(!mkdir($dir, 0777, true))
+            {
+                throw new Exception('Could not create directory ' . $dir);
+            }
+            // reset umask
+            umask($old);
+        }
+
+        return $dir;
+    }
+
+    public function setOutputDir($outputDir)
+    {
+        $this->outputDir = $outputDir;
     }
 
 
-    private function getOutputDestination()
+    public function getOutputDir()
     {
-        $destination = $this->destination . $this->getOutputFilename();
-        return $destination;
+        if(!isset($this->outputDir) || '' == $this->outputDir)
+        {
+            $this->setOutputDir($this->calculateOutputDir());
+        }
+        return $this->outputDir;
     }
 
     public function render()
     {
+        $this->createOutputDir();
+
         if($this->target === 'SWF')
         {
             $this->renderSWF();
@@ -172,10 +236,7 @@ class GfxContainer
     }
 
     private function renderSWF()
-    {
-        $swf = new SWFMovie();
-        $swf->setDimension($this->getCanvasWidth(), $this->getCanvasHeight());
-        $swf->setFrames(30);
+    { $swf = new SWFMovie(); $swf->setDimension($this->getCanvasWidth(), $this->getCanvasHeight()); $swf->setFrames(30);
         $swf->setRate(10);
         $swf->setBackground(0, 0, 0);
 
@@ -186,7 +247,7 @@ class GfxContainer
                 $element->renderSWF($swf);
             }
         }
-        $swf->save($this->getOutputDestination());
+        $swf->save($this->getOutputDir() . '/' . $this->getOutputFilename());
 
     }
 
@@ -201,31 +262,9 @@ class GfxContainer
 
         $this->setCanvas($updatedCanvas);
 
-        imagegif($updatedCanvas, $this->getOutputDestination());
+        imagegif($updatedCanvas, $this->getOutputDir() . '/' . $this->getOutputFilename());
 
-        chmod($this->getOutputDestination(), 0777);
-    }
-
-    public function createDestinationDir()
-    {
-        $parts = array($this->getCompany(), $this->getAdvertiser());
-
-        $dir = OUTPUT_DIR;
-
-        foreach($parts as $singleDir)
-        {
-            $dir .= $singleDir . '/';
-
-            if(!is_dir($dir) && !file_exists($dir))
-            {
-                if(!mkdir($dir, 0777, true))
-                {
-                    die($dir.' mkdir failed');
-                }
-                chmod($dir, 0777);
-            }
-        }
-        return $dir;
+        chmod($this->getOutputDir() . '/' . $this->getOutputFilename(), 0777);
     }
 
     public function getOptionsForEditor()
@@ -328,35 +367,35 @@ class GfxContainer
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getAdvertiser()
+    public function getAdvertiserId()
     {
-        return $this->advertiser;
+        return $this->advertiserId;
     }
 
     /**
      * @param mixed $advertiser
      */
-    public function setAdvertiser($advertiser)
+    public function setAdvertiserId($advertiserId)
     {
-        $this->advertiser = $advertiser;
+        $this->advertiserId = $advertiserId;
     }
 
     /**
      * @return mixed
      */
-    public function getCompany()
+    public function getCompanyId()
     {
-        return $this->company;
+        return $this->companyId;
     }
 
     /**
      * @param mixed $company
      */
-    public function setCompany($company)
+    public function setCompanyId($companyId)
     {
-        $this->company = $company;
+        $this->companyId = $companyId;
     }
 
 

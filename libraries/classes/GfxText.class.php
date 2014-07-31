@@ -129,8 +129,6 @@ class GfxText extends GfxComponent
     {
         $textColor = imagecolorallocate($canvas,$this->getFill()->getR(),$this->getFill()->getG(),$this->getFill()->getB());
 
-var_dump($this->getText(),true);
-
         imagettftext($canvas, $this->getFontSize(), 0, $this->getX(), $this->getY(), $textColor,
             $this->getGIFFont(),
             utf8_decode(str_replace('€', ' Euro', $this->getText())));
@@ -382,8 +380,6 @@ var_dump($this->getText(),true);
             $this->throwException($fontStretch);
         }
     }
-
-
 
     /**
      * @param $sParam

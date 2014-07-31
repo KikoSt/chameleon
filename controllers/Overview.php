@@ -19,22 +19,22 @@ class Overview extends Controller
 
         foreach($templates as $template)
         {
-            $container->setCompany($template['company']);
-            $container->setAdvertiser($template['advertiser']);
             $container->setId($template['id']);
 
-            $destDir = $container->createDestinationDir();
-
-            $this->clearOutputDirectory($destDir);
+	    $container->setCompanyId(4);
+            $container->setAdvertiserId($template['advertiserId']);
+            $destDir = $container->getOutputDir();
 
             $container->setSource($template['template']);
             $container->parse();
             $container->setTarget('GIF');
-            $container->setOutputDestination($destDir);
             $container->render();
         }
 
-        $view->templates = $this->getRenderedFiles($destDir);
+        // TODO: use given templates, NOT rendered files here.
+        $previews = $this->getRenderedFiles($destDir . '/');
+
+        $view->previews = $previews;
 
         return $view;
     }
@@ -44,19 +44,16 @@ class Overview extends Controller
         return glob($destinationDir . '*.gif');
     }
 
-    private function clearOutputDirectory($path, $erase=true)
+    private function clearOutputDirectory($path)
     {
-        if($erase)
-        {
-            $files = glob($path.'*.*');
+        $files = glob($path . '*.*');
 
-            foreach($files as $file)
+        foreach ($files as $file)
+        {
+            if (is_file($file))
             {
-                if(is_file($file))
-                {
-                    unlink($file);
-                }
+                unlink($file);
             }
         }
     }
-} 
+}

@@ -19,16 +19,15 @@ class Editor extends Controller
 
         $template = $database->fetchTemplateById($_REQUEST['id']);
 
-        $container->setCompany($template['company']);
-        $container->setAdvertiser($template['advertiser']);
+        $container->setCompanyId($template['companyId']);
+        $container->setAdvertiserId($template['advertiserId']);
         $container->setId($template['id']);
 
-        $destDir = $container->createDestinationDir();
+        $destDir = $container->getOutputDir();
 
         $container->setSource($template['template']);
         $container->parse();
         $container->setTarget('GIF');
-        $container->setOutputDestination($destDir);
 
         if(isset($_REQUEST['submit']))
         {
@@ -37,7 +36,9 @@ class Editor extends Controller
 
         $view->elements = $container->getElements();
 
-        $view->gif = str_replace('/var/www', '', $destDir) . $this->getLatestFile($destDir);
+	$filename = $this->getLatestFile($destDir);
+	$filepath = str_replace('/var/www', '', $destDir);
+	$view->gif = $filepath . '/' . $filename;
 
         $view->fontlist = $text->getFontListForOverview();
 
@@ -57,6 +58,7 @@ class Editor extends Controller
         $latestFilename = '';
 
         $d = dir($path);
+	// TODO: check for .. and .
         while (false !== ($entry = $d->read())) {
             $filepath = "{$path}/{$entry}";
             // could do also other checks than just checking whether the entry is a file

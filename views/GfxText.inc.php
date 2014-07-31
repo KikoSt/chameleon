@@ -93,6 +93,26 @@
                                placeholder="<?php echo $element->getHeight();?>"
                         />
                     </div>
+                    <div class="col-md-3">
+                        <label>Y coordinate:</label>
+                        <input type="text" name="<?php echo $element->getId();?>#y" value="<?php echo
+                        $element->getY();?>" class="form-control" placeholder="<?php echo
+                        $element->getY();?>"/>
+                    </div>
+                    <div class="col-md-3">
+                        <label>Width:</label>
+                        <input type="text" name="<?php echo $element->getId();?>#width" value="<?php echo
+                        $element->getWidth();?>" class="form-control" placeholder="<?php echo
+                        $element->getWidth();?>"/>
+                    </div>
+                    <div class="col-md-3">
+                        <label>Height:</label>
+                        <input type="text" name="<?php echo $element->getId();?>#height" value="<?php
+                        echo
+                        $element->getHeight();?>" class="form-control" placeholder="<?php
+                        echo
+                        $element->getHeight();?>"/>
+                    </div>
                 </div>
             </li>
             <li class="list-group-item">

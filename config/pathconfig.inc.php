@@ -1,5 +1,4 @@
 <?php
-
 if(!isset($_SERVER['HTTP_HOST']))
 {
     // called locally via console!
