@@ -10,8 +10,8 @@ require_once('GfxComponent.class.php');
 
 class GfxContainer
 {
-    private $id;
     protected $elements;
+    private $id;
     private $title;
     private $target;
     private $source;
@@ -24,38 +24,11 @@ class GfxContainer
     private $advertiserId;
     private $editorOptions;
 
-
     private $allowedTargets;
 
     public function __construct()
     {
         $this->allowedTargets = array('SWF', 'GIF');
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getCanvas()
-    {
-        return $this->canvas;
-    }
-
-    /**
-     * @param mixed $canvas
-     */
-    public function setCanvas($canvas)
-    {
-        $this->canvas = $canvas;
-    }
-
-    public function setOutputName($outputName)
-    {
-        $this->outputName = $outputName;
-    }
-
-    public function getOutputName()
-    {
-        return $this->outputName;
     }
 
     public function parse()
@@ -117,7 +90,7 @@ class GfxContainer
         }
         else
         {
-            if('' === $this->getCompanyId() || '' === $this->getAdvertiserId())
+            if('' == $this->getCompanyId() || '' == $this->getAdvertiserId())
             {
                 throw new Exception('Company or advertiser id not set');
             }
@@ -130,7 +103,6 @@ class GfxContainer
             $filename .= '_' . $this->getAdvertiserId();
             $filename .= '_' . $this->getCanvasHeight();
             $filename .= 'x' . $this->getCanvasWidth();
-//            $filename .= '_' . time();
             $filename .= '_' . $this->getId();
         }
 
@@ -294,23 +266,40 @@ class GfxContainer
         $this->setCanvas($updatedCanvas);
 
         imagegif($updatedCanvas, $this->getOutputDir() . '/' . $this->getOutputFilename());
-
         chmod($this->getOutputDir() . '/' . $this->getOutputFilename(), 0777);
     }
 
+    /**
+     * getOptionsForEditor
+     *
+     * ???
+     *
+     * @access public
+     * @return void
+     */
     public function getOptionsForEditor()
     {
         return $this->editorOptions;
     }
 
 
+    /**
+     * getGfxInstance
+     *
+     * creates and returns a new instance of any existing GFXComponent subtypes
+     * This is a helper method for easy svg parsing
+     *
+     * @param mixed $type
+     * @access private
+     * @return void
+     */
     private function getGfxInstance($type)
     {
         // easily extendable, just add new types here
         $componentTypes = array('rect' => 'GfxRectangle',
-            'text' => 'GfxText',
-            'image' => 'GfxImage',
-            'ellipse' => 'GfxEllipse');
+                                'text' => 'GfxText',
+                                'image' => 'GfxImage',
+                                'ellipse' => 'GfxEllipse');
         if (array_key_exists($type, $componentTypes))
         {
             // create instance of requested class based on the above mapping
