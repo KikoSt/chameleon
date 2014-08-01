@@ -34,15 +34,20 @@ class APIConnector
         return $response;
     }
 
-    public function getNumTemplates($advertiserId)
+    public function getNumTemplates()
     {
-        $templateCount = count($this->getTemplates($advertiserId));
+        $templateCount = count($this->getTemplates());
         return $templateCount;
     }
 
-    public function getTemplates($advertiserId)
+    public function getTemplates()
     {
-        $resource = $this->serviceUrl . '/' . str_replace('{advertiserId}', $advertiserId, $this->serviceCalls['getTemplates']);
+        if(!isset($this->advertiserId))
+        {
+            throw new Exception('advertiserId not set');
+        }
+
+        $resource = $this->serviceUrl . '/' . str_replace('{advertiserId}', $this->advertiserId, $this->serviceCalls['getTemplates']);
         $curl = $this->getCurl($resource, 'GET');
 
         $curlResponse = curl_exec($curl);
