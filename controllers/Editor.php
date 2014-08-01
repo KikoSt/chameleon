@@ -8,6 +8,9 @@
 
 class Editor extends Controller
 {
+    private $companyId;
+    private $advertiserId;
+
     public function create()
     {
 
@@ -71,4 +74,44 @@ class Editor extends Controller
 
         return $latestFilename;
     }
-} 
+
+    /**
+     * Get companyId.
+     *
+     * @return companyId.
+     */
+    public function getCompanyId()
+    {
+        return $this->companyId;
+    }
+
+    /**
+     * Set companyId.
+     *
+     * @param companyId the value to set.
+     */
+    public function setCompanyId($companyId)
+    {
+        $this->companyId = $companyId;
+    }
+
+    /**
+     * Get advertiserId.
+     *
+     * @return advertiserId.
+     */
+    public function getAdvertiserId()
+    {
+        return $this->advertiserId;
+    }
+
+    /**
+     * Set advertiserId.
+     *
+     * @param advertiserId the value to set.
+     */
+    public function setAdvertiserId($advertiserId)
+    {
+        $this->advertiserId = $advertiserId;
+    }
+}
