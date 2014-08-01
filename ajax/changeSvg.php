@@ -20,8 +20,8 @@ $database = new Database();
 
 $template = $database->fetchTemplateById($_REQUEST['id']);
 
-$container->setCompany($template['company']);
-$container->setAdvertiser($template['advertiser']);
+$container->setCompanyId($template['companyId']);
+$container->setAdvertiserId($template['advertiserId']);
 $container->setId($template['id']);
 
 $container->setSource($template['template']);
@@ -30,7 +30,8 @@ $container->parse();
 $container->changeElementValue($_POST);
 
 $container->setTarget('GIF');
-$container->setOutputDestination($container->createDestinationDir());
+//$container->setOutputDestination($container->createDestinationDir());
+// $container->calculateOutputDir();
 $container->render();
 
 

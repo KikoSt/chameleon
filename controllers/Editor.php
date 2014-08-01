@@ -13,6 +13,7 @@ class Editor extends Controller
 
         $container = new GfxContainer();
         $database = new Database();
+        $text = new GfxText();
 
         $view = $this->setLayout('views/editor.phtml')->getView();
 
@@ -35,10 +36,11 @@ class Editor extends Controller
 
         $view->elements = $container->getElements();
 
+	$filename = $this->getLatestFile($destDir);
+	$filepath = str_replace('/var/www', '', $destDir);
+	$view->gif = $filepath . '/' . $filename;
 
-        // ???
-        $view->gif = str_replace('/var/www', '', $destDir) . $this->getLatestFile($destDir);
-        $view->gif = $this->getLatestFile($destDir);
+        $view->fontlist = $text->getFontListForOverview();
 
         if($view->gif === null)
         {
@@ -56,6 +58,7 @@ class Editor extends Controller
         $latestFilename = '';
 
         $d = dir($path);
+	// TODO: check for .. and .
         while (false !== ($entry = $d->read())) {
             $filepath = "{$path}/{$entry}";
             // could do also other checks than just checking whether the entry is a file
@@ -68,4 +71,4 @@ class Editor extends Controller
 
         return $latestFilename;
     }
-}
+} 

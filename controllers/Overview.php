@@ -21,8 +21,7 @@ class Overview extends Controller
         {
             $container->setId($template['id']);
 
-
-            $container->setCompanyId($template['companyId']);
+	    $container->setCompanyId(4);
             $container->setAdvertiserId($template['advertiserId']);
             $destDir = $container->getOutputDir();
 
@@ -33,27 +32,25 @@ class Overview extends Controller
         }
 
         // TODO: use given templates, NOT rendered files here.
-        $previews = $this->getRenderedFiles($destDir);
+        $previews = $this->getRenderedFiles($destDir . '/');
 
         $view->previews = $previews;
-
-        var_dump($previews);
 
         return $view;
     }
 
     private function getRenderedFiles($destinationDir)
     {
-        return glob($destinationDir . '/*.gif');
+        return glob($destinationDir . '*.gif');
     }
 
     private function clearOutputDirectory($path)
     {
-        $files = glob($path.'*.*');
+        $files = glob($path . '*.*');
 
-        foreach($files as $file)
+        foreach ($files as $file)
         {
-            if(is_file($file))
+            if (is_file($file))
             {
                 unlink($file);
             }

@@ -110,6 +110,8 @@ class GfxContainer
         if(is_a($element, 'GfxComponent'))
         {
             $this->elements[] = $element;
+
+            //give element to partial
         }
         else
         {
@@ -255,7 +257,7 @@ class GfxContainer
 
         foreach($this->elements as $element)
         {
-            $updatedCanvas = $element->renderGif($this->getCanvas(), $this->getCanvasWidth());
+            $updatedCanvas = $element->renderGif($this->getCanvas());
         }
 
         $this->setCanvas($updatedCanvas);
@@ -312,11 +314,6 @@ class GfxContainer
                     {
                         $color = new GfxColor($value);
                         $element->$func($color);
-                    }
-                    elseif($param === "fontFamily")
-                    {
-                        //do nothing for now
-                        //todo adjust select for fonts at the frontend
                     }
                     else
                     {

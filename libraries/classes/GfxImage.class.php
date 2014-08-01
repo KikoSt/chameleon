@@ -124,6 +124,11 @@ class GfxImage extends GfXComponent
     {
         list($originalWidth, $originalHeight) = getimagesize($file);
 
+        if($originalWidth>$originalHeight)
+        {
+            $crop = true;
+        }
+
         $r = $originalWidth / $originalHeight;
 
         $resizedWidth = $this->getWidth();
