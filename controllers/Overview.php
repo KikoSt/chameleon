@@ -14,8 +14,8 @@ class Overview extends Controller
     public function create()
     {
         $container = new GfxContainer();
-        $database = new Database();
         $connector = new APIConnector();
+        $previews = array();
 
         $connector->setAdvertiserId($this->getAdvertiserId());
         $connector->setCompanyId($this->getCompanyId());
@@ -25,32 +25,43 @@ class Overview extends Controller
 
         $view = $this->setLayout('views/overview.phtml')->getView();
 
-        $templates = $database->fetchTemplates();
-        // $templates = $connector->getTemplates();
+        // $templates = $database->fetchTemplates();
+        $templates = $connector->getTemplates();
 
         foreach($templates as $template)
         {
-            $container->setId($template['id']);
+            $baseFilename = 'rtest_' . $template->getIdBannerTemplate();
+            $filename = $baseFilename . '.svg';
+            $container->setOutputName($baseFilename);
 
-            $destDir = $container->getOutputDir();
+            // write the temporary file
+            $fh = fopen(SVG_DIR . $filename, 'w');
+            fwrite($fh, $template->getSvgContent());
+            fclose($fh);
 
-            $container->setSource($template['template']);
+            $container->setId($template->getIdBannerTemplate());
+
+            $container->setSource($filename);
             $container->parse();
             $container->setTarget('GIF');
             $container->render();
-        }
 
-        // TODO: use given templates, NOT rendered files here.
-        $previews = $this->getRenderedFiles($destDir . '/');
+            $preview = new StdClass();
+            $preview->filepath = str_replace($_SERVER['DOCUMENT_ROOT'], '', $container->getOutputDir()) . '/' . $baseFilename . '.gif';
+            $preview->width = $container->getCanvasWidth() / 2 > 300 ? 300 : $container->getCanvasWidth() / 2;
+            $preview->height = $container->getCanvasHeight();
+            $preview->id = $template->getIdBannerTemplate();
+            $preview->templateName = $filename;
+            $preview->advertiserId = $this->getAdvertiserId();
+            $preview->companyId = $this->getCompanyId();
+            $previews[] = $preview;
+
+            unlink(SVG_DIR . $filename);
+        }
 
         $view->previews = $previews;
 
         return $view;
-    }
-
-    private function getRenderedFiles($destinationDir)
-    {
-        return glob($destinationDir . '*.gif');
     }
 
 //    private function clearOutputDirectory($path)
