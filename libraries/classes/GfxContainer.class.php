@@ -307,7 +307,7 @@ class GfxContainer
         }
         else
         {
-            return false;
+            throw new Exception('Component ' . $type . ' doesn\'t exist');
         }
         return $gfxInstance;
     }
