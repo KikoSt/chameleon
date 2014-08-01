@@ -8,10 +8,14 @@ if(!defined('__ROOT__'))
 }
 
 $advertiserId = 122;
+$companyId = 4;
 $userId = 14;
 
 $connector = new APIConnector();
 $container = new GfxContainer();
+
+$container->setAdvertiserId($advertiserId);
+$container->setCompanyId($companyId);
 
 // fetch all templates for given advertiser
 $templates = $connector->getTemplates($advertiserId);
@@ -21,10 +25,10 @@ foreach($templates AS $template)
     // for now, we stick to the "old" process - reading the svg from a file - in order to prevent more merge
     // conflicts than necessary; changing the process will be very easy and done after thomas hummel's changes
     // have been merged
-    $filename = 'svg/rtest_' . $template->getIdBannerTemplate() . '.svg';
+    $filename = 'rtest_' . $template->getIdBannerTemplate() . '.svg';
 
     // write the temporary file
-    $fh = fopen($filename, 'w');
+    $fh = fopen(SVG_DIR . $filename, 'w');
     fwrite($fh, $template->getSvgContent());
     fclose($fh);
 
@@ -36,7 +40,7 @@ foreach($templates AS $template)
     $container->setTarget('GIF');
     $container->render();
 
-    unlink($filename);
+    // unlink($filename);
 }
 
 echo 'Advertiser ' . $advertiserId . ' has ' . $connector->getNumTemplates($advertiserId) . ' templates.' . "\n";
