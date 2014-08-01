@@ -40,7 +40,7 @@ foreach($templates AS $template)
     $container->setTarget('GIF');
     $container->render();
 
-    // unlink($filename);
+    unlink(SVG_DIR . $filename);
 }
 
 echo 'Advertiser ' . $advertiserId . ' has ' . $connector->getNumTemplates($advertiserId) . ' templates.' . "\n";
