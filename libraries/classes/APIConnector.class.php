@@ -8,6 +8,9 @@ class APIConnector
     private $serviceUrl;
     private $serviceCalls;
 
+    private $advertiserId;
+    private $companyId;
+
     public function __construct()
     {
         $this->serviceUrl = 'http://bidder.mediadecision.lan:8080/chameleon-0.1/rest';
@@ -113,6 +116,46 @@ class APIConnector
         }
 
         return $curl;
+    }
+
+    /**
+     * Get advertiserId.
+     *
+     * @return advertiserId.
+     */
+    public function getAdvertiserId()
+    {
+        return $this->advertiserId;
+    }
+
+    /**
+     * Set advertiserId.
+     *
+     * @param advertiserId the value to set.
+     */
+    public function setAdvertiserId($advertiserId)
+    {
+        $this->advertiserId = $advertiserId;
+    }
+
+    /**
+     * Get companyId.
+     *
+     * @return companyId.
+     */
+    public function getCompanyId()
+    {
+        return $this->companyId;
+    }
+
+    /**
+     * Set companyId.
+     *
+     * @param companyId the value to set.
+     */
+    public function setCompanyId($companyId)
+    {
+        $this->companyId = $companyId;
     }
 }
 
