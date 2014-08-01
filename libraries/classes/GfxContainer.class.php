@@ -164,6 +164,15 @@ class GfxContainer
         return $outputDir;
     }
 
+    /**
+     * createOutputDir
+     *
+     * physically creates the output dir
+     * TODO: what to return?
+     *
+     * @access public
+     * @return void
+     */
     public function createOutputDir()
     {
         if('' === $this->getOutputDir())
@@ -192,12 +201,25 @@ class GfxContainer
         return $dir;
     }
 
+    /**
+     * setOutputDir
+     *
+     * @param string $outputDir
+     * @access public
+     * @return void
+     */
     public function setOutputDir($outputDir)
     {
         $this->outputDir = $outputDir;
     }
 
 
+    /**
+     * getOutputDir
+     *
+     * @access public
+     * @return string
+     */
     public function getOutputDir()
     {
         if(!isset($this->outputDir) || '' == $this->outputDir)
@@ -207,6 +229,15 @@ class GfxContainer
         return $this->outputDir;
     }
 
+    /**
+     * render
+     *
+     * wrapper function to start the rendering process; depending on the currently set target,
+     * either GIF or SWF rendering will be triggered
+     *
+     * @access public
+     * @return void
+     */
     public function render()
     {
         $this->createOutputDir();
@@ -221,6 +252,14 @@ class GfxContainer
         }
     }
 
+    /**
+     * renderSWF
+     *
+     * create the swf file based on the current template
+     *
+     * @access private
+     * @return void
+     */
     private function renderSWF()
     { $swf = new SWFMovie(); $swf->setDimension($this->getCanvasWidth(), $this->getCanvasHeight()); $swf->setFrames(30);
         $swf->setRate(10);
@@ -237,6 +276,14 @@ class GfxContainer
 
     }
 
+    /**
+     * renderGIF
+     *
+     * create the gif file based on the current template
+     *
+     * @access private
+     * @return void
+     */
     private function renderGIF()
     {
         $this->setCanvas(imagecreatetruecolor($this->getCanvasWidth(), $this->getCanvasHeight()));
@@ -278,6 +325,15 @@ class GfxContainer
         return $gfxInstance;
     }
 
+    /**
+     * changeElementValue
+     *
+     * ???
+     *
+     * @param mixed $formData
+     * @access public
+     * @return void
+     */
     public function changeElementValue($formData)
     {
         //iterate all svg elements
@@ -353,6 +409,9 @@ class GfxContainer
     }
 
     /**
+     * getAdvertiserId
+     *
+     * @access public
      * @return int
      */
     public function getAdvertiserId()
@@ -361,7 +420,11 @@ class GfxContainer
     }
 
     /**
-     * @param mixed $advertiser
+     * setAdvertiserId
+     *
+     * @param int $advertiserId
+     * @access public
+     * @return void
      */
     public function setAdvertiserId($advertiserId)
     {
@@ -369,7 +432,10 @@ class GfxContainer
     }
 
     /**
-     * @return mixed
+     * getCompanyId
+     *
+     * @access public
+     * @return int $companyId
      */
     public function getCompanyId()
     {
@@ -377,13 +443,90 @@ class GfxContainer
     }
 
     /**
-     * @param mixed $company
+     * setCompanyId
+     *
+     * @param int $companyId
+     * @access public
+     * @return void
      */
     public function setCompanyId($companyId)
     {
         $this->companyId = $companyId;
     }
 
+    /**
+     * Get title.
+     *
+     * @return title.
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * Set title.
+     *
+     * @param title the value to set.
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+    /**
+     * getCanvas
+     *
+     * @access public
+     * @return object $canvas the canvas the ad will be rendered into
+     */
+    public function getCanvas()
+    {
+        return $this->canvas;
+    }
+
+    /**
+     * setCanvas
+     *
+     * @param object $canvas
+     * @access public
+     * @return void
+     */
+    public function setCanvas($canvas)
+    {
+        $this->canvas = $canvas;
+    }
+
+    /**
+     * setOutputName
+     *
+     * @param string $outputName
+     * @access public
+     * @return void
+     */
+    public function setOutputName($outputName)
+    {
+        $this->outputName = $outputName;
+    }
+
+    /**
+     * getOutputName
+     *
+     * @access public
+     * @return string
+     */
+    public function getOutputName()
+    {
+        return $this->outputName;
+    }
+
+    /**
+     * setSource
+     *
+     * @param mixed $source
+     * @access public
+     * @return void
+     */
     public function setSource($source)
     {
         $source = SVG_DIR . $source;
@@ -398,10 +541,35 @@ class GfxContainer
         }
     }
 
+    /**
+     * setId
+     *
+     * @param string $id
+     * @access public
+     * @return void
+     */
+    public function setId($id)
+    {
+        $this->id =$id;
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+
+
 
 
 
     // Magic Methods
+    /**
+     * __toString
+     *
+     * @access public
+     * @return string a textual representation of the container
+     */
     public function __toString()
     {
         $string = '';
