@@ -8,21 +8,29 @@
 
 class Overview extends Controller
 {
+    private $advertiserId;
+    private $companyId;
+
     public function create()
     {
         $container = new GfxContainer();
         $database = new Database();
+        $connector = new APIConnector();
+
+        $connector->setAdvertiserId($this->advertiserId);
+        $connector->setCompanyId($this->companyId);
 
         $view = $this->setLayout('views/overview.phtml')->getView();
 
         $templates = $database->fetchTemplates();
+        // $templates = $connector->getTemplates();
 
         foreach($templates as $template)
         {
             $container->setId($template['id']);
 
-	    $container->setCompanyId(4);
-            $container->setAdvertiserId($template['advertiserId']);
+    	    $container->setCompanyId($this->getCompanyId());
+            $container->setAdvertiserId($this->getAdvertiserId());
             $destDir = $container->getOutputDir();
 
             $container->setSource($template['template']);
@@ -44,16 +52,56 @@ class Overview extends Controller
         return glob($destinationDir . '*.gif');
     }
 
-    private function clearOutputDirectory($path)
-    {
-        $files = glob($path . '*.*');
+//    private function clearOutputDirectory($path)
+//    {
+//        $files = glob($path . '*.*');
+//
+//        foreach ($files as $file)
+//        {
+//            if (is_file($file))
+//            {
+//                unlink($file);
+//            }
+//        }
+//    }
 
-        foreach ($files as $file)
-        {
-            if (is_file($file))
-            {
-                unlink($file);
-            }
-        }
+    /**
+     * Get companyId.
+     *
+     * @return companyId.
+     */
+    public function getCompanyId()
+    {
+        return $this->companyId;
+    }
+
+    /**
+     * Set companyId.
+     *
+     * @param companyId the value to set.
+     */
+    public function setCompanyId($companyId)
+    {
+        $this->companyId = $companyId;
+    }
+
+    /**
+     * Get advertiserId.
+     *
+     * @return advertiserId.
+     */
+    public function getAdvertiserId()
+    {
+        return $this->advertiserId;
+    }
+
+    /**
+     * Set advertiserId.
+     *
+     * @param advertiserId the value to set.
+     */
+    public function setAdvertiserId($advertiserId)
+    {
+        $this->advertiserId = $advertiserId;
     }
 }

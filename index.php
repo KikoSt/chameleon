@@ -24,6 +24,9 @@
         define('__ROOT__', './');
     }
     include('config/pathconfig.inc.php');
+
+    $advertiserId = 122;
+
     $myIndex = new Index();
 
     session_start();
@@ -40,6 +43,7 @@
     }
 
     $redirect = $myIndex->getRedirect($page);
+    $redirect->setAdvertiserId($advertiserId);
 
     echo $redirect->create();
 ?>

@@ -55,7 +55,7 @@ class APIConnector
         foreach($templateList AS $template)
         {
             $templ = new BannerTemplateModel();
-            $templ->setIdAdvertiser($advertiserId);
+            $templ->setIdAdvertiser($this->advertiserId);
             $templ->setIdAuditUser((int) $template->idAuditUser);
             $templ->setDescription((string) $template->description);
             $templ->setName((string) $template->name);
