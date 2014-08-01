@@ -29,9 +29,11 @@ $container->parse();
 
 $container->changeElementValue($_POST);
 
+$container->getSvg();
+
 $container->setTarget('GIF');
 //$container->setOutputDestination($container->createDestinationDir());
-// $container->calculateOutputDir();
+//$container->calculateOutputDir();
 $container->render();
 
 

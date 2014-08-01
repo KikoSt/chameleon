@@ -1,6 +1,14 @@
 <div id="awesomeEditor" class="row" style="margin-top: 70px; padding-left: 10px; padding-right: 10px;">
     <div class="col-md-7">
-        <img src="<?php echo $this->gif;?>" alt="">
+        <div class="row" style="margin-left: 5px;">
+            <img src="<?php echo $this->gif;?>" alt="">
+        </div>
+        <div class="row" style="padding-top: 5px; margin-left: 5px;">
+            <!--        On click render template and show the change-->
+            <button type="submit" class="btn btn-default" form="editor" name="submit" value="preview">Preview</button>
+            <!--        On click render template, show the change and save data to database-->
+            <button type="submit" class="btn btn-default" form="editor" name="submit" value="save">Save</button>
+        </div>
     </div>
     <div class="col-md-5">
         <form id="editor" action="#" method="post">
@@ -11,10 +19,6 @@
                         include($type . '.inc.php');
                     endforeach;
                 ?>
-                <!--        On click render template and show the change-->
-                <button type="submit" class="btn btn-default pull-right" name="submit" value="preview">Preview</button>
-                <!--        On click render template, show the change and save data to database-->
-                <button type="submit" class="btn btn-default pull-right" name="submit" value="save">Save</button>
         </div>
         </form>
      </div>

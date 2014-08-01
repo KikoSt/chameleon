@@ -1,5 +1,5 @@
 <div class="panel panel-default">
-    <div class="panel-heading">
+    <div class="panel-heading rectangleTitle">
         <h3 class="panel-title">
             <a data-toggle="collapse" data-target="#<?php echo $element->getId();?>"
                href="#<?php echo $element->getId();?>">

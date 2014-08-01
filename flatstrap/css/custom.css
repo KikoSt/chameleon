@@ -1,0 +1,41 @@
+@import url("bootstrap.min.css");
+
+/* Overwrite all bootstrap css rules with a rounded corner to create a flat design */
+.btn,
+div,
+input,
+li
+{
+    border-radius: 0px !important;
+}
+
+.panel-heading
+{
+    color: #ffffff !important;
+}
+
+.imageTitle
+{
+    background-color: #4583c6 !important;
+}
+
+.rectangleTitle
+{
+    background-color: #7b1fa2 !important;
+}
+
+.textTitle
+{
+    background-color: #45b686 !important;
+}
+
+.list-group-item,
+.panel
+{
+    color: #ffffff !important;
+    background-color: #333333 !important;
+    border-color: #333333 !important;
+}
+
+
+
