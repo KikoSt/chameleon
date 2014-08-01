@@ -243,7 +243,7 @@ class GfxContainer
             }
         }
         $swf->save($this->getOutputDir() . '/' . $this->getOutputFilename());
-
+        chmod($this->getOutputDir() . '/' . $this->getOutputFilename(), 0777);
     }
 
     /**
