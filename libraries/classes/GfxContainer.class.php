@@ -12,6 +12,7 @@ class GfxContainer
 {
     private $id;
     protected $elements;
+    private $title;
     private $target;
     private $source;
     private $canvasWidth;
@@ -66,24 +67,21 @@ class GfxContainer
         $this->setCanvasWidth((float) $svg->attributes()->width);
         $this->setCanvasHeight((float) $svg->attributes()->height);
 
-        foreach($main->children() AS $child) {
-            $gfxInstance = $this->getGfxInstance($child->getName());
-            if($gfxInstance) {
-                $gfxInstance->create($child);
-                $this->addElement($gfxInstance);
+        foreach($main->children() AS $child)
+        {
+            if($child->getName() === "title")
+            {
+                $this->setTitle($child->getName);
+            } else {
+                $gfxInstance = $this->getGfxInstance($child->getName());
+                if($gfxInstance)
+                {
+                    $gfxInstance->create($child);
+                    $this->addElement($gfxInstance);
+                }
+                unset($gfxInstance);
             }
-            unset($gfxInstance);
         }
-    }
-
-    public function setId($sId)
-    {
-        $this->id =$sId;
-    }
-
-    public function getId()
-    {
-        return $this->id;
     }
 
     public function getElements()
