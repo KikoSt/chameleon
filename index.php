@@ -26,6 +26,7 @@
     include('config/pathconfig.inc.php');
 
     $advertiserId = 122;
+    $companyId = 4;
 
     $myIndex = new Index();
 
@@ -44,6 +45,7 @@
 
     $redirect = $myIndex->getRedirect($page);
     $redirect->setAdvertiserId($advertiserId);
+    $redirect->setCompanyId($companyId);
 
     echo $redirect->create();
 ?>

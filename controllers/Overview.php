@@ -17,8 +17,11 @@ class Overview extends Controller
         $database = new Database();
         $connector = new APIConnector();
 
-        $connector->setAdvertiserId($this->advertiserId);
-        $connector->setCompanyId($this->companyId);
+        $connector->setAdvertiserId($this->getAdvertiserId());
+        $connector->setCompanyId($this->getCompanyId());
+
+        $container->setAdvertiserId($this->getAdvertiserId());
+        $container->setCompanyId($this->getCompanyId());
 
         $view = $this->setLayout('views/overview.phtml')->getView();
 
@@ -29,8 +32,6 @@ class Overview extends Controller
         {
             $container->setId($template['id']);
 
-    	    $container->setCompanyId($this->getCompanyId());
-            $container->setAdvertiserId($this->getAdvertiserId());
             $destDir = $container->getOutputDir();
 
             $container->setSource($template['template']);
