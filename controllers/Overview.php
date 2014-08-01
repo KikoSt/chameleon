@@ -25,7 +25,6 @@ class Overview extends Controller
 
         $view = $this->setLayout('views/overview.phtml')->getView();
 
-        // $templates = $database->fetchTemplates();
         $templates = $connector->getTemplates();
 
         foreach($templates as $template)
@@ -35,6 +34,8 @@ class Overview extends Controller
             $container->setOutputName($baseFilename);
 
             // write the temporary file
+            // TODO: refactor GfxContainer to have him take the SVG string directly
+            // w/o the need of writing a temp file
             $fh = fopen(SVG_DIR . $filename, 'w');
             fwrite($fh, $template->getSvgContent());
             fclose($fh);

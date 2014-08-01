@@ -30,8 +30,6 @@ $container->parse();
 $container->changeElementValue($_POST);
 
 $container->setTarget('GIF');
-//$container->setOutputDestination($container->createDestinationDir());
-// $container->calculateOutputDir();
 $container->render();
 
 

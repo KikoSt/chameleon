@@ -13,7 +13,7 @@ class GfxContainer
     private $id;
     protected $elements;
     private $target;
-    private $sSource;
+    private $source;
     private $canvasWidth;
     private $canvasHeight;
     private $canvas;
@@ -57,23 +57,9 @@ class GfxContainer
         return $this->outputName;
     }
 
-    public function setSource($sSource)
-    {
-        $sSource = SVG_DIR . $sSource;
-
-        if(file_exists($sSource))
-        {
-            $this->sSource = $sSource;
-        }
-        else
-        {
-            throw new FileNotFoundException('File '.$sSource.' not found !');
-        }
-    }
-
     public function parse()
     {
-        $svg = new SimpleXMLElement(file_get_contents($this->sSource));
+        $svg = new SimpleXMLElement(file_get_contents($this->source));
 
         $main = $svg->children();
 
@@ -398,6 +384,19 @@ class GfxContainer
         $this->companyId = $companyId;
     }
 
+    public function setSource($source)
+    {
+        $source = SVG_DIR . $source;
+
+        if(file_exists($source))
+        {
+            $this->source = $source;
+        }
+        else
+        {
+            throw new FileNotFoundException('File '.$source.' not found !');
+        }
+    }
 
 
 
