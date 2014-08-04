@@ -17,17 +17,39 @@ if(!defined('__ROOT__'))
 
 $container = new GfxContainer();
 $connector = new APIConnector();
+$svgBuilder = new SvgBuilder();
 
-//$container->setId($_REQUEST['id']);
-//$template = $connector->getTemplateById();
+$connector->setBannerTemplateId($_REQUEST['id']);
+$template = $connector->getTemplateById();
 
-var_dump($_REQUEST['id']);
+$baseFilename = 'rtest_' . $template->getIdBannerTemplate();
+$filename = $baseFilename . '.svg';
+$container->setOutputName($baseFilename);
 
+// write the temporary file
+if(is_dir(SVG_DIR))
+{
+    $fh = fopen(SVG_DIR . $filename, 'w');
+    fwrite($fh, $template->getSvgContent());
+    fclose($fh);
+}
+else
+{
+    throw new Exception(SVG_DIR . ' not found !');
+}
+
+$container->setSource($filename);
+$container->parse();
+
+//unlink(SVG_DIR . $filename);
 
 //create a new svg with the given request parameters
 
 $container->changeElementValue($_POST);
-$container->getSvg();
+
+$newSvg = str_replace('{ELEMENTS}', $container->getSvg(), $svgBuilder->create($container->getCanvasWidth(), $container->getCanvasHeight()));
+
+var_dump($newSvg);
 
 //$container->setTarget('GIF');
 //$container->setOutputDestination($container->createDestinationDir());

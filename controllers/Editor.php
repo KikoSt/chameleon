@@ -65,7 +65,7 @@ class Editor extends Controller
         $container->setTarget('GIF');
         $container->render();
 
-        unlink(SVG_DIR . $filename);
+//        unlink(SVG_DIR . $filename);
 
         $view->templateId = $container->getId();
         $view->gif = str_replace('var/www/', '', $container->getOutputDir()) . '/' . $baseFilename . '.gif';

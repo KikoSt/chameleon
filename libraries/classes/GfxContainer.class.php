@@ -39,13 +39,15 @@ class GfxContainer
 
     public function getSvg()
     {
+        $svg = '';
         foreach($this->getElements() as $element)
         {
             if(is_a($element, 'GfxRectangle'))
             {
-                $element->getSvg();
+                $svg .= $element->getSvg();
             }
         }
+        return $svg;
     }
 
     /**
@@ -157,7 +159,6 @@ class GfxContainer
             $filename .= '_' . $this->getAdvertiserId();
             $filename .= '_' . $this->getCanvasHeight();
             $filename .= 'x' . $this->getCanvasWidth();
-//            $filename .= '_' . time();
             $filename .= '_' . $this->getId();
         }
 
@@ -321,10 +322,14 @@ class GfxContainer
                 {
                     $func="set" . ucwords($param);
 
-                    if($param === "fill" || $param === "stroke")
+                    if($param === "fill")
                     {
                         $color = new GfxColor($value);
                         $element->$func($color);
+                    }
+                    elseif($param === "stroke")
+                    {
+
                     }
                     else
                     {

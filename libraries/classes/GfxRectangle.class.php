@@ -91,31 +91,17 @@ class GfxRectangle extends GfxShape
 
     public function getSvg()
     {
-        $notAllowedParams = array('linkUrl');
-        $methods = get_class_methods($this);
+        $svg = '';
+        $svg .= '<rect';
+        $svg .= ' fill="' . $this->getFill()->getHex() . '"';
+//        $svg .= ' stroke="' . $this->getStroke()->getColor()->getHex() . '"';
+        $svg .= ' x="' . $this->getX() . '"';
+        $svg .= ' y="' . $this->getY() . '"';
+        $svg .= ' width="' . $this->getWidth() . '"';
+        $svg .= ' height="' . $this->getHeight() . '"';
+        $svg .= ' id="' . $this->getId() . '"';
+        $svg .= '/>';
 
-        foreach($methods as $method)
-        {
-            if(false !== strpos($method, 'set'))
-            {
-                $method = str_replace('set', '', $method);
-
-                if(!in_array($method, $notAllowedParams))
-                {
-                    $method = preg_replace("/(?<!^)([A-Z])/", "-\\1", $method);
-                }
-                $method = strtolower($method);
-
-var_dump($method);
-            }
-        }
-    }
-
-    private function determineComponentType()
-    {
-        switch(get_class($this))
-        {
-
-        }
+        return $svg;
     }
 }
