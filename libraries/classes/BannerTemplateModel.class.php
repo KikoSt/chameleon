@@ -46,7 +46,7 @@ class BannerTemplateModel implements JsonSerializable
     {
         if(is_writable($filepath))
         {
-            if(!$handle = fopen($filepath))
+            if(!$handle = fopen($filepath, "r+"))
             {
                 throw new FileException();
             }

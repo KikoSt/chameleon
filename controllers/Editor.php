@@ -14,44 +14,67 @@ class Editor extends Controller
 
     public function create()
     {
-
         $container = new GfxContainer();
-        $database = new Database();
+        $connector = new APIConnector();
         $text = new GfxText();
 
         $this->view = $this->setLayout('views/editor.phtml')->getView();
 
-        $template = $database->fetchTemplateById($_REQUEST['id']);
+        if(isset($_REQUEST['id']))
+        {
+            if(null !== $_REQUEST['id'])
+            {
+                $container->setCompanyId($_REQUEST['companyId']);
+                $container->setAdvertiserId($_REQUEST['advertiserId']);
+                $container->setId($_REQUEST['id']);
+            }
+        }
 
-        $container->setCompanyId($template['companyId']);
-        $container->setAdvertiserId($template['advertiserId']);
-        $container->setId($template['id']);
+        if(null !== $container->getId())
+        {
+            $_SESSION['bannerTemplateId'] = $container->getId();
+            $_SESSION['advertiserId'] = $container->getAdvertiserId();
+            $_SESSION['companyId'] = $container->getCompanyId();
+        }
 
-        $destDir = $container->getOutputDir();
+        if(null === $container->getId())
+        {
+            $container->setId($_SESSION['bannerTemplateId']);
+            $container->setAdvertiserId($_SESSION['advertiserId']);
+            $container->setCompanyId($_SESSION['companyId']);
+        }
 
-        $container->setSource($template['template']);
+        $connector->setBannerTemplateId($container->getId());
+
+        $template = $connector->getTemplateById();
+
+        $baseFilename = 'rtest_' . $template->getIdBannerTemplate();
+        $filename = $baseFilename . '.svg';
+        $container->setOutputName($baseFilename);
+
+        // write the temporary file
+        if(is_dir(SVG_DIR))
+        {
+            $fh = fopen(SVG_DIR . $filename, 'w');
+            fwrite($fh, $template->getSvgContent());
+            fclose($fh);
+        }
+        else
+        {
+            throw new Exception(SVG_DIR . ' not found !');
+        }
+
+        $container->setSource($filename);
         $container->parse();
         $container->setTarget('GIF');
+        $container->render();
 
-        if(isset($_REQUEST['submit']))
-        {
-            $container->render();
-        }
-
+        $this->view->templateId = $container->getId();
+        $this->view->gif = str_replace('var/www/', '', $container->getOutputDir()) . '/' . $baseFilename . '.gif';
         $this->view->elements = $container->getElements();
-
-	$filename = $this->getLatestFile($destDir);
-	$filepath = str_replace('/var/www', '', $destDir);
-	$this->view->gif = $filepath . '/' . $filename;
-
         $this->view->fontlist = $text->getFontListForOverview();
 
-        if($this->view->gif === null)
-        {
-            $this->view->gif = $_SESSION['gif'];
-        }
-
-        $_SESSION['gif'] = $this->view->gif;
+        unlink(SVG_DIR . $filename);
 
         return true;
     }
@@ -61,61 +84,21 @@ class Editor extends Controller
         echo $this->view;
     }
 
-    private function getLatestFile($path)
-    {
-        $latestCtime = 0;
-        $latestFilename = '';
-
-        $d = dir($path);
-	// TODO: check for .. and .
-        while (false !== ($entry = $d->read())) {
-            $filepath = "{$path}/{$entry}";
-            // could do also other checks than just checking whether the entry is a file
-            if (is_file($filepath) && filectime($filepath) > $latestCtime)
-            {
-                $latestCtime = filectime($filepath);
-                $latestFilename = $entry;
-            }
-        }
-
-        return $latestFilename;
-    }
-
-    /**
-     * Get companyId.
-     *
-     * @return companyId.
-     */
     public function getCompanyId()
     {
         return $this->companyId;
     }
 
-    /**
-     * Set companyId.
-     *
-     * @param companyId the value to set.
-     */
     public function setCompanyId($companyId)
     {
         $this->companyId = $companyId;
     }
 
-    /**
-     * Get advertiserId.
-     *
-     * @return advertiserId.
-     */
     public function getAdvertiserId()
     {
         return $this->advertiserId;
     }
 
-    /**
-     * Set advertiserId.
-     *
-     * @param advertiserId the value to set.
-     */
     public function setAdvertiserId($advertiserId)
     {
         $this->advertiserId = $advertiserId;

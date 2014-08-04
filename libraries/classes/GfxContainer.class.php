@@ -22,8 +22,6 @@ class GfxContainer
     private $companyId;
     private $advertiserId;
     private $editorOptions;
-
-
     private $allowedTargets;
 
     public function __construct()
@@ -37,6 +35,17 @@ class GfxContainer
     public function getCanvas()
     {
         return $this->canvas;
+    }
+
+    public function getSvg()
+    {
+        foreach($this->getElements() as $element)
+        {
+            if(is_a($element, 'GfxRectangle'))
+            {
+                $element->getSvg();
+            }
+        }
     }
 
     /**
@@ -80,9 +89,11 @@ class GfxContainer
         $this->setCanvasWidth((float) $svg->attributes()->width);
         $this->setCanvasHeight((float) $svg->attributes()->height);
 
-        foreach($main->children() AS $child) {
+        foreach($main->children() AS $child)
+        {
             $gfxInstance = $this->getGfxInstance($child->getName());
-            if($gfxInstance) {
+            if($gfxInstance)
+            {
                 $gfxInstance->create($child);
                 $this->addElement($gfxInstance);
             }

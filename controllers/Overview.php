@@ -12,6 +12,10 @@ class Overview extends Controller
     private $companyId;
     private $view;
 
+    /**
+     * @return TemplateEngine|void
+     * @throws Exception
+     */
     public function create()
     {
         $container = new GfxContainer();
@@ -36,9 +40,16 @@ class Overview extends Controller
             $container->setOutputName($baseFilename);
 
             // write the temporary file
-            $fh = fopen(SVG_DIR . $filename, 'w');
-            fwrite($fh, $template->getSvgContent());
-            fclose($fh);
+            if(is_dir(SVG_DIR))
+            {
+                $fh = fopen(SVG_DIR . $filename, 'w');
+                fwrite($fh, $template->getSvgContent());
+                fclose($fh);
+            }
+            else
+            {
+                throw new Exception(SVG_DIR . ' not found !');
+            }
 
             $container->setId($template->getIdBannerTemplate());
 

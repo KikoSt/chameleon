@@ -10,23 +10,31 @@ class APIConnector
 
     private $advertiserId;
     private $companyId;
+    private $bannerTemplateId;
 
     public function __construct()
     {
         $this->serviceUrl = 'http://bidder.mediadecision.lan:8080/chameleon-0.1/rest';
         $this->serviceCalls = array();
-        $this->serviceCalls['getTemplates']   = 'advertiser/{advertiserId}/bannerTemplates';
-        $this->serviceCalls['postTemplate']   = 'bannerTemplate';
-        $this->serviceCalls['deleteTemplate'] = 'bannerTemplate/{templateId}';
+        $this->serviceCalls['getTemplates']    = 'advertiser/{advertiserId}/bannerTemplates';
+        $this->serviceCalls['postTemplate']    = 'bannerTemplate';
+        $this->serviceCalls['deleteTemplate']  = 'bannerTemplate/{templateId}';
+        $this->serviceCalls['getTemplateById'] = 'bannerTemplate/{templateId}';
     }
 
-
+    /**
+     * @return array
+     */
     public function getMethodList()
     {
         $methodList = array_keys($this->serviceCalls);
         return $methodList;
     }
 
+    /**
+     * @param $path
+     * @return string
+     */
     public function get($path)
     {
         $restCall = $path;
@@ -34,12 +42,19 @@ class APIConnector
         return $response;
     }
 
+    /**
+     * @return int
+     */
     public function getNumTemplates()
     {
         $templateCount = count($this->getTemplates());
         return $templateCount;
     }
 
+    /**
+     * @return array
+     * @throws Exception
+     */
     public function getTemplates()
     {
         if(!isset($this->advertiserId))
@@ -59,20 +74,32 @@ class APIConnector
 
         foreach($templateList AS $template)
         {
-            $templ = new BannerTemplateModel();
-            $templ->setIdAdvertiser($this->advertiserId);
-            $templ->setIdAuditUser((int) $template->idAuditUser);
-            $templ->setDescription((string) $template->description);
-            $templ->setName((string) $template->name);
-            $templ->setIdBannerTemplate((int) $template->idBannerTemplate);
-            $templ->setIdParentBannerTemplate((int) $template->idParentBannerTemplate);
-            $templ->setSvgContent($template->svgContent);
-            $templates[] = $templ;
+            $templates[] = $this->populateBannerTemplate($template);
         }
 
         return $templates;
     }
 
+    public function getTemplateById()
+    {
+        if(!isset($this->bannerTemplateId))
+        {
+            throw new Exception('bannerTemplateId not set');
+        }
+
+        $resource = $this->serviceUrl . '/' . str_replace('{templateId}', $this->bannerTemplateId, $this->serviceCalls['getTemplateById']);
+        $curl = $this->getCurl($resource, 'GET');
+
+        $curlResponse = curl_exec($curl);
+        curl_close($curl);
+
+        return $this->populateBannerTemplate(json_decode($curlResponse));
+    }
+
+    /**
+     * @param $template
+     * @return mixed
+     */
     public function sendBannerTemplate($template)
     {
         $template = json_encode($template->jsonSerialize());
@@ -86,6 +113,10 @@ class APIConnector
         return $curlResponse;
     }
 
+    /**
+     * @param $templateId
+     * @return mixed
+     */
     public function deleteBannerTemplate($templateId)
     {
         $resource = $this->serviceUrl . '/' . str_replace('{templateId}', $templateId, $this->serviceCalls['deleteTemplate']);
@@ -96,7 +127,11 @@ class APIConnector
         return $curlResponse;
     }
 
-
+    /**
+     * @param $serviceUrl
+     * @param $method
+     * @return resource
+     */
     private function getCurl($serviceUrl, $method)
     {
         $curl = curl_init($serviceUrl);
@@ -121,6 +156,20 @@ class APIConnector
         }
 
         return $curl;
+    }
+
+    private function populateBannerTemplate($template)
+    {
+        $templ = new BannerTemplateModel();
+        $templ->setIdAdvertiser($this->advertiserId);
+        $templ->setIdAuditUser((int) $template->idAuditUser);
+        $templ->setDescription((string) $template->description);
+        $templ->setName((string) $template->name);
+        $templ->setIdBannerTemplate((int) $template->idBannerTemplate);
+        $templ->setIdParentBannerTemplate((int) $template->idParentBannerTemplate);
+        $templ->setSvgContent($template->svgContent);
+
+        return $templ;
     }
 
     /**
@@ -162,6 +211,24 @@ class APIConnector
     {
         $this->companyId = $companyId;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getBannerTemplateId()
+    {
+        return $this->bannerTemplateId;
+    }
+
+    /**
+     * @param mixed $bannerTemplateId
+     */
+    public function setBannerTemplateId($bannerTemplateId)
+    {
+        $this->bannerTemplateId = $bannerTemplateId;
+    }
+
+
 }
 
 function isJson($string)

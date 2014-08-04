@@ -89,4 +89,33 @@ class GfxRectangle extends GfxShape
         return $canvas;
     }
 
+    public function getSvg()
+    {
+        $notAllowedParams = array('linkUrl');
+        $methods = get_class_methods($this);
+
+        foreach($methods as $method)
+        {
+            if(false !== strpos($method, 'set'))
+            {
+                $method = str_replace('set', '', $method);
+
+                if(!in_array($method, $notAllowedParams))
+                {
+                    $method = preg_replace("/(?<!^)([A-Z])/", "-\\1", $method);
+                }
+                $method = strtolower($method);
+
+var_dump($method);
+            }
+        }
+    }
+
+    private function determineComponentType()
+    {
+        switch(get_class($this))
+        {
+
+        }
+    }
 }

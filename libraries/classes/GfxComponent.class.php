@@ -206,7 +206,6 @@ class GfXComponent implements Linkable, Resizeable
         $this->fill = $color;
     }
 
-
     /* *************************
             Magic Methods
     ************************* */
