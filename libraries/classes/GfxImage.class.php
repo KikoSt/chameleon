@@ -94,6 +94,8 @@ class GfxImage extends GfXComponent
         $handle = $canvas->add($image);
         $handle->moveTo($this->getX(), $this->getY());
         $canvas = $this->addClickableLink($canvas);
+        var_dump($this->getSvg());
+
         return $canvas;
     }
 
