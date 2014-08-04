@@ -17,6 +17,9 @@ $container = new GfxContainer();
 $container->setAdvertiserId($advertiserId);
 $container->setCompanyId($companyId);
 
+$connector->setAdvertiserId($advertiserId);
+$connector->setCompanyId($companyId);
+
 // fetch all templates for given advertiser
 $templates = $connector->getTemplates($advertiserId);
 
