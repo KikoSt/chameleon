@@ -124,9 +124,13 @@ class GfXComponent implements Linkable, Resizeable
         return $this->stroke;
     }
 
-    public function setStroke(GfxStroke $oColor)
+    public function setStroke(GfxStroke $stroke)
     {
-        $this->stroke = $oColor;
+        if(!is_a($stroke, 'GfxStroke'))
+        {
+            throw new Exception('Stroke has to be an object of class GfxStroke');
+        }
+        $this->stroke = $stroke;
     }
 
     public function setLinkUrl($linkUrl)
@@ -203,6 +207,10 @@ class GfXComponent implements Linkable, Resizeable
 
     public function setFill(GfxColor $color)
     {
+        if(!is_a($color, 'GfxColor'))
+        {
+            throw new Exception('Fill color has to be an object of class GfxColor');
+        }
         $this->fill = $color;
     }
 

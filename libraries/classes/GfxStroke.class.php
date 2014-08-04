@@ -73,4 +73,9 @@ class GfxStroke
     {
         return $this->color;
     }
+
+    public function getHex()
+    {
+        return '#' . (sprintf('%02x', $this->getR())) . sprintf('%02x', $this->getG()) . sprintf('%02x', $this->getB());
+    }
 }
