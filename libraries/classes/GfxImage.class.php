@@ -204,6 +204,40 @@ class GfxImage extends GfXComponent
         return $image;
     }
 
+
+    public function getSvg()
+    {
+        // TODO: Exclude elements without ID!
+        $svgString = '<image ';
+        $svgString .= 'x="' . $this->getX() . '" ';
+        $svgString .= 'y="' . $this->getY() . '" ';
+        $svgString .= 'width="' . $this->getWidth() . '" ';
+        $svgString .= 'height="' . $this->getHeight() . '" ';
+        $svgString .= 'xlink-href="' . $this->getImageUrl() . '" ';
+        $svgString .= 'id="' . $this->getId() . '" ';
+
+        // generate the STYLE parameter if required
+        if(NULL !== $this->getStroke() || NULL !== $this->getShadowColor())
+        {
+            $svgString .= 'style="';
+            if(NULL !== $this->getStroke())
+            {
+                $svgString .= 'stroke=#' . $this->getStroke()->getColor()->getHex() . '";';
+                $svgString .= 'stroke-width=' . $this->getStroke()->getWidth() . 'px" ';
+            }
+            if(NULL !== $this->shadow)
+            {
+                $svgString .= 'shadow=#' . $this->getShadowColor() . '";';
+                $svgString .= 'stroke-width=' . $this->getShadowDist() . 'px" ';
+            }
+        }
+        $svgString .= '/>';
+
+        return $svgString;
+    }
+
+
+
     /**
      * check if file exists and set image url
      *

@@ -124,24 +124,46 @@ class GfxRectangle extends GfxShape
 
     public function getSvg()
     {
-        $notAllowedParams = array('linkUrl');
-        $methods = get_class_methods($this);
+//        $notAllowedParams = array('linkUrl');
+//        $methods = get_class_methods($this);
 
-        foreach($methods as $method)
+        $svgString = '<rect ';
+        $svgString .= 'fill="#' . $this->getFill()->getHex() . '" ';
+        if(NULL !== $this->getStroke())
         {
-            if(false !== strpos($method, 'set'))
-            {
-                $method = str_replace('set', '', $method);
-
-                if(!in_array($method, $notAllowedParams))
-                {
-                    $method = preg_replace("/(?<!^)([A-Z])/", "-\\1", $method);
-                }
-                $method = strtolower($method);
-
-var_dump($method);
-            }
+            $svgString .= 'stroke="#' . $this->getStroke()->getColor()->getHex() . '" ';
         }
+        $svgString .= 'x="' . $this->getX() . '" ';
+        $svgString .= 'y="' . $this->getY() . '" ';
+        $svgString .= 'width="' . $this->getWidth() . '" ';
+        $svgString .= 'height="' . $this->getHeight() . '" ';
+        $svgString .= 'id="' . $this->getId() . '" ';
+
+        // generate the STYLE parameter if required
+        /*
+        if(NULL !== $this->getShadow())
+        {
+            $svgString .= 'stroke="#' . $this->getStroke()->getColor()->getHex() . '" ';
+        }
+        */
+        $svgString .= '/>';
+
+//        foreach($methods as $method)
+//        {
+//            if(false !== strpos($method, 'set'))
+//            {
+//                $method = str_replace('set', '', $method);
+//
+//                if(!in_array($method, $notAllowedParams))
+//                {
+//                    $method = preg_replace("/(?<!^)([A-Z])/", "-\\1", $method);
+//                }
+//                $method = strtolower($method);
+//
+//var_dump($method);
+//            }
+//        }
+        return $svgString;
     }
 
     private function determineComponentType()
