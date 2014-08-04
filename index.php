@@ -29,10 +29,10 @@
     $redirect->setAdvertiserId($advertiserId);
     $redirect->setCompanyId($companyId);
 
+
+    // create page
     require_once('views/header.phtml');
-
     echo $redirect->create();
-
     require_once('views/footer.phtml');
 ?>
 
