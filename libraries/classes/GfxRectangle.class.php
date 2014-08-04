@@ -85,6 +85,20 @@ class GfxRectangle extends GfxShape
 
         $handle = $canvas->add($sprite);
 
+        $handle->setName($this->getId());
+        var_dump($this->getId());
+        $handle->addAction(new SWFAction('
+
+        import(fl.transitions.Tween);
+        import(fl.transitions.easing.Elastic);
+        var myTween:Tween = new Tween(' . $this->getId() . ', "width", Elastic.easeOut, 0, 300, 30, true);
+        myTween.setFrames = 30;
+
+        myTween.start();
+        '), true);
+
+        var_dump($this->getSvg());
+
         return $canvas;
     }
 

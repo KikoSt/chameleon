@@ -132,6 +132,12 @@ class GfxText extends GfxComponent
 
         $sprite->nextFrame();
 
+        $handle->setName($this->getId());
+        var_dump($this->getId());
+        $handle->addAction(new SWFAction('
+
+        var myTween:Tween = new Tween(' . $this->getId() . ', "x", Elastic.easeOut, 0, 300, 3, true);'), true);
+
         return $canvas;
     }
 
