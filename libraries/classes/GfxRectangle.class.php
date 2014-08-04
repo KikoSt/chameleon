@@ -105,6 +105,8 @@ class GfxRectangle extends GfxShape
                     $method = preg_replace("/(?<!^)([A-Z])/", "-\\1", $method);
                 }
                 $method = strtolower($method);
+
+var_dump($method);
             }
         }
     }

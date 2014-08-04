@@ -29,8 +29,8 @@
                                type="text"
                                class="form-control picker"
                                name="<?php echo $element->getId();?>#stroke"
-                               value="<?php echo $element->getStroke()->getHex();?>"
-                               placeholder="<?php echo $element->getStroke()->getHex();?>"
+                               value="<?php echo $element->getStroke()->getColor()->getHex();?>"
+                               placeholder="<?php echo $element->getStroke()->getColor()->getHex();?>"
                             />
                         <?php endif; ?>
                     </div>

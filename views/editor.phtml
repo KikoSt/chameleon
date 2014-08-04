@@ -2,6 +2,7 @@
     <div class="col-md-7">
         <div class="row" style="margin-left: 5px;">
             <img src="<?php echo $this->gif;?>" alt="">
+
         </div>
         <div class="row" style="padding-top: 5px; margin-left: 5px;">
             <!--        On click render template and show the change-->
@@ -19,6 +20,7 @@
                         include($type . '.inc.php');
                     endforeach;
                 ?>
+            <input type="hidden" name="id" value="<?php echo $this->templateId; ?>">
         </div>
         </form>
      </div>
@@ -39,7 +41,7 @@
                 url: '/chameleon/ajax/changeSvg.php',
                 data: $(this).serialize(),
                 success: function(){
-                    location.reload();
+//                    location.reload();
                 }
             });
         });

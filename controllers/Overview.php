@@ -8,52 +8,123 @@
 
 class Overview extends Controller
 {
+    private $advertiserId;
+    private $companyId;
+
+    /**
+     * @return TemplateEngine|void
+     * @throws Exception
+     */
     public function create()
     {
         $container = new GfxContainer();
-        $database = new Database();
+        $connector = new APIConnector();
+        $previews = array();
+
+        $connector->setAdvertiserId($this->getAdvertiserId());
+        $connector->setCompanyId($this->getCompanyId());
+
+        $container->setAdvertiserId($this->getAdvertiserId());
+        $container->setCompanyId($this->getCompanyId());
 
         $view = $this->setLayout('views/overview.phtml')->getView();
 
-        $templates = $database->fetchTemplates();
+        // $templates = $database->fetchTemplates();
+        $templates = $connector->getTemplates();
 
         foreach($templates as $template)
         {
-            $container->setId($template['id']);
+            $baseFilename = 'rtest_' . $template->getIdBannerTemplate();
+            $filename = $baseFilename . '.svg';
+            $container->setOutputName($baseFilename);
 
-	    $container->setCompanyId(4);
-            $container->setAdvertiserId($template['advertiserId']);
-            $destDir = $container->getOutputDir();
+            // write the temporary file
+            if(is_dir(SVG_DIR))
+            {
+                $fh = fopen(SVG_DIR . $filename, 'w');
+                fwrite($fh, $template->getSvgContent());
+                fclose($fh);
+            }
+            else
+            {
+                throw new Exception(SVG_DIR . ' not found !');
+            }
 
-            $container->setSource($template['template']);
+            $container->setId($template->getIdBannerTemplate());
+
+            $container->setSource($filename);
             $container->parse();
             $container->setTarget('GIF');
             $container->render();
-        }
 
-        // TODO: use given templates, NOT rendered files here.
-        $previews = $this->getRenderedFiles($destDir . '/');
+            $preview = new StdClass();
+            $preview->filepath = str_replace($_SERVER['DOCUMENT_ROOT'], '', $container->getOutputDir()) . '/' . $baseFilename . '.gif';
+            $preview->width = $container->getCanvasWidth() / 2 > 300 ? 300 : $container->getCanvasWidth() / 2;
+            $preview->height = $container->getCanvasHeight();
+            $preview->id = $template->getIdBannerTemplate();
+            $preview->templateName = $filename;
+            $preview->advertiserId = $this->getAdvertiserId();
+            $preview->companyId = $this->getCompanyId();
+            $previews[] = $preview;
+
+            unlink(SVG_DIR . $filename);
+        }
 
         $view->previews = $previews;
 
         return $view;
     }
 
-    private function getRenderedFiles($destinationDir)
+//    private function clearOutputDirectory($path)
+//    {
+//        $files = glob($path . '*.*');
+//
+//        foreach ($files as $file)
+//        {
+//            if (is_file($file))
+//            {
+//                unlink($file);
+//            }
+//        }
+//    }
+
+    /**
+     * Get companyId.
+     *
+     * @return companyId.
+     */
+    public function getCompanyId()
     {
-        return glob($destinationDir . '*.gif');
+        return $this->companyId;
     }
 
-    private function clearOutputDirectory($path)
+    /**
+     * Set companyId.
+     *
+     * @param companyId the value to set.
+     */
+    public function setCompanyId($companyId)
     {
-        $files = glob($path . '*.*');
+        $this->companyId = $companyId;
+    }
 
-        foreach ($files as $file)
-        {
-            if (is_file($file))
-            {
-                unlink($file);
-            }
-        }
+    /**
+     * Get advertiserId.
+     *
+     * @return advertiserId.
+     */
+    public function getAdvertiserId()
+    {
+        return $this->advertiserId;
+    }
+
+    /**
+     * Set advertiserId.
+     *
+     * @param advertiserId the value to set.
+     */
+    public function setAdvertiserId($advertiserId)
+    {
+        $this->advertiserId = $advertiserId;
     }
 }

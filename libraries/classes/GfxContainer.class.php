@@ -45,9 +45,7 @@ class GfxContainer
             {
                 $element->getSvg();
             }
-
         }
-
     }
 
     /**

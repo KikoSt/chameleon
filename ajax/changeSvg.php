@@ -16,25 +16,23 @@ if(!defined('__ROOT__'))
 }
 
 $container = new GfxContainer();
-$database = new Database();
+$connector = new APIConnector();
 
-$template = $database->fetchTemplateById($_REQUEST['id']);
+//$container->setId($_REQUEST['id']);
+//$template = $connector->getTemplateById();
 
-$container->setCompanyId($template['companyId']);
-$container->setAdvertiserId($template['advertiserId']);
-$container->setId($template['id']);
+var_dump($_REQUEST['id']);
 
-$container->setSource($template['template']);
-$container->parse();
+
+//create a new svg with the given request parameters
 
 $container->changeElementValue($_POST);
-
 $container->getSvg();
 
-$container->setTarget('GIF');
+//$container->setTarget('GIF');
 //$container->setOutputDestination($container->createDestinationDir());
 //$container->calculateOutputDir();
-$container->render();
+//$container->render();
 
 
 
