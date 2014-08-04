@@ -10,6 +10,7 @@ class Editor extends Controller
 {
     private $companyId;
     private $advertiserId;
+    private $view;
 
     public function create()
     {
@@ -18,7 +19,7 @@ class Editor extends Controller
         $database = new Database();
         $text = new GfxText();
 
-        $view = $this->setLayout('views/editor.phtml')->getView();
+        $this->view = $this->setLayout('views/editor.phtml')->getView();
 
         $template = $database->fetchTemplateById($_REQUEST['id']);
 
@@ -37,22 +38,27 @@ class Editor extends Controller
             $container->render();
         }
 
-        $view->elements = $container->getElements();
+        $this->view->elements = $container->getElements();
 
 	$filename = $this->getLatestFile($destDir);
 	$filepath = str_replace('/var/www', '', $destDir);
-	$view->gif = $filepath . '/' . $filename;
+	$this->view->gif = $filepath . '/' . $filename;
 
-        $view->fontlist = $text->getFontListForOverview();
+        $this->view->fontlist = $text->getFontListForOverview();
 
-        if($view->gif === null)
+        if($this->view->gif === null)
         {
-            $view->gif = $_SESSION['gif'];
+            $this->view->gif = $_SESSION['gif'];
         }
 
-        $_SESSION['gif'] = $view->gif;
+        $_SESSION['gif'] = $this->view->gif;
 
-        return $view;
+        return true;
+    }
+
+    public function display()
+    {
+        echo $this->view;
     }
 
     private function getLatestFile($path)

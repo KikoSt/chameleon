@@ -26,13 +26,14 @@
     }
 
     $redirect = $myIndex->getRedirect($page);
+
     $redirect->setAdvertiserId($advertiserId);
     $redirect->setCompanyId($companyId);
 
-
     // create page
     require_once('views/header.phtml');
-    echo $redirect->create();
+    $redirect->create();
+    $redirect->display();
     require_once('views/footer.phtml');
 ?>
 
