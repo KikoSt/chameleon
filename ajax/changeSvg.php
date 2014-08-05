@@ -17,9 +17,12 @@ if(!defined('__ROOT__'))
 
 $container = new GfxContainer();
 $connector = new APIConnector();
-$svgBuilder = new SvgBuilder();
+$svgHandler = new SvgHandler();
 
+$container->setCompanyId($_REQUEST['companyId']);
+$container->setAdvertiserId($_REQUEST['advertiserId']);
 $connector->setBannerTemplateId($_REQUEST['id']);
+
 $template = $connector->getTemplateById();
 
 $baseFilename = 'rtest_' . $template->getIdBannerTemplate();
@@ -27,34 +30,33 @@ $filename = $baseFilename . '.svg';
 $container->setOutputName($baseFilename);
 
 // write the temporary file
-if(is_dir(SVG_DIR))
-{
-    $fh = fopen(SVG_DIR . $filename, 'w');
-    fwrite($fh, $template->getSvgContent());
-    fclose($fh);
-}
-else
-{
-    throw new Exception(SVG_DIR . ' not found !');
-}
+$svgHandler->setFilename($filename);
+$svgHandler->setSvgContent($template->getSvgContent());
+$svgHandler->save();
 
 $container->setSource($filename);
 $container->parse();
 
-//unlink(SVG_DIR . $filename);
-
 //create a new svg with the given request parameters
-
 $container->changeElementValue($_POST);
 
-$newSvg = str_replace('{ELEMENTS}', $container->getSvg(), $svgBuilder->create($container->getCanvasWidth(), $container->getCanvasHeight()));
+$newSvgContent = $container->createSvg();
 
-var_dump($newSvg);
+$selectedButton = 'preview';
 
-//$container->setTarget('GIF');
-//$container->setOutputDestination($container->createDestinationDir());
-//$container->calculateOutputDir();
-//$container->render();
+if($selectedButton === 'preview')
+{
+    $container->setTarget('GIF');
+    $container->render();
+
+    // write the temporary file
+    $svgHandler->setSvgContent($newSvgContent);
+    $svgHandler->save();
+
+    var_dump($connector->sendBannerTemplate($newSvgContent));
+}
+
+
 
 
 

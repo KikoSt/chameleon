@@ -202,6 +202,32 @@ class GfxImage extends GfXComponent
         return $image;
     }
 
+    public function getSvg()
+    {
+        $stroke = $this->getStroke();
+        $shadow = $this->getShadowColor();
+
+        $svg = '';
+        $svg .= "\r\n" . '<image';
+        $svg .= "\r\n" . ' xlink:href="' . str_replace('/var/www/chameleon', '', $this->getImageUrl()) . '"';
+        $svg .= "\r\n" . ' linkurl="' . $this->getLinkUrl() . '"';
+
+        if(isset($stroke) && isset($shadow))
+        {
+            $svg .= "\r\n" . ' style="stroke:' . $stroke->getColor()->getHex() . ';stroke-width:' . $stroke->getWidth() . ';';
+            $svg .= ' shadow:' . $this->getShadowColor()->getHex() . ';shadow-dist:' . $this->getShadowDist() . 'px;"';
+
+        }
+
+        $svg .= "\r\n" . ' x="' . $this->getX() . '"';
+        $svg .= "\r\n" . ' y="' . $this->getY() . '"';
+        $svg .= "\r\n" . ' width="' . $this->getWidth() . '"';
+        $svg .= "\r\n" . ' height="' . $this->getHeight() . '"';
+        $svg .= "\r\n" . ' id="' . $this->getId() . '"';
+        $svg .= "\r\n" . '/>';
+        return $svg;
+    }
+
     /**
      * check if file exists and set image url
      *

@@ -91,17 +91,31 @@ class GfxRectangle extends GfxShape
 
     public function getSvg()
     {
-        $svg = '';
-        $svg .= '<rect';
-        $svg .= ' fill="' . $this->getFill()->getHex() . '"';
-//        $svg .= ' stroke="' . $this->getStroke()->getColor()->getHex() . '"';
-        $svg .= ' x="' . $this->getX() . '"';
-        $svg .= ' y="' . $this->getY() . '"';
-        $svg .= ' width="' . $this->getWidth() . '"';
-        $svg .= ' height="' . $this->getHeight() . '"';
-        $svg .= ' id="' . $this->getId() . '"';
-        $svg .= '/>';
+        $stroke = $this->getStroke();
+        $shadow = $this->getShadowColor();
 
+        $svg = '';
+
+        $svg .= "\r\n" . '<rect';
+        $svg .= "\r\n" . ' fill="' . $this->getFill()->getHex() . '"';
+
+        if(isset($stroke))
+        {
+            $svg .= "\r\n" . ' stroke="' . $stroke->getColor()->getHex() . '"';
+            $svg .= "\r\n" . ' stroke-width="' . $stroke->getWidth() . '"';
+        }
+
+        if(isset($shadow))
+        {
+            $svg .= "\r\n" . ' style="shadow:' . $shadow->getHex() . ';shadow-dist:' . $this->getShadowDist() . 'px;"';
+        }
+
+        $svg .= "\r\n" . ' x="' . $this->getX() . '"';
+        $svg .= "\r\n" . ' y="' . $this->getY() . '"';
+        $svg .= "\r\n" . ' width="' . $this->getWidth() . '"';
+        $svg .= "\r\n" . ' height="' . $this->getHeight() . '"';
+        $svg .= "\r\n" . ' id="' . $this->getId() . '"';
+        $svg .= "\r\n" . '/>';
         return $svg;
     }
 }

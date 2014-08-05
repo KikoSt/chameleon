@@ -13,16 +13,18 @@ class GfxStroke
 {
     private $color;
     private $width;
+    private $linecap;
+    private $linejoin;
+    private $dasharray;
 
     /**
-     * __construct
-     *
-     * @param Color $color
-     * @param int $width
-     * @access public
-     * @return void
+     * @param GfxColor $color
+     * @param $width
+     * @param null $linecap
+     * @param null $linejoin
+     * @param null $dasharray
      */
-    public function __construct(GfxColor $color, $width)
+    public function __construct(GfxColor $color, $width, $linecap = null, $linejoin = null, $dasharray = null)
     {
         $this->setColor($color);
         $this->setWidth($width);
@@ -73,4 +75,53 @@ class GfxStroke
     {
         return $this->color;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getDasharray()
+    {
+        return $this->dasharray;
+    }
+
+    /**
+     * @param mixed $dasharray
+     */
+    public function setDasharray($dasharray)
+    {
+        $this->dasharray = $dasharray;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLinecap()
+    {
+        return $this->linecap;
+    }
+
+    /**
+     * @param mixed $linecap
+     */
+    public function setLinecap($linecap)
+    {
+        $this->linecap = $linecap;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLinejoin()
+    {
+        return $this->linejoin;
+    }
+
+    /**
+     * @param mixed $linejoin
+     */
+    public function setLinejoin($linejoin)
+    {
+        $this->linejoin = $linejoin;
+    }
+
 }

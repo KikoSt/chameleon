@@ -42,37 +42,49 @@ class Editor extends Controller
 
         $connector->setBannerTemplateId($container->getId());
 
+        // get the template by id from the REST-API
         $template = $connector->getTemplateById();
 
+        // prepare the file name
         $baseFilename = 'rtest_' . $template->getIdBannerTemplate();
         $filename = $baseFilename . '.svg';
         $container->setOutputName($baseFilename);
 
-        // write the temporary file
-        if(is_dir(SVG_DIR))
+        if(!file_exists(SVG_DIR . $filename))
         {
-            $fh = fopen(SVG_DIR . $filename, 'w');
-            fwrite($fh, $template->getSvgContent());
-            fclose($fh);
-        }
-        else
-        {
-            throw new Exception(SVG_DIR . ' not found !');
+            // write the temporary file
+            if(is_dir(SVG_DIR))
+            {
+                $fh = fopen(SVG_DIR . $filename, 'w');
+                fwrite($fh, $template->getSvgContent());
+                fclose($fh);
+            }
+            else
+            {
+                throw new Exception(SVG_DIR . ' not found !');
+            }
         }
 
+        //render the gif for the overview
         $container->setSource($filename);
         $container->parse();
-        $container->setTarget('GIF');
-        $container->render();
 
+        if(!file_exists($container->getOutputDir() . '/' . $baseFilename . '.gif'))
+        {
+            $container->setTarget('GIF');
+            $container->render();
+        }
+
+        // remove the temporary file
 //        unlink(SVG_DIR . $filename);
 
+        // view parameters
         $view->templateId = $container->getId();
+        $view->advertiserId = $container->getAdvertiserId();
+        $view->companyId = $container->getCompanyId();
         $view->gif = str_replace('var/www/', '', $container->getOutputDir()) . '/' . $baseFilename . '.gif';
         $view->elements = $container->getElements();
         $view->fontlist = $text->getFontListForOverview();
-
-
 
         return $view;
     }

@@ -102,7 +102,7 @@ class APIConnector
      */
     public function sendBannerTemplate($template)
     {
-        $template = json_encode($template->jsonSerialize());
+        $template = json_encode($template);
         $resource = $this->serviceUrl . '/' . $this->serviceCalls['postTemplate'];
         $curl = $this->getCurl($resource, 'POST');
         curl_setopt($curl, CURLOPT_POSTFIELDS, $template);
