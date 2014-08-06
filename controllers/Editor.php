@@ -67,6 +67,8 @@ class Editor extends Controller
         $container->parse();
 
         $this->view->templateId = $container->getId();
+        $this->view->advertiserId = $container->getAdvertiserId();
+        $this->view->companyId = $container->getCompanyId();
         $this->view->gif = str_replace('var/www/', '', $container->getOutputDir()) . '/' . $baseFilename . '.gif';
         $this->view->elements = $container->getElements();
         $this->view->fontlist = $text->getFontListForOverview();
