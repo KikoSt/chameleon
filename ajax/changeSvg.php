@@ -25,7 +25,7 @@ $connector->setBannerTemplateId($_REQUEST['id']);
 
 $template = $connector->getTemplateById();
 
-$baseFilename = 'rtest_' . $template->getIdBannerTemplate();
+$baseFilename = 'rtest_' . $template->getBannerTemplateId();
 $filename = $baseFilename . '.svg';
 $container->setOutputName($baseFilename);
 
@@ -40,7 +40,7 @@ $container->parse();
 //create a new svg with the given request parameters
 $container->changeElementValue($_POST);
 
-$newSvgContent = $container->createSvg();
+$svgContent = $container->createSvg();
 
 $selectedButton = 'preview';
 
@@ -50,10 +50,19 @@ if($selectedButton === 'preview')
     $container->render();
 
     // write the temporary file
-    $svgHandler->setSvgContent($newSvgContent);
+    $svgHandler->setSvgContent($svgContent);
     $svgHandler->save();
 
-    var_dump($connector->sendBannerTemplate($newSvgContent));
+    //update template in the data base
+    $bannerTemplateModel = new BannerTemplateModel();
+    $bannerTemplateModel->setSvgContent($svgContent);
+    $bannerTemplateModel->setBannerTemplateId($_REQUEST['id']);
+    $bannerTemplateModel->setAuditUserId(14); //todo for development, use the given id in the future
+    $bannerTemplateModel->setAdvertiserId($container->getAdvertiserId());
+    $bannerTemplateModel->setDescription('testing');
+
+    //todo only on "save"
+    $response = $connector->sendBannerTemplate($bannerTemplateModel);
 }
 
 

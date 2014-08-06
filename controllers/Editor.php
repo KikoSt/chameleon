@@ -46,7 +46,7 @@ class Editor extends Controller
         $template = $connector->getTemplateById();
 
         // prepare the file name
-        $baseFilename = 'rtest_' . $template->getIdBannerTemplate();
+        $baseFilename = 'rtest_' . $template->getBannerTemplateId();
         $filename = $baseFilename . '.svg';
         $container->setOutputName($baseFilename);
 

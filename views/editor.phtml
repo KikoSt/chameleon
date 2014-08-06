@@ -9,6 +9,13 @@
             <input type="submit" class="btn btn-info" form="editor" name="submit" value="preview">
             <!--        On click render template, show the change and save data to database-->
             <input type="submit" class="btn btn-danger" form="editor" name="submit" value="save">
+            <div id="previewalert" class="alert alert-info alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                Preview successfully created...
+            </div>
         </div>
     </div>
         <div class="col-md-5">
@@ -31,6 +38,9 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
+
+        $('#previewalert').hide();
+
         $(window).keydown(function(event){
             if(event.keyCode == 13) {
                 event.preventDefault();
@@ -44,7 +54,8 @@
                 url: '/chameleon/ajax/changeSvg.php',
                 data: $('#editor').serialize(),
                 success: function(){
-                    location.reload();
+                    $('#previewalert').show();
+//                    location.reload();
                 }
             });
         });

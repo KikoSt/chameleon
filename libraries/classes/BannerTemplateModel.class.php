@@ -12,19 +12,13 @@
 class BannerTemplateModel implements JsonSerializable
 {
     private $description;
-    private $idAdvertiser;
-    private $idBannerTemplate;
-    private $idParentBannerTemplate;
-    private $idAuditUser;
+    private $advertiserId;
+    private $bannerTemplateId;
+    private $parentBannerTemplateId;
+    private $auditUserId;
     private $name;
     private $svgContent;
 
-    /**
-     * __construct
-     *
-     * @access public
-     * @return void
-     */
     public function __construct($source=null)
     {
         if($source !== null)
@@ -42,6 +36,7 @@ class BannerTemplateModel implements JsonSerializable
         }
     }
 
+    // ?? needed here ??
     public function saveAsSvg($filepath)
     {
         if(is_writable($filepath))
@@ -55,7 +50,6 @@ class BannerTemplateModel implements JsonSerializable
                 fwrite($handle, $this->getSvgAsString());
             }
         }
-
     }
 
     public function getSvgAsString()
@@ -63,6 +57,7 @@ class BannerTemplateModel implements JsonSerializable
         return $this->svg->asXML();
     }
 
+    // ??
     private function readSvgFromFile()
     {
         $this->svgContent = simplexml_load_file($this->source)->asXml();
@@ -73,157 +68,87 @@ class BannerTemplateModel implements JsonSerializable
     {
         return [
                 'description' => $this->getDescription(),
-                'idAdvertiser' => $this->getIdAdvertiser(),
-                'idBannerTemplate' => $this->getIdBannerTemplate(),
-                'idParentBannerTemplate' => $this->getIdParentBannerTemplate(),
-                'idAuditUser' => $this->getIdAuditUser(),
+                'idAdvertiser' => $this->getAdvertiserId(),
+                'idBannerTemplate' => $this->getBannerTemplateId(),
+                'idParentBannerTemplate' => $this->getParentBannerTemplateId(),
+                'idAuditUser' => $this->getAuditUserId(),
                 'name' => $this->getName(),
                 'svgContent' => (string) $this->svgContent
                 ];
     }
 
-
+    // ??
     public function __toString()
     {
         // TODO: There's more than only the svg to serialize
         return $this->svg->asXML();
     }
 
-    /**
-     * Get description.
-     *
-     * @return description.
-     */
     public function getDescription()
     {
         return $this->description;
     }
 
-    /**
-     * Set description.
-     *
-     * @param description the value to set.
-     */
     public function setDescription($description)
     {
         $this->description = $description;
     }
 
-    /**
-     * Get idAdvertiser.
-     *
-     * @return idAdvertiser.
-     */
-    public function getIdAdvertiser()
+    public function getAdvertiserId()
     {
-        return $this->idAdvertiser;
+        return $this->advertiserId;
     }
 
-    /**
-     * Set idAdvertiser.
-     *
-     * @param idAdvertiser the value to set.
-     */
-    public function setIdAdvertiser($idAdvertiser)
+    public function setAdvertiserId($idAdvertiser)
     {
-        $this->idAdvertiser = $idAdvertiser;
+        $this->advertiserId = $idAdvertiser;
     }
 
-    /**
-     * Get idBannerTemplate.
-     *
-     * @return idBannerTemplate.
-     */
-    public function getIdBannerTemplate()
+    public function getBannerTemplateId()
     {
-        return $this->idBannerTemplate;
+        return $this->bannerTemplateId;
     }
 
-    /**
-     * Set idBannerTemplate.
-     *
-     * @param idBannerTemplate the value to set.
-     */
-    public function setIdBannerTemplate($idBannerTemplate)
+    public function setBannerTemplateId($idBannerTemplate)
     {
-        $this->idBannerTemplate = $idBannerTemplate;
+        $this->bannerTemplateId = $idBannerTemplate;
     }
 
-    /**
-     * Get idParentBannerTemplate.
-     *
-     * @return idParentBannerTemplate.
-     */
-    public function getIdParentBannerTemplate()
+    public function getParentBannerTemplateId()
     {
-        return $this->idParentBannerTemplate;
+        return $this->parentBannerTemplateId;
     }
 
-    /**
-     * Set idParentBannerTemplate.
-     *
-     * @param idParentBannerTemplate the value to set.
-     */
-    public function setIdParentBannerTemplate($idParentBannerTemplate)
+    public function setParentBannerTemplateId($idParentBannerTemplate)
     {
-        $this->idParentBannerTemplate = $idParentBannerTemplate;
+        $this->parentBannerTemplateId = $idParentBannerTemplate;
     }
 
-    /**
-     * Get idAuditUser.
-     *
-     * @return idAuditUser.
-     */
-    public function getIdAuditUser()
+    public function getAuditUserId()
     {
-        return $this->idAuditUser;
+        return $this->auditUserId;
     }
 
-    /**
-     * Set idAuditUser.
-     *
-     * @param idAuditUser the value to set.
-     */
-    public function setIdAuditUser($idAuditUser)
+    public function setAuditUserId($idAuditUser)
     {
-        $this->idAuditUser = $idAuditUser;
+        $this->auditUserId = $idAuditUser;
     }
 
-    /**
-     * Get name.
-     *
-     * @return name.
-     */
     public function getName()
     {
         return $this->name;
     }
 
-    /**
-     * Set name.
-     *
-     * @param name the value to set.
-     */
     public function setName($name)
     {
         $this->name = $name;
     }
 
-    /**
-     * Get svgContent.
-     *
-     * @return svgContent.
-     */
     public function getSvgContent()
     {
         return $this->svgContent;
     }
 
-    /**
-     * Set svgContent.
-     *
-     * @param svgContent the value to set.
-     */
     public function setSvgContent($svgContent)
     {
         $this->svgContent = $svgContent;
