@@ -28,7 +28,7 @@ foreach($templates AS $template)
     // for now, we stick to the "old" process - reading the svg from a file - in order to prevent more merge
     // conflicts than necessary; changing the process will be very easy and done after thomas hummel's changes
     // have been merged
-    $filename = 'rtest_' . $template->getIdBannerTemplate() . '.svg';
+    $filename = 'rtest_' . $template->getBannerTemplateId() . '.svg';
 
     // write the temporary file
     $fh = fopen(SVG_DIR . $filename, 'w');
@@ -36,7 +36,7 @@ foreach($templates AS $template)
     fclose($fh);
 
     $container->setSource($filename);
-    $container->setOutputName('output_' . $template->getIdBannerTemplate());
+    $container->setOutputName('output_' . $template->getBannerTemplateId());
     $container->parse();
     $container->setTarget('SWF');
     $container->render();
