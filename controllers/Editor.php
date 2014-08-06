@@ -32,8 +32,7 @@ class Editor extends Controller
             $_SESSION['advertiserId'] = $container->getAdvertiserId();
             $_SESSION['companyId'] = $container->getCompanyId();
         }
-
-        if(null === $container->getId())
+        else
         {
             $container->setId($_SESSION['bannerTemplateId']);
             $container->setAdvertiserId($_SESSION['advertiserId']);

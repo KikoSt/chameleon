@@ -21,7 +21,7 @@ $svgHandler = new SvgHandler();
 
 $container->setCompanyId($_REQUEST['companyId']);
 $container->setAdvertiserId($_REQUEST['advertiserId']);
-$connector->setBannerTemplateId($_REQUEST['id']);
+$connector->setBannerTemplateId($_REQUEST['templateId']);
 
 $template = $connector->getTemplateById();
 
@@ -42,17 +42,16 @@ $container->changeElementValue($_POST);
 
 $svgContent = $container->createSvg();
 
-$selectedButton = 'preview';
+$container->setTarget('GIF');
+$container->render();
 
-if($selectedButton === 'preview')
+// write the temporary file
+$svgHandler->setSvgContent($svgContent);
+$svgHandler->save();
+
+
+if($_REQUEST['action'] === 'save')
 {
-    $container->setTarget('GIF');
-    $container->render();
-
-    // write the temporary file
-    $svgHandler->setSvgContent($svgContent);
-    $svgHandler->save();
-
     //update template in the data base
     $bannerTemplateModel = new BannerTemplateModel();
     $bannerTemplateModel->setSvgContent($svgContent);
@@ -61,8 +60,9 @@ if($selectedButton === 'preview')
     $bannerTemplateModel->setAdvertiserId($container->getAdvertiserId());
     $bannerTemplateModel->setDescription('testing');
 
-    //todo only on "save"
     $response = $connector->sendBannerTemplate($bannerTemplateModel);
+
+    var_dump($response);
 }
 
 
