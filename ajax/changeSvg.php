@@ -15,13 +15,19 @@ if(!defined('__ROOT__'))
     define('__ROOT__', '../');
 }
 
+require_once(__ROOT__ . 'libraries/functions.inc.php');
+
 $container = new GfxContainer();
 $connector = new APIConnector();
 $svgHandler = new SvgHandler();
 
-$container->setCompanyId($_REQUEST['companyId']);
-$container->setAdvertiserId($_REQUEST['advertiserId']);
-$connector->setBannerTemplateId($_REQUEST['id']);
+//$container->setId(getRequestVar('id'));
+$container->setCompanyId(getRequestVar('companyId'));
+$container->setAdvertiserId(getRequestVar('advertiserId'));
+
+$connector->setBannerTemplateId(getRequestVar('id'));
+$connector->setcompanyId(getRequestVar('companyId'));
+$connector->setAdvertiserId(getRequestVar('advertiserId'));
 
 $template = $connector->getTemplateById();
 

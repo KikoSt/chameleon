@@ -20,15 +20,9 @@ class Editor extends Controller
 
         $this->view = $this->setLayout('views/editor.phtml')->getView();
 
-        if(isset($_REQUEST['id']))
-        {
-            if(null !== $_REQUEST['id'])
-            {
-                $container->setCompanyId($_REQUEST['companyId']);
-                $container->setAdvertiserId($_REQUEST['advertiserId']);
-                $container->setId($_REQUEST['id']);
-            }
-        }
+        $container->setId(getRequestVar('id'));
+        $container->setcompanyId(getRequestVar('companyId'));
+        $container->setAdvertiserId(getRequestVar('advertiserId'));
 
         if(null !== $container->getId())
         {

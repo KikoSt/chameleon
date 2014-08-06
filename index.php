@@ -5,6 +5,8 @@
     {
         define('__ROOT__', './');
     }
+    require_once(__ROOT__ . 'libraries/functions.inc.php');
+
     include('config/pathconfig.inc.php');
 
     $advertiserId = 122;
