@@ -10,6 +10,7 @@ class Overview extends Controller
 {
     private $advertiserId;
     private $companyId;
+    private $view;
 
     /**
      * @return TemplateEngine|void
@@ -27,7 +28,7 @@ class Overview extends Controller
         $container->setAdvertiserId($this->getAdvertiserId());
         $container->setCompanyId($this->getCompanyId());
 
-        $view = $this->setLayout('views/overview.phtml')->getView();
+        $this->view = $this->setLayout('views/overview.phtml')->getView();
 
         // $templates = $database->fetchTemplates();
         $templates = $connector->getTemplates();
@@ -70,9 +71,14 @@ class Overview extends Controller
             unlink(SVG_DIR . $filename);
         }
 
-        $view->previews = $previews;
+        $this->view->previews = $previews;
 
-        return $view;
+        return $this->view;
+    }
+
+    public function display()
+    {
+        echo $this->view;
     }
 
 //    private function clearOutputDirectory($path)

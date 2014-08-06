@@ -8,13 +8,17 @@
 
 class Editor extends Controller
 {
+    private $companyId;
+    private $advertiserId;
+    private $view;
+
     public function create()
     {
         $container = new GfxContainer();
         $connector = new APIConnector();
         $text = new GfxText();
 
-        $view = $this->setLayout('views/editor.phtml')->getView();
+        $this->view = $this->setLayout('views/editor.phtml')->getView();
 
         if(isset($_REQUEST['id']))
         {
@@ -41,7 +45,6 @@ class Editor extends Controller
 
         $connector->setBannerTemplateId($container->getId());
 
-        // get the template by id from the REST-API
         $template = $connector->getTemplateById();
 
         // prepare the file name
@@ -49,43 +52,43 @@ class Editor extends Controller
         $filename = $baseFilename . '.svg';
         $container->setOutputName($baseFilename);
 
-        if(!file_exists(SVG_DIR . $filename))
+        // write the temporary file
+        if(is_dir(SVG_DIR))
         {
-            // write the temporary file
-            if(is_dir(SVG_DIR))
-            {
-                $fh = fopen(SVG_DIR . $filename, 'w');
-                fwrite($fh, $template->getSvgContent());
-                fclose($fh);
-            }
-            else
-            {
-                throw new Exception(SVG_DIR . ' not found !');
-            }
+            $fh = fopen(SVG_DIR . $filename, 'w');
+            fwrite($fh, $template->getSvgContent());
+            fclose($fh);
+        }
+        else
+        {
+            throw new Exception(SVG_DIR . ' not found !');
         }
 
-        //render the gif for the overview
         $container->setSource($filename);
         $container->parse();
 
+        // view parameters
+        $this->view->templateId = $container->getId();
+        $this->view->advertiserId = $container->getAdvertiserId();
+        $this->view->companyId = $container->getCompanyId();
+        $this->view->gif = str_replace('var/www/', '', $container->getOutputDir()) . '/' . $baseFilename . '.gif';
+        $this->view->elements = $container->getElements();
+        $this->view->fontlist = $text->getFontListForOverview();
+
+        unlink(SVG_DIR . $filename);
+        
         if(!file_exists($container->getOutputDir() . '/' . $baseFilename . '.gif'))
         {
             $container->setTarget('GIF');
             $container->render();
         }
 
-        // remove the temporary file
-//        unlink(SVG_DIR . $filename);
+        return true;
+    }
 
-        // view parameters
-        $view->templateId = $container->getId();
-        $view->advertiserId = $container->getAdvertiserId();
-        $view->companyId = $container->getCompanyId();
-        $view->gif = str_replace('var/www/', '', $container->getOutputDir()) . '/' . $baseFilename . '.gif';
-        $view->elements = $container->getElements();
-        $view->fontlist = $text->getFontListForOverview();
-
-        return $view;
+    public function display()
+    {
+        echo $this->view;
     }
 
     public function getCompanyId()

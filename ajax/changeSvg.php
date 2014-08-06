@@ -37,20 +37,22 @@ $svgHandler->save();
 $container->setSource($filename);
 $container->parse();
 
-//create a new svg with the given request parameters
-$container->changeElementValue($_POST);
+//if(null !== $_REQUEST['action'])
+//{
+    //create a new svg with the given request parameters
+    $container->changeElementValue($_POST);
 
-$svgContent = $container->createSvg();
+    $svgContent = $container->createSvg();
 
-$container->setTarget('GIF');
-$container->render();
+    $container->setTarget('GIF');
+    $container->render();
 
-// write the temporary file
-$svgHandler->setSvgContent($svgContent);
-$svgHandler->save();
+    // write the temporary file
+    $svgHandler->setSvgContent($svgContent);
+    $svgHandler->save();
+//}
 
-
-if($_REQUEST['action'] === 'save')
+if('save' === $_REQUEST['action'])
 {
     //update template in the data base
     $bannerTemplateModel = new BannerTemplateModel();
