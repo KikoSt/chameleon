@@ -40,6 +40,7 @@ class GfXComponent implements Linkable, Resizeable
         {
             $styles = array();
             $style = $svgRootNode->attributes()->style;
+            $style = rtrim($style, ';');
             $stylesList = explode(';', $style);
             foreach($stylesList AS $curStyle)
             {
