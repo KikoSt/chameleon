@@ -17,8 +17,9 @@
     session_start();
 
     $params = array_keys($_REQUEST);
+    $modules = array('overview', 'editor');
 
-    if(!in_array('page', $params))
+    if(!in_array('page', $params || !in_array($_REQUEST['page'], $modules)))
     {
         $page = 'overview';
     }
