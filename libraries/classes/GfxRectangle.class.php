@@ -91,31 +91,31 @@ class GfxRectangle extends GfxShape
 
     public function getSvg()
     {
-        $notAllowedParams = array('linkUrl');
-        $methods = get_class_methods($this);
+        $stroke = $this->getStroke();
+        $shadow = $this->getShadowColor();
 
-        foreach($methods as $method)
+        $svg = '';
+
+        $svg .= "\r\n" . '<rect';
+        $svg .= "\r\n" . ' fill="' . $this->getFill()->getHex() . '"';
+
+        if(isset($stroke))
         {
-            if(false !== strpos($method, 'set'))
-            {
-                $method = str_replace('set', '', $method);
-
-                if(!in_array($method, $notAllowedParams))
-                {
-                    $method = preg_replace("/(?<!^)([A-Z])/", "-\\1", $method);
-                }
-                $method = strtolower($method);
-
-var_dump($method);
-            }
+            $svg .= "\r\n" . ' stroke="' . $stroke->getColor()->getHex() . '"';
+            $svg .= "\r\n" . ' stroke-width="' . $stroke->getWidth() . '"';
         }
-    }
 
-    private function determineComponentType()
-    {
-        switch(get_class($this))
+        if(isset($shadow))
         {
-
+            $svg .= "\r\n" . ' style="shadow:' . $shadow->getHex() . ';shadow-dist:' . $this->getShadowDist() . 'px;"';
         }
+
+        $svg .= "\r\n" . ' x="' . $this->getX() . '"';
+        $svg .= "\r\n" . ' y="' . $this->getY() . '"';
+        $svg .= "\r\n" . ' width="' . $this->getWidth() . '"';
+        $svg .= "\r\n" . ' height="' . $this->getHeight() . '"';
+        $svg .= "\r\n" . ' id="' . $this->getId() . '"';
+        $svg .= "\r\n" . '/>';
+        return $svg;
     }
 }

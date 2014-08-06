@@ -151,6 +151,39 @@ class GfxText extends GfxComponent
         return $cleansedFontList;
     }
 
+    public function getSvg()
+    {
+        $stroke = $this->getStroke();
+        $shadow = $this->getShadowColor();
+
+        $svg = '';
+        $svg .= "\r\n" . '<text xml:space="preserve"';
+        $svg .= "\r\n" . ' text-anchor="' . $this->getTextAnchor() . '"';
+        $svg .= "\r\n" . ' font-family="' . $this->getFontFamily() . '"';
+        $svg .= "\r\n" . ' font-size="' . $this->getFontSize() . '"';
+        $svg .= "\r\n" . ' fill="' . $this->getFill()->getHex() . '"';
+
+        if(isset($stroke))
+        {
+            $svg .= "\r\n" . ' stroke="' . $stroke->getColor()->getHex() . '"';
+            $svg .= "\r\n" . ' stroke-width="' . $stroke->getWidth() . '"';
+        }
+
+        if(isset($shadow))
+        {
+            $svg .= "\r\n" . ' style="shadow:' . $shadow->getHex() . ';shadow-dist:' . $this->getShadowDist() . 'px;"';
+        }
+
+        $svg .= "\r\n" . ' x="' . $this->getX() . '"';
+        $svg .= "\r\n" . ' y="' . $this->getY() . '"';
+        $svg .= "\r\n" . ' width="' . $this->getWidth() . '"';
+        $svg .= "\r\n" . ' height="' . $this->getHeight() . '"';
+        $svg .= "\r\n" . ' id="' . $this->getId() . '"';
+        $svg .= "\r\n" . '><![CDATA[' . utf8_decode($this->getText()) . ']]></text>';
+        return $svg;
+    }
+
+
     /**
      * @return mixed
      */

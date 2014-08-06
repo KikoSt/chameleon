@@ -39,13 +39,24 @@ class GfxContainer
 
     public function getSvg()
     {
+        $svg = '';
         foreach($this->getElements() as $element)
         {
-            if(is_a($element, 'GfxRectangle'))
-            {
-                $element->getSvg();
-            }
+            $svg .= $element->getSvg();
         }
+        return $svg;
+    }
+
+    public function createSvg()
+    {
+        //create header
+        $string = "<?xml version='1.0' encoding='UTF-8'?>";
+        $string .= "\n" . '<svg width="'. $this->getCanvasWidth() .'" height="'. $this->getCanvasHeight() . '"';
+
+        $string .= ' xmlns="http://www.w3.org/2000/svg"';
+        $string .= ' xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">';
+        $string .= "\n" . '<g>' . $this->getSvg() . '</g></svg>';
+        return $string;
     }
 
     /**
@@ -157,7 +168,6 @@ class GfxContainer
             $filename .= '_' . $this->getAdvertiserId();
             $filename .= '_' . $this->getCanvasHeight();
             $filename .= 'x' . $this->getCanvasWidth();
-//            $filename .= '_' . time();
             $filename .= '_' . $this->getId();
         }
 
@@ -314,17 +324,25 @@ class GfxContainer
             foreach($formData as $key => $value)
             {
                 $cleansedKey = explode('#', $key);
-                $param = $cleansedKey[1];
+
+                if(isset($cleansedKey[1]))
+                {
+                    $param = $cleansedKey[1];
+                }
 
                 // form data containing the current element found?
                 if(strcasecmp($cleansedKey[0], $id) == 0)
                 {
                     $func="set" . ucwords($param);
 
-                    if($param === "fill" || $param === "stroke")
+                    if($param === "fill")
                     {
                         $color = new GfxColor($value);
                         $element->$func($color);
+                    }
+                    elseif($param === "stroke")
+                    {
+
                     }
                     else
                     {

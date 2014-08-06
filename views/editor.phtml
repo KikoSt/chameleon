@@ -6,28 +6,41 @@
         </div>
         <div class="row" style="padding-top: 5px; margin-left: 5px;">
             <!--        On click render template and show the change-->
-            <button type="submit" class="btn btn-default" form="editor" name="submit" value="preview">Preview</button>
+            <input type="submit" class="btn btn-info" form="editor" name="submit" value="preview">
             <!--        On click render template, show the change and save data to database-->
-            <button type="submit" class="btn btn-default" form="editor" name="submit" value="save">Save</button>
+            <input type="submit" class="btn btn-danger" form="editor" name="submit" value="save">
+            <div id="previewalert" class="alert alert-info alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                Preview successfully created...
+            </div>
         </div>
     </div>
-    <div class="col-md-5">
+        <div class="col-md-5">
         <form id="editor" action="#" method="post">
-        <div class="panel-group" id="accordion">
-                <?php
-                    foreach($this->elements as $element):
-                        $type = get_class($element);
-                        include($type . '.inc.php');
-                    endforeach;
-                ?>
-            <input type="hidden" name="id" value="<?php echo $this->templateId; ?>">
-        </div>
+            <div class="panel-group" id="accordion">
+                    <?php
+                        foreach($this->elements as $element):
+                            $type = get_class($element);
+                            include($type . '.inc.php');
+                        endforeach;
+                    ?>
+                <input type="hidden" name="id" value="<?php echo $this->templateId; ?>">
+                <input type="hidden" name="advertiserId" value="<?php echo $this->advertiserId; ?>">
+                <input type="hidden" name="companyId" value="<?php echo $this->companyId; ?>">
+            </div>
         </form>
      </div>
 </div>
 
+
 <script type="text/javascript">
     $(document).ready(function() {
+
+        $('#previewalert').hide();
+
         $(window).keydown(function(event){
             if(event.keyCode == 13) {
                 event.preventDefault();
@@ -39,8 +52,9 @@
             $.ajax({
                 type: 'POST',
                 url: '/chameleon/ajax/changeSvg.php',
-                data: $(this).serialize(),
+                data: $('#editor').serialize(),
                 success: function(){
+                    $('#previewalert').show();
 //                    location.reload();
                 }
             });

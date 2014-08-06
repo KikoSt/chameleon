@@ -100,7 +100,7 @@ class APIConnector
      * @param $template
      * @return mixed
      */
-    public function sendBannerTemplate($template)
+    public function sendBannerTemplate(BannerTemplateModel $template)
     {
         $template = json_encode($template->jsonSerialize());
         $resource = $this->serviceUrl . '/' . $this->serviceCalls['postTemplate'];
@@ -160,16 +160,16 @@ class APIConnector
 
     private function populateBannerTemplate($template)
     {
-        $templ = new BannerTemplateModel();
-        $templ->setIdAdvertiser($this->advertiserId);
-        $templ->setIdAuditUser((int) $template->idAuditUser);
-        $templ->setDescription((string) $template->description);
-        $templ->setName((string) $template->name);
-        $templ->setIdBannerTemplate((int) $template->idBannerTemplate);
-        $templ->setIdParentBannerTemplate((int) $template->idParentBannerTemplate);
-        $templ->setSvgContent($template->svgContent);
+        $bannerTemplateModel = new BannerTemplateModel();
+        $bannerTemplateModel->setAdvertiserId($this->advertiserId);
+        $bannerTemplateModel->setAuditUserId((int) $template->idAuditUser);
+        $bannerTemplateModel->setDescription((string) $template->description);
+        $bannerTemplateModel->setName((string) $template->name);
+        $bannerTemplateModel->setBannerTemplateId((int) $template->idBannerTemplate);
+        $bannerTemplateModel->setParentBannerTemplateId((int) $template->idParentBannerTemplate);
+        $bannerTemplateModel->setSvgContent($template->svgContent);
 
-        return $templ;
+        return $bannerTemplateModel;
     }
 
     /**

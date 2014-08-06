@@ -46,28 +46,32 @@ class Editor extends Controller
 
         $connector->setBannerTemplateId($container->getId());
 
+        // get the template by id from the REST-API
         $template = $connector->getTemplateById();
 
-        $baseFilename = 'rtest_' . $template->getIdBannerTemplate();
+        // prepare the file name
+        $baseFilename = 'rtest_' . $template->getBannerTemplateId();
         $filename = $baseFilename . '.svg';
         $container->setOutputName($baseFilename);
 
-        // write the temporary file
-        if(is_dir(SVG_DIR))
+        if(!file_exists(SVG_DIR . $filename))
         {
-            $fh = fopen(SVG_DIR . $filename, 'w');
-            fwrite($fh, $template->getSvgContent());
-            fclose($fh);
-        }
-        else
-        {
-            throw new Exception(SVG_DIR . ' not found !');
+            // write the temporary file
+            if(is_dir(SVG_DIR))
+            {
+                $fh = fopen(SVG_DIR . $filename, 'w');
+                fwrite($fh, $template->getSvgContent());
+                fclose($fh);
+            }
+            else
+            {
+                throw new Exception(SVG_DIR . ' not found !');
+            }
         }
 
+        //render the gif for the overview
         $container->setSource($filename);
         $container->parse();
-        $container->setTarget('GIF');
-        $container->render();
 
         $this->view->templateId = $container->getId();
         $this->view->gif = str_replace('var/www/', '', $container->getOutputDir()) . '/' . $baseFilename . '.gif';

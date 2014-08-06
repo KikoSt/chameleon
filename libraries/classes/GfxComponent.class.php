@@ -58,7 +58,6 @@ class GfXComponent implements Linkable, Resizeable
             }
             else if($attr->stroke !== null && (int) $attr->{'stroke-width'} !== 0)
             {
-                echo "STROKE FOUND!\n";
                 $strokeColor = new GfxColor($attr->stroke);
                 $strokeWidth = (int) $attr->{'stroke-width'};
                 $stroke = new GfxStroke($strokeColor, $strokeWidth);
@@ -204,6 +203,11 @@ class GfXComponent implements Linkable, Resizeable
     public function setFill(GfxColor $color)
     {
         $this->fill = $color;
+    }
+
+    public function getSvg()
+    {
+        return '';
     }
 
     /* *************************
