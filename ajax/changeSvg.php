@@ -43,6 +43,7 @@ $svgHandler->setSvgContent($svgContent);
 $svgHandler->save();
 
 // render the new svg for the editor view
+$container->setOutputName($baseFilename);
 $container->setTarget('GIF');
 $container->render();
 
@@ -55,7 +56,7 @@ if('save' === $_REQUEST['action'])
     $bannerTemplateModel->setAuditUserId(14); //todo for development, use the given id in the future
     $bannerTemplateModel->setAdvertiserId($container->getAdvertiserId());
     $bannerTemplateModel->setDescription('testing');
-//    $bannerTemplateModel->setName('bumblebee testing');
+    $bannerTemplateModel->setName('bumblebee testing');
 
     $response = $connector->sendBannerTemplate($bannerTemplateModel);
 
