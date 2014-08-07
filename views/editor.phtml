@@ -1,14 +1,29 @@
 <div id="awesomeEditor" class="row" style="margin-top: 70px; padding-left: 10px; padding-right: 10px;">
+    <form id="editor">
+    <div class="col-md-5">
+        <div class="panel-group" id="accordion">
+                <?php
+                    foreach($this->elements as $element):
+                        $type = get_class($element);
+                        include($type . '.inc.php');
+                    endforeach;
+                ?>
+            <input type="hidden" name="templateId" value="<?php echo $this->templateId; ?>">
+            <input type="hidden" name="advertiserId" value="<?php echo $this->advertiserId; ?>">
+            <input type="hidden" name="companyId" value="<?php echo $this->companyId; ?>">
+        </div>
+    </div>
     <div class="col-md-7">
         <div class="row" style="margin-left: 5px;">
             <img src="<?php echo $this->gif;?>" alt="">
-
         </div>
         <div class="row" style="padding-top: 5px; margin-left: 5px;">
+
             <!--        On click render template and show the change-->
-            <input type="submit" class="btn btn-info" form="editor" name="submit" value="preview">
+            <button id="preview" type="submit" class="btn btn-info">Preview</button>
             <!--        On click render template, show the change and save data to database-->
-            <input type="submit" class="btn btn-danger" form="editor" name="submit" value="save">
+            <button id="save" type="submit" class="btn btn-danger">Save</button>
+
             <div id="previewalert" class="alert alert-info alert-dismissible" role="alert">
                 <button type="button" class="close" data-dismiss="alert">
                     <span aria-hidden="true">&times;</span>
@@ -18,29 +33,19 @@
             </div>
         </div>
     </div>
-        <div class="col-md-5">
-        <form id="editor" action="#" method="post">
-            <div class="panel-group" id="accordion">
-                    <?php
-                        foreach($this->elements as $element):
-                            $type = get_class($element);
-                            include($type . '.inc.php');
-                        endforeach;
-                    ?>
-                <input type="hidden" name="id" value="<?php echo $this->templateId; ?>">
-                <input type="hidden" name="advertiserId" value="<?php echo $this->advertiserId; ?>">
-                <input type="hidden" name="companyId" value="<?php echo $this->companyId; ?>">
-            </div>
-        </form>
-     </div>
+    </form>
 </div>
 
 
 <script type="text/javascript">
     $(document).ready(function() {
+        var btn;
+        $('.btn').on('click', function(){
 
+            btn = $(this).attr('id');
+
+        });
         $('#previewalert').hide();
-
         $(window).keydown(function(event){
             if(event.keyCode == 13) {
                 event.preventDefault();
@@ -52,7 +57,7 @@
             $.ajax({
                 type: 'POST',
                 url: '/chameleon/ajax/changeSvg.php',
-                data: $('#editor').serialize(),
+                data: $('#editor').serialize() + "&action=" + btn,
                 success: function(){
                     $('#previewalert').show();
                     location.reload();

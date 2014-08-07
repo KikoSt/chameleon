@@ -19,7 +19,7 @@ require_once(__ROOT__ . 'libraries/functions.inc.php');
 
 $container = new GfxContainer();
 $connector = new APIConnector();
-$svgHandler = new SvgHandler();
+$svgHandler = new SvgFileHandler();
 
 //$container->setId(getRequestVar('id'));
 $container->setCompanyId(getRequestVar('companyId'));
@@ -29,46 +29,45 @@ $connector->setBannerTemplateId(getRequestVar('id'));
 $connector->setcompanyId(getRequestVar('companyId'));
 $connector->setAdvertiserId(getRequestVar('advertiserId'));
 
-$template = $connector->getTemplateById();
-
-$baseFilename = 'rtest_' . $template->getBannerTemplateId();
+//set file name
+$baseFilename = 'rtest_' . $_REQUEST['templateId'];
 $filename = $baseFilename . '.svg';
 $container->setOutputName($baseFilename);
 
-// write the temporary file
-$svgHandler->setFilename($filename);
-$svgHandler->setSvgContent($template->getSvgContent());
-$svgHandler->save();
-
+//parse the svg
 $container->setSource($filename);
 $container->parse();
 
-//create a new svg with the given request parameters
+//add the changes to the container
 $container->changeElementValue($_POST);
 
+//create the new svg
 $svgContent = $container->createSvg();
 
-$selectedButton = 'preview';
+// write the svg
+$svgHandler->setFilename($filename);
+$svgHandler->setSvgContent($svgContent);
+$svgHandler->save();
 
-if($selectedButton === 'preview')
+// render the new svg for the editor view
+$container->setOutputName($baseFilename);
+$container->setTarget('GIF');
+$container->render();
+
+if('save' === $_REQUEST['action'])
 {
-    $container->setTarget('GIF');
-    $container->render();
-
-    // write the temporary file
-    $svgHandler->setSvgContent($svgContent);
-    $svgHandler->save();
-
     //update template in the data base
     $bannerTemplateModel = new BannerTemplateModel();
     $bannerTemplateModel->setSvgContent($svgContent);
-    $bannerTemplateModel->setBannerTemplateId($_REQUEST['id']);
+    $bannerTemplateModel->setBannerTemplateId($_REQUEST['templateId']);
     $bannerTemplateModel->setAuditUserId(14); //todo for development, use the given id in the future
     $bannerTemplateModel->setAdvertiserId($container->getAdvertiserId());
     $bannerTemplateModel->setDescription('testing');
+    $bannerTemplateModel->setName('bumblebee testing');
 
-    //todo only on "save"
     $response = $connector->sendBannerTemplate($bannerTemplateModel);
+
+    var_dump($response);
 }
 
 

@@ -12,7 +12,9 @@
         <form method="post" action="index.php?page=editor">
             <div class="col-md-3">
                 <div>
-                    <img src="<?php echo $preview->filepath; ?>" alt="" width="<?php echo $preview->width; ?>">
+                    <input type="image" src="<?php echo $preview->filepath; ?>" alt="" width="<?php echo $preview->width; ?>" onclick="form
+                    .submit
+                    ();">
                 </div>
                 <input type="hidden" name="id" value="<?php echo $preview->id; ?>">
                 <input type="hidden" name="advertiserId" value="<?php echo $preview->advertiserId; ?>">

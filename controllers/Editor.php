@@ -26,46 +26,49 @@ class Editor extends Controller
 
         if(null !== $container->getId())
         {
-            $_SESSION['bannerTemplateId'] = $container->getId();
+            $_SESSION['templateId'] = $container->getId();
             $_SESSION['advertiserId'] = $container->getAdvertiserId();
             $_SESSION['companyId'] = $container->getCompanyId();
         }
         else
         {
-            $container->setId($_SESSION['bannerTemplateId']);
+            $container->setId($_SESSION['templateId']);
             $container->setAdvertiserId($_SESSION['advertiserId']);
             $container->setCompanyId($_SESSION['companyId']);
         }
 
-        $connector->setBannerTemplateId($container->getId());
-
-        // get the template by id from the REST-API
-        $template = $connector->getTemplateById();
-
-        // prepare the file name
-        $baseFilename = 'rtest_' . $template->getBannerTemplateId();
-        $filename = $baseFilename . '.svg';
-        $container->setOutputName($baseFilename);
-
-        if(!file_exists(SVG_DIR . $filename))
+        // check if svg_dir exists
+        if(is_dir(SVG_DIR))
         {
-            // write the temporary file
-            if(is_dir(SVG_DIR))
+            // prepare the file name
+            $baseFilename = 'rtest_' . $container->getId();
+            $filename = $baseFilename . '.svg';
+
+            // check if file with id already exists
+            if(!file_exists(SVG_DIR . $filename))
             {
+                // get template by id
+                $template = $connector->getTemplateById($container->getId());
+                $container->setOutputName($baseFilename);
+
+                // create svg
                 $fh = fopen(SVG_DIR . $filename, 'w');
                 fwrite($fh, $template->getSvgContent());
                 fclose($fh);
             }
-            else
-            {
-                throw new Exception(SVG_DIR . ' not found !');
-            }
+
+            // render gif for editor view
+            $container->setSource($baseFilename);
+            $container->parse();
+            $container->setTarget('GIF');
+            $container->render();
+        }
+        else
+        {
+            throw new Exception(SVG_DIR . ' not found !');
         }
 
-        //render the gif for the overview
-        $container->setSource($filename);
-        $container->parse();
-
+        // view parameters
         $this->view->templateId = $container->getId();
         $this->view->advertiserId = $container->getAdvertiserId();
         $this->view->companyId = $container->getCompanyId();
@@ -74,7 +77,6 @@ class Editor extends Controller
         $this->view->fontlist = $text->getFontListForOverview();
 
         unlink(SVG_DIR . $filename);
-
         return true;
     }
 

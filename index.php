@@ -38,6 +38,3 @@
     $redirect->create();
     $redirect->display();
     require_once('views/footer.phtml');
-?>
-
-
