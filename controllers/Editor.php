@@ -20,25 +20,25 @@ class Editor extends Controller
 
         $this->view = $this->setLayout('views/editor.phtml')->getView();
 
-        if(isset($_REQUEST['id']))
+        if(isset($_REQUEST['templateId']))
         {
-            if(null !== $_REQUEST['id'])
+            if(null !== $_REQUEST['templateId'])
             {
                 $container->setCompanyId($_REQUEST['companyId']);
                 $container->setAdvertiserId($_REQUEST['advertiserId']);
-                $container->setId($_REQUEST['id']);
+                $container->setId($_REQUEST['templateId']);
             }
         }
 
         if(null !== $container->getId())
         {
-            $_SESSION['bannerTemplateId'] = $container->getId();
+            $_SESSION['templateId'] = $container->getId();
             $_SESSION['advertiserId'] = $container->getAdvertiserId();
             $_SESSION['companyId'] = $container->getCompanyId();
         }
         else
         {
-            $container->setId($_SESSION['bannerTemplateId']);
+            $container->setId($_SESSION['templateId']);
             $container->setAdvertiserId($_SESSION['advertiserId']);
             $container->setCompanyId($_SESSION['companyId']);
         }
@@ -64,7 +64,7 @@ class Editor extends Controller
             }
 
             // render gif for editor view
-            $container->setSource($filename);
+            $container->setSource($baseFilename);
             $container->parse();
             $container->setTarget('GIF');
             $container->render();
