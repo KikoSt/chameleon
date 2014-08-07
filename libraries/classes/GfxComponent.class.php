@@ -76,6 +76,20 @@ class GfXComponent implements Linkable, Resizeable
         }
     }
 
+    public function hasShadow()
+    {
+        $shadowColor = $this->getShadowColor();
+        $shadowDist = $this->getShadowDist();
+
+        if(isset($shadowColor, $shadowDist))
+        {
+            return true;
+        }
+
+        //return false as fallback
+        return false;
+    }
+
     public function getShadowColor()
     {
         return $this->shadowColor;

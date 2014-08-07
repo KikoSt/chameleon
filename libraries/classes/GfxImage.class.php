@@ -105,12 +105,34 @@ class GfxImage extends GfXComponent
      */
     public function renderGIF($canvas)
     {
+        if($this->hasShadow())
+        {
+            $this->createShadow($canvas);
+        }
+
         $dst = $this->resizeImage($this->getImageUrl());
 
         imagecopyresampled($canvas, $dst, $this->getX(), $this->getY(), 0, 0, $this->getWidth(), $this->getHeight(), $this->getWidth(),
             $this->getHeight());
 
         return $canvas;
+    }
+
+    public function createShadow($canvas)
+    {
+        $color = imagecolorallocatealpha($canvas,
+                                         $this->getShadowColor()->getR(),
+                                         $this->getShadowColor()->getG(),
+                                         $this->getShadowColor()->getB(),
+                                         50
+                 );
+
+        $x1 = $this->getX() + $this->getShadowDist();
+        $y1 = $this->getY() + $this->getShadowDist();
+        $x2 = $x1 + $this->getWidth();
+        $y2 = $y1 + $this->getHeight();
+
+        imagefilledrectangle($canvas, $x1, $y1, $x2, $y2, $color);
     }
 
     /**
