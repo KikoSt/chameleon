@@ -1,4 +1,5 @@
 @import url("bootstrap.min.css");
+@import url("jasny-bootstrap.min.css");
 
 /* Overwrite all bootstrap css rules with a rounded corner to create a flat design */
 .btn,
