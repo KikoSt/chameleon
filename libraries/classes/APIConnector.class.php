@@ -80,14 +80,14 @@ class APIConnector
         return $templates;
     }
 
-    public function getTemplateById()
+    public function getTemplateById($templateId)
     {
-        if(!isset($this->bannerTemplateId))
+        if(!isset($templateId))
         {
             throw new Exception('bannerTemplateId not set');
         }
 
-        $resource = $this->serviceUrl . '/' . str_replace('{templateId}', $this->bannerTemplateId, $this->serviceCalls['getTemplateById']);
+        $resource = $this->serviceUrl . '/' . str_replace('{templateId}', $templateId, $this->serviceCalls['getTemplateById']);
         $curl = $this->getCurl($resource, 'GET');
 
         $curlResponse = curl_exec($curl);
@@ -210,22 +210,6 @@ class APIConnector
     public function setCompanyId($companyId)
     {
         $this->companyId = $companyId;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getBannerTemplateId()
-    {
-        return $this->bannerTemplateId;
-    }
-
-    /**
-     * @param mixed $bannerTemplateId
-     */
-    public function setBannerTemplateId($bannerTemplateId)
-    {
-        $this->bannerTemplateId = $bannerTemplateId;
     }
 
 

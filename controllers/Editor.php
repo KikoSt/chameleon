@@ -43,29 +43,36 @@ class Editor extends Controller
             $container->setCompanyId($_SESSION['companyId']);
         }
 
-        $connector->setBannerTemplateId($container->getId());
-
-        $template = $connector->getTemplateById();
-
-        // prepare the file name
-        $baseFilename = 'rtest_' . $template->getBannerTemplateId();
-        $filename = $baseFilename . '.svg';
-        $container->setOutputName($baseFilename);
-
-        // write the temporary file
+        // check if svg_dir exists
         if(is_dir(SVG_DIR))
         {
-            $fh = fopen(SVG_DIR . $filename, 'w');
-            fwrite($fh, $template->getSvgContent());
-            fclose($fh);
+            // prepare the file name
+            $baseFilename = 'rtest_' . $container->getId();
+            $filename = $baseFilename . '.svg';
+
+            // check if file with id already exists
+            if(!file_exists(SVG_DIR . $filename))
+            {
+                // get template by id
+                $template = $connector->getTemplateById($container->getId());
+                $container->setOutputName($baseFilename);
+
+                // create svg
+                $fh = fopen(SVG_DIR . $filename, 'w');
+                fwrite($fh, $template->getSvgContent());
+                fclose($fh);
+            }
+
+            // render gif for editor view
+            $container->setSource($filename);
+            $container->parse();
+            $container->setTarget('GIF');
+            $container->render();
         }
         else
         {
             throw new Exception(SVG_DIR . ' not found !');
         }
-
-        $container->setSource($filename);
-        $container->parse();
 
         // view parameters
         $this->view->templateId = $container->getId();
@@ -74,14 +81,6 @@ class Editor extends Controller
         $this->view->gif = str_replace('var/www/', '', $container->getOutputDir()) . '/' . $baseFilename . '.gif';
         $this->view->elements = $container->getElements();
         $this->view->fontlist = $text->getFontListForOverview();
-
-        unlink(SVG_DIR . $filename);
-        
-        if(!file_exists($container->getOutputDir() . '/' . $baseFilename . '.gif'))
-        {
-            $container->setTarget('GIF');
-            $container->render();
-        }
 
         return true;
     }
