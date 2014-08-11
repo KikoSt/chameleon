@@ -20,6 +20,7 @@ class APIConnector
         $this->serviceCalls['postTemplate']    = 'bannerTemplate';
         $this->serviceCalls['deleteTemplate']  = 'bannerTemplate/{templateId}';
         $this->serviceCalls['getTemplateById'] = 'bannerTemplate/{templateId}';
+        $this->serviceCalls['getProductsByCategory'] = 'company/{companyId}/category/{categoryId}/products';
     }
 
     /**
@@ -40,6 +41,39 @@ class APIConnector
         $restCall = $path;
         $response = file_get_contents($restCall);
         return $response;
+    }
+
+
+
+    /**
+     * getProductsByCategory
+     *
+     * returns all products for a given category for the currently set company and advertiser
+     *
+     * @param mixed $categoryId
+     * @access public
+     * @return void
+     */
+    public function getProductsByCategory($categoryId)
+    {
+        $resource = $this->serviceUrl . '/' . str_replace('{categoryId}', $categoryId, $this->serviceCalls['getProductsByCategory']);
+        $resource = str_replace('{companyId}', $this->companyId, $resource);
+        $curl = $this->getCurl($resource, 'GET');
+
+        $curlResponse = curl_exec($curl);
+        curl_close($curl);
+
+        $productList = json_decode($curlResponse)->products;
+
+        $products = array();
+
+        foreach($productList AS $product)
+        {
+            $products[] = $this->populateProduct($product);
+        }
+
+        return $products;
+
     }
 
     /**
