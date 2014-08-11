@@ -8,7 +8,7 @@ if(!defined('__ROOT__'))
 }
 
 $advertiserId = 122;
-$companyId = 4;
+$companyId = 170;
 $userId = 14;
 
 $connector = new APIConnector();
