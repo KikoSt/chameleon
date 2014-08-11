@@ -7,6 +7,9 @@ if(!defined('__ROOT__'))
     define('__ROOT__', './');
 }
 
+// test categories for now are 7 and 10!
+$productCategories = array(7, 10);
+
 $advertiserId = 122;
 $companyId = 170;
 $userId = 14;
@@ -20,8 +23,21 @@ $container->setCompanyId($companyId);
 $connector->setAdvertiserId($advertiserId);
 $connector->setCompanyId($companyId);
 
+$productList = array();
+
 // fetch all templates for given advertiser
 $templates = $connector->getTemplates($advertiserId);
+foreach($productCategories AS $category)
+{
+    $products  = $connector->getProductsByCategory($category);
+    $productList = array_merge($productList, $products);
+}
+
+foreach($productList AS $product)
+{
+    echo $product . "\n\n";
+}
+
 
 foreach($templates AS $template)
 {
