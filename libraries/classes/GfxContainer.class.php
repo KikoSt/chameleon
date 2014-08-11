@@ -24,9 +24,32 @@ class GfxContainer
     private $editorOptions;
     private $allowedTargets;
 
+    private $productData;
+
+    // the data registry consists of several "list", one for each relevant data component:
+    // - price
+    // - oldPrice
+    // - productUrl
+    // etc.
+    // The respective "sub-registry" will store type and ID of each component
+    // Every registered component will be updated once for each product
+    private $dataRegistry;
+    private $animationRegistry;
+
     public function __construct()
     {
         $this->allowedTargets = array('SWF', 'GIF');
+        $this->dataRegistry = array();
+        $this->animationRegistry = array();
+    }
+
+    public function registerDataUpdate($key, $element)
+    {
+        if(undefined == $this->dataRegistry[$key])
+        {
+            $this->dataRegistry[$key] = array();
+        }
+        $this->dataRegistry[$key][] = $element;
     }
 
     /**
@@ -314,6 +337,21 @@ class GfxContainer
         return $gfxInstance;
     }
 
+    /**
+     * registerSubstitution
+     *
+     * @param mixed $dataId
+     * @param mixed $gfxElement
+     * @access public
+     * @return void
+     */
+    public function registerSubstitution($dataId, $gfxElement)
+    {
+        // check if there is already a "registry" for the given dataId
+        // if not, create it
+        // register the given element for dataId updates/substitutions
+    }
+
     public function changeElementValue($formData)
     {
         //iterate all svg elements
@@ -442,5 +480,24 @@ class GfxContainer
         }
         return $string;
     }
+
+    /**
+     * Get productData.
+     *
+     * @return productData.
+     */
+    public function getProductData()
+    {
+        return $this->productData;
+    }
+
+    /**
+     * Set productData.
+     *
+     * @param productData the value to set.
+     */
+    public function setProductData($productData)
+    {
+        $this->productData = $productData;
+    }
 }
-    private $productData;
