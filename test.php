@@ -2,6 +2,9 @@
 require_once('Bootstrap.php');
 include('config/pathconfig.inc.php');
 
+iconv_set_encoding("internal_encoding", "UTF-8");
+iconv_set_encoding("output_encoding", "UTF-8");
+
 if(!defined('__ROOT__'))
 {
     define('__ROOT__', './');
@@ -11,8 +14,8 @@ if(!defined('__ROOT__'))
 $productCategories = array(7, 10);
 
 $advertiserId = 122;
-$companyId = 170;
-$userId = 14;
+$companyId    = 170;
+$userId       = 14;
 
 $connector = new APIConnector();
 $container = new GfxContainer();
@@ -26,18 +29,39 @@ $connector->setCompanyId($companyId);
 $productList = array();
 
 // fetch all templates for given advertiser
-$templates = $connector->getTemplates($advertiserId);
+// $templates = $connector->getTemplates($advertiserId);
+
+
+$filename = 'rtest_102.svg';
+
+$container->setSource($filename);
+//$container->setOutputName('output_102');
+$container->setId(102);
+$container->parse();
+
+
 foreach($productCategories AS $category)
 {
     $products  = $connector->getProductsByCategory($category);
     $productList = array_merge($productList, $products);
 }
 
+$count = 0;
+
 foreach($productList AS $product)
 {
+    $container->setProductData($product);
+    // $container->setOutputName('output_102_' . $count);
+    $container->setTarget('SWF');
+    $container->render();
+    $container->setTarget('GIF');
+    $container->render();
     echo $product . "\n\n";
+    $count++;
 }
 
+
+die();
 
 foreach($templates AS $template)
 {
@@ -52,7 +76,7 @@ foreach($templates AS $template)
     fclose($fh);
 
     $container->setSource($filename);
-    $container->setOutputName('output_' . $template->getBannerTemplateId());
+    $container->setOutputName('output_' . $template->getBannerTemplateId() . time());
     $container->parse();
     $container->setTarget('SWF');
     $container->render();
