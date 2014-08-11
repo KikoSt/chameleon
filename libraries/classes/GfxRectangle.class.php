@@ -76,6 +76,11 @@ class GfxRectangle extends GfxShape
             $this->createShadow($canvas);
         }
 
+        if($this->hasStroke())
+        {
+            $this->createStroke($canvas);
+        }
+
         $x2 = $this->getX() + $this->getWidth();
         $y2 = $this->getY() + $this->getHeight();
 
@@ -107,6 +112,22 @@ class GfxRectangle extends GfxShape
         $y1 = $this->getY() + $this->getShadowDist();
         $x2 = $x1 + $this->getWidth();
         $y2 = $y1 + $this->getHeight();
+
+        imagefilledrectangle($canvas, $x1, $y1, $x2, $y2, $color);
+    }
+
+    public function createStroke($canvas)
+    {
+        $color = imagecolorallocate($canvas,
+            $this->getShadowColor()->getR(),
+            $this->getShadowColor()->getG(),
+            $this->getShadowColor()->getB()
+        );
+
+        $x1 = $this->getX() - $this->getStroke()->getWidth();
+        $y1 = $this->getY() - $this->getStroke()->getWidth();
+        $x2 = $this->getX() + $this->getStroke()->getWidth() + $this->getWidth();
+        $y2 = $this->getY() + $this->getStroke()->getWidth() + $this->getHeight();
 
         imagefilledrectangle($canvas, $x1, $y1, $x2, $y2, $color);
     }

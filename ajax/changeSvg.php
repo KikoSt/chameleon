@@ -25,7 +25,7 @@ $connector->setBannerTemplateId($_REQUEST['templateId']);
 
 $template = $connector->getTemplateById();
 
-$baseFilename = 'rtest_' . $template->getBannerTemplateId();
+$baseFilename = 'rtest_' . $connector->getBannerTemplateId();
 $filename = $baseFilename . '.svg';
 $container->setOutputName($baseFilename);
 
@@ -37,20 +37,18 @@ $svgHandler->save();
 $container->setSource($filename);
 $container->parse();
 
-//if(null !== $_REQUEST['action'])
-//{
-    //create a new svg with the given request parameters
-    $container->changeElementValue($_POST);
+//create a new svg with the given request parameters
+$container->changeElementValue($_POST);
 
-    $svgContent = $container->createSvg();
+$svgContent = $container->createSvg();
 
-    $container->setTarget('GIF');
-    $container->render();
+$container->setTarget('GIF');
+$container->render();
 
-    // write the temporary file
-    $svgHandler->setSvgContent($svgContent);
-    $svgHandler->save();
-//}
+// write the temporary file
+$svgHandler->setSvgContent($svgContent);
+$svgHandler->save();
+
 
 if('save' === $_REQUEST['action'])
 {

@@ -31,6 +31,3 @@
         <a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
     </div>
 </div>
-
-
-<!-- todo add a file upload -->

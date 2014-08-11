@@ -8,7 +8,7 @@
         />
 </div>
 <div class="col-md-2">
-    <label>Shadow:</label>
+    <label>Shadow dist:</label>
     <input type="text"
            class="form-control"
            name="<?php echo $element->getId();?>#shadowDist"
