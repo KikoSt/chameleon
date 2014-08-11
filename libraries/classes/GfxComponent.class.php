@@ -17,12 +17,15 @@ class GfXComponent implements Linkable, Resizeable
     private $shadowColor;
     private $shadowDist;
 
-    public function __construct()
+    private $container;
+
+    public function __construct(GfxContainer $container)
     {
         $this->x      = 0;
         $this->y      = 0;
         $this->width  = 0;
         $this->height = 0;
+        $this->container = $container;
     }
 
     public function create($svgRootNode)
@@ -246,5 +249,25 @@ class GfXComponent implements Linkable, Resizeable
         $string = '';
         $string .= get_class($this);
         return $string;
+    }
+
+    /**
+     * Get container.
+     *
+     * @return container.
+     */
+    public function getContainer()
+    {
+        return $this->container;
+    }
+
+    /**
+     * Set container.
+     *
+     * @param container the value to set.
+     */
+    public function setContainer($container)
+    {
+        $this->container = $container;
     }
 }

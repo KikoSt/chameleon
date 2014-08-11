@@ -20,9 +20,9 @@ class GfxText extends GfxComponent
     private $fontFamily;
     private $textAnchor;
 
-    public function __construct()
+    public function __construct(GfxContainer $container)
     {
-        parent::__construct();
+        parent::__construct($container);
     }
 
     public function create($svgRootNode)
@@ -74,7 +74,7 @@ class GfxText extends GfxComponent
 
         if($this->getShadowColor() !== null)
         {
-            $shadow = new GfxText();
+            $shadow = new GfxText($this->getContainer());
             $shadow->setWidth($this->getWidth());
             $shadow->setHeight($this->getHeight());
             $shadow->setX($this->getX() + (int) $this->getShadowDist());

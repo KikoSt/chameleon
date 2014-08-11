@@ -9,9 +9,9 @@
 
 class GfxRectangle extends GfxShape
 {
-    public function __construct()
+    public function __construct(GfxContainer $container)
     {
-        parent::__construct();
+        parent::__construct($container);
     }
 
     public function renderSWF($canvas)
@@ -21,7 +21,7 @@ class GfxRectangle extends GfxShape
         if($this->getStroke() !== null)
         {
             $strokeWidth = $this->getStroke()->getWidth();
-            $stroke = new GfxRectangle();
+            $stroke = new GfxRectangle($this->getContainer());
             $stroke->setWidth($this->getWidth() + ($strokeWidth * 2));
             $stroke->setHeight($this->getHeight() + ($strokeWidth * 2));
             $stroke->setX($this->getX() - $strokeWidth);
@@ -33,7 +33,7 @@ class GfxRectangle extends GfxShape
 
         if($this->getShadowColor() !== null)
         {
-            $shadow = new GfxRectangle();
+            $shadow = new GfxRectangle($this->getContainer());
             $shadow->setWidth($this->getWidth());
             $shadow->setHeight($this->getHeight());
             $shadow->setX($this->getX() + (int) $this->getShadowDist());

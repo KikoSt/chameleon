@@ -23,9 +23,9 @@ class GfxImage extends GfXComponent
      * @access public
      * @return void
      */
-    public function __construct()
+    public function __construct(GfxContainer $container)
     {
-        parent::__construct();
+        parent::__construct($container);
     }
 
 
@@ -60,7 +60,7 @@ class GfxImage extends GfXComponent
         if($this->getStroke() !== null)
         {
             $strokeWidth = $this->getStroke()->getWidth();
-            $stroke = new GfxRectangle();
+            $stroke = new GfxRectangle($this->getContainer());
             $stroke->setWidth($this->getWidth() + ($strokeWidth * 2));
             $stroke->setHeight($this->getHeight() + ($strokeWidth * 2));
             $stroke->setX($this->getX() - $strokeWidth);

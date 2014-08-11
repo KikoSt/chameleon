@@ -328,7 +328,7 @@ class GfxContainer
         if (array_key_exists($type, $componentTypes))
         {
             // create instance of requested class based on the above mapping
-            $gfxInstance = new $componentTypes[$type]();
+            $gfxInstance = new $componentTypes[$type]($this);
         }
         else
         {
