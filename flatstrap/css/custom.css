@@ -1,4 +1,5 @@
 @import url("bootstrap.min.css");
+@import url("jasny-bootstrap.min.css");
 
 /* Overwrite all bootstrap css rules with a rounded corner to create a flat design */
 .btn,
@@ -12,6 +13,13 @@ li
 .panel-heading
 {
     color: #ffffff !important;
+}
+
+.row
+{
+    margin-bottom: 2px !important;
+    margin-right: 1px !important;
+    margin-left: 1px !important;
 }
 
 .imageTitle

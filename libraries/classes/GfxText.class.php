@@ -11,8 +11,6 @@ define('FLASH_FONT_SCALE_FACTOR', 1.32);
 class GfxText extends GfxComponent
 {
     private $text;
-//     private $color;
-//    private $oFont;
     private $fontWeight;
     private $fontVariant;
     private $fontStyle;
@@ -129,11 +127,42 @@ class GfxText extends GfxComponent
     {
         $textColor = imagecolorallocate($canvas,$this->getFill()->getR(),$this->getFill()->getG(),$this->getFill()->getB());
 
-        imagettftext($canvas, $this->getFontSize(), 0, $this->getX(), $this->getY(), $textColor,
-            $this->getGIFFont(),
-            utf8_decode(str_replace('€', ' Euro', $this->getText())));
+        if($this->hasShadow())
+        {
+            $this->renderShadow($canvas);
+        }
+
+        imagettftext($canvas,
+                     $this->getFontSize(),
+                     0,
+                     $this->getX(),
+                     $this->getY(),
+                     $textColor,
+                     $this->getGIFFont(),
+                     utf8_decode(str_replace('€', ' Euro', $this->getText()))
+        );
 
         return $canvas;
+    }
+
+    public function renderShadow($canvas)
+    {
+        $color = imagecolorallocatealpha($canvas,
+                                         $this->getShadowColor()->getR(),
+                                         $this->getShadowColor()->getG(),
+                                         $this->getShadowColor()->getB(),
+                                         50
+                 );
+
+        imagettftext($canvas,
+            $this->getFontSize(),
+            0,
+            $this->getX() + $this->getShadowDist(),
+            $this->getY() + $this->getShadowDist(),
+            $color,
+            $this->getGIFFont(),
+            utf8_decode(str_replace('€', ' Euro', $this->getText()))
+        );
     }
 
     public function getFontListForOverview()

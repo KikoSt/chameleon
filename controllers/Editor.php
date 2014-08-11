@@ -76,7 +76,14 @@ class Editor extends Controller
         $this->view->elements = $container->getElements();
         $this->view->fontlist = $text->getFontListForOverview();
 
-        unlink(SVG_DIR . $filename);
+        if(!file_exists($container->getOutputDir() . '/' . $baseFilename . '.gif'))
+        {
+            $container->setTarget('GIF');
+            $container->render();
+        }
+
+        // unlink(SVG_DIR . $filename);
+
         return true;
     }
 

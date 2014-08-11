@@ -5,7 +5,7 @@
                 <?php
                     foreach($this->elements as $element):
                         $type = get_class($element);
-                        include($type . '.inc.php');
+                            include($type . '.inc.php');
                     endforeach;
                 ?>
             <input type="hidden" name="templateId" value="<?php echo $this->templateId; ?>">
@@ -40,10 +40,11 @@
 <script type="text/javascript">
     $(document).ready(function() {
         var btn;
+
+
+
         $('.btn').on('click', function(){
-
             btn = $(this).attr('id');
-
         });
         $('#previewalert').hide();
         $(window).keydown(function(event){

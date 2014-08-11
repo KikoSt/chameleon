@@ -30,7 +30,7 @@ $connector->setcompanyId(getRequestVar('companyId'));
 $connector->setAdvertiserId(getRequestVar('advertiserId'));
 
 //set file name
-$baseFilename = 'rtest_' . $_REQUEST['templateId'];
+$baseFilename = 'rtest_' . $connector->getBannerTemplateId();
 $filename = $baseFilename . '.svg';
 $container->setOutputName($baseFilename);
 
@@ -38,21 +38,17 @@ $container->setOutputName($baseFilename);
 $container->setSource($filename);
 $container->parse();
 
-//add the changes to the container
+//create a new svg with the given request parameters
 $container->changeElementValue($_POST);
 
-//create the new svg
 $svgContent = $container->createSvg();
 
-// write the svg
-$svgHandler->setFilename($filename);
-$svgHandler->setSvgContent($svgContent);
-$svgHandler->save();
-
-// render the new svg for the editor view
-$container->setOutputName($baseFilename);
 $container->setTarget('GIF');
 $container->render();
+
+// write the temporary file
+$svgHandler->setSvgContent($svgContent);
+$svgHandler->save();
 
 if('save' === $_REQUEST['action'])
 {

@@ -54,6 +54,7 @@ class GfxContainer
         $string .= "\n" . '<svg width="'. $this->getCanvasWidth() .'" height="'. $this->getCanvasHeight() . '"';
 
         $string .= ' xmlns="http://www.w3.org/2000/svg"';
+        $string .= ' xmlns:cmeo="http://www.mediadecision.com/chameleon_namespace"';
         $string .= ' xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">';
         $string .= "\n" . '<g>' . $this->getSvg() . '</g></svg>';
         return $string;
@@ -335,14 +336,15 @@ class GfxContainer
                 {
                     $func="set" . ucwords($param);
 
-                    if($param === "fill")
+                    if($param === "fill" || $param === "shadowColor")
                     {
                         $color = new GfxColor($value);
                         $element->$func($color);
                     }
                     elseif($param === "stroke")
                     {
-
+                        $stroke = new GfxStroke(new GfxColor($value), 1);
+                        $element->$func($stroke);
                     }
                     else
                     {
