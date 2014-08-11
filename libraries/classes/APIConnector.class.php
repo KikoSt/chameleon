@@ -192,6 +192,13 @@ class APIConnector
         return $curl;
     }
 
+    /**
+     * populateBannerTemplate
+     *
+     * @param mixed $template
+     * @access private
+     * @return void
+     */
     private function populateBannerTemplate($template)
     {
         $bannerTemplateModel = new BannerTemplateModel();
