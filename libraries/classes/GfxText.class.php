@@ -160,7 +160,8 @@ class GfxText extends GfxComponent
         // position: CENTERED!
         $text->moveTo($this->getX() - ($this->getTextWidth()/2), $this->getY());
         $text->moveTo($this->getX(), $this->getY());
-        $text->addString(utf8_decode(str_replace('€', ' Euro', $this->getText())));
+        // $text->addString(utf8_decode(str_replace('€', ' Euro', $this->getText())));
+        $text->addString(str_replace('€', ' Euro', $this->getText()));
 
         $handle = $canvas->add($text);
         unset($handle);
@@ -184,9 +185,10 @@ class GfxText extends GfxComponent
                      $this->getY(),
                      $textColor,
                      $this->getGIFFont(),
-                     utf8_decode(str_replace('€', ' Euro', $this->getText()))
+                     str_replace('€', ' Euro', $this->getText())
         );
 
+                     // utf8_decode(str_replace('€', ' Euro', $this->getText()))
         return $canvas;
     }
 

@@ -45,7 +45,8 @@ class GfxContainer
 
     public function registerDataUpdate($key, $element)
     {
-        if(undefined == $this->dataRegistry[$key])
+        // echo '[' . $key . ']' . "\n";
+        if(array_key_exists($key, $this->dataRegistry))
         {
             $this->dataRegistry[$key] = array();
         }
@@ -76,9 +77,12 @@ class GfxContainer
         $string = "<?xml version='1.0' encoding='UTF-8'?>";
         $string .= "\n" . '<svg width="'. $this->getCanvasWidth() .'" height="'. $this->getCanvasHeight() . '"';
 
-        $string .= ' xmlns="http://www.w3.org/2000/svg"';
-        $string .= ' xmlns:cmeo="http://www.mediadecision.com/chameleon_namespace"';
-        $string .= ' xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">';
+        $string .= ' xmlns="http://www.w3.org/2000/svg" ';
+        $string .= ' xmlns:cmeo="http://www.mediadecision.com/chameleon_namespace" ';
+        $string .= ' xmlns:svg="http://www.w3.org/2000/svg" ';
+        $string .= ' xmlns:xlink="http://www.w3.org/1999/xlink"';
+        $string .= '>';
+        // <? <-- crap. required for vim syntax hightlighting not to break :((
         $string .= "\n" . '<g>' . $this->getSvg() . '</g></svg>';
         return $string;
     }
@@ -188,11 +192,12 @@ class GfxContainer
                 throw new Exception('Template id not set');
             }
 
-            $filename = $this->getCompanyId();
-            $filename .= '_' . $this->getAdvertiserId();
+            // $filename = $this->getCompanyId();
+            // $filename .= '_' . $this->getAdvertiserId();
+            $filename  = $this->getId();
+            $filename .= '_' . $this->getProductData()->getName();
             $filename .= '_' . $this->getCanvasHeight();
             $filename .= 'x' . $this->getCanvasWidth();
-            $filename .= '_' . $this->getId();
         }
 
         $filename .= '.' . strtolower($this->getTarget());
@@ -293,7 +298,10 @@ class GfxContainer
     }
 
     private function renderSWF()
-    { $swf = new SWFMovie(); $swf->setDimension($this->getCanvasWidth(), $this->getCanvasHeight()); $swf->setFrames(30);
+    {
+        $swf = new SWFMovie();
+        $swf->setDimension($this->getCanvasWidth(), $this->getCanvasHeight());
+        $swf->setFrames(30);
         $swf->setRate(10);
         $swf->setBackground(0, 0, 0);
 
@@ -508,7 +516,7 @@ class GfxContainer
      *
      * @param productData the value to set.
      */
-    public function setProductData($productData)
+    public function setProductData(ProductModel $productData)
     {
         $this->productData = $productData;
     }

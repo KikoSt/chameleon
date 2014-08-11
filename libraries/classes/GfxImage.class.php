@@ -106,9 +106,8 @@ class GfxImage extends GfXComponent
 
         $output = $this->resizeImage($this->getImageUrl(), $this->getWidth(), $this->getHeight(), false);
 
-        ImageJPEG($output, $imgPath);
+        ImageJPEG($output, $imgPath, 100);
 
-        $image = new SWFBitmap(fopen($this->getImageUrl(), "rb"));
         $image = new SWFBitmap(fopen($imgPath, "rb"));
         $handle = $canvas->add($image);
         $handle->moveTo($this->getX(), $this->getY());
