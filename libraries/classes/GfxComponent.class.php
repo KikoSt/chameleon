@@ -17,6 +17,9 @@ class GfXComponent implements Linkable, Resizeable
     private $shadowColor;
     private $shadowDist;
 
+    private $ref;
+    private $link;
+
     private $container;
 
     public function __construct(GfxContainer $container)
@@ -26,6 +29,10 @@ class GfXComponent implements Linkable, Resizeable
         $this->width  = 0;
         $this->height = 0;
         $this->container = $container;
+    }
+
+    public function updateData()
+    {
     }
 
     public function create($svgRootNode)
@@ -77,6 +84,22 @@ class GfXComponent implements Linkable, Resizeable
                 $this->setShadowColor($shadowColor);
                 $this->setShadowDist($shadowDist);
             }
+        }
+        // $type = strtolower(substr(get_class($this), 3));
+        $ref = (string) $svgRootNode->attributes('cmeo', true)->ref;
+        $link = (string) $svgRootNode->attributes('cmeo', true)->link;
+        if(!empty($ref))
+        {
+            echo 'Ref: ' . $ref . "\n";
+            $this->getContainer()->registerDataUpdate($ref, $this);
+            $this->ref = $ref;
+            echo $this->ref . "\n";
+        }
+        if(!empty($link))
+        {
+            echo "\n\n" . '--> Link: ' . $link . "\n";
+            $this->getContainer()->registerDataUpdate($link, $this);
+            $this->setLink($link);
         }
     }
 
@@ -269,5 +292,45 @@ class GfXComponent implements Linkable, Resizeable
     public function setContainer($container)
     {
         $this->container = $container;
+    }
+
+    /**
+     * Get link.
+     *
+     * @return link.
+     */
+    public function getLink()
+    {
+        return $this->link;
+    }
+//
+//    /**
+//     * Set link.
+//     *
+//     * @param link the value to set.
+//     */
+//    public function setLink($link)
+//    {
+//        $this->link = $link;
+//    }
+
+    /**
+     * Get ref.
+     *
+     * @return ref.
+     */
+    public function getRef()
+    {
+        return $this->ref;
+    }
+
+    /**
+     * Set ref.
+     *
+     * @param ref the value to set.
+     */
+    public function setRef($ref)
+    {
+        $this->ref = $ref;
     }
 }

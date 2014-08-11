@@ -14,6 +14,22 @@ class GfxRectangle extends GfxShape
         parent::__construct($container);
     }
 
+
+    public function updateData()
+    {
+        parent::updateData();
+
+        if($this->getContainer()->getProductData())
+        {
+            if(!empty($this->getLink()))
+            {
+                echo "\n[" . $this->getLink() . "]\n";
+            }
+        }
+    }
+
+
+
     public function renderSWF($canvas)
     {
         $rect = new SWFShape();

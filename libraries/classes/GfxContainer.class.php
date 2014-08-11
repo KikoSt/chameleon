@@ -266,9 +266,21 @@ class GfxContainer
         return $this->outputDir;
     }
 
+    public function updateData()
+    {
+        foreach($this->elements AS $element)
+        {
+            if(is_a($element, 'GfxComponent'))
+            {
+                $element->updateData();
+            }
+        }
+    }
+
     public function render()
     {
         $this->createOutputDir();
+        $this->updateData();
 
         if($this->target === 'SWF')
         {

@@ -29,6 +29,25 @@ class GfxImage extends GfXComponent
     }
 
 
+    public function updateData()
+    {
+        parent::updateData();
+
+        if($this->getContainer()->getProductData())
+        {
+            if(!empty($this->getRef()))
+            {
+                $this->setImageUrl($this->getContainer()->getProductData()->getImageUrl());
+            }
+
+            if(!empty($this->getLinkUrl()))
+            {
+                $this->setLinkUrl($this->getContainer()->getProductData()->getProductUrl());
+            }
+        }
+    }
+
+
     /**
      * create
      *
