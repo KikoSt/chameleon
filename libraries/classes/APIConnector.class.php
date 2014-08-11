@@ -207,6 +207,43 @@ class APIConnector
     }
 
     /**
+     * populateProduct
+     *
+     * @param mixed $product
+     * @access private
+     * @return void
+     */
+    private function populateProduct($product)
+    {
+        $productModel = new ProductModel();
+
+        $productModel->setProductId($product->idProduct);
+        $productModel->setFeedId($product->idFeed);
+        $productModel->setCategoryId($product->idCategory);
+        $productModel->setCurrencyId($product->idCurrency);
+
+        $productModel->setEan($product->productNumberIsbn);
+        $productModel->setIsbn($product->productNumberEan);
+
+        $productModel->setName($product->productName);
+        $productModel->setProductUrl($product->productUrl);
+        $productModel->setImageUrl($product->productUrlImage);
+        $productModel->setDescription($product->productDescription);
+        $productModel->setPrice($product->productPrice);
+        $productModel->setPriceOld($product->productPriceOld);
+
+        $productModel->setShipping($product->productPriceShipping);
+        $productModel->setPromotionStartDate($product->datePromotionStart);
+        $productModel->setPromotionEndDate($product->datePromotionEnd);
+
+        $productModel->setProductSize($product->productPropertySize);
+        $productModel->setGender($product->idGender);
+        $productModel->setColor($product->colour);
+
+        return $productModel;
+    }
+
+    /**
      * Get advertiserId.
      *
      * @return advertiserId.
