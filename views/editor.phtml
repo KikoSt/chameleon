@@ -1,5 +1,5 @@
 <div id="awesomeEditor" class="row" style="margin-top: 70px; padding-left: 10px; padding-right: 10px;">
-    <form id="editor">
+    <form enctype="multipart/form-data" id="editor" method="POST">
     <div class="col-md-5">
         <div class="panel-group" id="accordion">
                 <?php
@@ -13,6 +13,7 @@
             <input type="hidden" name="companyId" value="<?php echo $this->companyId; ?>">
         </div>
     </div>
+    </form>
     <div class="col-md-7">
         <div class="row" style="margin-left: 5px;">
             <img src="<?php echo $this->gif;?>" alt="">
@@ -20,9 +21,9 @@
         <div class="row" style="padding-top: 5px; margin-left: 5px;">
 
             <!--        On click render template and show the change-->
-            <button id="preview" type="submit" class="btn btn-info">Preview</button>
+            <button id="preview" type="submit" class="btn btn-info" form="editor">Preview</button>
             <!--        On click render template, show the change and save data to database-->
-            <button id="save" type="submit" class="btn btn-danger">Save</button>
+            <button id="save" type="submit" class="btn btn-danger" form="editor">Save</button>
 
             <div id="previewalert" class="alert alert-info alert-dismissible" role="alert">
                 <button type="button" class="close" data-dismiss="alert">
@@ -33,7 +34,6 @@
             </div>
         </div>
     </div>
-    </form>
 </div>
 
 
@@ -41,20 +41,39 @@
     $(document).ready(function() {
         var btn;
 
-
-
         $('.btn').on('click', function(){
             btn = $(this).attr('id');
         });
+
         $('#previewalert').hide();
-        $(window).keydown(function(event){
-            if(event.keyCode == 13) {
-                event.preventDefault();
+
+        $(window).keydown(function(e){
+            if(e.keyCode == 13) {
+                e.preventDefault();
                 return false;
             }
         });
+
         $('#editor').on('submit', function(e){
             e.preventDefault();
+
+            var nodeList = document.querySelectorAll('.file');
+            var formData = new FormData();
+
+
+
+            for (var i = 0, length = nodeList.length; i < length; i++)
+            {
+                var myId = nodeList[i].getAttribute('id');
+
+                var fileSelect = document.querySelector("#" + myId);
+                var files = fileSelect.files;
+
+                console.log(files);
+            }
+
+
+
             $.ajax({
                 type: 'POST',
                 url: '/chameleon/ajax/changeSvg.php',
@@ -65,7 +84,10 @@
                 }
             });
         });
+
         $('.picker').colorpicker();
+
+        $("#fileUpload").fileinput();
     });
 </script>
 
