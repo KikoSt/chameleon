@@ -15,9 +15,6 @@ if(!defined('__ROOT__'))
     define('__ROOT__', '../');
 }
 
-var_dump($_POST);
-var_dump($_FILES);
-
 $container = new GfxContainer();
 $connector = new APIConnector();
 $svgHandler = new SvgHandler();
