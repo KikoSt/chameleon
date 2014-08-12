@@ -45,7 +45,6 @@ class GfxContainer
 
     public function registerDataUpdate($key, $element)
     {
-        // echo '[' . $key . ']' . "\n";
         if(array_key_exists($key, $this->dataRegistry))
         {
             $this->dataRegistry[$key] = array();
