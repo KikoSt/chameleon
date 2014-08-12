@@ -75,10 +75,14 @@ $svgContent = $container->createSvg();
 $container->setTarget('GIF');
 $container->render();
 
+echo $container->getOutputDir();
+echo $container->getOutputName();
+
 // write the temporary file
-$svgHandler->setFilename($baseFilename);
 $svgHandler->setSvgContent($svgContent);
 $svgHandler->save();
+
+echo $svgHandler->getFilename();
 
 if(array_key_exists('action', $_REQUEST) && 'save' === $_REQUEST['action'])
 {
