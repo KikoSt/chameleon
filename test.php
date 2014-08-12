@@ -12,9 +12,53 @@ if(!defined('__ROOT__'))
 
 // test categories for now are 7 and 10!
 $productCategories = array(7, 10);
+$productCategories = array(
+31,
+37,
+40,
+52,
+61,
+64,
+70,
+82,
+85,
+88,
+91,
+94,
+97,
+100,
+103,
+106,
+121,
+133,
+136,
+142,
+145,
+151,
+154,
+157,
+160,
+163,
+166,
+169,
+175,
+178,
+181,
+184,
+190,
+196,
+199,
+202,
+205,
+211,
+214,
+217,
+223);
 
 $advertiserId = 122;
 $companyId    = 170;
+$companyId    = 134;
+$companyId    = 17;
 $userId       = 14;
 
 $connector = new APIConnector();
@@ -45,6 +89,10 @@ foreach($productCategories AS $category)
     $products  = $connector->getProductsByCategory($category);
     $productList = array_merge($productList, $products);
 }
+
+echo 'CompanyId: ' . $companyId . ', categoryIds: ' .implode(', ', $productCategories) . "\n";
+// var_dump($productList);
+// die();
 
 $count = 0;
 
