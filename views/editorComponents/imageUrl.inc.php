@@ -18,16 +18,6 @@
 </div>
 <div class="col-md-12">
     <label>Upload file:</label>
-    <div class="fileinput fileinput-new input-group" data-provides="fileinput">
-        <div class="form-control" data-trigger="fileinput">
-            <i class="glyphicon glyphicon-file fileinput-exists"></i>
-            <span class="fileinput-filename"></span>
-        </div>
-        <span class="input-group-addon btn btn-default btn-file">
-            <span class="fileinput-new">Select file</span>
-            <span class="fileinput-exists">Change</span>
-            <input type="file" name="...">
-        </span>
-        <a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
-    </div>
+    <input type="hidden" name="MAX_FILE_SIZE" value="30000" />
+    <input id="<?php echo $element->getId();?>" type="file" class="file" data-show-upload="false" data-show-preview="false" multiple>
 </div>

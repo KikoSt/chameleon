@@ -16,7 +16,7 @@ class Editor extends Controller
     {
         $container = new GfxContainer();
         $connector = new APIConnector();
-        $text = new GfxText();
+        $text = new GfxText($container);
 
         $this->view = $this->setLayout('views/editor.phtml')->getView();
 
@@ -49,7 +49,6 @@ class Editor extends Controller
             {
                 // get template by id
                 $template = $connector->getTemplateById($container->getId());
-                $container->setOutputName($baseFilename);
 
                 // create svg
                 $fh = fopen(SVG_DIR . $filename, 'w');
@@ -58,7 +57,8 @@ class Editor extends Controller
             }
 
             // render gif for editor view
-            $container->setSource($baseFilename);
+            $container->setOutputName($baseFilename);
+            $container->setSource($filename);
             $container->parse();
             $container->setTarget('GIF');
             $container->render();

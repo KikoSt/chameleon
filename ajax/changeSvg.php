@@ -21,16 +21,18 @@ $container = new GfxContainer();
 $connector = new APIConnector();
 $svgHandler = new SvgFileHandler();
 
+$bannerTemplateId = getRequestVar('templateId');
+
 //$container->setId(getRequestVar('id'));
 $container->setCompanyId(getRequestVar('companyId'));
 $container->setAdvertiserId(getRequestVar('advertiserId'));
 
-$connector->setBannerTemplateId(getRequestVar('id'));
-$connector->setcompanyId(getRequestVar('companyId'));
+// $connector->setBannerTemplateId(getRequestVar('id'));
+$connector->setCompanyId(getRequestVar('companyId'));
 $connector->setAdvertiserId(getRequestVar('advertiserId'));
 
 //set file name
-$baseFilename = 'rtest_' . $connector->getBannerTemplateId();
+$baseFilename = 'rtest_' . $bannerTemplateId;
 $filename = $baseFilename . '.svg';
 $container->setOutputName($baseFilename);
 
@@ -47,6 +49,7 @@ $container->setTarget('GIF');
 $container->render();
 
 // write the temporary file
+$svgHandler->setFilename($baseFilename);
 $svgHandler->setSvgContent($svgContent);
 $svgHandler->save();
 
