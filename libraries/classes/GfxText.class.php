@@ -161,7 +161,7 @@ class GfxText extends GfxComponent
         $text->moveTo($this->getX() - ($this->getTextWidth()/2), $this->getY());
         $text->moveTo($this->getX(), $this->getY());
         // $text->addString(utf8_decode(str_replace('€', ' Euro', $this->getText())));
-        $text->addString(str_replace('€', ' Euro', $this->getText()));
+        $text->addString(utf8_decode(str_replace('€', ' Euro', $this->getText())));
 
         $handle = $canvas->add($text);
         unset($handle);
