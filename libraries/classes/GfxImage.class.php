@@ -179,41 +179,24 @@ class GfxImage extends GfXComponent
     public function resizeImage($file, $crop=false)
     {
         list($originalWidth, $originalHeight) = getimagesize($file);
+        $aspectRatio = $originalWidth / $originalHeight;
 
-        if($originalWidth>$originalHeight)
+        $newWidth = $this->getWidth();
+        $newHeight = $this->getHeight();
+
+        if($aspectRatio < 1 )
         {
-            $crop = true;
+            $newWidth = $newHeight * $aspectRatio;
+
+        } else {
+            $newHeight = $newWidth / $aspectRatio;
         }
 
-        $r = $originalWidth / $originalHeight;
+        $resizedWidth = $newWidth;
+        $resizedHeight = $newHeight;
 
-        $resizedWidth = $this->getWidth();
-        $resizedHeight = $this->getHeight();
-
-        if ($crop)
-        {
-            if ($originalWidth > $originalHeight)
-            {
-                $originalWidth = ceil($originalWidth-($originalWidth*abs($r-($resizedWidth / $resizedHeight))));
-            }
-            else
-            {
-                $originalHeight = ceil($originalHeight-($originalHeight*abs($r-($resizedWidth / $resizedHeight))));
-            }
-        }
-        else
-        {
-            if (($resizedWidth/$resizedHeight) > $r)
-            {
-                $resizedWidth = $this->getHeight() * $r;
-            }
-            else
-            {
-                $resizedWidth = $this->getWidth() / $r;
-            }
-        }
-
-        $x = ($this->getWidth()-$resizedWidth) / 2;
+        $newX = ($this->getWidth() - $newWidth) / 2;
+        $newY = ($this->getHeight() - $newHeight) / 2;
 
         $originalImage = $this->createImageFromSourceFile($file);
 
@@ -224,7 +207,9 @@ class GfxImage extends GfXComponent
         $bgcolor = imagecolorallocatealpha($resizedImage, 255, 255, 255, 0);
         imagefill($resizedImage, 0, 0, $bgcolor);
 
-        imagecopyresampled($resizedImage, $originalImage, 0, 0, 0, 0, $resizedWidth, $resizedHeight, $originalWidth, $originalHeight);
+        // imagecopyresampled($resizedImage, $originalImage, 0, 0, 0, 0, $resizedWidth, $resizedHeight, $originalWidth, $originalHeight);
+        imagecopyresampled($resizedImage, $originalImage, $newX, $newY, 0, 0, $resizedWidth, $resizedHeight, $originalWidth, $originalHeight);
+
         imagealphablending($resizedImage, false);
         imagesavealpha($resizedImage,true);
 
