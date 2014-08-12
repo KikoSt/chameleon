@@ -8,9 +8,9 @@
                             include($type . '.inc.php');
                     endforeach;
                 ?>
-            <input type="hidden" name="templateId" value="<?php echo $this->templateId; ?>">
-            <input type="hidden" name="advertiserId" value="<?php echo $this->advertiserId; ?>">
-            <input type="hidden" name="companyId" value="<?php echo $this->companyId; ?>">
+            <input id="templateId" type="hidden" name="templateId" value="<?php echo $this->templateId; ?>">
+            <input id="advertiserId" type="hidden" name="advertiserId" value="<?php echo $this->advertiserId; ?>">
+            <input id="companyId" type="hidden" name="companyId" value="<?php echo $this->companyId; ?>">
         </div>
     </div>
     </form>
@@ -36,7 +36,6 @@
     </div>
 </div>
 
-
 <script type="text/javascript">
     $(document).ready(function() {
         var btn;
@@ -54,34 +53,49 @@
             }
         });
 
-        $('#editor').on('submit', function(e){
+        $('.kv-fileinput-upload').on('click', function(e){
             e.preventDefault();
-
             var nodeList = document.querySelectorAll('.file');
             var formData = new FormData();
 
-
-
-            for (var i = 0, length = nodeList.length; i < length; i++)
+            for (var i = 0; i < nodeList.length; i++)
             {
                 var myId = nodeList[i].getAttribute('id');
-
-                var fileSelect = document.querySelector("#" + myId);
+                var fileSelect = document.querySelector("#" + myId + " #" + myId );
                 var files = fileSelect.files;
+                var j=0;
 
-                console.log(files);
+                while ( j < files.length)
+                {
+                    var file = files[j];
+                    formData.append(myId, file, file.name);
+                    j++;
+                }
             }
 
+            formData.append("templateId",  document.getElementById('templateId').getAttribute('value'));
+            formData.append("advertiserId",  document.getElementById('advertiserId').getAttribute('value'));
+            formData.append("companyId",  document.getElementById('companyId').getAttribute('value'));
 
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'ajax/changeSvg.php', true);
+            xhr.send(formData);
+
+            location.reload();
+        });
+
+        $('#editor').on('submit', function(e){
+            e.preventDefault();
 
             $.ajax({
-                type: 'POST',
                 url: '/chameleon/ajax/changeSvg.php',
                 data: $('#editor').serialize() + "&action=" + btn,
+                type: 'POST',
                 success: function(){
                     $('#previewalert').show();
                     location.reload();
                 }
+
             });
         });
 

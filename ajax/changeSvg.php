@@ -23,11 +23,20 @@ $svgHandler = new SvgFileHandler();
 
 $bannerTemplateId = getRequestVar('templateId');
 
-//$container->setId(getRequestVar('id'));
-$container->setCompanyId(getRequestVar('companyId'));
-$container->setAdvertiserId(getRequestVar('advertiserId'));
+// $container->setCompanyId(getRequestVar('companyId'));
+// $container->setAdvertiserId(getRequestVar('advertiserId'));
 
-// $connector->setBannerTemplateId(getRequestVar('id'));
+if(!empty($_FILES))
+{
+    foreach($_FILES as $singleFile)
+    {
+        $filename = ASSET_DIR . $singleFile['name'];
+        move_uploaded_file($singleFile['tmp_name'], $filename);
+    }
+}
+
+$template = $connector->getTemplateById();
+
 $connector->setCompanyId(getRequestVar('companyId'));
 $connector->setAdvertiserId(getRequestVar('advertiserId'));
 
@@ -41,7 +50,24 @@ $container->setSource($filename);
 $container->parse();
 
 //create a new svg with the given request parameters
-$container->changeElementValue($_POST);
+if(null !== $_FILES)
+{
+    //iterate all svg elements
+    foreach($container->getElements() as $element)
+    {
+        foreach($_FILES as $key => $singleFile)
+        {
+            if($key === $element->getId())
+            {
+                $element->setImageUrl("assets/" . $singleFile['name']);
+            }
+        }
+    }
+}
+else
+{
+    $container->changeElementValue($_POST);
+}
 
 $svgContent = $container->createSvg();
 
