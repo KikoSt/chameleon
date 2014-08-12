@@ -11,7 +11,6 @@ if(!defined('__ROOT__'))
 }
 
 // test categories for now are 7 and 10!
-$productCategories = array(7, 10);
 $productCategories = array(
 31,
 37,
@@ -54,11 +53,12 @@ $productCategories = array(
 214,
 217,
 223);
+$productCategories = array(7, 10);
 
 $advertiserId = 122;
-$companyId    = 170;
 $companyId    = 134;
 $companyId    = 17;
+$companyId    = 170;
 $userId       = 14;
 
 $connector = new APIConnector();
