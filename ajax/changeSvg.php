@@ -23,8 +23,8 @@ $svgHandler = new SvgFileHandler();
 
 $bannerTemplateId = getRequestVar('templateId');
 
-// $container->setCompanyId(getRequestVar('companyId'));
-// $container->setAdvertiserId(getRequestVar('advertiserId'));
+$container->setCompanyId(getRequestVar('companyId'));
+$container->setAdvertiserId(getRequestVar('advertiserId'));
 
 if(!empty($_FILES))
 {
@@ -35,7 +35,7 @@ if(!empty($_FILES))
     }
 }
 
-$template = $connector->getTemplateById();
+$template = $connector->getTemplateById($bannerTemplateId);
 
 $connector->setCompanyId(getRequestVar('companyId'));
 $connector->setAdvertiserId(getRequestVar('advertiserId'));
@@ -44,13 +44,14 @@ $connector->setAdvertiserId(getRequestVar('advertiserId'));
 $baseFilename = 'rtest_' . $bannerTemplateId;
 $filename = $baseFilename . '.svg';
 $container->setOutputName($baseFilename);
+$svgHandler->setFilename($filename);
 
 //parse the svg
 $container->setSource($filename);
 $container->parse();
 
 //create a new svg with the given request parameters
-if(null !== $_FILES)
+if(null !== $_FILES && count($_FILES) > 0)
 {
     //iterate all svg elements
     foreach($container->getElements() as $element)
@@ -79,7 +80,7 @@ $svgHandler->setFilename($baseFilename);
 $svgHandler->setSvgContent($svgContent);
 $svgHandler->save();
 
-if('save' === $_REQUEST['action'])
+if(array_key_exists('action', $_REQUEST) && 'save' === $_REQUEST['action'])
 {
     //update template in the data base
     $bannerTemplateModel = new BannerTemplateModel();
