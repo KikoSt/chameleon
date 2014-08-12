@@ -292,6 +292,9 @@ class GfxText extends GfxComponent
      */
     public function setText($text)
     {
+        $text = str_replace('â‚¬', '€', $text);
+        $text = str_replace('Ã¤', 'ä', $text);
+        $text = str_replace('Ã¼', 'ü', $text);
         $this->text = $text;
     }
 
