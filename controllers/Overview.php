@@ -52,7 +52,7 @@ class Overview extends Controller
             }
             else
             {
-                throw new Exception(SVG_DIR . ' not found !');
+                throw new Exception(SVG_DIR . ' not found!');
             }
 
             $container->setId($template->getBannerTemplateId());

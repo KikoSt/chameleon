@@ -33,7 +33,7 @@ class SvgFileHandler
         }
         else
         {
-            throw new Exception(SVG_DIR . ' not found !');
+            throw new Exception(SVG_DIR . ' not found!');
         }
     }
 
