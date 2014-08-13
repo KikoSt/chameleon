@@ -205,6 +205,10 @@ class GfxImage extends GfXComponent
 
         //canvas for resized image
         $resizedImage = imagecreatetruecolor($this->getWidth(), $this->getHeight());
+        if(!$resizedImage)
+        {
+            throw new Exception('Could not create image ' . $this->getId());
+        }
         imagealphablending($resizedImage, true);
 
         $bgcolor = imagecolorallocatealpha($resizedImage, 255, 255, 255, 0);
@@ -246,6 +250,10 @@ class GfxImage extends GfXComponent
             {
                 throw new Exception('No valid input file format provided: ' . $extention);
             }
+        }
+        if(!$image)
+        {
+            throw new Exception('Could not create image from ' . $file);
         }
         return $image;
     }
