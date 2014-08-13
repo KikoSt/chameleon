@@ -234,6 +234,8 @@ class GfxText extends GfxComponent
 
         $svg = '';
         $svg .= "\r\n" . '<text xml:space="preserve"';
+        $svg .= "\r\n" . ' cmeo:ref="' . $this->getCmeoRef(). '"';
+        $svg .= "\r\n" . ' cmeo:link="' . $this->getCmeoLink(). '"';
         $svg .= "\r\n" . ' text-anchor="' . $this->getTextAnchor() . '"';
         $svg .= "\r\n" . ' font-family="' . $this->getFontFamily() . '"';
         $svg .= "\r\n" . ' font-size="' . $this->getFontSize() . '"';
@@ -255,7 +257,7 @@ class GfxText extends GfxComponent
         $svg .= "\r\n" . ' width="' . $this->getWidth() . '"';
         $svg .= "\r\n" . ' height="' . $this->getHeight() . '"';
         $svg .= "\r\n" . ' id="' . $this->getId() . '"';
-        $svg .= "\r\n" . '><![CDATA[' . utf8_decode($this->getText()) . ']]></text>';
+        $svg .= "\r\n" . '><![CDATA[' . $this->getText() . ']]></text>';
         return $svg;
     }
 
