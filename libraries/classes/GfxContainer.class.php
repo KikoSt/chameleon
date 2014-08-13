@@ -105,9 +105,17 @@ class GfxContainer
 
     public function setSource($source)
     {
-        $source = SVG_DIR . $source;
 
         if(file_exists($source))
+        {
+            $source = SVG_DIR . $source;
+            $this->source = $source;
+        }
+        else if(is_string($source))
+        {
+            $this->source = $source;
+        }
+        else if(is_a($source, 'SimpleXMLElement'))
         {
             $this->source = $source;
         }
