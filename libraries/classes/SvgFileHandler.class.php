@@ -6,7 +6,7 @@
  * Time: 15:23
  */
 
-class SvgHandler
+class SvgFileHandler
 {
     private $filename;
     private $svgContent;
@@ -84,4 +84,4 @@ class SvgHandler
     }
 
 
-} 
+}

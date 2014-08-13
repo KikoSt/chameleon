@@ -15,13 +15,16 @@ if(!defined('__ROOT__'))
     define('__ROOT__', '../');
 }
 
+require_once(__ROOT__ . 'libraries/functions.inc.php');
+
 $container = new GfxContainer();
 $connector = new APIConnector();
-$svgHandler = new SvgHandler();
+$svgHandler = new SvgFileHandler();
 
-$container->setCompanyId($_REQUEST['companyId']);
-$container->setAdvertiserId($_REQUEST['advertiserId']);
-$connector->setBannerTemplateId($_REQUEST['templateId']);
+$bannerTemplateId = getRequestVar('templateId');
+
+$container->setCompanyId(getRequestVar('companyId'));
+$container->setAdvertiserId(getRequestVar('advertiserId'));
 
 if(!empty($_FILES))
 {
@@ -32,22 +35,23 @@ if(!empty($_FILES))
     }
 }
 
-$template = $connector->getTemplateById();
+$template = $connector->getTemplateById($bannerTemplateId);
 
-$baseFilename = 'rtest_' . $connector->getBannerTemplateId();
+$connector->setCompanyId(getRequestVar('companyId'));
+$connector->setAdvertiserId(getRequestVar('advertiserId'));
+
+//set file name
+$baseFilename = 'rtest_' . $bannerTemplateId;
 $filename = $baseFilename . '.svg';
 $container->setOutputName($baseFilename);
-
-// write the temporary file
 $svgHandler->setFilename($filename);
-$svgHandler->setSvgContent($template->getSvgContent());
-$svgHandler->save();
 
+//parse the svg
 $container->setSource($filename);
 $container->parse();
 
 //create a new svg with the given request parameters
-if(null !== $_FILES)
+if(null !== $_FILES && count($_FILES) > 0)
 {
     //iterate all svg elements
     foreach($container->getElements() as $element)
@@ -71,20 +75,25 @@ $svgContent = $container->createSvg();
 $container->setTarget('GIF');
 $container->render();
 
+echo $container->getOutputDir();
+echo $container->getOutputName();
+
 // write the temporary file
 $svgHandler->setSvgContent($svgContent);
 $svgHandler->save();
 
+echo $svgHandler->getFilename();
 
-if('save' === $_REQUEST['action'])
+if(array_key_exists('action', $_REQUEST) && 'save' === $_REQUEST['action'])
 {
     //update template in the data base
     $bannerTemplateModel = new BannerTemplateModel();
     $bannerTemplateModel->setSvgContent($svgContent);
-    $bannerTemplateModel->setBannerTemplateId($_REQUEST['id']);
+    $bannerTemplateModel->setBannerTemplateId($_REQUEST['templateId']);
     $bannerTemplateModel->setAuditUserId(14); //todo for development, use the given id in the future
     $bannerTemplateModel->setAdvertiserId($container->getAdvertiserId());
     $bannerTemplateModel->setDescription('testing');
+    $bannerTemplateModel->setName('bumblebee testing');
 
     $response = $connector->sendBannerTemplate($bannerTemplateModel);
 

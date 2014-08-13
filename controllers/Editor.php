@@ -16,56 +16,57 @@ class Editor extends Controller
     {
         $container = new GfxContainer();
         $connector = new APIConnector();
-        $text = new GfxText();
+        $text = new GfxText($container);
 
         $this->view = $this->setLayout('views/editor.phtml')->getView();
 
-        if(isset($_REQUEST['id']))
-        {
-            if(null !== $_REQUEST['id'])
-            {
-                $container->setCompanyId($_REQUEST['companyId']);
-                $container->setAdvertiserId($_REQUEST['advertiserId']);
-                $container->setId($_REQUEST['id']);
-            }
-        }
+        $container->setId(getRequestVar('id'));
+        $container->setcompanyId(getRequestVar('companyId'));
+        $container->setAdvertiserId(getRequestVar('advertiserId'));
 
         if(null !== $container->getId())
         {
-            $_SESSION['bannerTemplateId'] = $container->getId();
+            $_SESSION['templateId'] = $container->getId();
             $_SESSION['advertiserId'] = $container->getAdvertiserId();
             $_SESSION['companyId'] = $container->getCompanyId();
         }
         else
         {
-            $container->setId($_SESSION['bannerTemplateId']);
+            $container->setId($_SESSION['templateId']);
             $container->setAdvertiserId($_SESSION['advertiserId']);
             $container->setCompanyId($_SESSION['companyId']);
         }
 
-        $connector->setBannerTemplateId($container->getId());
-
-        $template = $connector->getTemplateById();
-
-        // prepare the file name
-        $baseFilename = 'rtest_' . $template->getBannerTemplateId();
-        $filename = $baseFilename . '.svg';
-        $container->setOutputName($baseFilename);
-
-        // write the temporary file
+        // check if svg_dir exists
         if(is_dir(SVG_DIR))
         {
-            $fh = fopen(SVG_DIR . $filename, 'w');
-            fwrite($fh, $template->getSvgContent());
-            fclose($fh);
+            // prepare the file name
+            $baseFilename = 'rtest_' . $container->getId();
+            $filename = $baseFilename . '.svg';
+
+            // check if file with id already exists
+            if(!file_exists(SVG_DIR . $filename))
+            {
+                // get template by id
+                $template = $connector->getTemplateById($container->getId());
+
+                // create svg
+                $fh = fopen(SVG_DIR . $filename, 'w');
+                fwrite($fh, $template->getSvgContent());
+                fclose($fh);
+            }
+
+            // render gif for editor view
+            $container->setOutputName($baseFilename);
+            $container->setSource($filename);
+            $container->parse();
+            $container->setTarget('GIF');
+            $container->render();
         }
         else
         {
             throw new Exception(SVG_DIR . ' not found !');
         }
-
-        $container->setSource($filename);
-        $container->parse();
 
         // view parameters
         $this->view->templateId = $container->getId();
@@ -80,6 +81,8 @@ class Editor extends Controller
             $container->setTarget('GIF');
             $container->render();
         }
+
+        // unlink(SVG_DIR . $filename);
 
         return true;
     }

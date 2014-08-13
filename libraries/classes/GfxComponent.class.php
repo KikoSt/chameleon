@@ -17,12 +17,22 @@ class GfXComponent implements Linkable, Resizeable
     private $shadowColor;
     private $shadowDist;
 
-    public function __construct()
+    private $ref;
+    private $link;
+
+    private $container;
+
+    public function __construct(GfxContainer $container)
     {
         $this->x      = 0;
         $this->y      = 0;
         $this->width  = 0;
         $this->height = 0;
+        $this->container = $container;
+    }
+
+    public function updateData()
+    {
     }
 
     public function create($svgRootNode)
@@ -40,6 +50,7 @@ class GfXComponent implements Linkable, Resizeable
         {
             $styles = array();
             $style = $svgRootNode->attributes()->style;
+            $style = rtrim($style, ';');
             $stylesList = explode(';', $style);
             foreach($stylesList AS $curStyle)
             {
@@ -73,6 +84,22 @@ class GfXComponent implements Linkable, Resizeable
                 $this->setShadowColor($shadowColor);
                 $this->setShadowDist($shadowDist);
             }
+        }
+        // $type = strtolower(substr(get_class($this), 3));
+        $ref = (string) $svgRootNode->attributes('cmeo', true)->ref;
+        $link = (string) $svgRootNode->attributes('cmeo', true)->link;
+        if(!empty($ref))
+        {
+            echo 'Ref: ' . $ref . "\n";
+            $this->getContainer()->registerDataUpdate($ref, $this);
+            $this->ref = $ref;
+            echo $this->ref . "\n";
+        }
+        if(!empty($link))
+        {
+            echo "\n\n" . '--> Link: ' . $link . "\n";
+            $this->getContainer()->registerDataUpdate($link, $this);
+            $this->setLink($link);
         }
     }
 
@@ -245,5 +272,65 @@ class GfXComponent implements Linkable, Resizeable
         $string = '';
         $string .= get_class($this);
         return $string;
+    }
+
+    /**
+     * Get container.
+     *
+     * @return container.
+     */
+    public function getContainer()
+    {
+        return $this->container;
+    }
+
+    /**
+     * Set container.
+     *
+     * @param container the value to set.
+     */
+    public function setContainer($container)
+    {
+        $this->container = $container;
+    }
+
+    /**
+     * Get link.
+     *
+     * @return link.
+     */
+    public function getLink()
+    {
+        return $this->link;
+    }
+//
+//    /**
+//     * Set link.
+//     *
+//     * @param link the value to set.
+//     */
+//    public function setLink($link)
+//    {
+//        $this->link = $link;
+//    }
+
+    /**
+     * Get ref.
+     *
+     * @return ref.
+     */
+    public function getRef()
+    {
+        return $this->ref;
+    }
+
+    /**
+     * Set ref.
+     *
+     * @param ref the value to set.
+     */
+    public function setRef($ref)
+    {
+        $this->ref = $ref;
     }
 }

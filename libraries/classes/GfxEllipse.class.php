@@ -11,9 +11,9 @@ class GfxEllipse extends GfxShape
     private $fYRadius;
     private $fXRadius;
 
-    public function __construct()
+    public function __construct(GfxContainer $container)
     {
-        parent::__construct();
+        parent::__construct($container);
     }
 
     /**

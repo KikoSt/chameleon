@@ -9,22 +9,21 @@ class Index extends Controller
 {
     public function getRedirect($page)
     {
-        $modules = array('overview', 'editor');
-
-        if(in_array($page, $modules))
+        switch($page)
         {
-            switch($page)
+            case "overview":
             {
-                case "overview":
-                {
-                    return new Overview();
-                    break;
-                }
-                case "editor":
-                {
-                    return new Editor();
-                    break;
-                }
+                return new Overview();
+                break;
+            }
+            case "editor":
+            {
+                return new Editor();
+                break;
+            }
+            default:
+            {
+                throw new Exception('No applicable module found');
             }
         }
     }

@@ -5,6 +5,8 @@
     {
         define('__ROOT__', './');
     }
+    require_once(__ROOT__ . 'libraries/functions.inc.php');
+
     include('config/pathconfig.inc.php');
 
     $advertiserId = 122;
@@ -15,8 +17,9 @@
     session_start();
 
     $params = array_keys($_REQUEST);
+    $modules = array('overview', 'editor');
 
-    if(!in_array('page', $params))
+    if(!in_array('page', $params) || !in_array($_REQUEST['page'], $modules))
     {
         $page = 'overview';
     }
@@ -35,6 +38,3 @@
     $redirect->create();
     $redirect->display();
     require_once('views/footer.phtml');
-
-
-

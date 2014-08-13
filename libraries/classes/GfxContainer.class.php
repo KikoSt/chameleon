@@ -24,9 +24,32 @@ class GfxContainer
     private $editorOptions;
     private $allowedTargets;
 
+    private $productData;
+
+    // the data registry consists of several "list", one for each relevant data component:
+    // - price
+    // - oldPrice
+    // - productUrl
+    // etc.
+    // The respective "sub-registry" will store type and ID of each component
+    // Every registered component will be updated once for each product
+    private $dataRegistry;
+    private $animationRegistry;
+
     public function __construct()
     {
         $this->allowedTargets = array('SWF', 'GIF');
+        $this->dataRegistry = array();
+        $this->animationRegistry = array();
+    }
+
+    public function registerDataUpdate($key, $element)
+    {
+        if(array_key_exists($key, $this->dataRegistry))
+        {
+            $this->dataRegistry[$key] = array();
+        }
+        $this->dataRegistry[$key][] = $element;
     }
 
     /**
@@ -53,9 +76,12 @@ class GfxContainer
         $string = "<?xml version='1.0' encoding='UTF-8'?>";
         $string .= "\n" . '<svg width="'. $this->getCanvasWidth() .'" height="'. $this->getCanvasHeight() . '"';
 
-        $string .= ' xmlns="http://www.w3.org/2000/svg"';
-        $string .= ' xmlns:cmeo="http://www.mediadecision.com/chameleon_namespace"';
-        $string .= ' xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">';
+        $string .= ' xmlns="http://www.w3.org/2000/svg" ';
+        $string .= ' xmlns:cmeo="http://www.mediadecision.com/chameleon_namespace" ';
+        $string .= ' xmlns:svg="http://www.w3.org/2000/svg" ';
+        $string .= ' xmlns:xlink="http://www.w3.org/1999/xlink"';
+        $string .= '>';
+        // <? <-- crap. required for vim syntax hightlighting not to break :((
         $string .= "\n" . '<g>' . $this->getSvg() . '</g></svg>';
         return $string;
     }
@@ -165,11 +191,12 @@ class GfxContainer
                 throw new Exception('Template id not set');
             }
 
-            $filename = $this->getCompanyId();
-            $filename .= '_' . $this->getAdvertiserId();
+            // $filename = $this->getCompanyId();
+            // $filename .= '_' . $this->getAdvertiserId();
+            $filename  = $this->getId();
+            $filename .= '_' . preg_replace("/[^a-zA-Z0-9]/", "", $this->getProductData()->getName());
             $filename .= '_' . $this->getCanvasHeight();
             $filename .= 'x' . $this->getCanvasWidth();
-            $filename .= '_' . $this->getId();
         }
 
         $filename .= '.' . strtolower($this->getTarget());
@@ -243,9 +270,21 @@ class GfxContainer
         return $this->outputDir;
     }
 
+    public function updateData()
+    {
+        foreach($this->elements AS $element)
+        {
+            if(is_a($element, 'GfxComponent'))
+            {
+                $element->updateData();
+            }
+        }
+    }
+
     public function render()
     {
         $this->createOutputDir();
+        $this->updateData();
 
         if($this->target === 'SWF')
         {
@@ -258,7 +297,10 @@ class GfxContainer
     }
 
     private function renderSWF()
-    { $swf = new SWFMovie(); $swf->setDimension($this->getCanvasWidth(), $this->getCanvasHeight()); $swf->setFrames(30);
+    {
+        $swf = new SWFMovie();
+        $swf->setDimension($this->getCanvasWidth(), $this->getCanvasHeight());
+        $swf->setFrames(30);
         $swf->setRate(10);
         $swf->setBackground(0, 0, 0);
 
@@ -305,13 +347,28 @@ class GfxContainer
         if (array_key_exists($type, $componentTypes))
         {
             // create instance of requested class based on the above mapping
-            $gfxInstance = new $componentTypes[$type]();
+            $gfxInstance = new $componentTypes[$type]($this);
         }
         else
         {
             return false;
         }
         return $gfxInstance;
+    }
+
+    /**
+     * registerSubstitution
+     *
+     * @param mixed $dataId
+     * @param mixed $gfxElement
+     * @access public
+     * @return void
+     */
+    public function registerSubstitution($dataId, $gfxElement)
+    {
+        // check if there is already a "registry" for the given dataId
+        // if not, create it
+        // register the given element for dataId updates/substitutions
     }
 
     public function changeElementValue($formData)
@@ -441,5 +498,25 @@ class GfxContainer
             $string .= print_r($element, true);
         }
         return $string;
+    }
+
+    /**
+     * Get productData.
+     *
+     * @return productData.
+     */
+    public function getProductData()
+    {
+        return $this->productData;
+    }
+
+    /**
+     * Set productData.
+     *
+     * @param productData the value to set.
+     */
+    public function setProductData(ProductModel $productData)
+    {
+        $this->productData = $productData;
     }
 }

@@ -23,9 +23,28 @@ class GfxImage extends GfXComponent
      * @access public
      * @return void
      */
-    public function __construct()
+    public function __construct(GfxContainer $container)
     {
-        parent::__construct();
+        parent::__construct($container);
+    }
+
+
+    public function updateData()
+    {
+        parent::updateData();
+
+        if($this->getContainer()->getProductData())
+        {
+            if(!empty($this->getRef()))
+            {
+                $this->setImageUrl($this->getContainer()->getProductData()->getImageUrl());
+            }
+
+            if(!empty($this->getLinkUrl()))
+            {
+                $this->setLinkUrl($this->getContainer()->getProductData()->getProductUrl());
+            }
+        }
     }
 
 
@@ -60,7 +79,7 @@ class GfxImage extends GfXComponent
         if($this->getStroke() !== null)
         {
             $strokeWidth = $this->getStroke()->getWidth();
-            $stroke = new GfxRectangle();
+            $stroke = new GfxRectangle($this->getContainer());
             $stroke->setWidth($this->getWidth() + ($strokeWidth * 2));
             $stroke->setHeight($this->getHeight() + ($strokeWidth * 2));
             $stroke->setX($this->getX() - $strokeWidth);
@@ -87,9 +106,8 @@ class GfxImage extends GfXComponent
 
         $output = $this->resizeImage($this->getImageUrl(), $this->getWidth(), $this->getHeight(), false);
 
-        ImageJPEG($output, $imgPath);
+        ImageJPEG($output, $imgPath, 100);
 
-        $image = new SWFBitmap(fopen($this->getImageUrl(), "rb"));
         $image = new SWFBitmap(fopen($imgPath, "rb"));
         $handle = $canvas->add($image);
         $handle->moveTo($this->getX(), $this->getY());
@@ -161,41 +179,24 @@ class GfxImage extends GfXComponent
     public function resizeImage($file, $crop=false)
     {
         list($originalWidth, $originalHeight) = getimagesize($file);
+        $aspectRatio = $originalWidth / $originalHeight;
 
-        if($originalWidth>$originalHeight)
+        $newWidth = $this->getWidth();
+        $newHeight = $this->getHeight();
+
+        if($aspectRatio < 1 )
         {
-            $crop = true;
+            $newWidth = $newHeight * $aspectRatio;
+
+        } else {
+            $newHeight = $newWidth / $aspectRatio;
         }
 
-        $r = $originalWidth / $originalHeight;
+        $resizedWidth = $newWidth;
+        $resizedHeight = $newHeight;
 
-        $resizedWidth = $this->getWidth();
-        $resizedHeight = $this->getHeight();
-
-        if ($crop)
-        {
-            if ($originalWidth > $originalHeight)
-            {
-                $originalWidth = ceil($originalWidth-($originalWidth*abs($r-($resizedWidth / $resizedHeight))));
-            }
-            else
-            {
-                $originalHeight = ceil($originalHeight-($originalHeight*abs($r-($resizedWidth / $resizedHeight))));
-            }
-        }
-        else
-        {
-            if (($resizedWidth/$resizedHeight) > $r)
-            {
-                $resizedWidth = $this->getHeight() * $r;
-            }
-            else
-            {
-                $resizedWidth = $this->getWidth() / $r;
-            }
-        }
-
-        $x = ($this->getWidth()-$resizedWidth) / 2;
+        $newX = ($this->getWidth() - $newWidth) / 2;
+        $newY = ($this->getHeight() - $newHeight) / 2;
 
         $originalImage = $this->createImageFromSourceFile($file);
 
@@ -206,7 +207,9 @@ class GfxImage extends GfXComponent
         $bgcolor = imagecolorallocatealpha($resizedImage, 255, 255, 255, 0);
         imagefill($resizedImage, 0, 0, $bgcolor);
 
-        imagecopyresampled($resizedImage, $originalImage, 0, 0, 0, 0, $resizedWidth, $resizedHeight, $originalWidth, $originalHeight);
+        // imagecopyresampled($resizedImage, $originalImage, 0, 0, 0, 0, $resizedWidth, $resizedHeight, $originalWidth, $originalHeight);
+        imagecopyresampled($resizedImage, $originalImage, $newX, $newY, 0, 0, $resizedWidth, $resizedHeight, $originalWidth, $originalHeight);
+
         imagealphablending($resizedImage, false);
         imagesavealpha($resizedImage,true);
 

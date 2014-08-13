@@ -20,9 +20,9 @@ class GfxText extends GfxComponent
     private $fontFamily;
     private $textAnchor;
 
-    public function __construct()
+    public function __construct(GfxContainer $container)
     {
-        parent::__construct();
+        parent::__construct($container);
     }
 
     public function create($svgRootNode)
@@ -67,6 +67,51 @@ class GfxText extends GfxComponent
         return($width);
     }
 
+    public function updateData()
+    {
+        parent::updateData();
+
+        if($this->getContainer()->getProductData())
+        {
+            if(!empty($this->getRef()))
+            {
+//                 echo 'Product information found; ';
+//                 echo '[' . $this->getRef() . ']';
+//                 echo "\n";
+                $productData = $this->getContainer()->getProductData();
+
+                $newValue = $productData->{'get' . $this->getRef()}();
+                if('price' === $this->getRef() || 'oldPrice' === $this->getRef())
+                {
+                    $newValue = number_format($newValue, 2, ',', '');
+
+                    if(empty($productData->getCurrencySymbol()) && empty($productData->getCurrencyShort()))
+                    {
+                        $newValue .= '€';
+                    }
+                    else
+                    {
+                        if(!empty($productData->getCurrencySymbol()))
+                        {
+                            echo '1';
+                            $newValue .= $productData->getCurrencySymbol();
+                        }
+                        else
+                        {
+                            echo '2';
+                            $newValue .= $productData->getCurrencyShort();
+                        }
+                    }
+                }
+                $this->setText($newValue);
+            }
+
+//             if(!empty($this->getLink()))
+//             {
+//                 echo "\n[" . $this->getLink() . "]\n";
+//             }
+        }
+    }
 
     public function renderSWF($canvas)
     {
@@ -74,7 +119,7 @@ class GfxText extends GfxComponent
 
         if($this->getShadowColor() !== null)
         {
-            $shadow = new GfxText();
+            $shadow = new GfxText($this->getContainer());
             $shadow->setWidth($this->getWidth());
             $shadow->setHeight($this->getHeight());
             $shadow->setX($this->getX() + (int) $this->getShadowDist());
@@ -115,6 +160,7 @@ class GfxText extends GfxComponent
         // position: CENTERED!
         $text->moveTo($this->getX() - ($this->getTextWidth()/2), $this->getY());
         $text->moveTo($this->getX(), $this->getY());
+        // $text->addString(utf8_decode(str_replace('€', ' Euro', $this->getText())));
         $text->addString(utf8_decode(str_replace('€', ' Euro', $this->getText())));
 
         $handle = $canvas->add($text);
@@ -139,9 +185,10 @@ class GfxText extends GfxComponent
                      $this->getY(),
                      $textColor,
                      $this->getGIFFont(),
-                     utf8_decode(str_replace('€', ' Euro', $this->getText()))
+                     str_replace('€', ' Euro', $this->getText())
         );
 
+                     // utf8_decode(str_replace('€', ' Euro', $this->getText()))
         return $canvas;
     }
 
@@ -245,6 +292,9 @@ class GfxText extends GfxComponent
      */
     public function setText($text)
     {
+        $text = str_replace('â‚¬', '€', $text);
+        $text = str_replace('Ã¤', 'ä', $text);
+        $text = str_replace('Ã¼', 'ü', $text);
         $this->text = $text;
     }
 

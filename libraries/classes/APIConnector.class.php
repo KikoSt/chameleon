@@ -20,6 +20,7 @@ class APIConnector
         $this->serviceCalls['postTemplate']    = 'bannerTemplate';
         $this->serviceCalls['deleteTemplate']  = 'bannerTemplate/{templateId}';
         $this->serviceCalls['getTemplateById'] = 'bannerTemplate/{templateId}';
+        $this->serviceCalls['getProductsByCategory'] = 'company/{companyId}/category/{categoryId}/products';
     }
 
     /**
@@ -40,6 +41,39 @@ class APIConnector
         $restCall = $path;
         $response = file_get_contents($restCall);
         return $response;
+    }
+
+
+
+    /**
+     * getProductsByCategory
+     *
+     * returns all products for a given category for the currently set company and advertiser
+     *
+     * @param mixed $categoryId
+     * @access public
+     * @return void
+     */
+    public function getProductsByCategory($categoryId)
+    {
+        $resource = $this->serviceUrl . '/' . str_replace('{categoryId}', $categoryId, $this->serviceCalls['getProductsByCategory']);
+        $resource = str_replace('{companyId}', $this->companyId, $resource);
+        $curl = $this->getCurl($resource, 'GET');
+
+        $curlResponse = curl_exec($curl);
+        curl_close($curl);
+
+        $productList = json_decode($curlResponse)->products;
+
+        $products = array();
+
+        foreach($productList AS $product)
+        {
+            $products[] = $this->populateProduct($product);
+        }
+
+        return $products;
+
     }
 
     /**
@@ -80,14 +114,14 @@ class APIConnector
         return $templates;
     }
 
-    public function getTemplateById()
+    public function getTemplateById($templateId)
     {
-        if(!isset($this->bannerTemplateId))
+        if(!isset($templateId))
         {
             throw new Exception('bannerTemplateId not set');
         }
 
-        $resource = $this->serviceUrl . '/' . str_replace('{templateId}', $this->bannerTemplateId, $this->serviceCalls['getTemplateById']);
+        $resource = $this->serviceUrl . '/' . str_replace('{templateId}', $templateId, $this->serviceCalls['getTemplateById']);
         $curl = $this->getCurl($resource, 'GET');
 
         $curlResponse = curl_exec($curl);
@@ -158,6 +192,13 @@ class APIConnector
         return $curl;
     }
 
+    /**
+     * populateBannerTemplate
+     *
+     * @param mixed $template
+     * @access private
+     * @return void
+     */
     private function populateBannerTemplate($template)
     {
         $bannerTemplateModel = new BannerTemplateModel();
@@ -170,6 +211,43 @@ class APIConnector
         $bannerTemplateModel->setSvgContent($template->svgContent);
 
         return $bannerTemplateModel;
+    }
+
+    /**
+     * populateProduct
+     *
+     * @param mixed $product
+     * @access private
+     * @return void
+     */
+    private function populateProduct($product)
+    {
+        $productModel = new ProductModel();
+
+        $productModel->setProductId($product->idProduct);
+        $productModel->setFeedId($product->idFeed);
+        $productModel->setCategoryId($product->idCategory);
+        $productModel->setCurrencyId($product->idCurrency);
+
+        $productModel->setEan($product->productNumberIsbn);
+        $productModel->setIsbn($product->productNumberEan);
+
+        $productModel->setName($product->productName);
+        $productModel->setProductUrl($product->productUrl);
+        $productModel->setImageUrl($product->productUrlImage);
+        $productModel->setDescription($product->productDescription);
+        $productModel->setPrice($product->productPrice);
+        $productModel->setPriceOld($product->productPriceOld);
+
+        $productModel->setShipping($product->productPriceShipping);
+        $productModel->setPromotionStartDate($product->datePromotionStart);
+        $productModel->setPromotionEndDate($product->datePromotionEnd);
+
+        $productModel->setProductSize($product->productPropertySize);
+        $productModel->setGender($product->idGender);
+        $productModel->setColor($product->colour);
+
+        return $productModel;
     }
 
     /**
@@ -210,22 +288,6 @@ class APIConnector
     public function setCompanyId($companyId)
     {
         $this->companyId = $companyId;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getBannerTemplateId()
-    {
-        return $this->bannerTemplateId;
-    }
-
-    /**
-     * @param mixed $bannerTemplateId
-     */
-    public function setBannerTemplateId($bannerTemplateId)
-    {
-        $this->bannerTemplateId = $bannerTemplateId;
     }
 
 
