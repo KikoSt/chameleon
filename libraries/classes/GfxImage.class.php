@@ -91,7 +91,7 @@ class GfxImage extends GfXComponent
 
         if($this->getShadowColor() !== null)
         {
-            $shadow = new GfxRectangle();
+            $shadow = new GfxRectangle($this->getContainer());
             $shadow->setWidth($this->getWidth());
             $shadow->setHeight($this->getHeight());
             $shadow->setX($this->getX() + (int) $this->getShadowDist());
