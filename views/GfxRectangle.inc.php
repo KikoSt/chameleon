@@ -14,14 +14,8 @@
                 include('editorComponents/color.inc.php');
                 include('editorComponents/coords.inc.php');
                 include('editorComponents/dimensions.inc.php');
-
-                $shadowColor = $element->getShadowColor();
-                $shadowDist = $element->getShadowDist();
-
-                if(isset($shadowColor, $shadowDist))
-                {
-                    include('editorComponents/shadow.inc.php');
-                }
+                include('editorComponents/shadow.inc.php');
+                include('editorComponents/stroke.inc.php');
             ?>
         </div>
     </div>

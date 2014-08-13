@@ -30,11 +30,12 @@ class Overview extends Controller
 
         $this->view = $this->setLayout('views/overview.phtml')->getView();
 
-        // $templates = $database->fetchTemplates();
         $templates = $connector->getTemplates();
 
         foreach($templates as $template)
         {
+            Debug::browser($template->getSvgContent(),true);
+
             $baseFilename = 'rtest_' . $template->getBannerTemplateId();
             $filename = $baseFilename . '.svg';
             $container->setOutputName($baseFilename);

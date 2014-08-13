@@ -1,6 +1,6 @@
 <?php
 /**
- * Comment here
+ * Handles the creation of rectangles while rendering GIF and SWF
  *
  * User: thomas.hummel@mediadecision.com
  * Date: 17/07/2014
