@@ -17,6 +17,12 @@ class SvgFileHandler
         // write the temporary file
         if(is_dir(SVG_DIR))
         {
+            $filename = $this->getFilename();
+            // filename should be without extention. Add extention if it isn't already there ...
+            if(!(substr($filename, -4) === '.svg')) {
+                $filename .= '.svg';
+            }
+
             $fh = fopen(SVG_DIR . $this->getFilename(), 'w');
             if(!$fh)
             {
