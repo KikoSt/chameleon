@@ -13,7 +13,7 @@ class GfxContainer
     private $id;
     protected $elements;
     private $target;
-    private $sSource;
+    private $source;
     private $canvasWidth;
     private $canvasHeight;
     private $canvas;
@@ -104,17 +104,17 @@ class GfxContainer
         return $this->outputName;
     }
 
-    public function setSource($sSource)
+    public function setSource($source)
     {
-        $sSource = SVG_DIR . $sSource;
+        $source = SVG_DIR . $source;
 
-        if(file_exists($sSource))
+        if(file_exists($source))
         {
-            $this->sSource = $sSource;
+            $this->source = $source;
         }
         else
         {
-            throw new FileNotFoundException('File '.$sSource.' not found !');
+            throw new FileNotFoundException('File ' . $source . ' not found!');
         }
     }
 
