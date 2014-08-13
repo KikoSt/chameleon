@@ -21,6 +21,7 @@ class GfxContainer
     private $outputDir;
     private $companyId;
     private $advertiserId;
+    private $categoryId;
     private $editorOptions;
     private $allowedTargets;
 
@@ -237,12 +238,12 @@ class GfxContainer
      */
     private function calculateOutputDir()
     {
-        if('' == $this->getCompanyId() || '' == $this->getAdvertiserId())
+        if('' == $this->getCompanyId() || '' == $this->getAdvertiserId() || '' == $this->getCategoryId())
         {
-            throw new Exception('Company or Advertiser ID missing');
+            throw new Exception('Company, Advertiser or Category ID missing');
         }
         // if there is a trailing / in OUTPUT_DIR, remove it, then assemble all parts to output directory path
-        $parts = array(rtrim(OUTPUT_DIR, '/'), $this->getCompanyId(), $this->getAdvertiserId());
+        $parts = array(rtrim(OUTPUT_DIR, '/'), $this->getCompanyId(), $this->getAdvertiserId(), $this->getCategoryId());
 
         $outputDir = implode('/', $parts);
 
@@ -552,5 +553,25 @@ class GfxContainer
     public function setProductData(ProductModel $productData)
     {
         $this->productData = $productData;
+    }
+
+    /**
+     * Get categoryId.
+     *
+     * @return categoryId.
+     */
+    public function getCategoryId()
+    {
+        return $this->categoryId;
+    }
+
+    /**
+     * Set categoryId.
+     *
+     * @param categoryId the value to set.
+     */
+    public function setCategoryId($categoryId)
+    {
+        $this->categoryId = $categoryId;
     }
 }
