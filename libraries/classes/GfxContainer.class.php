@@ -128,15 +128,17 @@ class GfxContainer
 
     public function parse()
     {
+        libxml_use_internal_errors(true);
+
         if(is_a($this->source, 'SimpleXMLElement'))
         {
             $svg = $this->source;
         }
-        else if(file_exists($this->source))
+        else if(file_exists(SVG_DIR . $this->source))
         {
-            $svg = new SimpleXMLElement(file_get_contents($this->source));
+            $svg = new SimpleXMLElement(file_get_contents(SVG_DIR . $this->source));
         }
-        else if (is_string($this->source))
+        else if (is_string($this->source) && simplexml_load_string($this->source))
         {
             $svg = simplexml_load_string($this->source);
         }
