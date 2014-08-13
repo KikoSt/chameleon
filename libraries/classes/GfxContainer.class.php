@@ -403,6 +403,10 @@ class GfxContainer
                         $stroke = new GfxStroke(new GfxColor($value), 1);
                         $element->$func($stroke);
                     }
+                    elseif($param === "strokeWidth")
+                    {
+                        $element->getStroke()->setWidth($value);
+                    }
                     else
                     {
                         $element->$func($value);

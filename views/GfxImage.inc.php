@@ -10,10 +10,23 @@
     <div id="<?php echo $element->getId();?>" class="panel-collapse collapse"
     <div class="panel-body">
         <div class="row">
+            <?php include('editorComponents/imageUrl.inc.php'); ?>
+        </div>
+        <div class="row">
             <?php
-                include('editorComponents/imageUrl.inc.php');
                 include('editorComponents/coords.inc.php');
                 include('editorComponents/dimensions.inc.php');
+            ?>
+        </div>
+        <div class="row">
+            <?php
+                include('editorComponents/shadow.inc.php');
+                include('editorComponents/stroke.inc.php');
+            ?>
+        </div>
+        <div class="row">
+            <?php
+                include('editorComponents/cmeo.inc.php');
             ?>
         </div>
     </div>

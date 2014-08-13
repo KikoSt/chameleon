@@ -34,42 +34,46 @@ class Overview extends Controller
 
         foreach($templates as $template)
         {
-            Debug::browser($template->getSvgContent(),true);
+//            Debug::browser($template->getBannerTemplateId(),true);
 
-            $baseFilename = 'rtest_' . $template->getBannerTemplateId();
-            $filename = $baseFilename . '.svg';
-            $container->setOutputName($baseFilename);
-
-            // write the temporary file
-            if(is_dir(SVG_DIR))
+            if($template->getBannerTemplateId() !== 96)
             {
-                $fh = fopen(SVG_DIR . $filename, 'w');
-                fwrite($fh, $template->getSvgContent());
-                fclose($fh);
+                $baseFilename = 'rtest_' . $template->getBannerTemplateId();
+                $filename = $baseFilename . '.svg';
+                $container->setOutputName($baseFilename);
+
+                // write the temporary file
+                if(is_dir(SVG_DIR))
+                {
+                    $fh = fopen(SVG_DIR . $filename, 'w');
+                    fwrite($fh, $template->getSvgContent());
+                    fclose($fh);
+                }
+                else
+                {
+                    throw new Exception(SVG_DIR . ' not found !');
+                }
+
+                $container->setId($template->getBannerTemplateId());
+
+                $container->setSource($filename);
+                $container->parse();
+                $container->setTarget('GIF');
+                $container->render();
+
+                $preview = new StdClass();
+                $preview->filepath = str_replace($_SERVER['DOCUMENT_ROOT'], '', $container->getOutputDir()) . '/' . $baseFilename . '.gif';
+                $preview->width = $container->getCanvasWidth() / 2 > 300 ? 300 : $container->getCanvasWidth() / 2;
+                $preview->height = $container->getCanvasHeight();
+                $preview->id = $template->getBannerTemplateId();
+                $preview->templateName = $filename;
+                $preview->advertiserId = $this->getAdvertiserId();
+                $preview->companyId = $this->getCompanyId();
+                $previews[] = $preview;
+
+                unlink(SVG_DIR . $filename);
             }
-            else
-            {
-                throw new Exception(SVG_DIR . ' not found !');
-            }
 
-            $container->setId($template->getBannerTemplateId());
-
-            $container->setSource($filename);
-            $container->parse();
-            $container->setTarget('GIF');
-            $container->render();
-
-            $preview = new StdClass();
-            $preview->filepath = str_replace($_SERVER['DOCUMENT_ROOT'], '', $container->getOutputDir()) . '/' . $baseFilename . '.gif';
-            $preview->width = $container->getCanvasWidth() / 2 > 300 ? 300 : $container->getCanvasWidth() / 2;
-            $preview->height = $container->getCanvasHeight();
-            $preview->id = $template->getBannerTemplateId();
-            $preview->templateName = $filename;
-            $preview->advertiserId = $this->getAdvertiserId();
-            $preview->companyId = $this->getCompanyId();
-            $previews[] = $preview;
-
-            unlink(SVG_DIR . $filename);
         }
 
         $this->view->previews = $previews;

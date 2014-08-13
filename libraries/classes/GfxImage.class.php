@@ -2,10 +2,6 @@
 /**
  * GfxImage
  *
- * Created by IntelliJ IDEA.
- * User: thomas
- * Date: 17.07.14
- * Time: 11:33
  * @uses GfXComponent
  * @package Gfx
  * @version $id$
@@ -250,14 +246,25 @@ class GfxImage extends GfXComponent
 
         $svg = '';
         $svg .= "\r\n" . '<image';
+        $svg .= "\r\n" . ' cmeo:ref="' . $this->getCmeoRef(). '"';
+        $svg .= "\r\n" . ' cmeo:link="' . $this->getCmeoLink(). '"';
         $svg .= "\r\n" . ' xlink:href="' . str_replace('/var/www/chameleon', '', $this->getImageUrl()) . '"';
+
         $svg .= "\r\n" . ' linkurl="' . $this->getLinkUrl() . '"';
 
-        if(isset($stroke) && isset($shadow))
+        if(isset($stroke) || isset($shadow))
         {
-            $svg .= "\r\n" . ' style="stroke:' . $stroke->getColor()->getHex() . ';stroke-width:' . $stroke->getWidth() . ';';
-            $svg .= ' shadow:' . $this->getShadowColor()->getHex() . ';shadow-dist:' . $this->getShadowDist() . 'px;"';
+            $svg .= "\r\n" . ' style="';
+            if(isset($stroke))
+            {
+                $svg .= 'stroke:' . $stroke->getColor()->getHex() . ';stroke-width:' . $stroke->getWidth() . ';';
+            }
 
+            if(isset($shadow))
+            {
+                $svg .= 'shadow:' . $shadow->getHex() . ';shadow-dist:' . $this->getShadowDist() . 'px;';
+            }
+            $svg .= '"';
         }
 
         $svg .= "\r\n" . ' x="' . $this->getX() . '"';

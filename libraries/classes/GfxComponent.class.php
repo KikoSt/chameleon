@@ -17,8 +17,8 @@ class GfXComponent implements Linkable, Resizeable
     private $shadowColor;
     private $shadowDist;
 
-    private $ref;
-    private $link;
+    private $cmeoRef;
+    private $cmeoLink;
 
     private $container;
 
@@ -295,42 +295,36 @@ class GfXComponent implements Linkable, Resizeable
     }
 
     /**
-     * Get link.
-     *
-     * @return link.
+     * @return mixed
      */
-    public function getLink()
+    public function getCmeoLink()
     {
-        return $this->link;
-    }
-//
-//    /**
-//     * Set link.
-//     *
-//     * @param link the value to set.
-//     */
-//    public function setLink($link)
-//    {
-//        $this->link = $link;
-//    }
-
-    /**
-     * Get ref.
-     *
-     * @return ref.
-     */
-    public function getRef()
-    {
-        return $this->ref;
+        return $this->cmeoLink;
     }
 
     /**
-     * Set ref.
-     *
-     * @param ref the value to set.
+     * @param mixed $cmeoLink
      */
-    public function setRef($ref)
+    public function setCmeoLink($cmeoLink)
     {
-        $this->ref = $ref;
+        $this->cmeoLink = $cmeoLink;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getCmeoRef()
+    {
+        return $this->cmeoRef;
+    }
+
+    /**
+     * @param mixed $cmeoRef
+     */
+    public function setCmeoRef($cmeoRef)
+    {
+        $this->cmeoRef = $cmeoRef;
+    }
+
+
 }

@@ -45,5 +45,10 @@ li
     border-color: #333333 !important;
 }
 
+.form-control[disabled]
+{
+    background-color: #858585 !important;
+}
+
 
 

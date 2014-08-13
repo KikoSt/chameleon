@@ -1,3 +1,4 @@
+
 <div class="col-md-12">
     <label>Image:</label>
     <input id="<?php echo $element->getId();?>"
@@ -14,14 +15,5 @@
            name="<?php echo $element->getId();?>#imageUrl"
            value="<?php echo str_replace(ROOT_DIR, '', $element->getImageUrl());?>"
            placeholder="<?php echo $element->getImageUrl();?>"
-    />
-</div>
-<div class="col-md-12">
-    <label>Link URL:</label>
-    <input type="text"
-           class="form-control"
-           name="<?php echo $element->getId();?>#linkUrl"
-           value="<?php echo str_replace(ROOT_DIR, '', $element->getLinkUrl());?>"
-           placeholder="<?php echo $element->getLinkUrl();?>"
     />
 </div>

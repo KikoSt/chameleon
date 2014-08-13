@@ -15,7 +15,7 @@
     </div>
     </form>
     <div class="col-md-7">
-        <div class="row" style="margin-left: 5px;">
+        <div id="preview" class="row" style="margin-left: 5px;">
             <img src="<?php echo $this->gif;?>" alt="">
         </div>
         <div class="row" style="padding-top: 5px; margin-left: 5px;">
@@ -50,6 +50,40 @@
             if(e.keyCode == 13) {
                 e.preventDefault();
                 return false;
+            }
+        });
+
+        $('.checkbox #shadowCheckBox').change(function() {
+            var id = $(this).attr('value');
+
+            if($(this).is(":checked"))
+            {
+                $(this).attr("checked", true);
+                $("#" + id + "_shadowColor").attr('disabled', false).addClass('picker');
+                $("#" + id + "_shadowDist").attr('disabled', false);
+            }
+            else
+            {
+                $(this).attr("checked", false);
+                $("#" + id + "_shadowColor").attr('disabled', true).removeClass('picker').val('');
+                $("#" + id + "_shadowDist").attr('disabled', true).val('');
+            }
+        });
+
+        $('.checkbox #strokeCheckBox').change(function() {
+            var id = $(this).attr('value');
+
+            if($(this).is(":checked"))
+            {
+                $(this).attr("checked", true);
+                $("#" + id + "_shadowColor").attr('disabled', false).addClass('picker');
+                $("#" + id + "_shadowDist").attr('disabled', false);
+            }
+            else
+            {
+                $(this).attr("checked", false);
+                $("#" + id + "_shadowColor").attr('disabled', true).removeClass('picker').val('');
+                $("#" + id + "_shadowDist").attr('disabled', true).val('');
             }
         });
 
@@ -94,6 +128,8 @@
                 success: function(){
                     $('#previewalert').show();
                     location.reload();
+//                    $("#preview").html($(document.createElement("div")).html('<img src="/chameleon/output/4/122/rtest_99.gif" ' +
+//                        'alt="">'));
                 }
 
             });
