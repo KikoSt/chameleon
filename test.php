@@ -36,14 +36,10 @@ foreach($productCategories AS $category)
 {
     foreach($templates AS $template)
     {
-//        unset($container);
-
-//        $container = new GfxContainer();
-//        $container->setAdvertiserId($advertiserId);
-//        $container->setCompanyId($companyId);
-
         $container->setSource($template->getSvgContent());
         $container->setId($template->getBannerTemplateId());
+        $container->setAdvertiserId($advertiserId);
+        $container->setCompanyId($companyId);
         $container->parse();
 
         $products  = $connector->getProductsByCategory($category);
@@ -53,6 +49,16 @@ foreach($productCategories AS $category)
         $count = 0;
         foreach($productList AS $product)
         {
+            unset($container);
+
+            $container = new GfxContainer();
+            $container->setSource($template->getSvgContent());
+            $container->setId($template->getBannerTemplateId());
+            $container->setAdvertiserId($advertiserId);
+            $container->setCompanyId($companyId);
+            $container->setCategoryId($category);
+            $container->parse();
+
             $container->setProductData($product);
             $container->setTarget('SWF');
             $container->render();
