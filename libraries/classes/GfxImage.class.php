@@ -185,14 +185,16 @@ class GfxImage extends GfXComponent
         list($originalWidth, $originalHeight) = getimagesize($file);
         $aspectRatio = $originalWidth / $originalHeight;
 
-        $newWidth = $this->getWidth();
+        $newWidth  = $this->getWidth();
         $newHeight = $this->getHeight();
 
         if($aspectRatio < 1 )
         {
             $newWidth = $newHeight * $aspectRatio;
 
-        } else {
+        }
+        else
+        {
             $newHeight = $newWidth / $aspectRatio;
         }
 
