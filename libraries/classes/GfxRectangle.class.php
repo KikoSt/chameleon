@@ -1,6 +1,6 @@
 <?php
 /**
- * Comment here
+ * Handles the creation of rectangles while rendering GIF and SWF
  *
  * User: thomas.hummel@mediadecision.com
  * Date: 17/07/2014
@@ -156,6 +156,7 @@ class GfxRectangle extends GfxShape
         $svg = '';
 
         $svg .= "\r\n" . '<rect';
+        $svg .= "\r\n" . ' cmeo:link="' . $this->getCmeoLink(). '"';
         $svg .= "\r\n" . ' fill="' . $this->getFill()->getHex() . '"';
 
         if(isset($stroke))

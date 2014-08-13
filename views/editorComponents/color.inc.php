@@ -1,5 +1,5 @@
 <div class="col-md-2">
-    <label>Fill:</label>
+    <label>Color:</label>
     <input id="fill"
            type="text"
            class="form-control picker"
@@ -8,15 +8,3 @@
            placeholder="<?php echo $element->getFill()->getHex();?>"
         />
 </div>
-<?php if(null !== $element->getStroke()): ?>
-<div class="col-md-2">
-    <label>Stroke:</label>
-    <input id="stroke"
-           type="text"
-           class="form-control picker"
-           name="<?php echo $element->getId();?>#stroke"
-           value="<?php echo $element->getStroke()->getColor()->getHex();?>"
-           placeholder="<?php echo $element->getStroke()->getColor()->getHex();?>"
-        />
-</div>
-<?php endif; ?>

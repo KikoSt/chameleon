@@ -2,12 +2,19 @@
 @import url("fileinput.min.css");
 
 /* Overwrite all bootstrap css rules with a rounded corner to create a flat design */
+/* TODO integrate where possible into Chameleon own bootstrap css */
 .btn,
 div,
 input,
 li
 {
     border-radius: 0px !important;
+}
+
+a,
+a:hover
+{
+    text-decoration: none !important;
 }
 
 .panel-heading
@@ -25,6 +32,7 @@ li
 .imageTitle
 {
     background-color: #4583c6 !important;
+
 }
 
 .rectangleTitle
@@ -43,6 +51,11 @@ li
     color: #ffffff !important;
     background-color: #333333 !important;
     border-color: #333333 !important;
+}
+
+.form-control[disabled]
+{
+    background-color: #858585 !important;
 }
 
 
