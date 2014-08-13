@@ -104,7 +104,10 @@ class GfxImage extends GfXComponent
         }
         $imgPath = 'tmp/file' . time() . rand() . '.jpg';
 
+        $now = time();
         $output = $this->resizeImage($this->getImageUrl(), $this->getWidth(), $this->getHeight(), false);
+        $then = time();
+        echo $this->getId() . ' ---> duration = ' . ($then - $now) . "\n\n";
 
         ImageJPEG($output, $imgPath, 100);
 

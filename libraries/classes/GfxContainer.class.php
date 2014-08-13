@@ -300,6 +300,8 @@ class GfxContainer
         $this->createOutputDir();
         $this->updateData();
 
+        echo 'rendering ' . $this->target . "\n";
+        $now = time();
         if($this->target === 'SWF')
         {
             $this->renderSWF();
@@ -308,6 +310,11 @@ class GfxContainer
         {
             $this->renderGIF();
         }
+        $then = time();
+        $duration = $then - $now;
+        echo 'now was ' . $now . "\n";
+        echo 'then is ' . $then . "\n";
+        echo 'Dur: ' . $duration . "\n";
     }
 
     private function renderSWF()
@@ -387,6 +394,8 @@ class GfxContainer
 
     public function changeElementValue($formData)
     {
+        $now = time();
+        echo "Now = " . $now . "\n";
         //iterate all svg elements
         foreach($this->getElements() as $element)
         {
@@ -424,6 +433,9 @@ class GfxContainer
                 }
             }
         }
+        $then = time();
+        echo "Then = " . $then . "\n";
+        echo 'Duration = ' . ($then - $now) . "\n\n";
     }
 
     /* **************************************
