@@ -43,6 +43,10 @@ class Overview extends Controller
             if(is_dir(SVG_DIR))
             {
                 $fh = fopen(SVG_DIR . $filename, 'w');
+                if(!$fh)
+                {
+                    throw new Exception('Could not open file ' . SVG_DIR . $filename);
+                }
                 fwrite($fh, $template->getSvgContent());
                 fclose($fh);
             }
