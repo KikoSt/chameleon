@@ -345,6 +345,9 @@ class GfxContainer
         }
         $swf->save($this->getOutputDir() . '/' . $this->getOutputFilename());
 
+        unset($swf);
+        gc_collect_cycles();
+
     }
 
     private function renderGIF()
@@ -359,6 +362,8 @@ class GfxContainer
         $this->setCanvas($updatedCanvas);
 
         imagegif($updatedCanvas, $this->getOutputDir() . '/' . $this->getOutputFilename());
+
+        imageDestroy($updatedCanvas);
 
         chmod($this->getOutputDir() . '/' . $this->getOutputFilename(), 0777);
     }

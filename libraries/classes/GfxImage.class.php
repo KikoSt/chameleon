@@ -110,6 +110,7 @@ class GfxImage extends GfXComponent
         echo $this->getId() . ' ---> duration = ' . ($then - $now) . "\n\n";
 
         ImageJPEG($output, $imgPath, 100);
+        imagedestroy($output);
 
         $image = new SWFBitmap(fopen($imgPath, "rb"));
         $handle = $canvas->add($image);
