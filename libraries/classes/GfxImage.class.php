@@ -239,6 +239,10 @@ class GfxImage extends GfXComponent
                 $image = imagecreatefromgif($file);
                 break;
             }
+            default:
+            {
+                throw new Exception('No valid input file format provided: ' . $extention);
+            }
         }
         return $image;
     }

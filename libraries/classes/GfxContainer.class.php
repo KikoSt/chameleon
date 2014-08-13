@@ -120,7 +120,22 @@ class GfxContainer
 
     public function parse()
     {
-        $svg = new SimpleXMLElement(file_get_contents($this->sSource));
+        if(is_a($this->source, 'SimpleXMLElement'))
+        {
+            $svg = $this->source;
+        }
+        else if(file_exists($this->source))
+        {
+            $svg = new SimpleXMLElement(file_get_contents($this->source));
+        }
+        else if (is_string($this->source))
+        {
+            $svg = simplexml_load_string($this->source);
+        }
+        else
+        {
+            throw new Exception('No valid source provided (file path, simplexml svg object, svg string');
+        }
 
         $main = $svg->children();
 
