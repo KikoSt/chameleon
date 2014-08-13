@@ -346,6 +346,7 @@ class GfxContainer
         }
         $swf->save($this->getOutputDir() . '/' . $this->getOutputFilename());
 
+        $swf = null;
         unset($swf);
         gc_collect_cycles();
 

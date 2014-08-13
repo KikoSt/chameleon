@@ -111,6 +111,8 @@ class GfxImage extends GfXComponent
 
         ImageJPEG($output, $imgPath, 100);
         imagedestroy($output);
+        $output = null;
+        unset($output);
 
         $image = new SWFBitmap(fopen($imgPath, "rb"));
         $handle = $canvas->add($image);
@@ -208,6 +210,7 @@ class GfxImage extends GfXComponent
 
         //canvas for resized image
         $resizedImage = imagecreatetruecolor($this->getWidth(), $this->getHeight());
+
         if(!$resizedImage)
         {
             throw new Exception('Could not create image ' . $this->getId());
@@ -222,6 +225,8 @@ class GfxImage extends GfXComponent
 
         imagealphablending($resizedImage, false);
         imagesavealpha($resizedImage,true);
+
+        imagedestroy($originalImage);
 
         return $resizedImage;
     }
