@@ -50,20 +50,11 @@ class GfxContainer
     {
         // exec('lsof -c php', $log);
         // var_dump($log);
-        $now = time();
-        foreach($this->registry AS $element)
-        {
-            fclose($element);
-            unset($element);
-        }
-        $then = time();
-        echo 'D: ' . ($then - $now);
-        unset($this->registry);
+        $this->cleanup();
     }
 
     public function cleanup()
     {
-        $now = time();
         foreach($this->registry AS $element)
         {
             fclose($element);
@@ -71,8 +62,6 @@ class GfxContainer
         }
         unset($this->registry);
         $this->registry = array();
-        $then = time();
-        echo 'D: ' . ($then - $now);
     }
 
     public function registerDataUpdate($key, $element)
@@ -327,6 +316,7 @@ class GfxContainer
         return $this->outputDir;
     }
 
+
     public function updateData()
     {
         foreach($this->elements AS $element)
@@ -337,6 +327,7 @@ class GfxContainer
             }
         }
     }
+
 
     public function render()
     {
@@ -389,7 +380,6 @@ class GfxContainer
         $swf = null;
         unset($swf);
         gc_collect_cycles();
-
     }
 
     private function renderGIF()
