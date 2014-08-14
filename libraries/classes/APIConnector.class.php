@@ -239,6 +239,8 @@ class APIConnector
         $productModel->setPrice($product->productPrice);
         $productModel->setPriceOld($product->productPriceOld);
 
+        $productModel->setAggregationNumber($product->productNumberAggregation);
+
         $productModel->setShipping($product->productPriceShipping);
         $productModel->setPromotionStartDate($product->datePromotionStart);
         $productModel->setPromotionEndDate($product->datePromotionEnd);

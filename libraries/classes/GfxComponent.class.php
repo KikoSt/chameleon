@@ -90,14 +90,11 @@ class GfXComponent implements Linkable, Resizeable
         $link = (string) $svgRootNode->attributes('cmeo', true)->link;
         if(!empty($ref))
         {
-            echo 'Ref: ' . $ref . "\n";
             $this->getContainer()->registerDataUpdate($ref, $this);
-            $this->ref = $ref;
-            echo $this->ref . "\n";
+            $this->setRef($ref);
         }
         if(!empty($link))
         {
-            echo "\n\n" . '--> Link: ' . $link . "\n";
             $this->getContainer()->registerDataUpdate($link, $this);
             $this->setLink($link);
         }
@@ -322,6 +319,22 @@ class GfXComponent implements Linkable, Resizeable
      * @param mixed $cmeoRef
      */
     public function setCmeoRef($cmeoRef)
+    {
+        $this->cmeoRef = $cmeoRef;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRef()
+    {
+        return $this->cmeoRef;
+    }
+
+    /**
+     * @param mixed $cmeoRef
+     */
+    public function setRef($cmeoRef)
     {
         $this->cmeoRef = $cmeoRef;
     }
