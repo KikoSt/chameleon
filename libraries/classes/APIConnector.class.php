@@ -21,6 +21,7 @@ class APIConnector
         $this->serviceCalls['deleteTemplate']  = 'bannerTemplate/{templateId}';
         $this->serviceCalls['getTemplateById'] = 'bannerTemplate/{templateId}';
         $this->serviceCalls['getProductsByCategory'] = 'company/{companyId}/category/{categoryId}/products';
+        $this->serviceCalls['sendCreative'] = 'creativeImage';
     }
 
     /**
@@ -41,6 +42,20 @@ class APIConnector
         $restCall = $path;
         $response = file_get_contents($restCall);
         return $response;
+    }
+
+    public function sendCreative(CreativeModel $creative)
+    {
+        $resource = $this->serviceUrl . '/' . $this->serviceCalls['sendCreative'];
+        $curl = $this->getCurl($resource, 'POST');
+
+        // TODO: this will not work currently, since we need to send the files, not the file paths!
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $creative);
+
+        $curl_response = curl_exec($curl);
+        curl_close($curl);
+
+        var_dump($curl_response);
     }
 
 
