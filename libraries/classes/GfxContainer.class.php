@@ -27,6 +27,8 @@ class GfxContainer
 
     private $productData;
 
+    private $registry;
+
     // the data registry consists of several "list", one for each relevant data component:
     // - price
     // - oldPrice
@@ -42,6 +44,35 @@ class GfxContainer
         $this->allowedTargets = array('SWF', 'GIF');
         $this->dataRegistry = array();
         $this->animationRegistry = array();
+    }
+
+    public function __destruct()
+    {
+        // exec('lsof -c php', $log);
+        // var_dump($log);
+        $now = time();
+        foreach($this->registry AS $element)
+        {
+            fclose($element);
+            unset($element);
+        }
+        $then = time();
+        echo 'D: ' . ($then - $now);
+        unset($this->registry);
+    }
+
+    public function cleanup()
+    {
+        $now = time();
+        foreach($this->registry AS $element)
+        {
+            fclose($element);
+            unset($element);
+        }
+        unset($this->registry);
+        $this->registry = array();
+        $then = time();
+        echo 'D: ' . ($then - $now);
     }
 
     public function registerDataUpdate($key, $element)
@@ -324,10 +355,19 @@ class GfxContainer
         }
         $then = time();
         $duration = $then - $now;
-        echo 'now was ' . $now . "\n";
-        echo 'then is ' . $then . "\n";
-        echo 'Dur: ' . $duration . "\n";
+        // echo 'now was ' . $now . "\n";
+        // echo 'then is ' . $then . "\n";
+        // echo 'Dur: ' . $duration . "\n";
     }
+
+
+
+    public function register($element)
+    {
+        $this->registry[] = $element;
+    }
+
+
 
     private function renderSWF()
     {

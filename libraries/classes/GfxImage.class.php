@@ -107,17 +107,21 @@ class GfxImage extends GfXComponent
         $now = time();
         $output = $this->resizeImage($this->getImageUrl(), $this->getWidth(), $this->getHeight(), false);
         $then = time();
-        echo $this->getId() . ' ---> duration = ' . ($then - $now) . "\n\n";
+        // echo $this->getId() . ' ---> duration = ' . ($then - $now) . "\n\n";
 
-        ImageJPEG($output, $imgPath, 100);
+        imagejpeg($output, $imgPath, 100);
         imagedestroy($output);
         $output = null;
         unset($output);
 
-        $image = new SWFBitmap(fopen($imgPath, "rb"));
+        $bastardImage = fopen($imgPath, "rb");
+
+        $image  = new SWFBitmap($bastardImage);
         $handle = $canvas->add($image);
         $handle->moveTo($this->getX(), $this->getY());
+        $this->getContainer()->register($bastardImage);
         $canvas = $this->addClickableLink($canvas);
+        unset($image);
         return $canvas;
     }
 
@@ -220,7 +224,6 @@ class GfxImage extends GfXComponent
         $bgcolor = imagecolorallocatealpha($resizedImage, 255, 255, 255, 0);
         imagefill($resizedImage, 0, 0, $bgcolor);
 
-        // imagecopyresampled($resizedImage, $originalImage, 0, 0, 0, 0, $resizedWidth, $resizedHeight, $originalWidth, $originalHeight);
         imagecopyresampled($resizedImage, $originalImage, $newX, $newY, 0, 0, $resizedWidth, $resizedHeight, $originalWidth, $originalHeight);
 
         imagealphablending($resizedImage, false);
