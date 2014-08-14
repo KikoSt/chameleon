@@ -21,8 +21,6 @@ $container = new GfxContainer();
 $connector = new APIConnector();
 $svgHandler = new SvgFileHandler();
 
-Debug::browser($_REQUEST);
-
 $bannerTemplateId = getRequestVar('templateId');
 
 $container->setCompanyId(getRequestVar('companyId'));

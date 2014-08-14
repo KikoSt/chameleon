@@ -249,7 +249,6 @@ class GfxImage extends GfXComponent
         $svg .= "\r\n" . ' cmeo:ref="' . $this->getCmeoRef(). '"';
         $svg .= "\r\n" . ' cmeo:link="' . $this->getCmeoLink(). '"';
         $svg .= "\r\n" . ' xlink:href="' . str_replace('/var/www/chameleon', '', $this->getImageUrl()) . '"';
-
         $svg .= "\r\n" . ' linkurl="' . $this->getLinkUrl() . '"';
 
         if(isset($stroke) || isset($shadow))
@@ -286,15 +285,15 @@ class GfxImage extends GfXComponent
     {
         if(substr($imageUrl, 0, 4) !== 'http' )
         {
-            $imageUrl = ROOT_DIR . $imageUrl;
+            $imageUrl = ROOT_DIR . ltrim($imageUrl, "/");
         }
         if(fopen($imageUrl, "r"))
         {
-            $this->imageUrl = $imageUrl;
+            $this->imageUrl = '/' . ltrim($imageUrl, "/");
         }
         else
         {
-            throw new FileNotFoundException($imageUrl);
+            $this->imageUrl = ASSET_DIR . 'image_not_found.jpg';
         }
     }
 
@@ -308,4 +307,6 @@ class GfxImage extends GfXComponent
     {
         return $this->imageUrl;
     }
+
+
 }

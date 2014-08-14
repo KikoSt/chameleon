@@ -81,7 +81,6 @@ class GfxContainer
         $string .= ' xmlns:svg="http://www.w3.org/2000/svg" ';
         $string .= ' xmlns:xlink="http://www.w3.org/1999/xlink"';
         $string .= '>';
-        // <? <-- crap. required for vim syntax hightlighting not to break :((
         $string .= "\n" . '<g>' . $this->getSvg() . '</g></svg>';
         return $string;
     }

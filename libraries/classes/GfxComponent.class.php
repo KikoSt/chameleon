@@ -85,20 +85,19 @@ class GfXComponent implements Linkable, Resizeable
                 $this->setShadowDist($shadowDist);
             }
         }
-        // $type = strtolower(substr(get_class($this), 3));
+
         $ref = (string) $svgRootNode->attributes('cmeo', true)->ref;
         $link = (string) $svgRootNode->attributes('cmeo', true)->link;
         if(!empty($ref))
         {
-            echo 'Ref: ' . $ref . "\n";
             $this->getContainer()->registerDataUpdate($ref, $this);
+            $this->setCmeoRef($ref);
             $this->ref = $ref;
-            echo $this->ref . "\n";
         }
         if(!empty($link))
         {
-            echo "\n\n" . '--> Link: ' . $link . "\n";
             $this->getContainer()->registerDataUpdate($link, $this);
+            $this->setCmeoLink($link);
             $this->setLink($link);
         }
     }
