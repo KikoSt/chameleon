@@ -17,6 +17,14 @@ $companyId    = 170;
 $userId       = 14;
 $templateId   = 96;
 
+foreach($productCategories AS $category)
+{
+    passthru('php ./generate.php ' . $category);
+}
+die();
+
+
+
 $connector = new APIConnector();
 $container = new GfxContainer();
 
@@ -28,52 +36,50 @@ $productList = array();
 // fetch all templates for given advertiser
 $templates = $connector->getTemplates($advertiserId);
 
-
 $container->setAdvertiserId($advertiserId);
 $container->setCompanyId($companyId);
 
 foreach($productCategories AS $category)
 {
+    $container->setCategoryId($category);
+    $products  = $connector->getProductsByCategory($category);
+    $productList = $products;
+
+    $count = 0;
     foreach($templates AS $template)
     {
-        $container->setSource($template->getSvgContent());
-        $container->setId($template->getBannerTemplateId());
+        $container = new GfxContainer();
         $container->setAdvertiserId($advertiserId);
         $container->setCompanyId($companyId);
+        $container->setCategoryId($category);
+        $container->setSource($template->getSvgContent());
+        $container->setId($template->getBannerTemplateId());
         $container->parse();
 
-        $products  = $connector->getProductsByCategory($category);
-        $container->setCategoryId($category);
-        $productList = array_merge($productList, $products);
-
-        $count = 0;
         foreach($productList AS $product)
         {
-            unset($container);
-
-            $container = new GfxContainer();
-            $container->setSource($template->getSvgContent());
-            $container->setId($template->getBannerTemplateId());
-            $container->setAdvertiserId($advertiserId);
-            $container->setCompanyId($companyId);
-            $container->setCategoryId($category);
-            $container->parse();
+            // $container = new GfxContainer();
+            // $container->setId($template->getBannerTemplateId());
+            // $container->setAdvertiserId($advertiserId);
+            // $container->setCompanyId($companyId);
+            // $container->setCategoryId($category);
 
             $container->setProductData($product);
+            $now = time();
             $container->setTarget('SWF');
             $container->render();
+            $then = time();
+            echo 'D: ' . ($then - $now) . "\n";
+            $now = time();
             $container->setTarget('GIF');
             $container->render();
+            $then = time();
+            echo 'D: ' . ($then - $now) . "\n";
+            $container->cleanup();
             echo ++$count . "\n\n";
         }
     }
 }
-
-//$templates = getTemplates($companyId, $advertiserId);
-//
-
-
-
 
 die();
 
