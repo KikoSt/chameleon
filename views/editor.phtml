@@ -15,7 +15,7 @@
     </div>
     </form>
     <div class="col-md-7">
-        <div id="preview" class="row" style="margin-left: 5px;">
+        <div id="previewImage" class="row" style="margin-left: 5px;">
             <img src="<?php echo $this->gif;?>" alt="">
         </div>
         <div class="row" style="padding-top: 5px; margin-left: 5px;">
@@ -76,14 +76,14 @@
             if($(this).is(":checked"))
             {
                 $(this).attr("checked", true);
-                $("#" + id + "_shadowColor").attr('disabled', false).addClass('picker');
-                $("#" + id + "_shadowDist").attr('disabled', false);
+                $("#" + id + "_strokeColor").attr('disabled', false).addClass('picker');
+                $("#" + id + "_strokeWidth").attr('disabled', false);
             }
             else
             {
                 $(this).attr("checked", false);
-                $("#" + id + "_shadowColor").attr('disabled', true).removeClass('picker').val('');
-                $("#" + id + "_shadowDist").attr('disabled', true).val('');
+                $("#" + id + "_strokeColor").attr('disabled', true).removeClass('picker').val('');
+                $("#" + id + "_strokeWidth").attr('disabled', true).val('');
             }
         });
 
@@ -121,16 +121,25 @@
         $('#editor').on('submit', function(e){
             e.preventDefault();
 
+            var imgsrc = '<?php echo $this->gif;?>';
+
             $.ajax({
                 url: '/chameleon/ajax/changeSvg.php',
                 data: $('#editor').serialize() + "&action=" + btn,
                 type: 'POST',
                 success: function(){
                     $('#previewalert').show();
-                    location.reload();
-//                    $("#preview").html($(document.createElement("div")).html('<img src="/chameleon/output/4/122/rtest_99.gif" ' +
-//                        'alt="">'));
+//                    location.reload();
+                    $("#previewImage img").load(function() {
+                        $(this).hide();
+                        $(this).fadeIn('slow');
+                    }).attr('src', imgsrc + '?' + new Date().getTime());
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status);
+                    alert(thrownError);
                 }
+
 
             });
         });

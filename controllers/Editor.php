@@ -80,6 +80,7 @@ class Editor extends Controller
         $this->view->gif = str_replace('var/www/', '', $container->getOutputDir()) . '/' . $baseFilename . '.gif';
         $this->view->elements = $container->getElements();
         $this->view->fontlist = $text->getFontListForOverview();
+        $this->view->cmeoOptions = $this->getCmeoOptions();
 
         if(!file_exists($container->getOutputDir() . '/' . $baseFilename . '.gif'))
         {
@@ -115,5 +116,12 @@ class Editor extends Controller
     public function setAdvertiserId($advertiserId)
     {
         $this->advertiserId = $advertiserId;
+    }
+
+    private function getCmeoOptions()
+    {
+        $array = array('name', 'productUrl', 'productImageUrl', 'price', 'priceOld', 'currencyShort', 'currencySymbol');
+
+        return $array;
     }
 }

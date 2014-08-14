@@ -1,7 +1,7 @@
 <div class="col-md-2">
     <label>Activate ?</label>
     <div class="checkbox">
-        <input id="shadowCheckBox"
+        <input id="strokeCheckBox"
                class="myCheckbox"
                type="checkbox"
                value="<?php echo $element->getId();?>"
@@ -10,7 +10,7 @@
 </div>
 <div class="col-md-2">
     <label>Stroke:</label>
-    <input id="<?php echo $element->getId();?>_StrokeColor"
+    <input id="<?php echo $element->getId();?>_strokeColor"
            type="text"
            class="form-control picker"
            name="<?php echo $element->getId();?>#stroke"

@@ -35,7 +35,6 @@ class Overview extends Controller
 
         foreach($templates as $template)
         {
-
             $baseFilename = 'rtest_' . $template->getBannerTemplateId();
             $filename = $baseFilename . '.svg';
             $container->setOutputName($baseFilename);
@@ -71,6 +70,24 @@ class Overview extends Controller
             $preview->advertiserId = $this->getAdvertiserId();
             $preview->companyId = $this->getCompanyId();
             $previews[] = $preview;
+
+            $container->setId($template->getBannerTemplateId());
+
+            $container->setSource($filename);
+            $container->parse();
+            $container->setTarget('GIF');
+            $container->render();
+
+            $preview = new StdClass();
+            $preview->filepath = str_replace($_SERVER['DOCUMENT_ROOT'], '', $container->getOutputDir()) . '/' . $baseFilename . '.gif';
+            $preview->width = $container->getCanvasWidth() / 2 > 300 ? 300 : $container->getCanvasWidth() / 2;
+            $preview->height = $container->getCanvasHeight();
+            $preview->id = $template->getBannerTemplateId();
+            $preview->templateName = $filename;
+            $preview->advertiserId = $this->getAdvertiserId();
+            $preview->companyId = $this->getCompanyId();
+            $previews[] = $preview;
+            //    unlink(SVG_DIR . $filename);
         }
 
         $this->view->previews = $previews;
