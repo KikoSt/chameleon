@@ -18,6 +18,10 @@ class SvgFileHandler
         if(is_dir(SVG_DIR))
         {
             $fh = fopen(SVG_DIR . $this->getFilename(), 'w');
+            if(!$fh)
+            {
+                throw new Exception('Could not write to file ' . SVG_DIR . $this->getFilename());
+            }
             fwrite($fh, $this->getSvgContent());
             fclose($fh);
         }
