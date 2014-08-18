@@ -44,18 +44,64 @@ class APIConnector
         return $response;
     }
 
-    public function sendCreative(CreativeModel $creative)
+    public function sendCreatives($creatives)
     {
         $resource = $this->serviceUrl . '/' . $this->serviceCalls['sendCreative'];
         $curl = $this->getCurl($resource, 'POST');
 
-        // TODO: this will not work currently, since we need to send the files, not the file paths!
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $creative);
+        $param = new StdClass();
+        $param->creativeImageModels = $creatives;
+        $param->idAdvertiser = $this->getAdvertiserId();
+        $param->idAuditUser = 14;
+        $param->idCategory = 666;
+        $param->idFeed = 1;
+
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($param));
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+
+        if(curl_getinfo($curl)['http_code'] != 204)
+        {
+            $logfile = fopen('log.txt', 'w');
+            fwrite($logfile, json_encode($param));
+            echo "\n";
+            fclose($logfile);
+        }
+
+        // $curl_response = curl_exec($curl);
+        curl_exec($curl);
+        curl_close($curl);
+    }
+
+
+    public function sendCreative($creative)
+    {
+        $resource = $this->serviceUrl . '/' . $this->serviceCalls['sendCreative'];
+        $curl = $this->getCurl($resource, 'POST');
+
+        $param = new StdClass();
+        $param->advertiserId = $this->getAdvertiserId();
+        $param->creativeImageModels = array($creative);
+        $param->idAdvertiser = $this->getAdvertiserId();
+        $param->idAuditUser = 14;
+        $param->idCategory = 666;
+        $param->idFeed = 1;
+
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($param));
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
 
         $curl_response = curl_exec($curl);
+        echo $curl_response;
+        echo curl_getinfo($curl)['http_code'] . ', ';
+        if(curl_getinfo($curl)['http_code'] != 204)
+        {
+            echo $creative->getSwfFilename();
+            echo "\n";
+        }
+        // var_dump(curl_getinfo($curl));
+        // echo json_encode($param);
+        // var_dump($curl_response);
+        // curl_exec($curl);
         curl_close($curl);
-
-        var_dump($curl_response);
     }
 
 
