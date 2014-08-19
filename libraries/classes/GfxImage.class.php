@@ -100,10 +100,7 @@ class GfxImage extends GfXComponent
         }
         $imgPath = 'tmp/file' . time() . rand() . '.jpg';
 
-        $now = time();
         $output = $this->resizeImage($this->getImageUrl(), $this->getWidth(), $this->getHeight(), false);
-        $then = time();
-        // echo $this->getId() . ' ---> duration = ' . ($then - $now) . "\n\n";
 
         imagejpeg($output, $imgPath, 100);
         imagedestroy($output);
@@ -309,13 +306,14 @@ class GfxImage extends GfXComponent
      */
     public function setImageUrl($imageUrl)
     {
+        $imageUrl = preg_replace('/^\/+/', '/', $imageUrl);
         if(substr($imageUrl, 0, 4) !== 'http' )
         {
-            $imageUrl = ROOT_DIR . ltrim($imageUrl, "/");
+            $imageUrl = ROOT_DIR . $imageUrl;
         }
         if(fopen($imageUrl, "r"))
         {
-            $this->imageUrl = '/' . ltrim($imageUrl, "/");
+            $this->imageUrl = $imageUrl;
         }
         else
         {

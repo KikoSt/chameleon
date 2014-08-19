@@ -47,12 +47,6 @@ foreach($templates AS $template)
 
     foreach($productList AS $product)
     {
-        // $container = new GfxContainer();
-        // $container->setId($template->getBannerTemplateId());
-        // $container->setAdvertiserId($advertiserId);
-        // $container->setCompanyId($companyId);
-        // $container->setCategoryId($category);
-
         $container->setProductData($product);
         $container->setTarget('SWF');
         $container->render();
