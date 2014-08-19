@@ -42,6 +42,7 @@ class GfxContainer
     public function __construct()
     {
         $this->allowedTargets = array('SWF', 'GIF');
+        $this->registry = array();
         $this->dataRegistry = array();
         $this->animationRegistry = array();
     }
@@ -55,10 +56,13 @@ class GfxContainer
 
     public function cleanup()
     {
-        foreach($this->registry AS $element)
+        if(count($this->registry) > 0)
         {
-            fclose($element);
-            unset($element);
+            foreach($this->registry AS $element)
+            {
+                fclose($element);
+                unset($element);
+            }
         }
         unset($this->registry);
         $this->registry = array();
