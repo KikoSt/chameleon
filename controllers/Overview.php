@@ -35,7 +35,6 @@ class Overview extends Controller
 
         foreach($templates as $template)
         {
-
             $baseFilename = 'rtest_' . $template->getBannerTemplateId();
             $filename = $baseFilename . '.svg';
             $container->setOutputName($baseFilename);
@@ -71,6 +70,8 @@ class Overview extends Controller
             $preview->advertiserId = $this->getAdvertiserId();
             $preview->companyId = $this->getCompanyId();
             $previews[] = $preview;
+
+            // unlink(SVG_DIR . $filename);
         }
 
         $this->view->previews = $previews;

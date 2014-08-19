@@ -11,7 +11,6 @@ function getRequestVar($identifier)
     {
         throw new Exception($identifier . ' not provided');
     }
-
     return $returnValue;
 }
 
