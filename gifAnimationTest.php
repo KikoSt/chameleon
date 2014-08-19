@@ -15,11 +15,11 @@ if(!defined('__ROOT__'))
     define('__ROOT__', './');
 }
 
-$container = new GfxContainer();
+//$container = new GfxContainer();
 
 //parse the svg
-$container->setSource('bumblebee.svg');
-$container->parse();
+//$container->setSource('bumblebee.svg');
+//$container->parse();
 
 include_once 'libraries/gdenhancer/GDEnhancer.php';
 
@@ -40,12 +40,14 @@ $image->layerMove(0, 'center', 0, 0);
 //adding a logo, set to layer 1
 $image->layerImage('assets/gifAnimationTestlogo.png');
 $image->layerMove(1, 'bottomleft', 0, 0);
-$image->layerImageResize(1, 85, 55, 'fill');
-
+$image->layerImageResize(1, 1, 1, 'fill');
 
 $save = $image->save();
 
-$image->saveTo('asset/');
+$image->saveTo('assets/bumblebee01');
+
+// Writing file
+file_put_contents('assets/bumblebee02'.'.'.$save['extension'], $save['contents']);
 
 
 

@@ -126,7 +126,7 @@ class GfxContainer
 
         $children = $svg->children();
 
-        $this->handleGfxAnimation($children->defs);
+//        $this->handleGfxAnimation($children->defs);
 
         $main = $children->g;
 
