@@ -296,7 +296,7 @@ class GfxContainer
             throw new Exception('Company, Advertiser or Category ID missing');
         }
         // if there is a trailing / in OUTPUT_DIR, remove it, then assemble all parts to output directory path
-        $parts = array(rtrim(OUTPUT_DIR, '/'), $this->getCompanyId(), $this->getAdvertiserId(), $this->getCategoryId());
+        $parts = array(rtrim(OUTPUT_DIR, '/'), (int) $this->getCompanyId(), (int) $this->getAdvertiserId(), (int) $this->getCategoryId());
 
         $outputDir = implode('/', $parts);
 
