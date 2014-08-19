@@ -121,10 +121,14 @@ class GfxContainer
     {
         $svg = new SimpleXMLElement(file_get_contents($this->sSource));
 
-        $main = $svg->children();
-
         $this->setCanvasWidth((float) $svg->attributes()->width);
         $this->setCanvasHeight((float) $svg->attributes()->height);
+
+        $children = $svg->children();
+
+        $this->handleGfxAnimation($children->defs);
+
+        $main = $children->g;
 
         foreach($main->children() AS $child)
         {
@@ -136,6 +140,28 @@ class GfxContainer
             }
             unset($gfxInstance);
         }
+    }
+
+    public function handleGfxAnimation($defs)
+    {
+        if(!empty($defs))
+        {
+            $animationObject = array();
+
+            foreach($defs->children() as $child)
+            {
+
+                $animation = new GfxAnimation();
+
+                $animation->setAttributeName($child['attributeName']);
+                $animation->setTarget($child['target']);
+                $animation->setAttributeType($child['attributeType']);
+                $animation->setDuration($child['duration']);
+
+                $values = explode(";", $child['values']);
+            }
+        }
+        return $animationObject;
     }
 
     public function setId($sId)
@@ -340,9 +366,10 @@ class GfxContainer
     {
         // easily extendable, just add new types here
         $componentTypes = array('rect' => 'GfxRectangle',
-            'text' => 'GfxText',
-            'image' => 'GfxImage',
-            'ellipse' => 'GfxEllipse');
+                                'text' => 'GfxText',
+                                'image' => 'GfxImage',
+                                'ellipse' => 'GfxEllipse');
+
         if (array_key_exists($type, $componentTypes))
         {
             // create instance of requested class based on the above mapping

@@ -120,7 +120,6 @@
 
         $('#editor').on('submit', function(e){
             e.preventDefault();
-            btn.button('loading')
 
             var imgsrc = '<?php echo $this->gif;?>';
 
@@ -158,6 +157,10 @@
                 if(confirm('Unsaved changes detected ! Continue ?')){
                     window.location.href = "index.php?page=overview";
                 }
+            }
+            else
+            {
+                window.location.href = "index.php?page=overview";
             }
         });
     });
