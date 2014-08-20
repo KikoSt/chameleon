@@ -52,11 +52,16 @@ class Editor extends Controller
 
                 // create svg
                 $fh = fopen(SVG_DIR . $filename, 'w');
+                if(!$fh)
+                {
+                    throw new Exception('Could not open file ' . SVG_DIR . $filename);
+                }
                 fwrite($fh, $template->getSvgContent());
                 fclose($fh);
             }
 
             // render gif for editor view
+            $container->setCategoryId(0);
             $container->setOutputName($baseFilename);
             $container->setSource($filename);
             $container->parse();

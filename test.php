@@ -10,62 +10,24 @@ if(!defined('__ROOT__'))
     define('__ROOT__', './');
 }
 
-// test categories for now are 7 and 10!
-$productCategories = array(
-31,
-37,
-40,
-52,
-61,
-64,
-70,
-82,
-85,
-88,
-91,
-94,
-97,
-100,
-103,
-106,
-121,
-133,
-136,
-142,
-145,
-151,
-154,
-157,
-160,
-163,
-166,
-169,
-175,
-178,
-181,
-184,
-190,
-196,
-199,
-202,
-205,
-211,
-214,
-217,
-223);
-$productCategories = array(7, 10);
+// hardcoded by now. For now.
+$productCategories = array(7, 10, 11881, 11887, 11890, 11893, 11899, 11902, 11908, 11911, 11917, 11923, 11929, 11932, 11935, 11941, 11944, 11947, 11950, 11956, 11959, 11962, 11968, 11971, 11974, 11977, 11980, 11986, 11989, 11992, 11995, 11998, 12001, 12004, 12007, 12013, 12016, 12019, 12022, 12025, 12028, 12031, 12040, 12043, 12049, 12052, 12055, 12058, 12061, 12067, 12073, 12079, 12082, 12085, 12088, 12091, 12094, 12097, 12100, 12103, 12106, 12112, 12115, 12118, 12124, 12127, 12130, 12133, 12136, 12139, 12142, 12145, 12148, 12151, 12157, 12160, 12163, 12166, 12178, 12181, 12184, 12187, 12190, 12193, 12196, 12199, 12202, 12208, 12211, 12214, 12217, 12220, 12223, 12226, 12229, 12232, 12235, 12238, 12241, 12244, 12247, 12250, 12253, 12256, 12259, 12262, 12265, 12268, 12271, 12274, 12277, 12280, 12283, 12286, 12288, 12291, 12294, 12297, 12300, 12303);
 
 $advertiserId = 122;
-$companyId    = 134;
-$companyId    = 17;
 $companyId    = 170;
 $userId       = 14;
+$templateId   = 96;
+
+foreach($productCategories AS $category)
+{
+    passthru('php ./generate.php ' . $category);
+}
+die();
+
+
 
 $connector = new APIConnector();
 $container = new GfxContainer();
-
-$container->setAdvertiserId($advertiserId);
-$container->setCompanyId($companyId);
 
 $connector->setAdvertiserId($advertiserId);
 $connector->setCompanyId($companyId);
@@ -73,43 +35,114 @@ $connector->setCompanyId($companyId);
 $productList = array();
 
 // fetch all templates for given advertiser
-// $templates = $connector->getTemplates($advertiserId);
+$templates = $connector->getTemplates($advertiserId);
 
-
-$filename = 'rtest_102.svg';
-
-$container->setSource($filename);
-//$container->setOutputName('output_102');
-$container->setId(102);
-$container->parse();
-
+$container->setAdvertiserId($advertiserId);
+$container->setCompanyId($companyId);
 
 foreach($productCategories AS $category)
 {
+    $container->setCategoryId($category);
     $products  = $connector->getProductsByCategory($category);
-    $productList = array_merge($productList, $products);
+    $productList = $products;
+
+    $count = 0;
+    foreach($templates AS $template)
+    {
+        $container = new GfxContainer();
+        $container->setAdvertiserId($advertiserId);
+        $container->setCompanyId($companyId);
+        $container->setCategoryId($category);
+        $container->setSource($template->getSvgContent());
+        $container->setId($template->getBannerTemplateId());
+        $container->parse();
+
+        foreach($productList AS $product)
+        {
+            // $container = new GfxContainer();
+            // $container->setId($template->getBannerTemplateId());
+            // $container->setAdvertiserId($advertiserId);
+            // $container->setCompanyId($companyId);
+            // $container->setCategoryId($category);
+
+            $container->setProductData($product);
+            $now = time();
+            $container->setTarget('SWF');
+            $container->render();
+            $then = time();
+            echo 'D: ' . ($then - $now) . "\n";
+            $now = time();
+            $container->setTarget('GIF');
+            $container->render();
+            $then = time();
+            echo 'D: ' . ($then - $now) . "\n";
+            $container->cleanup();
+            echo ++$count . "\n\n";
+        }
+    }
 }
-
-echo 'CompanyId: ' . $companyId . ', categoryIds: ' .implode(', ', $productCategories) . "\n";
-// var_dump($productList);
-// die();
-
-$count = 0;
-
-foreach($productList AS $product)
-{
-    $container->setProductData($product);
-    // $container->setOutputName('output_102_' . $count);
-    $container->setTarget('SWF');
-    $container->render();
-    $container->setTarget('GIF');
-    $container->render();
-    echo $product . "\n\n";
-    $count++;
-}
-
 
 die();
+
+
+
+
+
+function getTemplates($companyId, $advertiserId)
+{
+    $connector = new APIConnector();
+    $connector->setAdvertiserId($advertiserId);
+    $connector->setCompanyId($companyId);
+
+    $templates = $connector->getTemplates();
+
+    $templateList = array();
+
+    foreach($templates AS $template)
+    {
+        $templateList[] = $template->getSvgContent();
+    }
+
+    return($templateList);
+}
+
+
+function getTemplatesToFile($container)
+{
+    $connector = new APIConnector();
+    $connector->setAdvertiserId($container->getAdvertiserId());
+    $connector->setCompanyId($container->getCompanyId());
+
+    $templates = $connector->getTemplates();
+    foreach($templates AS $template)
+    {
+        $filename = 'rtest_' . $template->getBannerTemplateId() . '.svg';
+
+        // write the temporary file
+        $fh = fopen(SVG_DIR . $filename, 'w');
+        fwrite($fh, $template->getSvgContent());
+        fclose($fh);
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 foreach($templates AS $template)
 {

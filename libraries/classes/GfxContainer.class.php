@@ -13,7 +13,7 @@ class GfxContainer
     private $id;
     protected $elements;
     private $target;
-    private $sSource;
+    private $source;
     private $canvasWidth;
     private $canvasHeight;
     private $canvas;
@@ -21,10 +21,13 @@ class GfxContainer
     private $outputDir;
     private $companyId;
     private $advertiserId;
+    private $categoryId;
     private $editorOptions;
     private $allowedTargets;
 
     private $productData;
+
+    private $registry;
 
     // the data registry consists of several "list", one for each relevant data component:
     // - price
@@ -39,8 +42,30 @@ class GfxContainer
     public function __construct()
     {
         $this->allowedTargets = array('SWF', 'GIF');
+        $this->registry = array();
         $this->dataRegistry = array();
         $this->animationRegistry = array();
+    }
+
+    public function __destruct()
+    {
+        // exec('lsof -c php', $log);
+        // var_dump($log);
+        $this->cleanup();
+    }
+
+    public function cleanup()
+    {
+        if(count($this->registry) > 0)
+        {
+            foreach($this->registry AS $element)
+            {
+                fclose($element);
+                unset($element);
+            }
+        }
+        unset($this->registry);
+        $this->registry = array();
     }
 
     public function registerDataUpdate($key, $element)
@@ -103,23 +128,48 @@ class GfxContainer
         return $this->outputName;
     }
 
-    public function setSource($sSource)
+    public function setSource($source)
     {
-        $sSource = SVG_DIR . $sSource;
 
-        if(file_exists($sSource))
+        if(file_exists($source))
         {
-            $this->sSource = $sSource;
+            $source = SVG_DIR . $source;
+            $this->source = $source;
+        }
+        else if(is_string($source))
+        {
+            $this->source = $source;
+        }
+        else if(is_a($source, 'SimpleXMLElement'))
+        {
+            $this->source = $source;
         }
         else
         {
-            throw new FileNotFoundException('File '.$sSource.' not found !');
+            throw new FileNotFoundException('File ' . $source . ' not found!');
         }
     }
 
     public function parse()
     {
-        $svg = new SimpleXMLElement(file_get_contents($this->sSource));
+        libxml_use_internal_errors(true);
+
+        if(is_a($this->source, 'SimpleXMLElement'))
+        {
+            $svg = $this->source;
+        }
+        else if(file_exists(SVG_DIR . $this->source))
+        {
+            $svg = new SimpleXMLElement(file_get_contents(SVG_DIR . $this->source));
+        }
+        else if (is_string($this->source) && simplexml_load_string($this->source))
+        {
+            $svg = simplexml_load_string($this->source);
+        }
+        else
+        {
+            throw new Exception('No valid source provided (file path, simplexml svg object, svg string');
+        }
 
         $this->setCanvasWidth((float) $svg->attributes()->width);
         $this->setCanvasHeight((float) $svg->attributes()->height);
@@ -220,6 +270,7 @@ class GfxContainer
             // $filename .= '_' . $this->getAdvertiserId();
             $filename  = $this->getId();
             $filename .= '_' . preg_replace("/[^a-zA-Z0-9]/", "", $this->getProductData()->getName());
+            $filename .= '_' . $this->getProductData()->getProductId();
             $filename .= '_' . $this->getCanvasHeight();
             $filename .= 'x' . $this->getCanvasWidth();
         }
@@ -240,12 +291,12 @@ class GfxContainer
      */
     private function calculateOutputDir()
     {
-        if('' == $this->getCompanyId() || '' == $this->getAdvertiserId())
+        if('' == $this->getCompanyId() || '' == $this->getAdvertiserId() || '' === $this->getCategoryId())
         {
-            throw new Exception('Company or Advertiser ID missing');
+            throw new Exception('Company, Advertiser or Category ID missing');
         }
         // if there is a trailing / in OUTPUT_DIR, remove it, then assemble all parts to output directory path
-        $parts = array(rtrim(OUTPUT_DIR, '/'), $this->getCompanyId(), $this->getAdvertiserId());
+        $parts = array(rtrim(OUTPUT_DIR, '/'), (int) $this->getCompanyId(), (int) $this->getAdvertiserId(), (int) $this->getCategoryId());
 
         $outputDir = implode('/', $parts);
 
@@ -295,6 +346,7 @@ class GfxContainer
         return $this->outputDir;
     }
 
+
     public function updateData()
     {
         foreach($this->elements AS $element)
@@ -306,11 +358,14 @@ class GfxContainer
         }
     }
 
+
     public function render()
     {
         $this->createOutputDir();
         $this->updateData();
 
+        echo 'rendering ' . $this->target . "\n";
+        $now = time();
         if($this->target === 'SWF')
         {
             $this->renderSWF();
@@ -319,7 +374,21 @@ class GfxContainer
         {
             $this->renderGIF();
         }
+        $then = time();
+        $duration = $then - $now;
+        // echo 'now was ' . $now . "\n";
+        // echo 'then is ' . $then . "\n";
+        // echo 'Dur: ' . $duration . "\n";
     }
+
+
+
+    public function register($element)
+    {
+        $this->registry[] = $element;
+    }
+
+
 
     private function renderSWF()
     {
@@ -338,6 +407,9 @@ class GfxContainer
         }
         $swf->save($this->getOutputDir() . '/' . $this->getOutputFilename());
 
+        $swf = null;
+        unset($swf);
+        gc_collect_cycles();
     }
 
     private function renderGIF()
@@ -352,6 +424,8 @@ class GfxContainer
         $this->setCanvas($updatedCanvas);
 
         imagegif($updatedCanvas, $this->getOutputDir() . '/' . $this->getOutputFilename());
+
+        imageDestroy($updatedCanvas);
 
         chmod($this->getOutputDir() . '/' . $this->getOutputFilename(), 0777);
     }
@@ -399,6 +473,8 @@ class GfxContainer
 
     public function changeElementValue($formData)
     {
+        $now = time();
+        echo "Now = " . $now . "\n";
         //iterate all svg elements
         foreach($this->getElements() as $element)
         {
@@ -440,6 +516,9 @@ class GfxContainer
                 }
             }
         }
+        $then = time();
+        echo "Then = " . $then . "\n";
+        echo 'Duration = ' . ($then - $now) . "\n\n";
     }
 
     /* **************************************
@@ -548,5 +627,25 @@ class GfxContainer
     public function setProductData(ProductModel $productData)
     {
         $this->productData = $productData;
+    }
+
+    /**
+     * Get categoryId.
+     *
+     * @return categoryId.
+     */
+    public function getCategoryId()
+    {
+        return $this->categoryId;
+    }
+
+    /**
+     * Set categoryId.
+     *
+     * @param categoryId the value to set.
+     */
+    public function setCategoryId($categoryId)
+    {
+        $this->categoryId = $categoryId;
     }
 }

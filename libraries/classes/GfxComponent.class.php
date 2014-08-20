@@ -91,8 +91,8 @@ class GfXComponent implements Linkable, Resizeable
         if(!empty($ref))
         {
             $this->getContainer()->registerDataUpdate($ref, $this);
+            $this->setRef($ref);
             $this->setCmeoRef($ref);
-            $this->ref = $ref;
         }
         if(!empty($link))
         {
@@ -321,6 +321,22 @@ class GfXComponent implements Linkable, Resizeable
      * @param mixed $cmeoRef
      */
     public function setCmeoRef($cmeoRef)
+    {
+        $this->cmeoRef = $cmeoRef;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRef()
+    {
+        return $this->cmeoRef;
+    }
+
+    /**
+     * @param mixed $cmeoRef
+     */
+    public function setRef($cmeoRef)
     {
         $this->cmeoRef = $cmeoRef;
     }

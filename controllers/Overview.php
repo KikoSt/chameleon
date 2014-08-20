@@ -27,6 +27,7 @@ class Overview extends Controller
 
         $container->setAdvertiserId($this->getAdvertiserId());
         $container->setCompanyId($this->getCompanyId());
+        $container->setCategoryId(0);
 
         $this->view = $this->setLayout('views/overview.phtml')->getView();
 
@@ -38,16 +39,19 @@ class Overview extends Controller
             $filename = $baseFilename . '.svg';
             $container->setOutputName($baseFilename);
 
-            // write the temporary file
             if(is_dir(SVG_DIR))
             {
                 $fh = fopen(SVG_DIR . $filename, 'w');
+                if(!$fh)
+                {
+                    throw new Exception('Could not open file ' . SVG_DIR . $filename);
+                }
                 fwrite($fh, $template->getSvgContent());
                 fclose($fh);
             }
             else
             {
-                throw new Exception(SVG_DIR . ' not found !');
+                throw new Exception(SVG_DIR . ' not found!');
             }
 
             $container->setId($template->getBannerTemplateId());
@@ -67,7 +71,7 @@ class Overview extends Controller
             $preview->companyId = $this->getCompanyId();
             $previews[] = $preview;
 
-            unlink(SVG_DIR . $filename);
+            // unlink(SVG_DIR . $filename);
         }
 
         $this->view->previews = $previews;

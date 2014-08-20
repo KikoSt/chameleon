@@ -21,9 +21,9 @@ class GfxRectangle extends GfxShape
 
         if($this->getContainer()->getProductData())
         {
-            if(!empty($this->getLink()))
+            if(!empty($this->getLinkUrl()))
             {
-                echo "\n[" . $this->getLink() . "]\n";
+                echo "\n[" . $this->getLinkUrl() . "]\n";
             }
         }
     }

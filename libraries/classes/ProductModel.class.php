@@ -17,6 +17,8 @@ class ProductModel
     private $price;
     private $priceOld;
 
+    private $aggregationNumber;
+
     private $shipping;
     private $promotionStartDate;
     private $promotionEndDate;
@@ -446,5 +448,25 @@ class ProductModel
             $string .= $this->getCurrencyShort();
         }
         return $string;
+    }
+
+    /**
+     * Get aggregationNumber.
+     *
+     * @return aggregationNumber.
+     */
+    public function getAggregationNumber()
+    {
+        return $this->aggregationNumber;
+    }
+
+    /**
+     * Set aggregationNumber.
+     *
+     * @param aggregationNumber the value to set.
+     */
+    public function setAggregationNumber($aggregationNumber)
+    {
+        $this->aggregationNumber = $aggregationNumber;
     }
 }
