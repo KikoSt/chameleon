@@ -1,30 +1,29 @@
 <div class="col-md-6">
-    <label>Ref:</label>
-    <select name="<?php echo $element->getId();?>#cmeoRef"
-            class="form-control"
+    <label class="col-md-2 control-label" for="<?php echo $element->getId();?>#cmeoRef">Ref:</label>
+    <div class="col-md-10">
+        <select name="<?php echo $element->getId();?>#cmeoRef"
+                class="form-control"
             <?php echo (is_a($element, 'GfxImage') || is_a($element, 'GfxText')) ? '': 'disabled'; ?>
-        >
-        <option></option>
-        <?php foreach($this->cmeoOptions as $option): ?>
-            <option value="<?php echo $option;?>" <?php echo ($option === $element->getCmeoRef()) ? 'selected' : '';?>><?php echo $option;
-                ?></option>
-        <?php endforeach;?>
-    </select>
+            >
+            <option value=""><?php echo (is_a($element, 'GfxImage') || is_a($element, 'GfxText')) ? 'Select ref option...' : ''; ?></option>
+            <?php foreach($this->cmeoOptions as $option): ?>
+                <option value="<?php echo $option;?>" <?php echo ($option === $element->getCmeoRef()) ? 'selected' : '';?>><?php echo $option;
+                    ?></option>
+            <?php endforeach;?>
+        </select>
+    </div>
 </div>
 <div class="col-md-6">
-    <label>Link:</label>
-    <select name="<?php echo $element->getId();?>#cmeoLink"
-            class="form-control"
-        >
-        <option></option>
-        <?php foreach($this->cmeoOptions as $option):
-
-            var_dump($option);
-            var_dump($element->getCmeoLink());
-
-            ?>
-            <option value="<?php echo $option;?>" <?php echo ($option === $element->getCmeoLink()) ? 'selected' : '';?>><?php echo $option;
-                ?></option>
-        <?php endforeach;?>
-    </select>
+    <label class="col-md-2 control-label" for="<?php echo $element->getId();?>#cmeoLink">Link:</label>
+    <div class="col-md-10">
+        <select name="<?php echo $element->getId();?>#cmeoLink"
+                class="form-control"
+            >
+            <option value="">Select link option...</option>
+            <?php foreach($this->cmeoOptions as $option): ?>
+                <option value="<?php echo $option;?>" <?php echo ($option === $element->getCmeoLink()) ? 'selected' : '';?>><?php echo $option;
+                    ?></option>
+            <?php endforeach;?>
+        </select>
+    </div>
 </div>

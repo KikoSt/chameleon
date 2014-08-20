@@ -1,6 +1,6 @@
 <div id="awesomeEditor" class="row" style="margin-top: 70px; padding-left: 10px; padding-right: 10px;">
-    <form enctype="multipart/form-data" id="editor" method="POST">
-    <div class="col-md-5">
+    <form enctype="multipart/form-data" id="editor" method="POST" class="form-horizontal">
+    <div class="col-md-4">
         <div class="panel-group" id="accordion">
                 <?php
                     foreach($this->elements as $element):
@@ -14,23 +14,17 @@
         </div>
     </div>
     </form>
-    <div class="col-md-7">
-        <div id="previewImage" class="row" style="margin-left: 5px;">
-            <img src="<?php echo $this->gif;?>" alt="">
-        </div>
-        <div class="row" style="padding-top: 5px; margin-left: 5px;">
-            <div id="previewalert" class="alert alert-info alert-dismissible" role="alert">
-                <button type="button" class="close" data-dismiss="alert">
-                    <span aria-hidden="true">&times;</span>
-                    <span class="sr-only">Close</span>
-                </button>
-                Preview successfully created...
+    <div class="col-md-8">
+        <div style="position: fixed;">
+            <div id="previewImage" class="row" style="margin-left: 5px;">
+                <img src="<?php echo $this->gif;?>" alt="">
             </div>
-
-            <!--        On click render template and show the change-->
-            <button id="preview" type="submit" class="btn btn-info" form="editor" data-loading-text="Loading...">Preview</button>
-            <!--        On click render template, show the change and save data to database-->
-            <button id="save" type="submit" class="btn btn-danger" form="editor">Save</button>
+            <div class="row" style="padding-top: 5px; margin-left: 5px;">
+                <!--        On click render template and show the change-->
+                <button id="preview" type="submit" class="btn btn-info" form="editor" data-loading-text="Loading...">Preview</button>
+                <!--        On click render template, show the change and save data to database-->
+                <button id="save" type="submit" class="btn btn-danger" form="editor">Save</button>
+            </div>
         </div>
     </div>
 </div>
@@ -156,6 +150,10 @@
                     window.location.href = "index.php?page=overview";
                 }
             }
+        });
+
+        $('#editor').bootstrapValidator({
+
         });
     });
 </script>

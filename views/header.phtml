@@ -4,6 +4,8 @@
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="<?php $_SERVER['SERVER_NAME']?>colorpicker/js/bootstrap-colorpicker.js"></script>
     <script type="text/javascript" src="<?php $_SERVER['SERVER_NAME']?>js/fileinput.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.0/js/bootstrapValidator.min.js"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.0/css/bootstrapValidator.min.css"/>
     <link rel="stylesheet" href="<?php $_SERVER['SERVER_NAME']?>flatstrap/css/custom.css">
     <link rel="stylesheet" href="<?php $_SERVER['SERVER_NAME']?>colorpicker/css/colorpicker.css">
 </head>
@@ -17,7 +19,7 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li id="overview" class="<?php echo ($page === 'overview' ) ? 'active' : '';?>">
-                        <a href="#">Overview</a>
+                        <a href="index.php?page=overview">Overview</a>
                     </li>
                     <li class="<?php echo ($page === 'editor' ) ? 'active' : 'hidden';?>">
                         <a href="#">Editor</a>

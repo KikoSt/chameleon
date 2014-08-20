@@ -29,6 +29,22 @@ a:hover
     margin-left: 1px !important;
 }
 
+.col-md-1,
+.col-md-2,
+.col-md-3,
+.col-md-4,
+.col-md-5,
+.col-md-6,
+.col-md-7,
+.col-md-8,
+.col-md-9,
+.col-md-10,
+.col-md-11,
+.col-md-12
+{
+    padding: 3px !important;
+}
+
 .imageTitle
 {
     background-color: #4583c6 !important;
@@ -55,8 +71,14 @@ a:hover
 
 .form-control[disabled]
 {
-    background-color: #858585 !important;
+    background-color: #d9d9d9 !important;
 }
+
+.checkbox input[type=checkbox]
+{
+    /*margin-left: 0px !important;*/
+}
+
 
 
 
