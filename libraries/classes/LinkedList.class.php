@@ -22,15 +22,16 @@ class LinkedList
         $node->setData($data);
         if($this->head !== NULL)
         {
-            $node->next = $this->head;
+            $node->setNext($this->head);
         }
-        $this->head = $node;
+        $this->head = &$node;
         $this->nodeCount++;
     }
 
     public function insertBefore($nodeKey, $key, $data)
     {
-        // TODO: not working correctly; mainly a problem in case $nodeKey referes to the HEAD
+        // TODO: not working correctly; mainly a problem in case the new node is to be prepended before the first key,
+        // i.e. $nodeKey referes to the HEAD
         $node = $this->getHead();
         if($node->getKey() !== $nodeKey)
         {
@@ -38,22 +39,26 @@ class LinkedList
             {
                 $node = $node->getNext();
             }
+            $newNode = new ListNode($key, $data);
+            $newNode->setNext($node);
+            $node->setNext($newNode);
         }
-        $newNode = new ListNode($key, $data);
-        $newNode->setNext($node->getNext());
-        $node->setNext($newNode);
+        else
+        {
+            $this->insertFirst($key, $data);
+        }
     }
 
     public function insertAfter($nodeKey, $key, $data)
     {
-        $node = $this->findNode($nodeKey);
+        $node = $this->find($nodeKey);
 
         $newNode = new ListNode($key, $data);
         $newNode->setNext($node->getNext());
         $node->setNext($newNode);
     }
 
-    public function deleteNode($nodeKey)
+    public function delete($nodeKey)
     {
         $node = $this->getHead();
         while($node->getNext()->getKey() !== $nodeKey)
@@ -65,7 +70,7 @@ class LinkedList
         unset($deleteNode);
     }
 
-    public function findNode($key)
+    public function find($key)
     {
         $node = $this->getHead();
         while($node->getKey() !== $key)
