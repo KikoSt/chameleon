@@ -33,6 +33,7 @@
     $(document).ready(function() {
         var btn;
         var somethingChanged = false;
+        var xcoord = '<?php echo $element->getId();?>#x';
 
         $('.btn').on('click', function(){
             btn = $(this).attr('id');
@@ -150,9 +151,23 @@
                     window.location.href = "index.php?page=overview";
                 }
             }
+            else
+            {
+                window.location.href = "index.php?page=overview";
+            }
         });
 
-        $('#editor').bootstrapValidator({
+        $('#awesomeEditor #editor').bootstrapValidator({
+            testtext: {
+                validators: {
+                    notEmpty: {
+                        message: 'The price is required'
+                    },
+                    numeric: {
+                        message: 'The price must be a number'
+                    }
+                }
+            }
 
         });
     });

@@ -48,6 +48,8 @@ $imageLayer1->layerImage(GIFPROTO . 'gifAnimationTestlogo.png');
 $imageLayer1->layerMove(0, 'bottomleft', 0, 0);
 $imageLayer1->layerImageResize(0, 1, 1, 'fill');
 $saveLayer1 = $imageLayer1->save();
+imagealphablending( $imageLayer1, false );
+imagesavealpha( $imageLayer1, true );
 file_put_contents(GIFPROTO . 'gtLayer1'.'.'.$saveLayer1['extension'], $saveLayer1['contents']);
 
 $imageLayer2 = new GDEnhancer(GIFPROTO . 'layer.png');
@@ -55,6 +57,8 @@ $imageLayer2->layerImage(GIFPROTO . 'gifAnimationTestlogo.png');
 $imageLayer2->layerMove(0, 'bottomleft', 0, 0);
 $imageLayer2->layerImageResize(0, 43, 26, 'fill');
 $saveLayer2 = $imageLayer2->save();
+imagealphablending( $imageLayer2, false );
+imagesavealpha( $imageLayer2, true );
 file_put_contents(GIFPROTO . 'gtLayer2'.'.'.$saveLayer2['extension'], $saveLayer2['contents']);
 
 $imageLayer3 = new GDEnhancer(GIFPROTO . 'layer.png');
@@ -62,23 +66,20 @@ $imageLayer3->layerImage(GIFPROTO . 'gifAnimationTestlogo.png');
 $imageLayer3->layerMove(0, 'bottomleft', 0, 0);
 $imageLayer3->layerImageResize(0, 85, 55, 'fill');
 $saveLayer3 = $imageLayer3->save();
+imagealphablending( $imageLayer3, false );
+imagesavealpha( $imageLayer3, true );
 file_put_contents(GIFPROTO . 'gtLayer3'.'.'.$saveLayer3['extension'], $saveLayer3['contents']);
 
-//die();
+die();
 
 ob_start();
 imagegif(imagecreatefromjpeg(GIFPROTO . 'gtBackground.jpg'));
-imagesavealpha($layer, TRUE);
 $frames[]=ob_get_contents();
 $framed[]=40;
 ob_end_clean();
 
 ob_start();
-$new = imagecreatefrompng(GIFPROTO . 'gtLayer1.png');
-$transparent = imagecolorallocatealpha($new, 0, 0, 0, 127);
-imagefill($new, 0, 0, $transparent);
-imagealphablending($new, true);
-imagegif($new);
+imagegif(imagecreatefrompng(GIFPROTO . 'gtLayer1.png'));
 $frames[]=ob_get_contents();
 $framed[]=40;
 ob_end_clean();
