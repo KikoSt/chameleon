@@ -7,7 +7,6 @@
                value="<?php echo $element->getX();?>"
                placeholder="<?php echo $element->getX();?>"
             />
-
     </div>
 </div>
 <div class="col-md-3">

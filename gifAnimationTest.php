@@ -48,8 +48,6 @@ $imageLayer1->layerImage(GIFPROTO . 'gifAnimationTestlogo.png');
 $imageLayer1->layerMove(0, 'bottomleft', 0, 0);
 $imageLayer1->layerImageResize(0, 1, 1, 'fill');
 $saveLayer1 = $imageLayer1->save();
-imagealphablending( $imageLayer1, false );
-imagesavealpha( $imageLayer1, true );
 file_put_contents(GIFPROTO . 'gtLayer1'.'.'.$saveLayer1['extension'], $saveLayer1['contents']);
 
 $imageLayer2 = new GDEnhancer(GIFPROTO . 'layer.png');
@@ -70,8 +68,6 @@ imagealphablending( $imageLayer3, false );
 imagesavealpha( $imageLayer3, true );
 file_put_contents(GIFPROTO . 'gtLayer3'.'.'.$saveLayer3['extension'], $saveLayer3['contents']);
 
-die();
-
 ob_start();
 imagegif(imagecreatefromjpeg(GIFPROTO . 'gtBackground.jpg'));
 $frames[]=ob_get_contents();
@@ -79,7 +75,10 @@ $framed[]=40;
 ob_end_clean();
 
 ob_start();
-imagegif(imagecreatefrompng(GIFPROTO . 'gtLayer1.png'));
+$png = imagecreatefrompng(GIFPROTO . 'gtLayer1.png');
+imagealphablending( $png, false );
+imagesavealpha( $png, true );
+imagegif($png);
 $frames[]=ob_get_contents();
 $framed[]=40;
 ob_end_clean();
@@ -109,6 +108,9 @@ fclose($fp);
 
 exec('chmod -R 0777 /var/www/chameleon/assets/gifProto/');
 
+header ('Content-type:image/gif');
+echo $gif->GetAnimation();
+
 function addAnimation($filename)
 {
     switch(pathinfo($filename, PATHINFO_EXTENSION))
@@ -131,4 +133,9 @@ function addAnimation($filename)
     $framed[]=40;
 
     ob_end_clean();
+}
+
+function createFrame()
+{
+
 }

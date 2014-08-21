@@ -1,6 +1,6 @@
-<div class="col-md-3">
-    <label class="col-md-4 control-label">Color:</label>
-    <div class="col-md-8">
+<div class="col-md-12">
+    <label class="col-md-1 control-label">Color:</label>
+    <div class="col-md-11">
         <input id="fill"
                type="text"
                class="form-control picker"

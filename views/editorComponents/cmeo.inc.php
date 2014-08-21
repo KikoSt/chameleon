@@ -6,7 +6,7 @@
             <?php echo (is_a($element, 'GfxImage') || is_a($element, 'GfxText')) ? '': 'disabled'; ?>
             >
             <option value=""><?php echo (is_a($element, 'GfxImage') || is_a($element, 'GfxText')) ? 'Select ref option...' : ''; ?></option>
-            <?php foreach($this->cmeoOptions as $option): ?>
+            <?php foreach($this->cmeoRefOptions as $option): ?>
                 <option value="<?php echo $option;?>" <?php echo ($option === $element->getCmeoRef()) ? 'selected' : '';?>><?php echo $option;
                     ?></option>
             <?php endforeach;?>
@@ -20,7 +20,7 @@
                 class="form-control"
             >
             <option value="">Select link option...</option>
-            <?php foreach($this->cmeoOptions as $option): ?>
+            <?php foreach($this->cmeoLinkOptions as $option): ?>
                 <option value="<?php echo $option;?>" <?php echo ($option === $element->getCmeoLink()) ? 'selected' : '';?>><?php echo $option;
                     ?></option>
             <?php endforeach;?>
