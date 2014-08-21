@@ -1,5 +1,6 @@
 @import url("bootstrap.min.css");
 @import url("fileinput.min.css");
+@import url("reset.min.css");
 
 /* Overwrite all bootstrap css rules with a rounded corner to create a flat design */
 /* TODO integrate where possible into Chameleon own bootstrap css */
@@ -29,6 +30,22 @@ a:hover
     margin-left: 1px !important;
 }
 
+.col-md-1,
+.col-md-2,
+.col-md-3,
+.col-md-4,
+.col-md-5,
+.col-md-6,
+.col-md-7,
+.col-md-8,
+.col-md-9,
+.col-md-10,
+.col-md-11,
+.col-md-12
+{
+    padding: 3px !important;
+}
+
 .imageTitle
 {
     background-color: #4583c6 !important;
@@ -53,10 +70,43 @@ a:hover
     border-color: #333333 !important;
 }
 
+form
+
 .form-control[disabled]
 {
-    background-color: #858585 !important;
+    background-color: #d9d9d9 !important;
 }
 
+.checkbox input[type=checkbox]
+{
+    /*margin-left: 0px !important;*/
+}
+
+form {
+    font-size: .8em !important;
+}
+
+#editor input, select {
+    padding: 0px 0px 0px 0px !important;
+    margin: 0px 0px 0px 0px !important;
+    line-height: 1px !important;
+    height: 20px !important;
+    border-radius: 0px !important;
+}
+
+label {
+    margin-top: 2px !important;
+    baseline: middle !important;
+}
+
+.thumbnail {
+    text-align:center !important;
+}
+
+.thumbnail > li {
+    display: inline-block !important;
+    *display:inline !important; /* ie7 fix */
+    float: none !important; /* this is the part that makes it work */
+}
 
 
