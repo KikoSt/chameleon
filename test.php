@@ -44,7 +44,7 @@ $myList->insertAfter('zwei', $key, $data);
 
 echo $myList . "\n";
 
-$myList->deleteNode($key);
+$myList->delete($key);
 
 echo $myList . "\n";
 
@@ -56,7 +56,26 @@ echo $myList . "\n";
 $key = 'sechs';
 $myList->insertAfter('fünf', $key, $data);
 
-echo $myList . "\n";
+$keys = array('eins' => '1a', 'zwei' => '2a', 'drei' => '3a', 'vier' => '4a', 'fünf' => '5a');
+
+foreach($keys AS $after => $key)
+{
+    echo $key . ' after ' . $after . "\n";
+    $myList->insertAfter($after, $key, $data);
+    echo $myList . "\n";
+}
+
+$keys = array_reverse($keys);
+
+foreach($keys AS $dummy => $key)
+{
+    $myList->delete($key);
+    echo $myList . "\n";
+}
+
+// echo $myList . "\n";
+
+var_dump($myList->getHead());
 
 die();
 
