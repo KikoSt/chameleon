@@ -83,6 +83,8 @@
         });
 
         $('.kv-fileinput-upload').on('click', function(e){
+            var imgsrc = '<?php echo $this->gif;?>';
+
             e.preventDefault();
             var nodeList = document.querySelectorAll('.file');
             var formData = new FormData();
@@ -110,13 +112,18 @@
             xhr.open('POST', 'ajax/changeSvg.php', true);
             xhr.send(formData);
 
-//            location.reload();
+            console.log(xhr.readyState);
+
+//            $("#previewImage img").load(function() {
+//                $(this).hide();
+//                $(this).fadeIn('slow');
+//            }).attr('src', imgsrc + '?' + new Date().getTime());
         });
 
         $('#editor').on('submit', function(e){
             e.preventDefault();
 
-            var imgsrc = '<?php echo $this->gif;?>';
+
 
             $.ajax({
                 url: '/chameleon/ajax/changeSvg.php',
