@@ -1,7 +1,7 @@
 <div class="col-md-12">
     <label class="col-md-1 control-label">Image:</label>
     <div class="col-md-11">
-        <input id="<?php echo $element->getId();?>"
+        <input id="<?php echo $element->getId();?>_input"
                type="file"
                class="file"
                name="<?php echo $element->getId();?>#imageUrl"

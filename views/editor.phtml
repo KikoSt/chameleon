@@ -86,56 +86,77 @@
             var imgsrc = '<?php echo $this->gif;?>';
 
             e.preventDefault();
-            var nodeList = document.querySelectorAll('.file');
+            var nodeList = $(document).find($('[type="file"]'));
             var formData = new FormData();
+
+            var data = {};
 
             for (var i = 0; i < nodeList.length; i++)
             {
                 var myId = nodeList[i].getAttribute('id');
-                var fileSelect = document.querySelector("#" + myId + " #" + myId );
-                var files = fileSelect.files;
-                var j=0;
+                var fileSelect = $("#" + myId);
 
-                while ( j < files.length)
+                // console.log(fileSelect);
+                // console.log($('#' + myId).prop("files"));
+                var files = fileSelect.prop("files");
+
+                // for(var j=0; j<files.length; j++)
+                // {
+                //     var file = files[j];
+                //     data[myId] = file;
+                // }
+                if(files.length > 0)
                 {
-                    var file = files[j];
-                    formData.append(myId, file, file.name);
-                    j++;
+                    var file = files[0];
+                    console.log(file);
+                    data[myId] = JSON.stringify(file);
                 }
+                console.log(data);
             }
 
-            formData.append("templateId",  document.getElementById('templateId').getAttribute('value'));
-            formData.append("advertiserId",  document.getElementById('advertiserId').getAttribute('value'));
-            formData.append("companyId",  document.getElementById('companyId').getAttribute('value'));
+            data['templateId'] = $('#templateId').attr('value');
+            data['advertiserId'] = $('#advertiserId').attr('value');
+            data['companyId'] = $('#companyId').attr('value');
+            data['action'] = 'nothing';
 
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', 'ajax/changeSvg.php', true);
-            xhr.send(formData);
+            console.log(JSON.stringify(data));
 
-            console.log(xhr.readyState);
-
-//            $("#previewImage img").load(function() {
-//                $(this).hide();
-//                $(this).fadeIn('slow');
-//            }).attr('src', imgsrc + '?' + new Date().getTime());
+            xhr = $.ajax({
+                url: '/chameleon/ajax/changeSvg.php',
+                data: JSON.stringify(data),
+                type: 'POST'
+            })
+            .done(function(data, textStatus, jqXHR) {
+                    $('#previewalert').show();
+                    console.log(imgsrc);
+                    $("#previewImage img").attr('src', imgsrc + '?' + new Date().getTime())
+                    $("#previewImage img").load(function() {
+                        $(this).hide();
+                        $(this).fadeIn('slow');
+                    });
+            })
+            .fail(function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status);
+                    alert(thrownError);
+            });
         });
 
         $('#editor').on('submit', function(e){
             e.preventDefault();
 
-
-
             $.ajax({
                 url: '/chameleon/ajax/changeSvg.php',
                 data: $('#editor').serialize() + "&action=" + btn,
                 type: 'POST',
-                success: function(){
+                success: function(data, textStatus, jqXHR){
                     $('#previewalert').show();
-//                    location.reload();
+//                  location.reload();
                     $("#previewImage img").load(function() {
+                        // .attr('src', imgsrc + '?' + new Date().getTime())
+                        console.log(this);
                         $(this).hide();
                         $(this).fadeIn('slow');
-                    }).attr('src', imgsrc + '?' + new Date().getTime());
+                    });
                 },
                 error: function (xhr, ajaxOptions, thrownError) {
                     alert(xhr.status);

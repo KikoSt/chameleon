@@ -21,6 +21,12 @@ $container = new GfxContainer();
 $connector = new APIConnector();
 $svgHandler = new SvgFileHandler();
 
+// for now ...
+$auditUserId = 14;
+
+var_dump($_POST);
+die();
+
 $bannerTemplateId = getRequestVar('templateId');
 
 $container->setCompanyId(getRequestVar('companyId'));
@@ -75,14 +81,9 @@ $svgContent = $container->createSvg();
 $container->setTarget('GIF');
 $container->render();
 
-echo $container->getOutputDir();
-echo $container->getOutputName();
-
 // write the temporary file
 $svgHandler->setSvgContent($svgContent);
 $svgHandler->save();
-
-echo $svgHandler->getFilename();
 
 if(array_key_exists('action', $_REQUEST) && 'save' === $_REQUEST['action'])
 {
@@ -90,7 +91,7 @@ if(array_key_exists('action', $_REQUEST) && 'save' === $_REQUEST['action'])
     $bannerTemplateModel = new BannerTemplateModel();
     $bannerTemplateModel->setSvgContent($svgContent);
     $bannerTemplateModel->setBannerTemplateId($_REQUEST['templateId']);
-    $bannerTemplateModel->setAuditUserId(14); //todo for development, use the given id in the future
+    $bannerTemplateModel->setAuditUserId($auditUserId);
     $bannerTemplateModel->setAdvertiserId($container->getAdvertiserId());
     $bannerTemplateModel->setDescription('testing');
     $bannerTemplateModel->setName('bumblebee testing');
@@ -100,7 +101,10 @@ if(array_key_exists('action', $_REQUEST) && 'save' === $_REQUEST['action'])
 
 
 
+$response = array();
+$response['imgsrc'] = $container->getOutputDir() . '/' . $container->getOutputName();
 
 
 
+echo json_encode($response);
 
