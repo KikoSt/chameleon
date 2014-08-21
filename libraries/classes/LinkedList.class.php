@@ -93,3 +93,160 @@ class LinkedList
         return $string;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+class ListNode
+{
+    private $next;
+    private $key;
+    private $data;
+
+    public function __construct($key, $data=null)
+    {
+        $this->key  = $key;
+        $this->data = $data;
+        $this->next = NULL;
+    }
+
+    public function setNext(ListNode $next=null)
+    {
+        $this->next = &$next;
+    }
+
+    public function getNext()
+    {
+        return $this->next;
+    }
+
+    public function insertAfter($key, $data)
+    {
+        $node = new ListNode($key);
+        $node->setData($data);
+        $node->setNext($this->getNext());
+        $this->setNext($node);
+
+        return $node;
+    }
+
+    public function setData($data)
+    {
+        $this->data = $data;
+    }
+
+    public function getData()
+    {
+        return $this->data;
+    }
+
+     /**
+      * Get key.
+      *
+      * @return key.
+      */
+     public function getKey()
+     {
+         return $this->key;
+     }
+
+     /**
+      * Set key.
+      *
+      * @param key the value to set.
+      */
+     public function setKey($key)
+     {
+         $this->key = $key;
+     }
+}
+
+
+class ListIterator
+{
+    private $list;
+    private $previous;
+    private $current;
+    private $next;
+
+    public function __construct(LinkedList $list)
+    {
+        $this->list = $list;
+        $this->current = $list->getHead();
+    }
+
+    public function previous()
+    {
+        // find previous!
+        $node = $this->list->getHead();
+        if($node->getKey() !== $this->current->getKey())
+        {
+            while($node->getNext()->getKey() !== $this->current->getKey())
+            {
+                $node = $node->getNext();
+            }
+        }
+        $this->previous = $node;
+        $this->next = $this->current;
+        $this->current = $this->previous;
+
+    }
+
+    public function current()
+    {
+        return $this->current;
+    }
+
+    public function next()
+    {
+        var_dump($this->current);
+
+        $this->previous = $this->current;
+        $this->current = $this->next;
+        $this->next = $this->current->getNext();
+
+        return $this->current;
+    }
+
+    public function hasPrevious()
+    {
+        if($this->previous() !== NULL)
+        {
+            $hasPrevious = true;
+        }
+        else
+        {
+            $hasPrevious = false;
+        }
+        return $hasPrevious;
+    }
+
+    public function hasNext()
+    {
+        if($this->next() !== NULL)
+        {
+            $hasNext = true;
+        }
+        else
+        {
+            $hasNext = false;
+        }
+        return $hasNext;
+    }
+
+    public function rewind()
+    {
+        $this->current = $this->list->getHead();
+        $this->next = $this->current->getNext();
+    }
+
+}
