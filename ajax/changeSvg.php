@@ -24,9 +24,6 @@ $svgHandler = new SvgFileHandler();
 // for now ...
 $auditUserId = 14;
 
-var_dump($_POST);
-die();
-
 $bannerTemplateId = getRequestVar('templateId');
 
 $container->setCompanyId(getRequestVar('companyId'));
@@ -37,6 +34,7 @@ if(!empty($_FILES))
     foreach($_FILES as $singleFile)
     {
         $filename = ASSET_DIR . $singleFile['name'];
+        echo $filename;
         move_uploaded_file($singleFile['tmp_name'], $filename);
     }
 }
@@ -64,6 +62,7 @@ if(null !== $_FILES && count($_FILES) > 0)
     {
         foreach($_FILES as $key => $singleFile)
         {
+            echo $key . "\n";
             if($key === $element->getId())
             {
                 $element->setImageUrl("assets/" . $singleFile['name']);

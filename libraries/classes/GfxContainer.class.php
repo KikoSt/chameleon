@@ -416,9 +416,13 @@ class GfxContainer
 
         $this->setCanvas($updatedCanvas);
 
-        imagegif($updatedCanvas, $this->getOutputDir() . '/' . $this->getOutputFilename());
+        $success = imagegif($updatedCanvas, $this->getOutputDir() . '/' . $this->getOutputFilename());
+
+        var_dump($success);
 
         imageDestroy($updatedCanvas);
+
+        echo $this->getOutputDir() . '/' . $this->getOutputFilename() . "\n";
 
         chmod($this->getOutputDir() . '/' . $this->getOutputFilename(), 0777);
     }

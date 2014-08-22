@@ -3,9 +3,17 @@
 
 function getRequestVar($identifier)
 {
-    if(isset($_REQUEST[$identifier]) && null !== $_REQUEST[$identifier])
+    if(isJSON($_REQUEST))
     {
-        $returnValue = $_REQUEST[$identifier];
+        $requestVars = json_decode($_REQUEST);
+    } else
+    {
+        $requestVars = $_REQUEST;
+    }
+
+    if(isset($requestVars[$identifier]) && null !== $requestVars[$identifier])
+    {
+        $returnValue = $requestVars[$identifier];
     }
     else
     {
@@ -14,3 +22,15 @@ function getRequestVar($identifier)
     return $returnValue;
 }
 
+function isJSON($string)
+{
+    json_decode($string);
+    if(json_last_error() == JSON_ERROR_NONE)
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}

@@ -67,6 +67,7 @@ class Overview extends Controller
             $preview->height = $container->getCanvasHeight();
             $preview->id = $template->getBannerTemplateId();
             $preview->templateName = $filename;
+            $preview->templateId = $template->getBannerTemplateId();
             $preview->advertiserId = $this->getAdvertiserId();
             $preview->companyId = $this->getCompanyId();
             $previews[] = $preview;
