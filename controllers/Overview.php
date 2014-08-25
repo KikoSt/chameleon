@@ -31,32 +31,45 @@ class Overview extends Controller
 
         $this->view = $this->setLayout('views/overview.phtml')->getView();
 
+        // get all templates for company / advertiser
         $templates = $connector->getTemplates();
 
         foreach($templates as $template)
         {
+            $basePath = (string) $this->getCompanyId() . '/' . (string) $this->getAdvertiserId() . '/';
             $baseFilename = 'rtest_' . $template->getBannerTemplateId();
             $filename = $baseFilename . '.svg';
             $container->setOutputName($baseFilename);
 
-            if(is_dir(SVG_DIR))
+            if(!is_dir(SVG_DIR . $basePath))
             {
-                $fh = fopen(SVG_DIR . $filename, 'w');
+                // set the current umask to 0777
+                $old = umask(0);
+                if(!mkdir(SVG_DIR . $basePath, 0777, true))
+                {
+                    throw new Exception('Could not create directory ' . $basePath);
+                }
+                // reset umask
+                umask($old);
+            }
+            if(is_dir(SVG_DIR . $basePath))
+            {
+                $fh = fopen(SVG_DIR . $basePath . $filename, 'w');
                 if(!$fh)
                 {
-                    throw new Exception('Could not open file ' . SVG_DIR . $filename);
+                    throw new Exception('Could not open file ' . SVG_DIR . $basePath . $filename);
                 }
                 fwrite($fh, $template->getSvgContent());
                 fclose($fh);
             }
             else
             {
-                throw new Exception(SVG_DIR . ' not found!');
+                throw new Exception($basePath . ' not found!');
             }
 
             $container->setId($template->getBannerTemplateId());
 
-            $container->setSource($filename);
+            $container->setSource($basePath . $filename);
             $container->parse();
             $container->setTarget('GIF');
             $container->render();

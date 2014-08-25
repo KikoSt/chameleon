@@ -37,33 +37,35 @@ class Editor extends Controller
             $container->setCompanyId($_SESSION['companyId']);
         }
 
+        $basePath = (string) $this->getCompanyId() . '/' . (string) $this->getAdvertiserId() . '/';
+
         // check if svg_dir exists
-        if(is_dir(SVG_DIR))
+        if(is_dir(SVG_DIR . $basePath))
         {
             // prepare the file name
             $baseFilename = 'rtest_' . $container->getId();
             $filename = $baseFilename . '.svg';
 
             // check if file with id already exists
-            if(!file_exists(SVG_DIR . $filename))
+            if(!file_exists(SVG_DIR . $basePath . $filename))
             {
                 // get template by id
                 $template = $connector->getTemplateById($container->getId());
 
                 // create svg
-                $fh = fopen(SVG_DIR . $filename, 'w');
-                if(!$fh)
+                $handle = fopen(SVG_DIR . $basePath . $filename, 'w');
+                if(!$handle)
                 {
                     throw new Exception('Could not open file ' . SVG_DIR . $filename);
                 }
-                fwrite($fh, $template->getSvgContent());
-                fclose($fh);
+                fwrite($handle, $template->getSvgContent());
+                fclose($handle);
             }
 
             // render gif for editor view
             $container->setCategoryId(0);
             $container->setOutputName($baseFilename);
-            $container->setSource($filename);
+            $container->setSource($basePath . $filename);
             $container->parse();
             $container->setTarget('GIF');
             $container->render();
