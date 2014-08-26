@@ -18,6 +18,7 @@ class Overview extends Controller
      */
     public function create()
     {
+        // create required objects
         $container = new GfxContainer();
         $connector = new APIConnector();
         $previews = array();

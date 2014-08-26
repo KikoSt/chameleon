@@ -20,22 +20,24 @@ class Editor extends Controller
 
         $this->view = $this->setLayout('views/editor.phtml')->getView();
 
-        $container->setId(getRequestVar('id'));
-        $container->setcompanyId(getRequestVar('companyId'));
-        $container->setAdvertiserId(getRequestVar('advertiserId'));
+        $templateId   = getRequestVar('templateId');
+        $companyId    = getRequestVar('companyId');
+        $advertiserId = getRequestVar('advertiserId');
 
-        if(null !== $container->getId())
-        {
-            $_SESSION['templateId'] = $container->getId();
-            $_SESSION['advertiserId'] = $container->getAdvertiserId();
-            $_SESSION['companyId'] = $container->getCompanyId();
-        }
-        else
-        {
-            $container->setId($_SESSION['templateId']);
-            $container->setAdvertiserId($_SESSION['advertiserId']);
-            $container->setCompanyId($_SESSION['companyId']);
-        }
+        $container->setId($templateId);
+        $container->setcompanyId($companyId);
+        $container->setAdvertiserId($advertiserId);
+
+        // WTF!
+        // No, no, no!
+        // If the id's aren't provided, the script would already have been terminated; Those information MUST
+        // be provided
+        // Information should not be stored based on assumptions but we should know the state and react adequately
+
+        // all three ID's, the templateId, advertiserId AND companyId should be included in EVERY call!
+        // $_SESSION['templateId']   = $templateId;
+        // $_SESSION['advertiserId'] = $advertiserId;
+        // $_SESSION['companyId']    = $companyId;
 
         $basePath = (string) $this->getCompanyId() . '/' . (string) $this->getAdvertiserId() . '/';
 
