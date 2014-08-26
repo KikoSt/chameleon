@@ -168,7 +168,7 @@ class GfxContainer
         }
         else
         {
-            throw new Exception('No valid source provided (file path, simplexml svg object, svg string');
+            throw new Exception('No valid source provided (file path, simplexml svg object, svg string: ' . $this->source);
         }
 
         $this->setCanvasWidth((float) $svg->attributes()->width);
@@ -418,11 +418,7 @@ class GfxContainer
 
         $success = imagegif($updatedCanvas, $this->getOutputDir() . '/' . $this->getOutputFilename());
 
-        var_dump($success);
-
         imageDestroy($updatedCanvas);
-
-        echo $this->getOutputDir() . '/' . $this->getOutputFilename() . "\n";
 
         chmod($this->getOutputDir() . '/' . $this->getOutputFilename(), 0777);
     }
@@ -461,12 +457,16 @@ class GfxContainer
      * @access public
      * @return void
      */
+/*
     public function registerSubstitution($dataId, $gfxElement)
     {
         // check if there is already a "registry" for the given dataId
         // if not, create it
         // register the given element for dataId updates/substitutions
     }
+*/
+
+
 
     public function changeElementValue($formData)
     {
