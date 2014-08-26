@@ -82,19 +82,22 @@
             }
         });
 
+
+        /* ***********************************
+         * FILE UPLOAD
+         * *********************************** */
         $('.kv-fileinput-upload').on('click', function(e){
             e.preventDefault();
 
             var imgsrc = '<?php echo $this->gif;?>';
-            var nodeList = $(document).find($('[type="file"]'));
             var formData = new FormData();
             var data = {};
+            var nodeList = $(document).find($('[type="file"]'));
 
             formData.append('templateId', $('#templateId').attr('value'));
             formData.append('advertiserId', $('#advertiserId').attr('value'));
             formData.append('companyId', $('#companyId').attr('value'));
-            formData.append('action', 'nothing');
-
+            formData.append('action', 'upload');
 
             for (var i = 0; i < nodeList.length; i++)
             {
@@ -107,80 +110,94 @@
                 if(files.length > 0)
                 {
                     var file = files[0];
-                    console.log(targetId);
                     formData.append(targetId, file);
                 }
             }
 
             var xhr =  new XMLHttpRequest();
             xhr.upload.addEventListener('load', onloadHandler, false);
+            xhr.onreadystatechange = function(e) {
+                if(xhr.readyState == 4) {
+                    response = $.parseJSON(xhr.response);
+                    imgsrc = response.imgsrc;
+                    $("#previewImage img").attr('src', imgsrc + '?' + new Date().getTime())
+                }
+            };
             xhr.open('POST', '/chameleon/ajax/changeSvg.php', true);
             xhr.send(formData);
             return false;
 
-            function onloadHandler() {
-                console.log('load');
+            function onloadHandler(e, args) {
                 // $('#previewalert').show();
-                console.log(imgsrc);
                 $("#previewImage img").attr('src', imgsrc); // + new Date().getTime())
-                // $("#previewImage img").load(function() {
-                //     $(this).hide();
-                //     $(this).fadeIn('slow');
-                // });
             }
 
             function onloadstartHandler() {
-                console.log('loadstart');
             }
 
             function onprogressHandler() {
-                console.log('progress');
             }
-            // var xhr = $.ajax({
-            //     url: '/chameleon/ajax/changeSvg.php',
-            //     data: formData,
-            //     processData: false,
-            //     contentType: false,
-            //     type: 'POST'
-            // })
-            // .done(function(data, textStatus, jqXHR) {
-            //         $('#previewalert').show();
-            //         console.log(imgsrc);
-            //         $("#previewImage img").attr('src', imgsrc + '?' + new Date().getTime())
-            //         $("#previewImage img").load(function() {
-            //             $(this).hide();
-            //             $(this).fadeIn('slow');
-            //         });
-            // })
-            // .fail(function (xhr, ajaxOptions, thrownError) {
-            //         alert(xhr.status);
-            //         alert(thrownError);
-            // });
         });
 
+
+
+        /* ***********************************
+         * PREVIEW BUTTON
+         *********************************** */
         $('#editor').on('submit', function(e){
-            console.log(2);
             e.preventDefault();
 
-            $.ajax({
-                url: '/chameleon/ajax/changeSvg.php',
-                data: $('#editor').serialize() + "&action=" + btn,
-                type: 'POST',
-                success: function(data, textStatus, jqXHR){
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function(e) {
+                console.log(xhr.readyState);
+                if(xhr.readyState == 4) {
                     $('#previewalert').show();
-//                  location.reload();
-                    $("#previewImage img").load(function() {
-                        // .attr('src', imgsrc + '?' + new Date().getTime())
-                        console.log(this);
-                        $(this).hide();
-                        $(this).fadeIn('slow');
-                    });
-                },
-                error: function (xhr, ajaxOptions, thrownError) {
-                    alert(xhr.status);
-                    alert(thrownError);
+                    response = $.parseJSON(xhr.response);
+                    imgsrc = response.imgsrc;
+                    $("#previewImage img").attr('src', imgsrc + '?' + new Date().getTime());
                 }
-            })
+            }
+
+            var formData = new FormData();
+
+
+
+            /* ******************************************************************** */
+
+            var nodeList = $(document).find($('[type="file"]'));
+
+            // formData.append('templateId', $('#templateId').attr('value'));
+            // formData.append('advertiserId', $('#advertiserId').attr('value'));
+            // formData.append('companyId', $('#companyId').attr('value'));
+            formData.append('action', 'preview');
+
+            for (var i = 0; i < nodeList.length; i++)
+            {
+                var myId = nodeList[i].getAttribute('id');
+                var targetId = myId.replace('_input', '');
+                var fileSelect = $("#" + myId);
+
+                var files = fileSelect.prop("files");
+
+                if(files.length > 0)
+                {
+                    var file = files[0];
+                    formData.append(targetId, file);
+                }
+            }
+
+            /* ******************************************************************** */
+
+
+
+            var data = $('#editor').serializeArray(); // + "&action=" + btn;
+
+            $.each(data, function(key, inputfield) {
+                formData.append(inputfield.name, inputfield.value);
+            });
+
+            xhr.open('POST', '/chameleon/ajax/changeSvg.php', true);
+            xhr.send(formData);
         });
 
         $('.picker').colorpicker();
