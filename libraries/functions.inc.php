@@ -24,8 +24,8 @@ function getRequestVar($identifier)
 
 function isJSON($string)
 {
-    json_decode($string);
-    if(json_last_error() == JSON_ERROR_NONE)
+    @json_decode($string);
+    if(json_last_error() === JSON_ERROR_NONE)
     {
         return false;
     }
