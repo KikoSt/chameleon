@@ -147,10 +147,14 @@
         $('#editor').on('submit', function(e){
             e.preventDefault();
 
+            var action = btn; // preview or save
+
             var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function(e) {
-                console.log(xhr.readyState);
                 if(xhr.readyState == 4) {
+                    if(action === 'save') {
+                        somethingChanged = false;
+                    }
                     $('#previewalert').show();
                     response = $.parseJSON(xhr.response);
                     imgsrc = response.imgsrc;
@@ -160,16 +164,12 @@
 
             var formData = new FormData();
 
-
-
             /* ******************************************************************** */
-
             var nodeList = $(document).find($('[type="file"]'));
 
             // formData.append('templateId', $('#templateId').attr('value'));
             // formData.append('advertiserId', $('#advertiserId').attr('value'));
             // formData.append('companyId', $('#companyId').attr('value'));
-            formData.append('action', 'preview');
 
             for (var i = 0; i < nodeList.length; i++)
             {
@@ -185,12 +185,11 @@
                     formData.append(targetId, file);
                 }
             }
-
             /* ******************************************************************** */
 
-
-
             var data = $('#editor').serializeArray(); // + "&action=" + btn;
+
+            formData.append('action', action);
 
             $.each(data, function(key, inputfield) {
                 formData.append(inputfield.name, inputfield.value);
