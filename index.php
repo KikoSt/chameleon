@@ -10,7 +10,7 @@
     include('config/pathconfig.inc.php');
 
     $advertiserId = 122;
-    $companyId = 4;
+    $companyId = 170;
 
     $myIndex = new Index();
 
