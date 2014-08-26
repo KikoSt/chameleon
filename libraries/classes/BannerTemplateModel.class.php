@@ -76,6 +76,9 @@ class BannerTemplateModel implements JsonSerializable
                 'idParentBannerTemplate' => $this->getParentBannerTemplateId(),
                 'idAuditUser' => $this->getAuditUserId(),
                 'name' => $this->getName(),
+                'dimX' => $this->getDimX(),
+                'dimY' => $this->getDimY(),
+                'idGroup' => $this->getGroupId(),
                 'svgContent' => (string) $this->svgContent
                 ];
     }
