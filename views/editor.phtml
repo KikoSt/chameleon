@@ -208,8 +208,9 @@
         });
 
         $('#overview').click(function() {
-            if(somethingChanged == true) {
-                if(confirm('Unsaved changes detected ! Continue ?')){
+            if(somethingChanged === true) {
+                var leaveConfirm = confirm('Unsaved changes detected! Continue?');
+                if(true === leaveConfirm){
                     window.location.href = "index.php?page=overview";
                 }
             }
@@ -217,6 +218,7 @@
             {
                 window.location.href = "index.php?page=overview";
             }
+            return false;
         });
 
         $('#awesomeEditor #editor').bootstrapValidator({
