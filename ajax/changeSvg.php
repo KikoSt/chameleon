@@ -9,7 +9,6 @@
 include('../config/pathconfig.inc.php');
 require_once('../Bootstrap.php');
 
-
 if(!defined('__ROOT__'))
 {
     define('__ROOT__', '../');
@@ -54,6 +53,16 @@ $svgHandler->setFilename($basePath . $filename);
 $container->setSource($basePath . $filename);
 $container->parse();
 
+// TODO
+// FOR NOW, it is of huge importance that this next portion is located before
+// the files change section since the changeElementValue method will update
+// the imgSources with the old values, being changed (corrected) again below
+
+if(array_key_exists('action', $_REQUEST) && 'upload' !== $_REQUEST['action'])
+{
+    $container->changeElementValue($_POST);
+}
+
 //create a new svg with the given request parameters
 if(null !== $_FILES && count($_FILES) > 0)
 {
@@ -69,13 +78,7 @@ if(null !== $_FILES && count($_FILES) > 0)
         }
     }
 }
-else
-{
-    $container->changeElementValue($_POST);
-}
-
 $svgContent = $container->createSvg();
-
 $container->setTarget('GIF');
 $container->render();
 
@@ -93,11 +96,14 @@ if(array_key_exists('action', $_REQUEST) && 'save' === $_REQUEST['action'])
     //update template in the data base
     $bannerTemplateModel = new BannerTemplateModel();
     $bannerTemplateModel->setSvgContent($svgContent);
-    $bannerTemplateModel->setBannerTemplateId($_REQUEST['templateId']);
+    $bannerTemplateModel->setGroupId(0);
+    $bannerTemplateModel->setDimX($container->getCanvasHeight());
+    $bannerTemplateModel->setDimY($container->getCanvasWidth());
+    $bannerTemplateModel->setBannerTemplateId($templateId);
     $bannerTemplateModel->setAuditUserId($auditUserId);
-    $bannerTemplateModel->setAdvertiserId($container->getAdvertiserId());
+    $bannerTemplateModel->setAdvertiserId($advertiserId);
     $bannerTemplateModel->setDescription('testing');
-    $bannerTemplateModel->setName('bumblebee testing');
+    $bannerTemplateModel->setName('mumblebee testing');
 
     $response = $connector->sendBannerTemplate($bannerTemplateModel);
 }
