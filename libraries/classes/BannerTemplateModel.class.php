@@ -12,11 +12,14 @@
 class BannerTemplateModel implements JsonSerializable
 {
     private $description;
-    private $advertiserId;
-    private $bannerTemplateId;
-    private $parentBannerTemplateId;
-    private $auditUserId;
+    private $idAdvertiser;
+    private $idBannerTemplate;
+    private $idParentBannerTemplate;
+    private $idAuditUser;
     private $name;
+    private $dimX;
+    private $dimY;
+    private $idGroup;
     private $svgContent;
 
     public function __construct($source=null)
@@ -96,42 +99,42 @@ class BannerTemplateModel implements JsonSerializable
 
     public function getAdvertiserId()
     {
-        return $this->advertiserId;
+        return $this->idAdvertiser;
     }
 
     public function setAdvertiserId($idAdvertiser)
     {
-        $this->advertiserId = $idAdvertiser;
+        $this->idAdvertiser = $idAdvertiser;
     }
 
     public function getBannerTemplateId()
     {
-        return $this->bannerTemplateId;
+        return $this->idBannerTemplate;
     }
 
-    public function setBannerTemplateId($idBannerTemplate)
+    public function setBannerTemplateId($bannerTemplateId)
     {
-        $this->bannerTemplateId = $idBannerTemplate;
+        $this->idBannerTemplate = $bannerTemplateId;
     }
 
     public function getParentBannerTemplateId()
     {
-        return $this->parentBannerTemplateId;
+        return $this->idParentBannerTemplateId;
     }
 
-    public function setParentBannerTemplateId($idParentBannerTemplate)
+    public function setParentBannerTemplateId($parentTemplateId)
     {
-        $this->parentBannerTemplateId = $idParentBannerTemplate;
+        $this->idParentBannerTemplate = $parentTemplateId;
     }
 
     public function getAuditUserId()
     {
-        return $this->auditUserId;
+        return $this->idAuditUser;
     }
 
-    public function setAuditUserId($idAuditUser)
+    public function setAuditUserId($auditUserId)
     {
-        $this->auditUserId = $idAuditUser;
+        $this->idAuditUser = $auditUserId;
     }
 
     public function getName()
@@ -152,5 +155,65 @@ class BannerTemplateModel implements JsonSerializable
     public function setSvgContent($svgContent)
     {
         $this->svgContent = $svgContent;
+    }
+
+    /**
+     * Get dimY.
+     *
+     * @return dimY.
+     */
+    public function getDimY()
+    {
+        return $this->dimY;
+    }
+
+    /**
+     * Set dimY.
+     *
+     * @param dimY the value to set.
+     */
+    public function setDimY($dimY)
+    {
+        $this->dimY = $dimY;
+    }
+
+    /**
+     * Get dimX.
+     *
+     * @return dimX.
+     */
+    public function getDimX()
+    {
+        return $this->dimX;
+    }
+
+    /**
+     * Set dimX.
+     *
+     * @param dimX the value to set.
+     */
+    public function setDimX($dimX)
+    {
+        $this->dimX = (int) $dimX;
+    }
+
+    /**
+     * Get groupId.
+     *
+     * @return groupId.
+     */
+    public function getGroupId()
+    {
+        return $this->idGroup;
+    }
+
+    /**
+     * Set groupId.
+     *
+     * @param groupId the value to set.
+     */
+    public function setGroupId($groupId)
+    {
+        $this->idGroup = $groupId;
     }
 }
