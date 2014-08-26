@@ -14,7 +14,7 @@ class APIConnector
 
     public function __construct()
     {
-        $this->serviceUrl = 'http://bidder.mediadecision.lan:8080/chameleon-0.1/rest';
+        $this->serviceUrl = 'http://bidder.mediadecision.lan:8080/chameleon-0.2/rest';
         $this->serviceCalls = array();
         $this->serviceCalls['getTemplates']    = 'advertiser/{advertiserId}/bannerTemplates';
         $this->serviceCalls['postTemplate']    = 'bannerTemplate';
