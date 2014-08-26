@@ -270,6 +270,9 @@ class APIConnector
         $bannerTemplateModel->setBannerTemplateId((int) $template->idBannerTemplate);
         $bannerTemplateModel->setParentBannerTemplateId((int) $template->idParentBannerTemplate);
         $bannerTemplateModel->setSvgContent($template->svgContent);
+        $bannerTemplateModel->setDimX((int) $template->dimX);
+        $bannerTemplateModel->setDimY((int) $template->dimY);
+        $bannerTemplateModel->setGroupId((int) $template->groupId);
 
         return $bannerTemplateModel;
     }
