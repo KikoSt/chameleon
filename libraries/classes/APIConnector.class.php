@@ -63,7 +63,6 @@ class APIConnector
         {
             $logfile = fopen('log.txt', 'w');
             fwrite($logfile, json_encode($param));
-            echo "\n";
             fclose($logfile);
         }
 
@@ -90,17 +89,11 @@ class APIConnector
         curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
 
         $curl_response = curl_exec($curl);
-        echo $curl_response;
-        echo curl_getinfo($curl)['http_code'] . ', ';
         if(curl_getinfo($curl)['http_code'] != 204)
         {
             echo $creative->getSwfFilename();
             echo "\n";
         }
-        // var_dump(curl_getinfo($curl));
-        // echo json_encode($param);
-        // var_dump($curl_response);
-        // curl_exec($curl);
         curl_close($curl);
     }
 
@@ -161,6 +154,7 @@ class APIConnector
         $curl = $this->getCurl($resource, 'GET');
 
         $curlResponse = curl_exec($curl);
+
         curl_close($curl);
 
         $templateList = json_decode($curlResponse)->bannerTemplateModels;
