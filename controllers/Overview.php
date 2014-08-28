@@ -37,46 +37,22 @@ class Overview extends Controller
 
         foreach($templates as $template)
         {
-            $basePath = (string) $this->getCompanyId() . '/' . (string) $this->getAdvertiserId() . '/';
             $baseFilename = 'rtest_' . $template->getBannerTemplateId();
             $filename = $baseFilename . '.svg';
             $container->setOutputName($baseFilename);
 
-            if(!is_dir(SVG_DIR . $basePath))
-            {
-                // set the current umask to 0777
-                $old = umask(0);
-                if(!mkdir(SVG_DIR . $basePath, 0777, true))
-                {
-                    throw new Exception('Could not create directory ' . $basePath);
-                }
-                // reset umask
-                umask($old);
-            }
-            if(is_dir(SVG_DIR . $basePath))
-            {
-                $fh = fopen(SVG_DIR . $basePath . $filename, 'w');
-                if(!$fh)
-                {
-                    throw new Exception('Could not open file ' . SVG_DIR . $basePath . $filename);
-                }
-                fwrite($fh, $template->getSvgContent());
-                fclose($fh);
-            }
-            else
-            {
-                throw new Exception($basePath . ' not found!');
-            }
-
+            $container->setSource($template->getSvgContent());
             $container->setId($template->getBannerTemplateId());
+            $container->saveSvg();
 
-            $container->setSource($basePath . $filename);
-            $container->parse();
+
+            // $container->setSource($filename);
+            // $container->parse();
             $container->setTarget('GIF');
             $container->render();
 
             $preview = new StdClass();
-            $preview->filepath = str_replace($_SERVER['DOCUMENT_ROOT'], '', $container->getOutputDir()) . '/' . $baseFilename . '.gif';
+            $preview->filepath = str_replace($_SERVER['DOCUMENT_ROOT'], '', OUTPUT_DIR . '/' . $container->getOutputDir()) . '/' . $baseFilename . '.gif';
             $preview->width = $container->getCanvasWidth() / 2 > 300 ? 300 : $container->getCanvasWidth() / 2;
             $preview->height = $container->getCanvasHeight();
             $preview->id = $template->getBannerTemplateId();

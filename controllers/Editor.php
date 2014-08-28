@@ -39,14 +39,26 @@ class Editor extends Controller
         // $_SESSION['advertiserId'] = $advertiserId;
         // $_SESSION['companyId']    = $companyId;
 
-        $basePath = (string) $this->getCompanyId() . '/' . (string) $this->getAdvertiserId() . '/';
+//        $basePath = (string) $this->getCompanyId() . '/' . (string) $this->getAdvertiserId() . '/' . '0';
 
+        $baseFilename = 'rtest_' . $container->getId();
+        $filename = $baseFilename . '.svg';
+
+        // render gif for editor view
+        $container->setCategoryId(0);
+        $container->setOutputName($baseFilename);
+        $container->setSource($filename);
+        $container->parse();
+        $container->setTarget('GIF');
+        $container->render();
+
+
+
+/*
         // check if svg_dir exists
-        if(is_dir(SVG_DIR . $basePath))
+        if(is_dir(SVG_DIR . '/' . $basePath))
         {
             // prepare the file name
-            $baseFilename = 'rtest_' . $container->getId();
-            $filename = $baseFilename . '.svg';
 
             // check if file with id already exists
             if(!file_exists(SVG_DIR . $basePath . $filename))
@@ -55,7 +67,7 @@ class Editor extends Controller
                 $template = $connector->getTemplateById($container->getId());
 
                 // create svg
-                $handle = fopen(SVG_DIR . $basePath . $filename, 'w');
+                $handle = fopen(SVG_DIR . '/' . $basePath  . '/' . $filename, 'w');
                 if(!$handle)
                 {
                     throw new Exception('Could not open file ' . SVG_DIR . $filename);
@@ -64,24 +76,18 @@ class Editor extends Controller
                 fclose($handle);
             }
 
-            // render gif for editor view
-            $container->setCategoryId(0);
-            $container->setOutputName($baseFilename);
-            $container->setSource($basePath . $filename);
-            $container->parse();
-            $container->setTarget('GIF');
-            $container->render();
         }
         else
         {
-            throw new Exception(SVG_DIR . ' not found !');
+            throw new Exception(SVG_DIR . '/' . $basePath . ' not found!');
         }
+*/
 
         // view parameters
         $this->view->templateId = $container->getId();
         $this->view->advertiserId = $container->getAdvertiserId();
         $this->view->companyId = $container->getCompanyId();
-        $this->view->gif = str_replace('var/www/', '', $container->getOutputDir()) . '/' . $baseFilename . '.gif';
+        $this->view->gif = str_replace('var/www/', '', OUTPUT_DIR . '/' . $container->getOutputDir()) . '/' . $baseFilename . '.gif';
         $this->view->elements = $container->getElements();
         $this->view->fontlist = $text->getFontListForOverview();
         $this->view->cmeoRefOptions = $this->getCmeoRefOptions();
