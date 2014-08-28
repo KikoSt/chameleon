@@ -30,8 +30,8 @@ $templates = $connector->getTemplates($advertiserId);
 $container->setAdvertiserId($advertiserId);
 $container->setCompanyId($companyId);
 
-$container->setCategoryId($category);
-$products  = $connector->getProductsByCategory($category);
+$container->setCategoryId($categoryId);
+$products    = $connector->getProductsByCategory($categoryId);
 $productList = $products;
 
 $count = 0;
@@ -40,7 +40,7 @@ foreach($templates AS $template)
     $container = new GfxContainer();
     $container->setAdvertiserId($advertiserId);
     $container->setCompanyId($companyId);
-    $container->setCategoryId($category);
+    $container->setCategoryId($categoryId);
     $container->setSource($template->getSvgContent());
     $container->setId($template->getBannerTemplateId());
     $container->parse();
