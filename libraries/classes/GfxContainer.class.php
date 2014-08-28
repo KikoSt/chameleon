@@ -62,7 +62,7 @@ class GfxContainer
         $this->cleanup();
     }
 
-    public function cleanup()
+    private function cleanup()
     {
         if(count($this->registry) > 0)
         {
@@ -85,15 +85,7 @@ class GfxContainer
         $this->dataRegistry[$key][] = $element;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getCanvas()
-    {
-        return $this->canvas;
-    }
-
-    public function getSvg()
+    private function getSvg()
     {
         $svg = '';
         foreach($this->getElements() as $element)
@@ -103,6 +95,12 @@ class GfxContainer
         return $svg;
     }
 
+    /**
+     * createSvg
+     *
+     * @access public
+     * @return void
+     */
     public function createSvg()
     {
         //create header
@@ -118,13 +116,6 @@ class GfxContainer
         return $string;
     }
 
-    /**
-     * @param mixed $canvas
-     */
-    public function setCanvas($canvas)
-    {
-        $this->canvas = $canvas;
-    }
 
     public function setOutputName($outputName)
     {
@@ -187,6 +178,7 @@ class GfxContainer
         }
     }
 
+    /*
     public function handleGfxAnimation($defs)
     {
         if(!empty($defs))
@@ -208,16 +200,7 @@ class GfxContainer
         }
         return $animationObject;
     }
-
-    public function setId($sId)
-    {
-        $this->id =$sId;
-    }
-
-    public function getId()
-    {
-        return $this->id;
-    }
+    */
 
     public function getElements()
     {
@@ -535,6 +518,16 @@ class GfxContainer
     /* **************************************
               Accessors
     ***************************************** */
+    public function setId($sId)
+    {
+        $this->id =$sId;
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
     public function setTarget($target)
     {
         if(!in_array($target, $this->allowedTargets)) {
@@ -669,5 +662,23 @@ class GfxContainer
     public function setCategoryId($categoryId)
     {
         $this->categoryId = $categoryId;
+        $this->calculateAdaptedPath();
+    }
+
+    /**
+     * getCanvas
+     * @return mixed
+     */
+    public function getCanvas()
+    {
+        return $this->canvas;
+    }
+
+    /**
+     * @param mixed $canvas
+     */
+    public function setCanvas($canvas)
+    {
+        $this->canvas = $canvas;
     }
 }
