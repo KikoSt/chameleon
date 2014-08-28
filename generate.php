@@ -11,18 +11,19 @@ if(!defined('__ROOT__'))
     define('__ROOT__', './');
 }
 
-$category = $argv[1];
+$companyId    = $argv[1];
+$advertiserId = $argv[2];
+$categoryId   = $argv[3];
+$auditUserId  = $argv[4];
 
-$advertiserId = 122;
-$companyId    = 170;
-$userId       = 14;
-$templateId   = 96;
+echo $companyId . ' ' . $advertiserId . ' ' . $categoryId . "\n";
 
 $connector = new APIConnector();
 $container = new GfxContainer();
 
 $connector->setAdvertiserId($advertiserId);
 $connector->setCompanyId($companyId);
+$connector->setAuditUserId($auditUserId);
 
 // fetch all templates for given advertiser
 $templates = $connector->getTemplates($advertiserId);
