@@ -343,11 +343,13 @@ class APIConnector
         $bannerTemplateModel->setDescription((string) $template->description);
         $bannerTemplateModel->setName((string) $template->name);
         $bannerTemplateModel->setBannerTemplateId((int) $template->idBannerTemplate);
-        $bannerTemplateModel->setParentBannerTemplateId((int) $template->idParentBannerTemplate);
+
+        // idParentBanner can be null and php casts null to 0!
+        $bannerTemplateModel->setParentBannerTemplateId($template->idParentBannerTemplate);
         $bannerTemplateModel->setSvgContent($template->svgContent);
         $bannerTemplateModel->setDimX((int) $template->dimX);
         $bannerTemplateModel->setDimY((int) $template->dimY);
-        $bannerTemplateModel->setGroupId((int) $template->groupId);
+        $bannerTemplateModel->setGroupId((int) $template->idGroup);
 
         return $bannerTemplateModel;
     }
