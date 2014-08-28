@@ -25,6 +25,14 @@ class GfxContainer
     private $editorOptions;
     private $allowedTargets;
 
+    // Path information:
+    // the baseDir is either SVG_DIR or OUTPUT_DIR for now, depending on whether
+    //   SVG operations or rendering is required -> NOT stored here
+    // the adapted path is <companyId>/<advertiserId>/<categoryId, i.e.
+    //   170/122/7
+    // for general purposes, categoryId "0" can be used
+    private $adaptedPath;
+
     private $productData;
 
     private $registry;
@@ -128,17 +136,16 @@ class GfxContainer
         return $this->outputName;
     }
 
+
     public function setSource($source)
     {
-
-        if(file_exists($source))
+        if(file_exists(SVG_DIR . '/' . $this->adaptedPath . '/' . $source))
         {
-            $source = SVG_DIR . $source;
-            $this->source = $source;
+            $this->source = simplexml_load_file(SVG_DIR . '/' . $this->adaptedPath . '/' . $source);
         }
         else if(is_string($source))
         {
-            $this->source = $source;
+            $this->source = simplexml_load_string($source);
         }
         else if(is_a($source, 'SimpleXMLElement'))
         {
@@ -148,35 +155,23 @@ class GfxContainer
         {
             throw new FileNotFoundException('File ' . $source . ' not found!');
         }
+        $this->parse();
     }
 
     public function parse()
     {
         libxml_use_internal_errors(true);
 
-        if(is_a($this->source, 'SimpleXMLElement'))
+        if(!is_a($this->source, 'SimpleXMLElement'))
         {
-            $svg = $this->source;
+            throw new Exception('No valid simplexml source element provided: ' . $this->source);
         }
-        else if(file_exists(SVG_DIR . $this->source))
-        {
-            $svg = new SimpleXMLElement(file_get_contents(SVG_DIR . $this->source));
-        }
-        else if (is_string($this->source) && simplexml_load_string($this->source))
-        {
-            $svg = simplexml_load_string($this->source);
-        }
-        else
-        {
-            throw new Exception('No valid source provided (file path, simplexml svg object, svg string: ' . $this->source);
-        }
+        $svg = $this->source;
 
         $this->setCanvasWidth((float) $svg->attributes()->width);
         $this->setCanvasHeight((float) $svg->attributes()->height);
 
         $children = $svg->children();
-
-//        $this->handleGfxAnimation($children->defs);
 
         $main = $children->g;
 
@@ -257,25 +252,21 @@ class GfxContainer
         }
         else
         {
-            if('' === $this->getCompanyId() || '' === $this->getAdvertiserId())
-            {
-                throw new Exception('Company or advertiser id not set');
-            }
+//             if('' === $this->getCompanyId() || '' === $this->getAdvertiserId())
+//             {
+//                 throw new Exception('Company or advertiser id not set');
+//             }
             if('' == $this->getId())
             {
                 throw new Exception('Template id not set');
             }
 
-            // $filename = $this->getCompanyId();
-            // $filename .= '_' . $this->getAdvertiserId();
             $filename  = $this->getId();
             $filename .= '_' . preg_replace("/[^a-zA-Z0-9]/", "", $this->getProductData()->getName());
             $filename .= '_' . $this->getProductData()->getProductId();
             $filename .= '_' . $this->getCanvasHeight();
             $filename .= 'x' . $this->getCanvasWidth();
         }
-
-        $filename .= '.' . strtolower($this->getTarget());
 
         return $filename;
     }
@@ -296,14 +287,49 @@ class GfxContainer
             throw new Exception('Company, Advertiser or Category ID missing');
         }
         // if there is a trailing / in OUTPUT_DIR, remove it, then assemble all parts to output directory path
-        $parts = array(rtrim(OUTPUT_DIR, '/'), (int) $this->getCompanyId(), (int) $this->getAdvertiserId(), (int) $this->getCategoryId());
+        $parts = array((int) $this->getCompanyId(), (int) $this->getAdvertiserId(), (int) $this->getCategoryId());
 
         $outputDir = implode('/', $parts);
 
         return $outputDir;
     }
 
-    public function createOutputDir()
+    public function saveSvg()
+    {
+        $outputDir = $this->calculateOutputDir();
+        $this->setOutputDir($outputDir);
+
+        $filename = $this->getOutputFilename() . '.svg';
+
+        // if output dir doesn't exist, create it
+        if(!is_dir(SVG_DIR . '/' . $outputDir))
+        {
+            // set the current umask to 0777
+            $old = umask(0);
+            if(!mkdir(SVG_DIR . '/' . $outputDir, 0777, true))
+            {
+                throw new Exception('Could not create directory ' . SVG_DIR . '/' . $outputDir);
+            }
+            // reset umask
+            umask($old);
+        }
+        if(is_dir(SVG_DIR . '/' . $outputDir))
+        {
+            $handle = fopen(SVG_DIR . '/' . $outputDir . '/' . $filename, 'w');
+            if(!$handle)
+            {
+                throw new Exception('Could not open file ' . SVG_DIR . '/' . $outputDir . '/' . $filename);
+            }
+            fwrite($handle, $this->createSvg());
+            fclose($handle);
+        }
+        else
+        {
+            throw new Exception(SVG_DIR . '/' . $outputDir . ' not found!');
+        }
+    }
+
+    private function createOutputDir()
     {
         if('' === $this->getOutputDir())
         {
@@ -314,24 +340,30 @@ class GfxContainer
             $this->setOutputDir($this->calculateOutputDir());
         }
 
-        $dir = $this->getOutputDir();
+        $outputFormats = array(SVG_DIR, OUTPUT_DIR);
 
-        if(!file_exists($dir))
+        foreach($outputFormats AS $basePath)
         {
-            // set the current umask to 0777
-            $old = umask(0);
-            if(!mkdir($dir, 0777, true))
+
+            $dir = $basePath . '/' . $this->getOutputDir();
+
+            if(!file_exists($dir))
             {
-                throw new Exception('Could not create directory ' . $dir);
+                // set the current umask to 0777
+                $old = umask(0);
+                if(!mkdir($dir, 0777, true))
+                {
+                    throw new Exception('Could not create directory ' . $dir);
+                }
+                // reset umask
+                umask($old);
             }
-            // reset umask
-            umask($old);
         }
 
         return $dir;
     }
 
-    public function setOutputDir($outputDir)
+    private function setOutputDir($outputDir)
     {
         $this->outputDir = $outputDir;
     }
@@ -359,6 +391,11 @@ class GfxContainer
     }
 
 
+    public function register($element)
+    {
+        $this->registry[] = $element;
+    }
+
     public function render()
     {
         $this->createOutputDir();
@@ -375,11 +412,6 @@ class GfxContainer
     }
 
 
-
-    public function register($element)
-    {
-        $this->registry[] = $element;
-    }
 
 
 
@@ -398,12 +430,13 @@ class GfxContainer
                 $element->renderSWF($swf);
             }
         }
-        $swf->save($this->getOutputDir() . '/' . $this->getOutputFilename());
+        $swf->save($this->getOutputDir() . '/' . $this->getOutputFilename() . '.swf');
 
         $swf = null;
         unset($swf);
         gc_collect_cycles();
     }
+
 
     private function renderGIF()
     {
@@ -416,12 +449,14 @@ class GfxContainer
 
         $this->setCanvas($updatedCanvas);
 
-        $success = imagegif($updatedCanvas, $this->getOutputDir() . '/' . $this->getOutputFilename());
+        $success = imagegif($updatedCanvas, OUTPUT_DIR . '/' . $this->getOutputDir() . '/' . $this->getOutputFilename() . '.gif');
+        unset($success);
 
         imageDestroy($updatedCanvas);
 
-        chmod($this->getOutputDir() . '/' . $this->getOutputFilename(), 0777);
+        chmod(OUTPUT_DIR . '/' . $this->getOutputDir() . '/' . $this->getOutputFilename() . '.gif', 0777);
     }
+
 
     public function getOptionsForEditor()
     {
@@ -547,12 +582,22 @@ class GfxContainer
         return $this->advertiserId;
     }
 
+    private function calculateAdaptedPath()
+    {
+        if($this->companyId !== null && $this->advertiserId !== null)
+        {
+            $this->adaptedPath = $this->getCompanyId() . '/' . $this->getAdvertiserId() . '/' . (int)$this->getCategoryId();
+        }
+
+    }
+
     /**
      * @param mixed $advertiser
      */
     public function setAdvertiserId($advertiserId)
     {
         $this->advertiserId = $advertiserId;
+        $this->calculateAdaptedPath();
     }
 
     /**
@@ -569,6 +614,7 @@ class GfxContainer
     public function setCompanyId($companyId)
     {
         $this->companyId = $companyId;
+        $this->calculateAdaptedPath();
     }
 
 
