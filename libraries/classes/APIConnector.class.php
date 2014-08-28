@@ -16,12 +16,14 @@ class APIConnector
     {
         $this->serviceUrl = 'http://bidder.mediadecision.lan:8080/chameleon-0.2/rest';
         $this->serviceCalls = array();
-        $this->serviceCalls['getTemplates']    = 'advertiser/{advertiserId}/bannerTemplates';
-        $this->serviceCalls['postTemplate']    = 'bannerTemplate';
-        $this->serviceCalls['deleteTemplate']  = 'bannerTemplate/{templateId}';
-        $this->serviceCalls['getTemplateById'] = 'bannerTemplate/{templateId}';
+        $this->serviceCalls['getTemplates']          = 'advertiser/{advertiserId}/bannerTemplates';
+        $this->serviceCalls['getTemplatesByGroup']   = 'advertiser/{advertiserId}/group/{groupId}/bannerTemplates';
+        $this->serviceCalls['postTemplate']          = 'bannerTemplate';
+        $this->serviceCalls['deleteTemplate']        = 'bannerTemplate/{templateId}';
+        $this->serviceCalls['getTemplateById']       = 'bannerTemplate/{templateId}';
         $this->serviceCalls['getProductsByCategory'] = 'company/{companyId}/category/{categoryId}/products';
-        $this->serviceCalls['sendCreative'] = 'creativeImage';
+        $this->serviceCalls['sendCreative']          = 'creativeImage';
+        $this->serviceCalls['getEnums']              = 'enums';
     }
 
     /**
@@ -139,18 +141,46 @@ class APIConnector
         return $templateCount;
     }
 
+
     /**
+     * getTemplatesByGroup
+     *
+     *
+     *
+     * @param mixed $groupId
+     * @access public
+     * @return void
+     */
+    public function getTemplatesByGroupId($groupId)
+    {
+        return $this->getTemplates($groupId);
+    }
+
+
+    /**
+     * getTemplates
+     *
      * @return array
      * @throws Exception
      */
-    public function getTemplates()
+    public function getTemplates($groupId=null)
     {
         if(!isset($this->advertiserId))
         {
             throw new Exception('advertiserId not set');
         }
 
-        $resource = $this->serviceUrl . '/' . str_replace('{advertiserId}', $this->advertiserId, $this->serviceCalls['getTemplates']);
+        if(null === $groupId)
+        {
+            $resource = $this->serviceUrl . '/' . str_replace('{advertiserId}', $this->advertiserId, $this->serviceCalls['getTemplates']);
+        }
+        else
+        {
+            $call = $this->serviceCalls['getTemplatesByGroup'];
+            $call = str_replace('{advertiserId}', $this->advertiserId, $call);
+            $call = str_replace('{groupId}', $groupId, $call);
+            $resource = $this->serviceUrl . '/' . $call;
+        }
         $curl = $this->getCurl($resource, 'GET');
 
         $curlResponse = curl_exec($curl);
