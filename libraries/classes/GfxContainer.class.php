@@ -449,65 +449,49 @@ class GfxContainer
         return $gfxInstance;
     }
 
-    /**
-     * registerSubstitution
-     *
-     * @param mixed $dataId
-     * @param mixed $gfxElement
-     * @access public
-     * @return void
-     */
-/*
-    public function registerSubstitution($dataId, $gfxElement)
-    {
-        // check if there is already a "registry" for the given dataId
-        // if not, create it
-        // register the given element for dataId updates/substitutions
-    }
-*/
-
-
 
     public function changeElementValue($formData)
     {
-        //iterate all svg elements
+        $valueList = array();
+
+        foreach($formData AS $key => $value)
+        {
+            list($id, $parameter) = explode('#', $key);
+
+            if(!array_key_exists($id, $valueList)) {
+                $valueList[$id] = array();
+            }
+            $valueList[$id][$parameter] = $value;
+        }
+
+        // now we've got a dictionary like that:
+        // valueList['price_ribbon_1']['x'] = 50;
         foreach($this->getElements() as $element)
         {
+            // now get the id of one element after another and read the values from
+            // the prepared dictionary
             $id = $element->getId();
-
-            //iterate form data
-            foreach($formData as $key => $value)
+            foreach($valueList[$id] AS $param => $value)
             {
-                $cleansedKey = explode('#', $key);
+                $func="set" . ucwords($param);
 
-                if(isset($cleansedKey[1]))
+                if($param === "fill" || $param === "shadowColor")
                 {
-                    $param = $cleansedKey[1];
+                    $color = new GfxColor($value);
+                    $element->$func($color);
                 }
-
-                // form data containing the current element found?
-                if(strcasecmp($cleansedKey[0], $id) == 0)
+                elseif($param === "stroke")
                 {
-                    $func="set" . ucwords($param);
-
-                    if($param === "fill" || $param === "shadowColor")
-                    {
-                        $color = new GfxColor($value);
-                        $element->$func($color);
-                    }
-                    elseif($param === "stroke")
-                    {
-                        $stroke = new GfxStroke(new GfxColor($value), 1);
-                        $element->$func($stroke);
-                    }
-                    elseif($param === "strokeWidth")
-                    {
-                        $element->getStroke()->setWidth($value);
-                    }
-                    else
-                    {
-                        $element->$func($value);
-                    }
+                    $stroke = new GfxStroke(new GfxColor($value), 1);
+                    $element->$func($stroke);
+                }
+                elseif($param === "strokeWidth")
+                {
+                    $element->getStroke()->setWidth($value);
+                }
+                else
+                {
+                    $element->$func($value);
                 }
             }
         }
