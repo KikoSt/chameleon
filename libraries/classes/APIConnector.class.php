@@ -27,7 +27,10 @@ class APIConnector
     }
 
     /**
-     * @return array
+     * getMethodList
+     *
+     * @access public
+     * @return methodList a list containing all currently available REST calls
      */
     public function getMethodList()
     {
@@ -35,7 +38,10 @@ class APIConnector
         return $methodList;
     }
 
+
     /**
+     * get
+     *
      * @param $path
      * @return string
      */
@@ -183,7 +189,10 @@ class APIConnector
 
     }
 
+
     /**
+     * getNumTemplates
+     *
      * @return int
      */
     public function getNumTemplates()
@@ -249,6 +258,7 @@ class APIConnector
 
         return $templates;
     }
+
 
     public function getTemplateById($templateId)
     {
