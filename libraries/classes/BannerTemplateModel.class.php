@@ -177,7 +177,7 @@ class BannerTemplateModel implements JsonSerializable
      */
     public function setDimY($dimY)
     {
-        $this->dimY = $dimY;
+        $this->dimY = (int) $dimY;
     }
 
     /**
