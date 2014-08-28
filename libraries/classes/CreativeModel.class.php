@@ -10,11 +10,12 @@ class CreativeModel
     private $gifFileName;
     private $swfContent;
     private $gifContent;
-    private $idProduct;
+    private $productIds;
 
 
     public function __construct()
     {
+        $this->productIds = array();
     }
 
 
@@ -35,11 +36,18 @@ class CreativeModel
 
         $this->setSwfBin(base64_encode(file_get_contents($this->getSwfPath())));
         $this->setGifBin(base64_encode(file_get_contents($this->getGifPath())));
-
-        // $this->setSwfBin(base64_encode('')); // base64_encode(file_get_contents($this->getSwfPath())));
-        // $this->setGifBin(base64_encode('')); // base64_encode(file_get_contents($this->getGifPath())));
     }
 
+
+    public function addProductId($productId)
+    {
+        $this->productIds[] = $productId;
+    }
+
+    public function getProductIdAsArray()
+    {
+        return $this->productIds;
+    }
 
     /**
      * Get width.
@@ -119,26 +127,6 @@ class CreativeModel
     public function setGifPath($gifPath)
     {
         $this->gifPath = $gifPath;
-    }
-
-    /**
-     * Get productId.
-     *
-     * @return productId.
-     */
-    public function getProductId()
-    {
-        return $this->idProduct;
-    }
-
-    /**
-     * Set productId.
-     *
-     * @param productId the value to set.
-     */
-    public function setProductId($productId)
-    {
-        $this->idProduct = $productId;
     }
 
     /**
