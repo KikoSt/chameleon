@@ -46,59 +46,110 @@ class APIConnector
         return $response;
     }
 
-    public function sendCreatives($creatives)
+
+    /**
+     * getUserStatusValues
+     *
+     * get all possible user status values via REST API
+     * (crrently: ACTIVE, PAUSED, DELETED)
+     *
+     * @access public
+     * @return $userStatusValues a list containing all defined user status values
+     */
+    public function getUserStatusValues()
+    {
+        $enums = $this->getEnums();
+        $userStatusValues = $enums->userStatusValues;
+        return $userStatusValues;
+    }
+
+
+    /**
+     * getEnums
+     *
+     * method to retrieve ALL enums from REST API. While currently there are only the userStatusValues,
+     * there will most likely more than that later
+     *
+     * @access private
+     * @return $enums list of ALL enums returned by REST API call
+     */
+    private function getEnums()
+    {
+        $resource = $this->serviceUrl . '/' . $this->serviceCalls['getEnums'];
+        $curl = $this->getCurl($resource, 'GET');
+        $curlResponse = curl_exec($curl);
+
+        if(curl_getinfo($curl)['http_code'] != 204)
+        {
+            $logfile = fopen('log.txt', 'w');
+            fwrite($logfile, $curlResponse . "\n");
+            fclose($logfile);
+        }
+        curl_close($curl);
+        $enums = json_decode($curlResponse);
+        return $enums;
+
+    }
+
+
+    /**
+     * sendCreatives
+     *
+     * send a list of creatives via REST API including the files themselves as base64 encoded binaries
+     *
+     * @param mixed $creatives
+     * @param mixed $feedId
+     * @param mixed $categoryId
+     * @param mixed $groupId
+     * @access public
+     * @return void
+     */
+    public function sendCreatives($creatives, $feedId, $categoryId, $groupId=null)
     {
         $resource = $this->serviceUrl . '/' . $this->serviceCalls['sendCreative'];
         $curl = $this->getCurl($resource, 'POST');
 
         $param = new StdClass();
         $param->creativeImageModels = $creatives;
-        $param->idAdvertiser = $this->getAdvertiserId();
-        $param->idAuditUser = 14;
-        $param->idCategory = 666;
-        $param->idFeed = 1;
+        $param->idAdvertiser        = $this->getAdvertiserId();
+        $param->idAuditUser         = $this->getAuditUserId();
+        $param->idCategory          = $categoryId;
+        $param->idFeed              = $feedId;
+        $param->idGroup             = $groupId;
 
         curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($param));
         curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+
+        // $curl_response = curl_exec($curl);
+        $curlResponse = curl_exec($curl);
 
         if(curl_getinfo($curl)['http_code'] != 204)
         {
             $logfile = fopen('log.txt', 'w');
-            fwrite($logfile, json_encode($param));
+            fwrite($logfile, $curlResponse . "\n" . json_encode($param));
             fclose($logfile);
         }
 
-        // $curl_response = curl_exec($curl);
-        curl_exec($curl);
         curl_close($curl);
     }
 
 
-    public function sendCreative($creative)
+    /**
+     * sendCreative
+     *
+     * simple wrapper for sending only one creative
+     *
+     * @param mixed $creative
+     * @param mixed $feedId
+     * @param mixed $categoryId
+     * @param mixed $groupId
+     * @access public
+     * @return void
+     */
+    public function sendCreative($creative, $feedId, $categoryId, $groupId=null)
     {
-        $resource = $this->serviceUrl . '/' . $this->serviceCalls['sendCreative'];
-        $curl = $this->getCurl($resource, 'POST');
-
-        $param = new StdClass();
-        $param->advertiserId = $this->getAdvertiserId();
-        $param->creativeImageModels = array($creative);
-        $param->idAdvertiser = $this->getAdvertiserId();
-        $param->idAuditUser = 14;
-        $param->idCategory = 666;
-        $param->idFeed = 1;
-
-        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($param));
-        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-
-        $curl_response = curl_exec($curl);
-        if(curl_getinfo($curl)['http_code'] != 204)
-        {
-            echo $creative->getSwfFilename();
-            echo "\n";
-        }
-        curl_close($curl);
+        $this->sendCreatives(array($creative), $feedId, $categoryId, $groupId);
     }
-
 
 
     /**
