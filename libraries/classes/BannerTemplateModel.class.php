@@ -122,7 +122,7 @@ class BannerTemplateModel implements JsonSerializable
 
     public function getParentBannerTemplateId()
     {
-        return $this->idParentBannerTemplateId;
+        return $this->idParentBannerTemplate;
     }
 
     public function setParentBannerTemplateId($parentTemplateId)
