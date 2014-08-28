@@ -8,9 +8,9 @@ class APIConnector
     private $serviceUrl;
     private $serviceCalls;
 
+    private $auditUserId;
     private $advertiserId;
     private $companyId;
-    private $bannerTemplateId;
 
     public function __construct()
     {
@@ -351,5 +351,32 @@ class APIConnector
     }
 
 
+
+    /**
+     * Get auditUserId.
+     *
+     * @return auditUserId.
+     */
+    public function getAuditUserId()
+    {
+        if(!isset($this->auditUserId))
+        {
+            throw new Exception('AuditUserId not provided!');
+        }
+        else
+        {
+            return $this->auditUserId;
+        }
+    }
+
+    /**
+     * Set auditUserId.
+     *
+     * @param auditUserId the value to set.
+     */
+    public function setAuditUserId($auditUserId)
+    {
+        $this->auditUserId = $auditUserId;
+    }
 }
 
