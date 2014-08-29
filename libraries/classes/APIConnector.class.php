@@ -24,6 +24,7 @@ class APIConnector
         $this->serviceCalls['getProductsByCategory'] = 'company/{companyId}/category/{categoryId}/products';
         $this->serviceCalls['sendCreative']          = 'creativeImage';
         $this->serviceCalls['getEnums']              = 'enums';
+        $this->serviceCalls['getCategories']         = 'company/{companyId}/categories';
     }
 
     /**
@@ -188,6 +189,34 @@ class APIConnector
         return $products;
 
     }
+
+
+    public function getCategories()
+    {
+        $resource = $this->serviceUrl . '/' . str_replace('{companyId}', $this->companyId, $this->serviceCalls['getCategories']);
+        $curl = $this->getCurl($resource, 'GET');
+
+        $curlResponse = curl_exec($curl);
+        curl_close($curl);
+
+        $categories = json_decode($curlResponse)->categories;
+        $categoriesProcessed = array();
+
+        foreach($categories AS $category)
+        {
+            $curCategory           = new StdClass();
+            $curCategory->id       = $category->idCategory;
+            $curCategory->status   = $category->idStatusType;
+            $curCategory->name     = $category->categoryName;
+            $curCategory->url      = $category->categoryUrl;
+            $curCategory->number   = $category->categoryNumber;
+            $categoriesProcessed[] = $curCategory;
+        }
+
+        return $categoriesProcessed;
+
+    }
+
 
 
     /**
