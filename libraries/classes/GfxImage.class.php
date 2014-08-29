@@ -237,13 +237,18 @@ class GfxImage extends GfXComponent
 
     private function createImageFromSourceFile($file)
     {
-        list( $dirname, $basename, $extension, $filename ) = array_values( pathinfo($file) );
+        list( $dirname, $basename, $extension, $filename ) = array_values(pathinfo($file));
+        unset($dirname);
+        unset($basename);
+        unset($filename);
 
         $image = null;
+        $extension = strtolower($extension);
 
         switch($extension)
         {
             case "jpg":
+            case "jpeg":
             {
                 $image = imagecreatefromjpeg($file);
                 break;
@@ -260,7 +265,7 @@ class GfxImage extends GfXComponent
             }
             default:
             {
-                throw new Exception('No valid input file format provided: ' . $extention);
+                throw new Exception('No valid input file format provided: ' . $extension);
             }
         }
         if(!$image)
