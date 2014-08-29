@@ -217,7 +217,15 @@ class GfxImage extends GfXComponent
         $bgcolor = imagecolorallocatealpha($resizedImage, 255, 255, 255, 0);
         imagefill($resizedImage, 0, 0, $bgcolor);
 
-        imagecopyresampled($resizedImage, $originalImage, $newX, $newY, 0, 0, $resizedWidth, $resizedHeight, $originalWidth, $originalHeight);
+        // massively time consuming
+        if($this->getContainer()->getPreviewMode() !== true)
+        {
+            imagecopyresampled($resizedImage, $originalImage, $newX, $newY, 0, 0, $resizedWidth, $resizedHeight, $originalWidth, $originalHeight);
+        }
+        else
+        {
+            imagecopyresized($resizedImage, $originalImage, $newX, $newY, 0, 0, $resizedWidth, $resizedHeight, $originalWidth, $originalHeight);
+        }
 
         imagealphablending($resizedImage, false);
         imagesavealpha($resizedImage,true);

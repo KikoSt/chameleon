@@ -29,6 +29,7 @@ class Overview extends Controller
         $container->setAdvertiserId($this->getAdvertiserId());
         $container->setCompanyId($this->getCompanyId());
         $container->setCategoryId(0);
+        $container->setPreviewMode(true);
 
         $this->view = $this->setLayout('views/overview.phtml')->getView();
 
