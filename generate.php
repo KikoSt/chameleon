@@ -11,10 +11,10 @@ if(!defined('__ROOT__'))
     define('__ROOT__', './');
 }
 
-$companyId    = $argv[1];
-$advertiserId = $argv[2];
-$categoryId   = $argv[3];
-$auditUserId  = $argv[4];
+$companyId    = (int) $argv[1];
+$advertiserId = (int) $argv[2];
+$categoryId   = (int) $argv[3];
+$auditUserId  = (int) $argv[4];
 
 echo $companyId . ' ' . $advertiserId . ' ' . $categoryId . "\n";
 
@@ -26,7 +26,7 @@ $connector->setCompanyId($companyId);
 $connector->setAuditUserId($auditUserId);
 
 // fetch all templates for given advertiser
-$templates = $connector->getTemplates($advertiserId);
+$templates = $connector->getTemplates();
 
 $container->setAdvertiserId($advertiserId);
 $container->setCompanyId($companyId);
@@ -53,7 +53,7 @@ foreach($templates AS $template)
         $container->render();
         $container->setTarget('GIF');
         $container->render();
-        $container->cleanup();
+        // $container->cleanup();
         echo ++$count . "\n\n";
     }
 }

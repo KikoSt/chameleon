@@ -21,6 +21,13 @@ $auditUserId  = 1;
 
 $productCategoryIds = array(20610);
 
+foreach($productCategoryIds AS $categoryId)
+{
+    passthru('php ./generate.php ' . $companyId . ' ' . $advertiserId . ' ' . $categoryId . ' ' . $auditUserId);
+}
+
+
+exit(0);
 
 // Some tests
 $connector = new APIConnector();
