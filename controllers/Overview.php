@@ -46,9 +46,6 @@ class Overview extends Controller
             $container->setId($template->getBannerTemplateId());
             $container->saveSvg();
 
-
-            // $container->setSource($filename);
-            // $container->parse();
             $container->setTarget('GIF');
             $container->render();
 
@@ -65,7 +62,6 @@ class Overview extends Controller
 
             // unlink(SVG_DIR . $filename);
         }
-
         $this->view->previews = $previews;
 
         return $this->view;

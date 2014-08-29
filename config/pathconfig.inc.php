@@ -11,7 +11,6 @@ else
 
 define('ROOT_DIR', $basedir . 'chameleon/');
 
-
 define('ASSET_DIR', ROOT_DIR . 'assets');
 define('OUTPUT_DIR', ROOT_DIR . 'output');
 define('AJAX_DIR', ROOT_DIR . 'ajax');
@@ -26,3 +25,5 @@ define('EXCEPTION_DIR', ROOT_DIR . 'libraries/exception');
 define('SVG_DIR', ROOT_DIR . 'svg');
 
 define('GIFPROTO', ROOT_DIR . 'assets/gifProto');
+
+
