@@ -413,7 +413,7 @@ class GfxContainer
                 $element->renderSWF($swf);
             }
         }
-        $swf->save($this->getOutputDir() . '/' . $this->getOutputFilename() . '.swf');
+        $swf->save(OUTPUT_DIR . '/' . $this->getOutputDir() . '/' . $this->getOutputFilename() . '.swf');
 
         $swf = null;
         unset($swf);
