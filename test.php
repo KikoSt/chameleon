@@ -19,6 +19,10 @@ $container = new GfxContainer();
 $connector->setAdvertiserId($advertiserId);
 $connector->setCompanyId($companyId);
 
+$connector->getCategories();
+
+die();
+
 $container->setAdvertiserId($advertiserId);
 $container->setCompanyId($companyId);
 $container->setId(96);
