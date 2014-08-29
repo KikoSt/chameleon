@@ -47,12 +47,15 @@ class GfxContainer
     private $dataRegistry;
     private $animationRegistry;
 
+    private $previewMode;
+
     public function __construct()
     {
         $this->allowedTargets = array('SWF', 'GIF');
         $this->registry = array();
         $this->dataRegistry = array();
         $this->animationRegistry = array();
+        $this->previewMode = false;
     }
 
     public function __destruct()
@@ -680,5 +683,25 @@ class GfxContainer
     public function setCanvas($canvas)
     {
         $this->canvas = $canvas;
+    }
+
+    /**
+     * Get previewMode.
+     *
+     * @return previewMode.
+     */
+    public function getPreviewMode()
+    {
+        return $this->previewMode;
+    }
+
+    /**
+     * Set previewMode.
+     *
+     * @param previewMode the value to set.
+     */
+    public function setPreviewMode($previewMode)
+    {
+        $this->previewMode = $previewMode;
     }
 }
