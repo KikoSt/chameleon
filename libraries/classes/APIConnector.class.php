@@ -2,10 +2,6 @@
 
 class APIConnector
 {
-    const REST_API_USERNAME = 'chameleon-api';
-    const REST_API_PASSWORD = 'BwHwEpJnIqUgWkOv9YDg';
-
-    private $serviceUrl;
     private $serviceCalls;
 
     private $auditUserId;
@@ -14,7 +10,6 @@ class APIConnector
 
     public function __construct()
     {
-        $this->serviceUrl = 'http://bidder.mediadecision.lan:8080/chameleon-0.2/rest';
         $this->serviceCalls = array();
         $this->serviceCalls['getTemplates']          = 'advertiser/{advertiserId}/bannerTemplates';
         $this->serviceCalls['getTemplatesByGroup']   = 'advertiser/{advertiserId}/group/{groupId}/bannerTemplates';
@@ -82,7 +77,7 @@ class APIConnector
      */
     private function getEnums()
     {
-        $resource = $this->serviceUrl . '/' . $this->serviceCalls['getEnums'];
+        $resource = REST_API_SERVICE_URL . '/' . $this->serviceCalls['getEnums'];
         $curl = $this->getCurl($resource, 'GET');
         $curlResponse = curl_exec($curl);
 
@@ -113,7 +108,7 @@ class APIConnector
      */
     public function sendCreatives($creatives, $feedId, $categoryId, $groupId=null)
     {
-        $resource = $this->serviceUrl . '/' . $this->serviceCalls['sendCreative'];
+        $resource = REST_API_SERVICE_URL . '/' . $this->serviceCalls['sendCreative'];
         $curl = $this->getCurl($resource, 'POST');
 
         $param = new StdClass();
@@ -170,7 +165,7 @@ class APIConnector
      */
     public function getProductsByCategory($categoryId)
     {
-        $resource = $this->serviceUrl . '/' . str_replace('{categoryId}', $categoryId, $this->serviceCalls['getProductsByCategory']);
+        $resource = REST_API_SERVICE_URL . '/' . str_replace('{categoryId}', $categoryId, $this->serviceCalls['getProductsByCategory']);
         $resource = str_replace('{companyId}', $this->companyId, $resource);
         $curl = $this->getCurl($resource, 'GET');
 
@@ -193,7 +188,7 @@ class APIConnector
 
     public function getCategories()
     {
-        $resource = $this->serviceUrl . '/' . str_replace('{companyId}', $this->companyId, $this->serviceCalls['getCategories']);
+        $resource = REST_API_SERVICE_URL . '/' . str_replace('{companyId}', $this->companyId, $this->serviceCalls['getCategories']);
         $curl = $this->getCurl($resource, 'GET');
 
         $curlResponse = curl_exec($curl);
@@ -261,14 +256,14 @@ class APIConnector
 
         if(null === $groupId)
         {
-            $resource = $this->serviceUrl . '/' . str_replace('{advertiserId}', $this->advertiserId, $this->serviceCalls['getTemplates']);
+            $resource = REST_API_SERVICE_URL . '/' . str_replace('{advertiserId}', $this->advertiserId, $this->serviceCalls['getTemplates']);
         }
         else
         {
             $call = $this->serviceCalls['getTemplatesByGroup'];
             $call = str_replace('{advertiserId}', $this->advertiserId, $call);
             $call = str_replace('{groupId}', $groupId, $call);
-            $resource = $this->serviceUrl . '/' . $call;
+            $resource = REST_API_SERVICE_URL . '/' . $call;
         }
         $curl = $this->getCurl($resource, 'GET');
 
@@ -296,7 +291,7 @@ class APIConnector
             throw new Exception('bannerTemplateId not set');
         }
 
-        $resource = $this->serviceUrl . '/' . str_replace('{templateId}', $templateId, $this->serviceCalls['getTemplateById']);
+        $resource = REST_API_SERVICE_URL . '/' . str_replace('{templateId}', $templateId, $this->serviceCalls['getTemplateById']);
         $curl = $this->getCurl($resource, 'GET');
 
         $curlResponse = curl_exec($curl);
@@ -312,7 +307,7 @@ class APIConnector
     public function sendBannerTemplate(BannerTemplateModel $template)
     {
         $template = json_encode($template->jsonSerialize());
-        $resource = $this->serviceUrl . '/' . $this->serviceCalls['postTemplate'];
+        $resource = REST_API_SERVICE_URL . '/' . $this->serviceCalls['postTemplate'];
         $curl = $this->getCurl($resource, 'POST');
         curl_setopt($curl, CURLOPT_POSTFIELDS, $template);
         curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
@@ -328,7 +323,7 @@ class APIConnector
      */
     public function deleteBannerTemplate($templateId)
     {
-        $resource = $this->serviceUrl . '/' . str_replace('{templateId}', $templateId, $this->serviceCalls['deleteTemplate']);
+        $resource = REST_API_SERVICE_URL . '/' . str_replace('{templateId}', $templateId, $this->serviceCalls['deleteTemplate']);
         $curl = $this->getCurl($resource, 'DELETE');
 
         $curlResponse = curl_exec($curl);
@@ -344,7 +339,7 @@ class APIConnector
     private function getCurl($serviceUrl, $method)
     {
         $curl = curl_init($serviceUrl);
-        $baseAuthUserPwd = (APIConnector::REST_API_USERNAME . ':' . APIConnector::REST_API_PASSWORD);
+        $baseAuthUserPwd = (REST_API_USERNAME . ':' . REST_API_PASSWORD);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_USERPWD, $baseAuthUserPwd);
         if($method === 'GET')
