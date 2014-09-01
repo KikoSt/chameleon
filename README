@@ -1,3 +1,43 @@
+version 0.6
+-----------
+
+features:
+
+- framework:
+
+    + GfxComponent
+    + GfxShape
+        *GfxRectangle
+    + GfxText
+    + GfxImage
+
+    + basic SWF and GIF target creation
+    + NO animation
+
+    SWF:
+    + links for GfxImage
+    + shadows for GfxRectangle, GfxImage and GfxText
+    + strokes for GfxRectangle and GfxImage
+
+    SWF/GIF:
+    + source images may be jpeg, gif, png
+
+- editor:
+
+    + almost every feature editable now (still missing font size selection)
+    + full REST API connection implemented
+    + layout due to rework
+
+- generator script:
+
+    + mass generation of banners (both GIF and SWF) based on product feeds by company
+
+
+
+##########################################################################################
+
+
+
 version 0.5
 
 features:
