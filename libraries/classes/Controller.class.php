@@ -9,20 +9,52 @@
 class Controller
 {
     private $template;
+    private $layout;
 
     public function __construct()
     {
 
     }
 
+    /**
+     * @return mixed
+     */
+    public function getLayout()
+    {
+        return $this->layout;
+    }
+
+    /**
+     * @param $layout
+     * @return $this
+     */
+    public function setLayout($layout)
+    {
+        $this->layout = $layout;
+        return $this;
+    }
+
+    public function getTemplate()
+    {
+        return $this->template;
+    }
+
     public function setTemplate($template)
     {
         $this->template = $template;
-        return $this;
     }
 
     public function getView()
     {
-        return new TemplateEngine($this->template);
+        return new TemplateEngine($this->layout);
+    }
+
+    public function create() {}
+
+    public function loadPartial($pathToPartial, Array $params)
+    {
+        $partial = file_get_contents($pathToPartial);
+
+        return $partial;
     }
 } 

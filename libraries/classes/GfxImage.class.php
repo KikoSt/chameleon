@@ -2,10 +2,6 @@
 /**
  * GfxImage
  *
- * Created by IntelliJ IDEA.
- * User: thomas
- * Date: 17.07.14
- * Time: 11:33
  * @uses GfXComponent
  * @package Gfx
  * @version $id$
@@ -23,9 +19,28 @@ class GfxImage extends GfXComponent
      * @access public
      * @return void
      */
-    public function __construct()
+    public function __construct(GfxContainer $container)
     {
-        parent::__construct();
+        parent::__construct($container);
+    }
+
+
+    public function updateData()
+    {
+        parent::updateData();
+
+        if($this->getContainer()->getProductData())
+        {
+            if(!empty($this->getRef()))
+            {
+                $this->setImageUrl($this->getContainer()->getProductData()->getImageUrl());
+            }
+
+            if(!empty($this->getLinkUrl()))
+            {
+                $this->setLinkUrl($this->getContainer()->getProductData()->getProductUrl());
+            }
+        }
     }
 
 
@@ -60,7 +75,7 @@ class GfxImage extends GfXComponent
         if($this->getStroke() !== null)
         {
             $strokeWidth = $this->getStroke()->getWidth();
-            $stroke = new GfxRectangle();
+            $stroke = new GfxRectangle($this->getContainer());
             $stroke->setWidth($this->getWidth() + ($strokeWidth * 2));
             $stroke->setHeight($this->getHeight() + ($strokeWidth * 2));
             $stroke->setX($this->getX() - $strokeWidth);
@@ -72,7 +87,7 @@ class GfxImage extends GfXComponent
 
         if($this->getShadowColor() !== null)
         {
-            $shadow = new GfxRectangle();
+            $shadow = new GfxRectangle($this->getContainer());
             $shadow->setWidth($this->getWidth());
             $shadow->setHeight($this->getHeight());
             $shadow->setX($this->getX() + (int) $this->getShadowDist());
@@ -87,13 +102,19 @@ class GfxImage extends GfXComponent
 
         $output = $this->resizeImage($this->getImageUrl(), $this->getWidth(), $this->getHeight(), false);
 
-        ImageJPEG($output, $imgPath);
+        imagejpeg($output, $imgPath, 100);
+        imagedestroy($output);
+        $output = null;
+        unset($output);
 
-        $image = new SWFBitmap(fopen($this->getImageUrl(), "rb"));
-        $image = new SWFBitmap(fopen($imgPath, "rb"));
+        $bastardImage = fopen($imgPath, "rb");
+
+        $image  = new SWFBitmap($bastardImage);
         $handle = $canvas->add($image);
         $handle->moveTo($this->getX(), $this->getY());
+        $this->getContainer()->register($bastardImage);
         $canvas = $this->addClickableLink($canvas);
+        unset($image);
         return $canvas;
     }
 
@@ -105,12 +126,50 @@ class GfxImage extends GfXComponent
      */
     public function renderGIF($canvas)
     {
-        $dst = $this->resizeImage($this->getImageUrl(),true);
+        if($this->hasShadow())
+        {
+            $this->createShadow($canvas);
+        }
+
+        $dst = $this->resizeImage($this->getImageUrl());
 
         imagecopyresampled($canvas, $dst, $this->getX(), $this->getY(), 0, 0, $this->getWidth(), $this->getHeight(), $this->getWidth(),
             $this->getHeight());
 
         return $canvas;
+    }
+
+    public function createShadow($canvas)
+    {
+        $color = imagecolorallocatealpha($canvas,
+                                         $this->getShadowColor()->getR(),
+                                         $this->getShadowColor()->getG(),
+                                         $this->getShadowColor()->getB(),
+                                         50
+                 );
+
+        $x1 = $this->getX() + $this->getShadowDist();
+        $y1 = $this->getY() + $this->getShadowDist();
+        $x2 = $x1 + $this->getWidth();
+        $y2 = $y1 + $this->getHeight();
+
+        imagefilledrectangle($canvas, $x1, $y1, $x2, $y2, $color);
+    }
+
+    public function createStroke($canvas)
+    {
+        $color = imagecolorallocate($canvas,
+            $this->getShadowColor()->getR(),
+            $this->getShadowColor()->getG(),
+            $this->getShadowColor()->getB()
+        );
+
+        $x1 = $this->getX() - $this->getStroke()->getWidth();
+        $y1 = $this->getY() - $this->getStroke()->getWidth();
+        $x2 = $this->getX() + $this->getStroke()->getWidth() + $this->getWidth();
+        $y2 = $this->getY() + $this->getStroke()->getWidth() + $this->getHeight();
+
+        imagefilledrectangle($canvas, $x1, $y1, $x2, $y2, $color);
     }
 
     /**
@@ -123,62 +182,73 @@ class GfxImage extends GfXComponent
     public function resizeImage($file, $crop=false)
     {
         list($originalWidth, $originalHeight) = getimagesize($file);
+        $aspectRatio = $originalWidth / $originalHeight;
 
-        $r = $originalWidth / $originalHeight;
+        $newWidth  = $this->getWidth();
+        $newHeight = $this->getHeight();
 
-        $resizedWidth = $this->getWidth();
-        $resizedHeight = $this->getHeight();
-
-        if ($crop)
+        if($aspectRatio < 1 )
         {
-            if ($originalWidth > $originalHeight)
-            {
-                $originalWidth = ceil($originalWidth-($originalWidth*abs($r-($resizedWidth / $resizedHeight))));
-            }
-            else
-            {
-                $originalHeight = ceil($originalHeight-($originalHeight*abs($r-($resizedWidth / $resizedHeight))));
-            }
+            $newWidth = $newHeight * $aspectRatio;
+
         }
         else
         {
-            if (($resizedWidth/$resizedHeight) > $r)
-            {
-                $resizedWidth = $this->getHeight() * $r;
-            }
-            else
-            {
-                $resizedWidth = $this->getWidth() / $r;
-            }
+            $newHeight = $newWidth / $aspectRatio;
         }
 
-        $x = ($this->getWidth()-$resizedWidth) / 2;
+        $resizedWidth = $newWidth;
+        $resizedHeight = $newHeight;
+
+        $newX = ($this->getWidth() - $newWidth) / 2;
+        $newY = ($this->getHeight() - $newHeight) / 2;
 
         $originalImage = $this->createImageFromSourceFile($file);
 
         //canvas for resized image
         $resizedImage = imagecreatetruecolor($this->getWidth(), $this->getHeight());
+
+        if(!$resizedImage)
+        {
+            throw new Exception('Could not create image ' . $this->getId());
+        }
         imagealphablending($resizedImage, true);
 
         $bgcolor = imagecolorallocatealpha($resizedImage, 255, 255, 255, 0);
         imagefill($resizedImage, 0, 0, $bgcolor);
 
-        imagecopyresampled($resizedImage, $originalImage, $x, 0, 0, 0, $resizedWidth, $resizedHeight, $originalWidth, $originalHeight);
+        // massively time consuming
+        if($this->getContainer()->getPreviewMode() !== true)
+        {
+            imagecopyresampled($resizedImage, $originalImage, $newX, $newY, 0, 0, $resizedWidth, $resizedHeight, $originalWidth, $originalHeight);
+        }
+        else
+        {
+            imagecopyresized($resizedImage, $originalImage, $newX, $newY, 0, 0, $resizedWidth, $resizedHeight, $originalWidth, $originalHeight);
+        }
+
         imagealphablending($resizedImage, false);
         imagesavealpha($resizedImage,true);
+
+        imagedestroy($originalImage);
 
         return $resizedImage;
     }
 
     private function createImageFromSourceFile($file)
     {
-        list( $dirname, $basename, $extension, $filename ) = array_values( pathinfo($file) );
+        list( $dirname, $basename, $extension, $filename ) = array_values(pathinfo($file));
+        unset($dirname);
+        unset($basename);
+        unset($filename);
 
         $image = null;
+        $extension = strtolower($extension);
 
         switch($extension)
         {
             case "jpg":
+            case "jpeg":
             {
                 $image = imagecreatefromjpeg($file);
                 break;
@@ -193,8 +263,52 @@ class GfxImage extends GfXComponent
                 $image = imagecreatefromgif($file);
                 break;
             }
+            default:
+            {
+                throw new Exception('No valid input file format provided: ' . $extension);
+            }
+        }
+        if(!$image)
+        {
+            throw new Exception('Could not create image from ' . $file);
         }
         return $image;
+    }
+
+    public function getSvg()
+    {
+        $stroke = $this->getStroke();
+        $shadow = $this->getShadowColor();
+
+        $svg = '';
+        $svg .= "\r\n" . '<image';
+        $svg .= "\r\n" . ' cmeo:ref="' . $this->getCmeoRef(). '"';
+        $svg .= "\r\n" . ' cmeo:link="' . $this->getCmeoLink(). '"';
+        $svg .= "\r\n" . ' xlink:href="' . str_replace('/var/www/chameleon', '', $this->getImageUrl()) . '"';
+        $svg .= "\r\n" . ' linkurl="' . $this->getLinkUrl() . '"';
+
+        if(isset($stroke) || isset($shadow))
+        {
+            $svg .= "\r\n" . ' style="';
+            if(isset($stroke))
+            {
+                $svg .= 'stroke:' . $stroke->getColor()->getHex() . ';stroke-width:' . $stroke->getWidth() . ';';
+            }
+
+            if(isset($shadow))
+            {
+                $svg .= 'shadow:' . $shadow->getHex() . ';shadow-dist:' . $this->getShadowDist() . 'px;';
+            }
+            $svg .= '"';
+        }
+
+        $svg .= "\r\n" . ' x="' . $this->getX() . '"';
+        $svg .= "\r\n" . ' y="' . $this->getY() . '"';
+        $svg .= "\r\n" . ' width="' . $this->getWidth() . '"';
+        $svg .= "\r\n" . ' height="' . $this->getHeight() . '"';
+        $svg .= "\r\n" . ' id="' . $this->getId() . '"';
+        $svg .= "\r\n" . '/>';
+        return $svg;
     }
 
     /**
@@ -205,13 +319,18 @@ class GfxImage extends GfXComponent
      */
     public function setImageUrl($imageUrl)
     {
+        $imageUrl = preg_replace('/^\/+/', '/', $imageUrl);
+        if(substr($imageUrl, 0, 4) !== 'http' )
+        {
+            $imageUrl = ROOT_DIR . $imageUrl;
+        }
         if(fopen($imageUrl, "r"))
         {
             $this->imageUrl = $imageUrl;
         }
         else
         {
-            throw new FileNotFoundException($imageUrl);
+            $this->imageUrl = ASSET_DIR . 'image_not_found.jpg';
         }
     }
 
@@ -225,4 +344,6 @@ class GfxImage extends GfXComponent
     {
         return $this->imageUrl;
     }
+
+
 }

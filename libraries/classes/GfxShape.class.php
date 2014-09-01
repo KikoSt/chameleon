@@ -9,9 +9,9 @@
 
 class GfxShape extends GfxComponent
 {
-    public function __construct()
+    public function __construct(GfxContainer $container)
     {
-        parent::__construct();
+        parent::__construct($container);
         $this->color = new GfxColor();
     }
 

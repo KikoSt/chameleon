@@ -1,6 +1,6 @@
 <?php
 /**
- * Comment here
+ * Handles the creation of rectangles while rendering GIF and SWF
  *
  * User: thomas.hummel@mediadecision.com
  * Date: 17/07/2014
@@ -9,10 +9,26 @@
 
 class GfxRectangle extends GfxShape
 {
-    public function __construct()
+    public function __construct(GfxContainer $container)
     {
-        parent::__construct();
+        parent::__construct($container);
     }
+
+
+    public function updateData()
+    {
+        parent::updateData();
+
+        if($this->getContainer()->getProductData())
+        {
+            if(!empty($this->getLinkUrl()))
+            {
+                echo "\n[" . $this->getLinkUrl() . "]\n";
+            }
+        }
+    }
+
+
 
     public function renderSWF($canvas)
     {
@@ -21,7 +37,7 @@ class GfxRectangle extends GfxShape
         if($this->getStroke() !== null)
         {
             $strokeWidth = $this->getStroke()->getWidth();
-            $stroke = new GfxRectangle();
+            $stroke = new GfxRectangle($this->getContainer());
             $stroke->setWidth($this->getWidth() + ($strokeWidth * 2));
             $stroke->setHeight($this->getHeight() + ($strokeWidth * 2));
             $stroke->setX($this->getX() - $strokeWidth);
@@ -33,7 +49,7 @@ class GfxRectangle extends GfxShape
 
         if($this->getShadowColor() !== null)
         {
-            $shadow = new GfxRectangle();
+            $shadow = new GfxRectangle($this->getContainer());
             $shadow->setWidth($this->getWidth());
             $shadow->setHeight($this->getHeight());
             $shadow->setX($this->getX() + (int) $this->getShadowDist());
@@ -71,6 +87,16 @@ class GfxRectangle extends GfxShape
 
     public function renderGIF($canvas)
     {
+        if($this->hasShadow())
+        {
+            $this->createShadow($canvas);
+        }
+
+        if($this->hasStroke())
+        {
+            $this->createStroke($canvas);
+        }
+
         $x2 = $this->getX() + $this->getWidth();
         $y2 = $this->getY() + $this->getHeight();
 
@@ -89,4 +115,67 @@ class GfxRectangle extends GfxShape
         return $canvas;
     }
 
+    public function createShadow($canvas)
+    {
+        $color = imagecolorallocatealpha($canvas,
+            $this->getShadowColor()->getR(),
+            $this->getShadowColor()->getG(),
+            $this->getShadowColor()->getB(),
+            50
+        );
+
+        $x1 = $this->getX() + $this->getShadowDist();
+        $y1 = $this->getY() + $this->getShadowDist();
+        $x2 = $x1 + $this->getWidth();
+        $y2 = $y1 + $this->getHeight();
+
+        imagefilledrectangle($canvas, $x1, $y1, $x2, $y2, $color);
+    }
+
+    public function createStroke($canvas)
+    {
+        $color = imagecolorallocate($canvas,
+            $this->getShadowColor()->getR(),
+            $this->getShadowColor()->getG(),
+            $this->getShadowColor()->getB()
+        );
+
+        $x1 = $this->getX() - $this->getStroke()->getWidth();
+        $y1 = $this->getY() - $this->getStroke()->getWidth();
+        $x2 = $this->getX() + $this->getStroke()->getWidth() + $this->getWidth();
+        $y2 = $this->getY() + $this->getStroke()->getWidth() + $this->getHeight();
+
+        imagefilledrectangle($canvas, $x1, $y1, $x2, $y2, $color);
+    }
+
+    public function getSvg()
+    {
+        $stroke = $this->getStroke();
+        $shadow = $this->getShadowColor();
+
+        $svg = '';
+
+        $svg .= "\r\n" . '<rect';
+        $svg .= "\r\n" . ' cmeo:link="' . $this->getCmeoLink() . '"';
+        $svg .= "\r\n" . ' fill="' . $this->getFill()->getHex() . '"';
+
+        if(isset($stroke))
+        {
+            $svg .= "\r\n" . ' stroke="' . $stroke->getColor()->getHex() . '"';
+            $svg .= "\r\n" . ' stroke-width="' . $stroke->getWidth() . '"';
+        }
+
+        if(isset($shadow))
+        {
+            $svg .= "\r\n" . ' style="shadow:' . $shadow->getHex() . ';shadow-dist:' . $this->getShadowDist() . 'px;"';
+        }
+
+        $svg .= "\r\n" . ' x="' . $this->getX() . '"';
+        $svg .= "\r\n" . ' y="' . $this->getY() . '"';
+        $svg .= "\r\n" . ' width="' . $this->getWidth() . '"';
+        $svg .= "\r\n" . ' height="' . $this->getHeight() . '"';
+        $svg .= "\r\n" . ' id="' . $this->getId() . '"';
+        $svg .= "\r\n" . '/>';
+        return $svg;
+    }
 }

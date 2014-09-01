@@ -1,40 +1,33 @@
 <?php
-$myContainer = new GfxContainer();
-$myContainer->setSource('svg/test.svg');
-$myContainer->parse();
-$myContainer->setTarget('SWF');
-$myContainer->render();
-$myContainer->setTarget('GIF');
-$myContainer->render();
 
-die();
-// TODO: this will be _POST later; _REQUEST for development only
-$page = $_REQUEST['page'];
+require_once('config/config.inc.php');
 
-$modules = array('test');
+$advertiserId = 122;
+$companyId = 170;
 
-if(in_array($page, $modules))
+$myIndex = new Index();
+
+session_start();
+
+$params = array_keys($_REQUEST);
+$modules = array('overview', 'editor');
+
+if(!in_array('page', $params) || !in_array($_REQUEST['page'], $modules))
 {
-    $overview = new Overview();
-    echo $overview->create();
+    $page = 'overview';
+}
+else
+{
+    $page = $_REQUEST['page'];
 }
 
-function __autoload($className)
-{
-    if(file_exists('libraries/classes/' . $className . '.class.php'))
-    {
-        require_once('libraries/classes/' . $className . '.class.php');
-    }
-    else if(file_exists('libraries/interfaces/' . $className . '.interface.php'))
-    {
-        require_once('libraries/interfaces/' . $className . '.interface.php');
-    }
-    else if(file_exists('libraries/exception/' . $className . '.exception.php'))
-    {
-        require_once('libraries/exception/' . $className . '.exception.php');
-    }
-    else if(file_exists('controllers/' . $className . '.php'))
-    {
-        require_once('controllers/' . $className . '.php');
-    }
-}
+$redirect = $myIndex->getRedirect($page);
+
+$redirect->setAdvertiserId($advertiserId);
+$redirect->setCompanyId($companyId);
+
+// create page
+require_once('views/header.phtml');
+$redirect->create();
+$redirect->display();
+require_once('views/footer.phtml');

@@ -5,14 +5,12 @@
  * Date: 17.07.14
  * Time: 11:33
  */
-require_once('config/fontconfig.inc.php');
+require_once(ROOT_DIR . 'config/fontconfig.inc.php');
 define('FLASH_FONT_SCALE_FACTOR', 1.32);
 
 class GfxText extends GfxComponent
 {
     private $text;
-//     private $color;
-//    private $oFont;
     private $fontWeight;
     private $fontVariant;
     private $fontStyle;
@@ -20,10 +18,11 @@ class GfxText extends GfxComponent
     private $fontSizeAdjust;
     private $fontSize;
     private $fontFamily;
+    private $textAnchor;
 
-    public function __construct()
+    public function __construct(GfxContainer $container)
     {
-        parent::__construct();
+        parent::__construct($container);
     }
 
     public function create($svgRootNode)
@@ -58,7 +57,8 @@ class GfxText extends GfxComponent
     }
 
 
-    public function getTextWidth() {
+    public function getTextWidth()
+    {
         $text = new SWFText();
         $text->setFont($this->getSWFFont());
         $text->setHeight($this->getFontSize() * FLASH_FONT_SCALE_FACTOR);
@@ -67,6 +67,51 @@ class GfxText extends GfxComponent
         return($width);
     }
 
+    public function updateData()
+    {
+        parent::updateData();
+
+        if($this->getContainer()->getProductData())
+        {
+            if(!empty($this->getRef()))
+            {
+//                 echo 'Product information found; ';
+//                 echo '[' . $this->getRef() . ']';
+//                 echo "\n";
+                $productData = $this->getContainer()->getProductData();
+
+                $newValue = $productData->{'get' . $this->getRef()}();
+                if('price' === $this->getRef() || 'oldPrice' === $this->getRef())
+                {
+                    $newValue = number_format($newValue, 2, ',', '');
+
+                    if(empty($productData->getCurrencySymbol()) && empty($productData->getCurrencyShort()))
+                    {
+                        $newValue .= '€';
+                    }
+                    else
+                    {
+                        if(!empty($productData->getCurrencySymbol()))
+                        {
+                            echo '1';
+                            $newValue .= $productData->getCurrencySymbol();
+                        }
+                        else
+                        {
+                            echo '2';
+                            $newValue .= $productData->getCurrencyShort();
+                        }
+                    }
+                }
+                $this->setText($newValue);
+            }
+
+//             if(!empty($this->getLink()))
+//             {
+//                 echo "\n[" . $this->getLink() . "]\n";
+//             }
+        }
+    }
 
     public function renderSWF($canvas)
     {
@@ -74,7 +119,7 @@ class GfxText extends GfxComponent
 
         if($this->getShadowColor() !== null)
         {
-            $shadow = new GfxText();
+            $shadow = new GfxText($this->getContainer());
             $shadow->setWidth($this->getWidth());
             $shadow->setHeight($this->getHeight());
             $shadow->setX($this->getX() + (int) $this->getShadowDist());
@@ -115,6 +160,7 @@ class GfxText extends GfxComponent
         // position: CENTERED!
         $text->moveTo($this->getX() - ($this->getTextWidth()/2), $this->getY());
         $text->moveTo($this->getX(), $this->getY());
+        // $text->addString(utf8_decode(str_replace('€', ' Euro', $this->getText())));
         $text->addString(utf8_decode(str_replace('€', ' Euro', $this->getText())));
 
         $handle = $canvas->add($text);
@@ -123,21 +169,116 @@ class GfxText extends GfxComponent
         return $canvas;
     }
 
-    public function renderGif($canvas, $canvasWidth)
+    public function renderGif($canvas)
     {
         $textColor = imagecolorallocate($canvas,$this->getFill()->getR(),$this->getFill()->getG(),$this->getFill()->getB());
 
-        $tb = imagettfbbox($this->getFontSize(), 0, $GLOBALS['fontlist']['GIF'][$this->getFontFamily()], $this->getText());
+        if($this->hasShadow())
+        {
+            $this->renderShadow($canvas);
+        }
 
-        $x = ceil(($canvasWidth - $tb[2]) / 2 );
-        $x = $this->getX();
+        imagettftext($canvas,
+                     $this->getFontSize(),
+                     0,
+                     $this->getX(),
+                     $this->getY(),
+                     $textColor,
+                     $this->getGIFFont(),
+                     str_replace('€', ' Euro', $this->getText())
+        );
 
-        imagettftext($canvas, $this->getFontSize(), 0, $x, $this->getY(), $textColor,
-            $GLOBALS['fontlist']['GIF'][$this->getFontFamily()],
-            $this->getText());
-
+                     // utf8_decode(str_replace('€', ' Euro', $this->getText()))
         return $canvas;
     }
+
+    public function renderShadow($canvas)
+    {
+        $color = imagecolorallocatealpha($canvas,
+                                         $this->getShadowColor()->getR(),
+                                         $this->getShadowColor()->getG(),
+                                         $this->getShadowColor()->getB(),
+                                         50
+                 );
+
+        imagettftext($canvas,
+            $this->getFontSize(),
+            0,
+            $this->getX() + $this->getShadowDist(),
+            $this->getY() + $this->getShadowDist(),
+            $color,
+            $this->getGIFFont(),
+            utf8_decode(str_replace('€', ' Euro', $this->getText()))
+        );
+    }
+
+    public function getFontListForOverview()
+    {
+        $fontlist = $GLOBALS['fontlist']['GIF'];
+
+        $cleansedFontList = array();
+
+        foreach($fontlist as $key => $font)
+        {
+            $fontFile = str_replace(FONT_TTF_DIR, '', $font);
+            $withoutExt = preg_replace('/\\.[^.\\s]{3,4}$/', '', $fontFile);
+            $cleansedFontList[$key] = $withoutExt;
+        }
+        return $cleansedFontList;
+    }
+
+    public function getSvg()
+    {
+        $stroke = $this->getStroke();
+        $shadow = $this->getShadowColor();
+
+        $svg = '';
+        $svg .= "\r\n" . '<text xml:space="preserve"';
+        $svg .= "\r\n" . ' cmeo:ref="' . $this->getCmeoRef(). '"';
+        $svg .= "\r\n" . ' cmeo:link="' . $this->getCmeoLink(). '"';
+        $svg .= "\r\n" . ' text-anchor="' . $this->getTextAnchor() . '"';
+        $svg .= "\r\n" . ' font-family="' . $this->getFontFamily() . '"';
+        $svg .= "\r\n" . ' font-size="' . $this->getFontSize() . '"';
+        $svg .= "\r\n" . ' fill="' . $this->getFill()->getHex() . '"';
+
+        if(isset($stroke))
+        {
+            $svg .= "\r\n" . ' stroke="' . $stroke->getColor()->getHex() . '"';
+            $svg .= "\r\n" . ' stroke-width="' . $stroke->getWidth() . '"';
+        }
+
+        if(isset($shadow))
+        {
+            $svg .= "\r\n" . ' style="shadow:' . $shadow->getHex() . ';shadow-dist:' . $this->getShadowDist() . 'px;"';
+        }
+
+        $svg .= "\r\n" . ' x="' . $this->getX() . '"';
+        $svg .= "\r\n" . ' y="' . $this->getY() . '"';
+        $svg .= "\r\n" . ' width="' . $this->getWidth() . '"';
+        $svg .= "\r\n" . ' height="' . $this->getHeight() . '"';
+        $svg .= "\r\n" . ' id="' . $this->getId() . '"';
+        $svg .= "\r\n" . '><![CDATA[' . $this->getText() . ']]></text>';
+        return $svg;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getTextAnchor()
+    {
+        return $this->textAnchor;
+    }
+
+    /**
+     * @param mixed $textAnchor
+     */
+    public function setTextAnchor($textAnchor)
+    {
+        $this->textAnchor = $textAnchor;
+    }
+
+
 
 
     /**
@@ -153,6 +294,9 @@ class GfxText extends GfxComponent
      */
     public function setText($text)
     {
+        $text = str_replace('â‚¬', '€', $text);
+        $text = str_replace('Ã¤', 'ä', $text);
+        $text = str_replace('Ã¼', 'ü', $text);
         $this->text = $text;
     }
 
@@ -170,6 +314,11 @@ class GfxText extends GfxComponent
     {
         $font = new SWFFont($GLOBALS['fontlist']['SWF'][$this->getFontFamily()]);
         return $font;
+    }
+
+    public function getGIFFont()
+    {
+        return $GLOBALS['fontlist']['GIF'][$this->getFontFamily()];
     }
 
     /**

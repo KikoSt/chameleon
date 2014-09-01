@@ -17,12 +17,22 @@ class GfXComponent implements Linkable, Resizeable
     private $shadowColor;
     private $shadowDist;
 
-    public function __construct()
+    private $cmeoRef;
+    private $cmeoLink;
+
+    private $container;
+
+    public function __construct(GfxContainer $container)
     {
         $this->x      = 0;
         $this->y      = 0;
         $this->width  = 0;
         $this->height = 0;
+        $this->container = $container;
+    }
+
+    public function updateData()
+    {
     }
 
     public function create($svgRootNode)
@@ -40,6 +50,7 @@ class GfXComponent implements Linkable, Resizeable
         {
             $styles = array();
             $style = $svgRootNode->attributes()->style;
+            $style = rtrim($style, ';');
             $stylesList = explode(';', $style);
             foreach($stylesList AS $curStyle)
             {
@@ -58,7 +69,6 @@ class GfXComponent implements Linkable, Resizeable
             }
             else if($attr->stroke !== null && (int) $attr->{'stroke-width'} !== 0)
             {
-                echo "STROKE FOUND!\n";
                 $strokeColor = new GfxColor($attr->stroke);
                 $strokeWidth = (int) $attr->{'stroke-width'};
                 $stroke = new GfxStroke($strokeColor, $strokeWidth);
@@ -75,6 +85,48 @@ class GfXComponent implements Linkable, Resizeable
                 $this->setShadowDist($shadowDist);
             }
         }
+
+        $ref = (string) $svgRootNode->attributes('cmeo', true)->ref;
+        $link = (string) $svgRootNode->attributes('cmeo', true)->link;
+        if(!empty($ref))
+        {
+            $this->getContainer()->registerDataUpdate($ref, $this);
+            $this->setRef($ref);
+            $this->setCmeoRef($ref);
+        }
+        if(!empty($link))
+        {
+            $this->getContainer()->registerDataUpdate($link, $this);
+            $this->setCmeoLink($link);
+            $this->setLink($link);
+        }
+    }
+
+    public function hasShadow()
+    {
+        $shadowColor = $this->getShadowColor();
+        $shadowDist = $this->getShadowDist();
+
+        if(isset($shadowColor, $shadowDist))
+        {
+            return true;
+        }
+
+        //return false as fallback
+        return false;
+    }
+
+    public function hasStroke()
+    {
+        $stroke = $this->getStroke();
+
+        if(isset($stroke))
+        {
+            return true;
+        }
+
+        //return false as fallback
+        return false;
     }
 
     public function getShadowColor()
@@ -206,6 +258,10 @@ class GfXComponent implements Linkable, Resizeable
         $this->fill = $color;
     }
 
+    public function getSvg()
+    {
+        return '';
+    }
 
     /* *************************
             Magic Methods
@@ -216,4 +272,74 @@ class GfXComponent implements Linkable, Resizeable
         $string .= get_class($this);
         return $string;
     }
+
+    /**
+     * Get container.
+     *
+     * @return container.
+     */
+    public function getContainer()
+    {
+        return $this->container;
+    }
+
+    /**
+     * Set container.
+     *
+     * @param container the value to set.
+     */
+    public function setContainer($container)
+    {
+        $this->container = $container;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCmeoLink()
+    {
+        return $this->cmeoLink;
+    }
+
+    /**
+     * @param mixed $cmeoLink
+     */
+    public function setCmeoLink($cmeoLink)
+    {
+        $this->cmeoLink = $cmeoLink;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCmeoRef()
+    {
+        return $this->cmeoRef;
+    }
+
+    /**
+     * @param mixed $cmeoRef
+     */
+    public function setCmeoRef($cmeoRef)
+    {
+        $this->cmeoRef = $cmeoRef;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRef()
+    {
+        return $this->cmeoRef;
+    }
+
+    /**
+     * @param mixed $cmeoRef
+     */
+    public function setRef($cmeoRef)
+    {
+        $this->cmeoRef = $cmeoRef;
+    }
+
+
 }
