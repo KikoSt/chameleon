@@ -1,5 +1,7 @@
 <?php
 
+require_once(__ROOT__ . 'config/apiconfig.inc.php');
+
 class APIConnector
 {
     private $serviceCalls;
