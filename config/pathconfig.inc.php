@@ -26,4 +26,6 @@ define('SVG_DIR', ROOT_DIR . 'svg');
 
 define('GIFPROTO', ROOT_DIR . 'assets/gifProto');
 
+define('IMGCACHE_DIR', ROOT_DIR . 'imgcache');
+
 
