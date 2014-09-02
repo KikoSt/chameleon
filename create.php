@@ -10,20 +10,18 @@ if(!defined('__ROOT__'))
     define('__ROOT__', './');
 }
 
-// hardcoded by now. For now.
-$productCategoryIds = array(7, 10, 11881, 11887, 11890, 11893, 11899, 11902, 11908, 11911, 11917, 11923, 11929, 11932, 11935, 11941, 11944, 11947, 11950, 11956, 11959, 11962, 11968, 11971, 11974, 11977, 11980, 11986, 11989, 11992, 11995, 11998, 12001, 12004, 12007, 12013, 12016, 12019, 12022, 12025, 12028, 12031, 12040, 12043, 12049, 12052, 12055, 12058, 12061, 12067, 12073, 12079, 12082, 12085, 12088, 12091, 12094, 12097, 12100, 12103, 12106, 12112, 12115, 12118, 12124, 12127, 12130, 12133, 12136, 12139, 12142, 12145, 12148, 12151, 12157, 12160, 12163, 12166, 12178, 12181, 12184, 12187, 12190, 12193, 12196, 12199, 12202, 12208, 12211, 12214, 12217, 12220, 12223, 12226, 12229, 12232, 12235, 12238, 12241, 12244, 12247, 12250, 12253, 12256, 12259, 12262, 12265, 12268, 12271, 12274, 12277, 12280, 12283, 12286, 12288, 12291, 12294, 12297, 12300, 12303);
-
 $advertiserId = 122;
 $companyId    = 170;
 $userId       = 14;
 $templateId   = 96;
 $auditUserId  = 1;
 
-$productCategoryIds = array(20610);
+$productCategoryIds = getCategories($companyId, $advertiserId);
 
 foreach($productCategoryIds AS $categoryId)
 {
     passthru('php ./generate.php ' . $companyId . ' ' . $advertiserId . ' ' . $categoryId . ' ' . $auditUserId);
+    // passthru('php ./cacheimages.php ' . $companyId . ' ' . $advertiserId . ' ' . $categoryId . ' ' . $auditUserId);
 }
 
 
@@ -54,6 +52,21 @@ $templates = $connector->getTemplates();
 
 exit(0);
 
+function getCategories($companyId, $advertiserId)
+{
+    $categoryIdList = array();
+    $connector = new APIConnector();
+
+    $connector->setAdvertiserId($advertiserId);
+    $connector->setCompanyId($companyId);
+
+    $categories = $connector->getCategories();
+    foreach($categories AS $category)
+    {
+        $categoryIdList[] = $category->id;
+    }
+    return $categoryIdList;
+}
 
 function getUserStatusValues($companyId, $advertiserId, $auditUserId)
 {
