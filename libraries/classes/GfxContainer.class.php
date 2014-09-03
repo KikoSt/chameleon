@@ -154,6 +154,7 @@ class GfxContainer
 
     public function parse()
     {
+        unset($this->elements);
         libxml_use_internal_errors(true);
 
         if(!is_a($this->source, 'SimpleXMLElement'))
