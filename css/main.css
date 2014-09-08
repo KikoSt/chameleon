@@ -2,6 +2,10 @@
 @import url("fileinput.min.css");
 @import url("reset.min.css");
 
+body {
+    font-family: 'Clear Sans Light', Arial, sans-serif !important;
+}
+
 /* Overwrite all bootstrap css rules with a rounded corner to create a flat design */
 /* TODO integrate where possible into Chameleon own bootstrap css */
 .btn,
@@ -10,6 +14,11 @@ input,
 li
 {
     border-radius: 0px !important;
+}
+
+input
+{
+    font-weight: normal;
 }
 
 a,
@@ -30,6 +39,23 @@ a:hover
     margin-left: 1px !important;
 }
 
+form > a {
+    padding: 25px;
+    width:300px !important;
+    height:300px;
+    margin-left: 10px;
+    background: #3c3c3b !important;
+    vertical-align: middle !important;
+}
+
+form > a > input[type="image"]
+{
+    max-width: 290px;
+    max-height: 290px;
+    padding-top:;
+    padding-bottom:auto;
+}
+
 .col-md-1,
 .col-md-2,
 .col-md-3,
@@ -44,6 +70,7 @@ a:hover
 .col-md-12
 {
     padding: 3px !important;
+    font-weight: bold;
 }
 
 .imageTitle
@@ -109,4 +136,10 @@ label {
     float: none !important; /* this is the part that makes it work */
 }
 
+.navbar {
+    background: #3C3C3B !important;
+}
 
+.panel {
+    border: none;
+}
