@@ -19,25 +19,112 @@ $container = new GfxContainer();
 $connector->setAdvertiserId($advertiserId);
 $connector->setCompanyId($companyId);
 
-$connector->getCategories();
-
-die();
-
 $container->setAdvertiserId($advertiserId);
 $container->setCompanyId($companyId);
-$container->setId(96);
+$container->setId(108);
 
-$filename = 'rtest_96.svg';
+$templates = $connector->getTemplates();
+// var_dump($templates);
+//
+// die();
 
-$container->setSource($filename);
-$container->setOutputName('output_96');
-$container->parse();
-$container->setTarget('SWF');
-$container->render();
-$container->setTarget('GIF');
-$container->render();
+foreach($templates AS $template)
+{
+    $svg = simplexml_load_string($template->getSvgContent());
+    $nodes = $svg->children();
+    $nodes = $nodes->children();
+
+    foreach($nodes AS $node)
+    {
+        $attributes = $node->attributes();
+        echo $attributes->id . "\n";
+        if($attributes->id == 'background')
+        {
+            echo 'setting width and height to ' . $attributes->width . '/' . $attributes->height . "\n";
+            $width  = $attributes->width;
+            $height = $attributes->height;
+            $template->setDimX($width);
+            $template->setDimY($height);
+        }
+    }
+
+    $container->setSource($template->getSvgContent());
+    $container->setCanvasWidth($width);
+    $container->setCanvasHeight($height);
+    $template->setSvgContent($container->createSvg());
+    var_dump($container);
+    $connector->sendBannerTemplate($template);
+}
+
 
 die();
+
+foreach($templates AS $template)
+{
+    $svg = simplexml_load_string($template->getSvgContent());
+    $nodes = $svg->children();
+    $nodes = $nodes->children();
+    foreach($nodes AS $node)
+    {
+        $attributes = $node->attributes();
+        echo $attributes->id . "\n";
+        if($attributes->id == 'background')
+        {
+            echo 'setting width and height to ' . $attributes->width . '/' . $attributes->height . "\n";
+            $template->setDimX($attributes->width);
+            $template->setDimY($attributes->height);
+        }
+    }
+    $connector->sendBannerTemplate($template);
+}
+
+die();
+
+
+$ids = array(96, 99, 102, 105, 108);
+
+foreach($ids AS $id)
+{
+
+    $filename = 'rtest_' . $id . '.svg';
+
+    $container->setSource($filename);
+    $container->parse();
+
+    $template = new BannerTemplateModel();
+    $template->setSvgContent($container->getSvg());
+    $template->setBannerTemplateId($id);
+    $template->setAdvertiserId($advertiserId);
+    $template->setDimX(120);
+    $template->setDimY(600);
+    $template->setDescription('Fixed');
+    $template->setAuditUserId(1);
+    $template->setName('last');
+    $connector->sendBannerTemplate($template);
+    var_dump($template);
+}
+
+die();
+
+$container->setId(108);
+
+$filename = 'rtest_108.svg';
+
+$container->setSource($filename);
+$container->setOutputName('output_108');
+$container->parse();
+
+
+
+$template = new BannerTemplateModel();
+$template->setSvgContent($container->getSvg());
+$connector->sendBannerTemplate($template);
+
+
+
+
+die();
+
 
 
 
