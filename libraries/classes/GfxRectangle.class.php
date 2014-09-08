@@ -30,11 +30,20 @@ class GfxRectangle extends GfxShape
 
 
 
+    /**
+     * renderSWF
+     *
+     * renders itself inside of the swf canvas and passes the modified canvas back;
+     *
+     * @param mixed $canvas
+     * @access public
+     * @return void
+     */
     public function renderSWF($canvas)
     {
         $rect = new SWFShape();
 
-        if($this->getStroke() !== null)
+        if($this->strokeEnabled && $this->getStroke() instanceof GfxColor)
         {
             $strokeWidth = $this->getStroke()->getWidth();
             $stroke = new GfxRectangle($this->getContainer());
@@ -47,7 +56,7 @@ class GfxRectangle extends GfxShape
 
         }
 
-        if($this->getShadowColor() !== null)
+        if($this->shadowEnabled && $this->getShadowColor() instanceof GfxColor)
         {
             $shadow = new GfxRectangle($this->getContainer());
             $shadow->setWidth($this->getWidth());
