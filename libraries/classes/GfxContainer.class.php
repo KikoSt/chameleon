@@ -152,8 +152,18 @@ class GfxContainer
         $this->parse();
     }
 
+    /**
+     * parse
+     *
+     * Parse the xml tree, store settings and create all required elements. The create function of each element is
+     * called with the relevant svg sub tree as an argument, and the element will process the data as required
+     *
+     * @access public
+     * @return void
+     */
     public function parse()
     {
+        // delete all elements to avoid duplicates when "parse" is called accidentially more than once
         unset($this->elements);
         libxml_use_internal_errors(true);
 
