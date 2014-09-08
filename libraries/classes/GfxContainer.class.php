@@ -141,7 +141,7 @@ class GfxContainer
         {
             $this->source = simplexml_load_string($source);
         }
-        else if(is_a($source, 'SimpleXMLElement'))
+        else if($source instanceof SimpleXMLElement)
         {
             $this->source = $source;
         }
@@ -157,7 +157,7 @@ class GfxContainer
         unset($this->elements);
         libxml_use_internal_errors(true);
 
-        if(!is_a($this->source, 'SimpleXMLElement'))
+        if(!($this->source instanceof SimpleXMLElement))
         {
             throw new Exception('No valid simplexml source element provided: ' . $this->source);
         }
@@ -213,7 +213,7 @@ class GfxContainer
 
     public function addElement($element)
     {
-        if(is_a($element, 'GfxComponent'))
+        if($element instanceof GfxComponent)
         {
             $this->elements[] = $element;
 
@@ -370,7 +370,7 @@ class GfxContainer
     {
         foreach($this->elements AS $element)
         {
-            if(is_a($element, 'GfxComponent'))
+            if($element instanceof GfxComponent)
             {
                 $element->updateData();
             }
@@ -412,7 +412,7 @@ class GfxContainer
 
         foreach($this->elements AS $element)
         {
-            if(is_a($element, 'GfxComponent'))
+            if($element instanceof GfxComponent)
             {
                 $element->renderSWF($swf);
             }
