@@ -35,7 +35,7 @@ class Editor extends Controller
         $container->setOutputName($baseFilename);
         $container->setSource($filename);
         $container->parse();
-        $container->setPreviewMode(false);
+        $container->setPreviewMode(true);
         $container->setTarget('GIF');
         $container->render();
 
