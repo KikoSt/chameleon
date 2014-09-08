@@ -493,6 +493,22 @@ class GfxContainer
             // now get the id of one element after another and read the values from
             // the prepared dictionary
             $id = $element->getId();
+            if(array_key_exists('shadow', $valueList[$id]))
+            {
+                $element->enableShadow();
+            }
+            else
+            {
+                $element->disableShadow();
+            }
+            if(array_key_exists('stroke', $valueList[$id]))
+            {
+                $element->enableStroke();
+            }
+            else
+            {
+                $element->disableStroke();
+            }
             foreach($valueList[$id] AS $param => $value)
             {
                 $func="set" . ucwords($param);

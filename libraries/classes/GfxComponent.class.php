@@ -13,6 +13,7 @@ class GfXComponent implements Linkable, Resizeable
     private $id;
     private $fill;
     private $stroke;
+    private $shadowEnabled, $strokeEnabled;
     private $linkUrl;
     private $shadowColor;
     private $shadowDist;
@@ -137,6 +138,28 @@ class GfXComponent implements Linkable, Resizeable
     public function getShadowDist()
     {
         return $this->shadowDist;
+    }
+
+    public function disableStroke()
+    {
+        $this->strokeEnabled = false;
+        $this->stroke = null;
+    }
+
+    public function enableStroke()
+    {
+        $this->strokeEnabled = true;
+    }
+
+    public function disableShadow()
+    {
+        $this->shadowEnabled = false;
+        $this->shadowColor = null;
+    }
+
+    public function enableShadow()
+    {
+        $this->shadowEnabled = true;
     }
 
     public function setShadowColor(GfxColor $shadowColor)
