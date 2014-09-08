@@ -67,6 +67,7 @@ class GfXComponent implements Linkable, Resizeable
                 $stroke->setColor($strokeColor);
                 $stroke->setWidth($strokeWidth);
                 $this->setStroke($stroke);
+                $this->enableStroke();
             }
             else if($attr->stroke !== null && (int) $attr->{'stroke-width'} !== 0)
             {
@@ -76,6 +77,7 @@ class GfXComponent implements Linkable, Resizeable
                 $stroke->setColor($strokeColor);
                 $stroke->setWidth($strokeWidth);
                 $this->setStroke($stroke);
+                $this->enableStroke();
             }
 
             if(array_key_exists('shadow', $styles))
@@ -84,6 +86,7 @@ class GfXComponent implements Linkable, Resizeable
                 $shadowDist = (int) $styles['shadow-dist'];
                 $this->setShadowColor($shadowColor);
                 $this->setShadowDist($shadowDist);
+                $this->enableShadow();
             }
         }
 
