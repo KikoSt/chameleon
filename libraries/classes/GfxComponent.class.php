@@ -143,7 +143,6 @@ class GfXComponent implements Linkable, Resizeable
     public function disableStroke()
     {
         $this->strokeEnabled = false;
-        $this->stroke = null;
     }
 
     public function enableStroke()
@@ -154,7 +153,6 @@ class GfXComponent implements Linkable, Resizeable
     public function disableShadow()
     {
         $this->shadowEnabled = false;
-        $this->shadowColor = null;
     }
 
     public function enableShadow()
@@ -364,5 +362,14 @@ class GfXComponent implements Linkable, Resizeable
         $this->cmeoRef = $cmeoRef;
     }
 
+    public function shadowEnabled()
+    {
+        return $this->shadowEnabled;
+    }
+
+    public function strokeEnabled()
+    {
+        return $this->strokeEnabled;
+    }
 
 }

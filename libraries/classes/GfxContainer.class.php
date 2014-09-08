@@ -517,11 +517,13 @@ class GfxContainer
                 {
                     $color = new GfxColor($value);
                     $element->$func($color);
+                    $element->enableShadow();
                 }
                 elseif($param === "stroke")
                 {
                     $stroke = new GfxStroke(new GfxColor($value), 1);
                     $element->$func($stroke);
+                    $element->enableStroke();
                 }
                 elseif($param === "strokeWidth")
                 {

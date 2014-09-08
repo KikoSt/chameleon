@@ -43,7 +43,7 @@ class GfxRectangle extends GfxShape
     {
         $rect = new SWFShape();
 
-        if($this->strokeEnabled && $this->getStroke() instanceof GfxColor)
+        if($this->strokeEnabled() && $this->getStroke() instanceof GfxColor)
         {
             $strokeWidth = $this->getStroke()->getWidth();
             $stroke = new GfxRectangle($this->getContainer());
@@ -56,7 +56,7 @@ class GfxRectangle extends GfxShape
 
         }
 
-        if($this->shadowEnabled && $this->getShadowColor() instanceof GfxColor)
+        if($this->shadowEnabled() && $this->getShadowColor() instanceof GfxColor)
         {
             $shadow = new GfxRectangle($this->getContainer());
             $shadow->setWidth($this->getWidth());
@@ -96,12 +96,12 @@ class GfxRectangle extends GfxShape
 
     public function renderGIF($canvas)
     {
-        if($this->shadowEnabled && $this->hasShadow())
+        if($this->shadowEnabled() && $this->hasShadow())
         {
             $this->createShadow($canvas);
         }
 
-        if($this->strokeEnabled && $this->hasStroke())
+        if($this->strokeEnabled() && $this->hasStroke())
         {
             $this->createStroke($canvas);
         }
