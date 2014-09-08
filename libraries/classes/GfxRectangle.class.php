@@ -96,12 +96,12 @@ class GfxRectangle extends GfxShape
 
     public function renderGIF($canvas)
     {
-        if($this->hasShadow())
+        if($this->shadowEnabled && $this->hasShadow())
         {
             $this->createShadow($canvas);
         }
 
-        if($this->hasStroke())
+        if($this->strokeEnabled && $this->hasStroke())
         {
             $this->createStroke($canvas);
         }
@@ -124,6 +124,7 @@ class GfxRectangle extends GfxShape
         return $canvas;
     }
 
+    // TODO: rename those functions in order to reflect the fact that they will only work for GIF!!
     public function createShadow($canvas)
     {
         $color = imagecolorallocatealpha($canvas,
@@ -135,6 +136,7 @@ class GfxRectangle extends GfxShape
 
         $x1 = $this->getX() + $this->getShadowDist();
         $y1 = $this->getY() + $this->getShadowDist();
+
         $x2 = $x1 + $this->getWidth();
         $y2 = $y1 + $this->getHeight();
 
