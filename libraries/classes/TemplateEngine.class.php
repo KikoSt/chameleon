@@ -37,4 +37,19 @@ class TemplateEngine
 
         return ob_get_clean();
     }
-} 
+
+    public function getId()
+    {
+        return $this->variables['id'];
+    }
+
+    public function getWidth()
+    {
+        return $this->variables['width'];
+    }
+
+    public function getHeight()
+    {
+        return $this->variables['height'];
+    }
+}
