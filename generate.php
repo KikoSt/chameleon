@@ -16,6 +16,9 @@ $advertiserId = (int) $argv[2];
 $categoryId   = (int) $argv[3];
 $auditUserId  = (int) $argv[4];
 
+$templateFilterList = array(96, 102);
+$formatFilterList   = array('GIF');
+
 echo $companyId . ' ' . $advertiserId . ' ' . $categoryId . "\n";
 
 $connector = new APIConnector();
@@ -38,6 +41,10 @@ $productList = $products;
 $count = 0;
 foreach($templates AS $template)
 {
+    if(!in_array($template->getBannerTemplateId(), $templateFilterList))
+    {
+        continue;
+    }
     $container = new GfxContainer();
     $container->setAdvertiserId($advertiserId);
     $container->setCompanyId($companyId);
@@ -49,10 +56,16 @@ foreach($templates AS $template)
     foreach($productList AS $product)
     {
         $container->setProductData($product);
-        $container->setTarget('SWF');
-        $container->render();
-        $container->setTarget('GIF');
-        $container->render();
+        if(in_array('SWF', $formatFilterList))
+        {
+            $container->setTarget('SWF');
+            $container->render();
+        }
+        if(in_array('SWF', $formatFilterList))
+        {
+            $container->setTarget('GIF');
+            $container->render();
+        }
         // $container->cleanup();
         echo ++$count . "\n\n";
     }
