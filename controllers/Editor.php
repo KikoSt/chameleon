@@ -40,13 +40,16 @@ class Editor extends Controller
         $container->render();
 
         // view parameters
-        $this->view->templateId = $container->getId();
-        $this->view->advertiserId = $container->getAdvertiserId();
-        $this->view->companyId = $container->getCompanyId();
-        $this->view->gif = str_replace('var/www/', '', OUTPUT_DIR . '/' . $container->getOutputDir()) . '/' . $baseFilename . '.gif';
-        $this->view->elements = $container->getElements();
-        $this->view->fontlist = $text->getFontListForOverview();
-        $this->view->cmeoRefOptions = $this->getCmeoRefOptions();
+        $this->view->templateId      = $container->getId();
+        $this->view->id              = $container->getId();
+        $this->view->advertiserId    = $container->getAdvertiserId();
+        $this->view->companyId       = $container->getCompanyId();
+        $this->view->gif             = str_replace('var/www/', '', OUTPUT_DIR . '/' . $container->getOutputDir()) . '/' . $baseFilename . '.gif';
+        $this->view->elements        = $container->getElements();
+        $this->view->width           = $container->getCanvasWidth();
+        $this->view->height          = $container->getCanvasHeight();
+        $this->view->fontlist        = $text->getFontListForOverview();
+        $this->view->cmeoRefOptions  = $this->getCmeoRefOptions();
         $this->view->cmeoLinkOptions = $this->getCmeoLinkOptions();
 
         $container->setTarget('GIF');
