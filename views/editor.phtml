@@ -3,6 +3,8 @@
     <div class="col-md-4">
         <div class="panel-group" id="accordion">
                 <?php
+                    $element = $this;
+                    include('globals.inc.php');
                     foreach($this->elements as $element):
                         $type = get_class($element);
                             include($type . '.inc.php');
