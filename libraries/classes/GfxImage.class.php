@@ -133,8 +133,16 @@ class GfxImage extends GfXComponent
 
         $dst = $this->resizeImage($this->getImageUrl());
 
-        imagecopyresampled($canvas, $dst, $this->getX(), $this->getY(), 0, 0, $this->getWidth(), $this->getHeight(), $this->getWidth(),
-            $this->getHeight());
+        if($this->getContainer()->getPreviewMode() !== true)
+        {
+            imagecopyresized($canvas, $dst, $this->getX(), $this->getY(), 0, 0, $this->getWidth(), $this->getHeight(), $this->getWidth(),
+                        $this->getHeight());
+        }
+        else
+        {
+            imagecopyresampled($canvas, $dst, $this->getX(), $this->getY(), 0, 0, $this->getWidth(), $this->getHeight(), $this->getWidth(),
+                        $this->getHeight());
+        }
 
         return $canvas;
     }
