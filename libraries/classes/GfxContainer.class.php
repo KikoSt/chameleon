@@ -114,6 +114,9 @@ class GfxContainer
         $string .= ' xmlns:cmeo="http://www.mediadecision.com/chameleon_namespace" ';
         $string .= ' xmlns:svg="http://www.w3.org/2000/svg" ';
         $string .= ' xmlns:xlink="http://www.w3.org/1999/xlink"';
+        $string .= ' cmeo:font-family=""';
+        $string .= ' cmeo:primary-color=""';
+        $string .= ' cmeo:secondary-color=""';
         $string .= '>';
         $string .= "\n" . '<g>' . $this->getSvg() . '</g></svg>';
         return $string;
