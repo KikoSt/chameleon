@@ -31,6 +31,15 @@ $container->setAdvertiserId($advertiserId);
 
 $basePath = (string) $companyId . '/' . (string) $advertiserId . '/0';
 
+if(array_key_exists('action', $_REQUEST))
+{
+    $action = $_REQUEST['action'];
+}
+else
+{
+    return false;
+}
+
 if(!empty($_FILES))
 {
     foreach($_FILES as $singleFile)
@@ -54,7 +63,7 @@ $container->parse();
 // the files change section since the changeElementValue method will update
 // the imgSources with the old values, being changed (corrected) again below
 
-if(array_key_exists('action', $_REQUEST) && 'upload' !== $_REQUEST['action'])
+if($action !==  'upload')
 {
     $container->changeElementValue($_POST);
 }
@@ -79,7 +88,7 @@ $svgContent = $container->createSvg();
 $container->setTarget('GIF');
 $container->render();
 
-if(array_key_exists('action', $_REQUEST) && 'save' === $_REQUEST['action'])
+if($action === 'clone' || $action === 'save')
 {
     $connector = new APIConnector();
     $connector->setCompanyId(getRequestVar('companyId'));
