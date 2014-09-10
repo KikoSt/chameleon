@@ -11,12 +11,13 @@
     <div class="panel-body">
         <div class="container-fluid">
             <div class="row">
-                <?php // include('editorComponents/color.inc.php'); ?>
+                <?php include('editorComponents/globalDimensions.inc.php'); ?>
             </div>
             <div class="row">
-                <?php
-                include('editorComponents/dimensions.inc.php');
-                ?>
+                <?php include('editorComponents/globalColor.inc.php'); ?>
+            </div>
+            <div class="row">
+                <?php include('editorComponents/globalFont.inc.php'); ?>
             </div>
             <div class="row">
 
