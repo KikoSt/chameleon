@@ -3,7 +3,7 @@
     <div class="col-md-4">
         <div class="panel-group" id="accordion">
                 <?php
-                    $element = $this;
+                    $element = $this->container;
                     include('globals.inc.php');
                     foreach($this->elements as $element):
                         $type = get_class($element);
@@ -26,6 +26,7 @@
                 <button id="preview" type="submit" class="btn btn-info" form="editor" data-loading-text="Loading...">Preview</button>
                 <!--        On click render template, show the change and save data to database-->
                 <button id="save" type="submit" class="btn btn-danger" form="editor">Save</button>
+                <button id="clone" type="submit" class="btn btn-danger" form="editor">Clone</button>
             </div>
         </div>
     </div>
