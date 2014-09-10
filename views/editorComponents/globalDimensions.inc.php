@@ -4,8 +4,8 @@
         <input type="text"
                class="form-control"
                name="<?php echo $element->getId();?>#width"
-               value="<?php echo $element->getWidth();?>"
-               placeholder="<?php echo $element->getWidth();?>"
+               value="<?php echo $element->getCanvasWidth();?>"
+               placeholder="<?php echo $element->getCanvasWidth();?>"
             />
     </div>
 </div>
@@ -15,8 +15,8 @@
     <input type="text"
            class="form-control"
            name="<?php echo $element->getId();?>#height"
-           value="<?php echo $element->getHeight();?>"
-           placeholder="<?php echo $element->getHeight();?>"
+           value="<?php echo $element->getCanvasHeight();?>"
+           placeholder="<?php echo $element->getCanvasHeight();?>"
         />
     </div>
 </div>

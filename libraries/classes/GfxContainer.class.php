@@ -25,6 +25,10 @@ class GfxContainer
     private $editorOptions;
     private $allowedTargets;
 
+    private $globalFontFamily;
+    private $globalPrimaryColor;
+    private $globalSecondaryColor;
+
     // Path information:
     // the baseDir is either SVG_DIR or OUTPUT_DIR for now, depending on whether
     //   SVG operations or rendering is required -> NOT stored here
@@ -114,9 +118,9 @@ class GfxContainer
         $string .= ' xmlns:cmeo="http://www.mediadecision.com/chameleon_namespace" ';
         $string .= ' xmlns:svg="http://www.w3.org/2000/svg" ';
         $string .= ' xmlns:xlink="http://www.w3.org/1999/xlink"';
-        $string .= ' cmeo:font-family=""';
-        $string .= ' cmeo:primary-color=""';
-        $string .= ' cmeo:secondary-color=""';
+        $string .= ' cmeo:font-family="' . $this->getFontFamily() . '"';
+        $string .= ' cmeo:primary-color="' . $this->getPrimaryColor()->getHex() . '"';
+        $string .= ' cmeo:secondary-color="' . $this->getSecondaryColor()->getHex() . '"';
         $string .= '>';
         $string .= "\n" . '<g>' . $this->getSvg() . '</g></svg>';
         return $string;
@@ -152,6 +156,7 @@ class GfxContainer
         {
             throw new FileNotFoundException('File ' . $source . ' not found!');
         }
+
         $this->parse();
     }
 
@@ -178,6 +183,9 @@ class GfxContainer
 
         $this->setCanvasWidth((float) $svg->attributes()->width);
         $this->setCanvasHeight((float) $svg->attributes()->height);
+        $this->setPrimaryColor($svg->attributes('cmeo', true)->{"primary-color"});
+        $this->setSecondaryColor($svg->attributes('cmeo', true)->{"secondary-color"});
+        $this->setFontFamily($svg->attributes('cmeo', true)->{"font-family"});
 
         $children = $svg->children();
 
@@ -499,6 +507,20 @@ class GfxContainer
             $valueList[$id][$parameter] = $value;
         }
 
+        $width  = $valueList[$this->getId()]['width'];
+        $height = $valueList[$this->getId()]['height'];
+        $primaryColor   = $valueList[$this->getId()]['primary-color'];
+        $secondaryColor = $valueList[$this->getId()]['secondary-color'];
+        $fontFamily     = $valueList[$this->getId()]['fontFamily'];
+
+        $this->setCanvasWidth($width);
+        $this->setCanvasHeight($height);
+
+        $this->setPrimaryColor($primaryColor);
+        $this->setSecondaryColor($secondaryColor);
+
+        $this->setFontFamily($fontFamily);
+
         // now we've got a dictionary like that:
         // valueList['price_ribbon_1']['x'] = 50;
         foreach($this->getElements() as $element)
@@ -721,5 +743,65 @@ class GfxContainer
     public function setPreviewMode($previewMode)
     {
         $this->previewMode = $previewMode;
+    }
+
+    /**
+     * Get globalFontFamily.
+     *
+     * @return globalFontFamily.
+     */
+    public function getFontFamily()
+    {
+        return $this->globalFontFamily;
+    }
+
+    /**
+     * Set globalFontFamily.
+     *
+     * @param globalFontFamily the value to set.
+     */
+    public function setFontFamily($globalFontFamily)
+    {
+        $this->globalFontFamily = $globalFontFamily;
+    }
+
+    /**
+     * Get globalPrimaryColor.
+     *
+     * @return globalPrimaryColor.
+     */
+    public function getPrimaryColor()
+    {
+        return $this->globalPrimaryColor;
+    }
+
+    /**
+     * Set globalPrimaryColor.
+     *
+     * @param globalPrimaryColor the value to set.
+     */
+    public function setPrimaryColor($globalPrimaryColor)
+    {
+        $this->globalPrimaryColor = new GfxColor($globalPrimaryColor);
+    }
+
+    /**
+     * Get globalSecondaryColor.
+     *
+     * @return globalSecondaryColor.
+     */
+    public function getSecondaryColor()
+    {
+        return $this->globalSecondaryColor;
+    }
+
+    /**
+     * Set globalSecondaryColor.
+     *
+     * @param globalSecondaryColor the value to set.
+     */
+    public function setSecondaryColor($globalSecondaryColor)
+    {
+        $this->globalSecondaryColor = new GfxColor($globalSecondaryColor);
     }
 }

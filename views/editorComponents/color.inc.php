@@ -7,6 +7,10 @@
                name="<?php echo $element->getId();?>#fill"
                value="<?php echo $element->getFill()->getHex();?>"
                placeholder="color"
+               style="width:100px;"
             />
+            <!-- colorpicker('setValue', value) here -->
+            <input type="button" value="primary" />
+            <input type="button" value="secondary" />
     </div>
 </div>
