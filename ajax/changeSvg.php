@@ -107,7 +107,14 @@ if($action === 'clone' || $action === 'save')
     $bannerTemplateModel->setDescription('testing');
     $bannerTemplateModel->setName('mumblebee testing');
 
-    $response = $connector->sendBannerTemplate($bannerTemplateModel);
+    if('save' === $action)
+    {
+        $response = $connector->sendBannerTemplate($bannerTemplateModel);
+    }
+    else if('clone' === $action)
+    {
+        $response = $connector->sendBannerTemplate($bannerTemplateModel);
+    }
 }
 
 $response = array();
