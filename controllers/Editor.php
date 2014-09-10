@@ -31,13 +31,11 @@ class Editor extends Controller
         $filename = $baseFilename . '.svg';
 
         // render gif for editor view
-        $container->setCategoryId(0);
+        $container->setCategoryId(0); // general, so ZERO here
         $container->setOutputName($baseFilename);
         $container->setSource($filename);
         $container->parse();
         $container->setPreviewMode(true);
-        $container->setTarget('GIF');
-        $container->render();
 
         // view parameters
         $this->view->templateId      = $container->getId();
@@ -45,17 +43,14 @@ class Editor extends Controller
         $this->view->advertiserId    = $container->getAdvertiserId();
         $this->view->companyId       = $container->getCompanyId();
         $this->view->gif             = str_replace('var/www/', '', OUTPUT_DIR . '/' . $container->getOutputDir()) . '/' . $baseFilename . '.gif';
+        $this->view->container       = $container;
         $this->view->elements        = $container->getElements();
-        $this->view->width           = $container->getCanvasWidth();
-        $this->view->height          = $container->getCanvasHeight();
         $this->view->fontlist        = $text->getFontListForOverview();
         $this->view->cmeoRefOptions  = $this->getCmeoRefOptions();
         $this->view->cmeoLinkOptions = $this->getCmeoLinkOptions();
 
         $container->setTarget('GIF');
         $container->render();
-
-        // unlink(SVG_DIR . $filename);
 
         return true;
     }
