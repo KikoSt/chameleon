@@ -56,6 +56,7 @@ $container->setOutputName($baseFilename);
 
 //parse the svg
 $container->setSource($filename);
+$container->setId($templateId);
 $container->parse();
 
 // TODO
