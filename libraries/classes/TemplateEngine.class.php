@@ -38,6 +38,8 @@ class TemplateEngine
         return ob_get_clean();
     }
 
+    // TODO: hard coding for now, since general rework of the editor might make general changes necessary, so
+    // avoiding to spend too much time on it for now
     public function getId()
     {
         return $this->variables['id'];
