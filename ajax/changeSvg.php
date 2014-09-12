@@ -19,7 +19,7 @@ require_once(__ROOT__ . 'libraries/functions.inc.php');
 $container = new GfxContainer();
 $svgHandler = new SvgFileHandler();
 
-// for now ...
+// TODO: auditUser information MUST be provided by caller!
 $auditUserId = 14;
 
 $companyId    = getRequestVar('companyId');
@@ -29,6 +29,8 @@ $templateId   = getRequestVar('templateId');
 $container->setCompanyId($companyId);
 $container->setAdvertiserId($advertiserId);
 
+// TODO: get rid of this, container should handle the path and it's adviced
+// to the the path from the container!
 $basePath = (string) $companyId . '/' . (string) $advertiserId . '/0';
 
 if(array_key_exists('action', $_REQUEST))
