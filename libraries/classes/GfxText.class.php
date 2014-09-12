@@ -140,7 +140,14 @@ class GfxText extends GfxComponent
         }
 
         if(null !== $this->getSWFFont()) {
-            $text->setFont($this->getSWFFont());
+            try
+            {
+                $text->setFont($this->getSWFFont());
+            }
+            catch(Exception $e)
+            {
+                echo 'Error trying to open font ' . $this->getSWFFont();
+            }
         } else {
             throw new Exception('No font set!');
         }

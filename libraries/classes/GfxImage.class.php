@@ -190,6 +190,10 @@ class GfxImage extends GfXComponent
     public function resizeImage($file, $crop=false)
     {
         list($originalWidth, $originalHeight) = getimagesize($file);
+        if($originalWidth <= 0 || $originalHeight <=0)
+        {
+            throw new Exception('Getting file ' . $file . ' obviously failed; Dimensions <= zero found');
+        }
         $aspectRatio = $originalWidth / $originalHeight;
 
         $newWidth  = $this->getWidth();
@@ -338,13 +342,17 @@ class GfxImage extends GfXComponent
         {
             $imageUrl = ROOT_DIR . $imageUrl;
         }
-        if(fopen($imageUrl, "r"))
+        if($imageHandle = fopen($imageUrl, "r"))
         {
             $this->imageUrl = $imageUrl;
         }
         else
         {
-            $this->imageUrl = ASSET_DIR . 'image_not_found.jpg';
+            throw new Exception('Image not found: ' . $imageUrl);
+        }
+        if(is_resource($imageHandle))
+        {
+            fclose($imageHandle);
         }
     }
 
