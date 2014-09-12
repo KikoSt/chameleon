@@ -126,7 +126,6 @@ class GfxContainer
         return $string;
     }
 
-
     public function setOutputName($outputName)
     {
         $this->outputName = $outputName;
@@ -156,8 +155,6 @@ class GfxContainer
         {
             throw new FileNotFoundException('File ' . $source . ' not found!');
         }
-
-        $this->parse();
     }
 
     /**
