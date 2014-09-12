@@ -269,17 +269,11 @@ class GfxText extends GfxComponent
     }
 
 
-    /**
-     * @return mixed
-     */
     public function getTextAnchor()
     {
         return $this->textAnchor;
     }
 
-    /**
-     * @param mixed $textAnchor
-     */
     public function setTextAnchor($textAnchor)
     {
         $this->textAnchor = $textAnchor;
@@ -288,17 +282,11 @@ class GfxText extends GfxComponent
 
 
 
-    /**
-     * @return mixed
-     */
     public function getText()
     {
         return $this->text;
     }
 
-    /**
-     * @param mixed $text
-     */
     public function setText($text)
     {
         $text = str_replace('â‚¬', '€', $text);
@@ -309,14 +297,6 @@ class GfxText extends GfxComponent
 
 
 
-    /**
-     * getFont
-     *
-     * returns an MEH!
-     *
-     * @access public
-     * @return void
-     */
     public function getSWFFont()
     {
         $font = new SWFFont($GLOBALS['fontlist']['SWF'][$this->getFontFamily()]);
@@ -328,56 +308,39 @@ class GfxText extends GfxComponent
         return $GLOBALS['fontlist']['GIF'][$this->getFontFamily()];
     }
 
-    /**
-     * @param $fontWeight
-     * @throws InvalidArgumentException
-     */
     public function setFontWeight($fontWeight)
     {
-        $aAllowedValues = array('normal', 'bold', 'bolder', 'lighter', '100', '200', '300', '400', '500', '600', '700', '800', '900');
+        $allowedValues = array('normal', 'bold', 'bolder', 'lighter', '100', '200', '300', '400', '500', '600', '700', '800', '900');
 
-        if(in_array(strtolower($fontWeight), $aAllowedValues, true)) {
+        if(in_array(strtolower($fontWeight), $allowedValues, true)) {
             $this->fontWeight = $fontWeight;
         } else {
             $this->throwException($fontWeight);
         }
     }
 
-    /**
-     * @return mixed
-     */
     public function getFontWeight()
     {
         return $this->fontWeight;
     }
 
-    /**
-     * @param $fontVariant
-     * @throws InvalidArgumentException
-     */
     public function setFontVariant($fontVariant)
     {
-        $aAllowedValues = array("normal", "small-caps");
+        $allowedValues = array("normal", "small-caps");
 
-        if(in_array(strtolower($fontVariant), $aAllowedValues, true)) {
+        if(in_array(strtolower($fontVariant), $allowedValues, true)) {
             $this->fontVariant = $fontVariant;
         } else {
             $this->throwException($fontVariant);
         }
     }
 
-    /**
-     * @return mixed
-     */
     public function getFontVariant()
     {
         return $this->fontVariant;
     }
 
 
-    /**
-     * @return mixed
-     */
     public function getFontStyle()
     {
         return $this->fontStyle;
