@@ -126,6 +126,7 @@
                     $("#previewImage img").attr('src', imgsrc + '?' + new Date().getTime())
                 }
             };
+            formdata = JSON.strigify(formdata);
             xhr.open('POST', '/chameleon/ajax/changeSvg.php', true);
             xhr.send(formData);
             return false;
