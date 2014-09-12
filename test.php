@@ -23,13 +23,13 @@ $container->setAdvertiserId($advertiserId);
 $container->setCompanyId($companyId);
 $container->setId(108);
 
-$templates = $connector->getTemplates();
-// var_dump($templates);
+$template = $connector->getTemplateById(96);
+var_dump($template);
 //
-// die();
+die();
 
-foreach($templates AS $template)
-{
+// foreach($templates AS $template)
+// {
     $svg = simplexml_load_string($template->getSvgContent());
     $nodes = $svg->children();
     $nodes = $nodes->children();
@@ -41,20 +41,24 @@ foreach($templates AS $template)
         if($attributes->id == 'background')
         {
             echo 'setting width and height to ' . $attributes->width . '/' . $attributes->height . "\n";
-            $width  = $attributes->width;
-            $height = $attributes->height;
+            // $width  = $attributes->width;
+            // $height = $attributes->height;
+            $width = 750;
+            $height = 300;
             $template->setDimX($width);
             $template->setDimY($height);
         }
     }
 
+    $width = 750;
+    $height = 300;
     $container->setSource($template->getSvgContent());
     $container->setCanvasWidth($width);
     $container->setCanvasHeight($height);
     $template->setSvgContent($container->createSvg());
     var_dump($container);
     $connector->sendBannerTemplate($template);
-}
+// }
 
 
 die();
