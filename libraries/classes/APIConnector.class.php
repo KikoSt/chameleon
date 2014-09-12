@@ -188,6 +188,19 @@ class APIConnector
     }
 
 
+    private function validateResponse($response)
+    {
+        if(!is_array($response) && !is_object($response))
+        {
+            if(strpos($response, 'Error'))
+            {
+                $response = ltrim(preg_replace ('/<[^>]*>/', ' ', $response));
+                return array('valid' => false, 'message' => $response);
+           }
+        }
+        return array('valid' => true, 'message' => '');
+    }
+
     public function getCategories()
     {
         $resource = REST_API_SERVICE_URL . '/' . str_replace('{companyId}', $this->companyId, $this->serviceCalls['getCategories']);
@@ -195,6 +208,12 @@ class APIConnector
 
         $curlResponse = curl_exec($curl);
         curl_close($curl);
+
+        $result = $this->validateResponse($curlResponse);
+        if(!$result['valid'])
+        {
+            throw new Exception('An error occured: ' . $result['message']);
+        }
 
         $categories = json_decode($curlResponse)->categories;
         $categoriesProcessed = array();
@@ -211,7 +230,6 @@ class APIConnector
         }
 
         return $categoriesProcessed;
-
     }
 
 
@@ -270,6 +288,11 @@ class APIConnector
         $curl = $this->getCurl($resource, 'GET');
 
         $curlResponse = curl_exec($curl);
+        $result = $this->validateResponse($curlResponse);
+        if(!$result['valid'])
+        {
+            throw new Exception('Error trying to get templates');
+        }
 
         curl_close($curl);
 
