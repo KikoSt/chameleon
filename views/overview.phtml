@@ -1,7 +1,9 @@
+    <br /><br /><br />
+    <br /><br /><br />
     <?php
-        if(!is_array($this->previews)):
+        if(!is_array($this->previews) || count($this->previews) === 0):
     ?>
-            <h1>An error occurred. Please try reloading the page ...</h1>
+        <p class="notification"><?php echo $this->message; ?></p>
     <?php
         else:
     ?>
