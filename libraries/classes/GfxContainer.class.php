@@ -249,7 +249,7 @@ class GfxContainer
      * @access private
      * @return string
      */
-    private function getOutputFilename()
+    public function getOutputFilename()
     {
         if($this->getOutputName() != '')
         {
