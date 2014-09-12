@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_ALL);
 require_once('Bootstrap.php');
 include('config/pathconfig.inc.php');
 
@@ -10,17 +11,46 @@ if(!defined('__ROOT__'))
     define('__ROOT__', './');
 }
 
+// get ini settings
+$iniSettings = parse_ini_file('generate.ini');
+if(!$iniSettings)
+{
+    echo basename(__FILE__) . ": Ini file not found, exiting\n";
+    exit(1);
+}
+
 $advertiserId = 122;
 $companyId    = 170;
 $userId       = 14;
 $templateId   = 96;
 $auditUserId  = 1;
 
-$productCategoryIds = getCategories($companyId, $advertiserId);
+
+// get all categories
+try
+{
+    $productCategoryIds = getCategories($companyId, $advertiserId);
+}
+catch(Exception $e)
+{
+    echo $e->getMessage();
+    exit(1);
+}
+
+// for testing, take a random slice with 5 entries and generate only those ...
+$sliceStart = rand(0, count($productCategoryIds));
+$productCategoryIds = array_slice($productCategoryIds, $sliceStart, 5);
 
 foreach($productCategoryIds AS $categoryId)
 {
-    passthru('php ./generate.php ' . $companyId . ' ' . $advertiserId . ' ' . $categoryId . ' ' . $auditUserId);
+    try
+    {
+        $result = passthru('php ./generate.php ' . $companyId . ' ' . $advertiserId . ' ' . $categoryId . ' ' . $auditUserId);
+    }
+    catch(Exception $e)
+    {
+        echo $e->getMessage();
+    }
     // passthru('php ./cacheimages.php ' . $companyId . ' ' . $advertiserId . ' ' . $categoryId . ' ' . $auditUserId);
 }
 
