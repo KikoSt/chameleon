@@ -180,9 +180,9 @@ class GfxContainer
 
         $this->setCanvasWidth((float) $svg->attributes()->width);
         $this->setCanvasHeight((float) $svg->attributes()->height);
-        $this->setPrimaryColor($svg->attributes('cmeo', true)->{"primary-color"});
-        $this->setSecondaryColor($svg->attributes('cmeo', true)->{"secondary-color"});
-        $this->setFontFamily($svg->attributes('cmeo', true)->{"font-family"});
+        $this->setPrimaryColor(new GfxColor($svg->attributes('cmeo', true)->{"primary-color"}));
+        $this->setSecondaryColor(new GfxColor($svg->attributes('cmeo', true)->{"secondary-color"}));
+        $this->setFontFamily((string) $svg->attributes('cmeo', true)->{"font-family"});
 
         $children = $svg->children();
 
@@ -496,19 +496,32 @@ class GfxContainer
 
         foreach($formData AS $key => $value)
         {
-            list($id, $parameter) = explode('#', $key);
-
-            if(!array_key_exists($id, $valueList)) {
-                $valueList[$id] = array();
+            // svg values consist of element id and parameter name:
+            // background#width
+            // values without # are ignored (for example the action parameter)
+            if(!strpos($key, '#'))
+            {
+                continue;
             }
-            $valueList[$id][$parameter] = $value;
+            else
+            {
+                list($id, $parameter) = explode('#', $key);
+
+                if(!array_key_exists($id, $valueList))
+                {
+                    $valueList[$id] = array();
+                }
+                $valueList[$id][$parameter] = $value;
+            }
         }
 
-        $width  = $valueList[$this->getId()]['width'];
-        $height = $valueList[$this->getId()]['height'];
-        $primaryColor   = $valueList[$this->getId()]['primary-color'];
-        $secondaryColor = $valueList[$this->getId()]['secondary-color'];
-        $fontFamily     = $valueList[$this->getId()]['fontFamily'];
+        // global parameters are identified by the template id instead of the element id
+        $globalSettings = $valueList[$this->getId()];
+        $width          = $globalSettings['width'];
+        $height         = $globalSettings['height'];
+        $fontFamily     = $globalSettings['fontFamily'];
+        $primaryColor   = new GfxColor($globalSettings['primary-color']);
+        $secondaryColor = new GfxColor($globalSettings['secondary-color']);
 
         $this->setCanvasWidth($width);
         $this->setCanvasHeight($height);
@@ -777,9 +790,9 @@ class GfxContainer
      *
      * @param globalPrimaryColor the value to set.
      */
-    public function setPrimaryColor($globalPrimaryColor)
+    public function setPrimaryColor(GfxColor $globalPrimaryColor)
     {
-        $this->globalPrimaryColor = new GfxColor($globalPrimaryColor);
+        $this->globalPrimaryColor = $globalPrimaryColor;
     }
 
     /**
@@ -797,8 +810,8 @@ class GfxContainer
      *
      * @param globalSecondaryColor the value to set.
      */
-    public function setSecondaryColor($globalSecondaryColor)
+    public function setSecondaryColor(GfxColor $globalSecondaryColor)
     {
-        $this->globalSecondaryColor = new GfxColor($globalSecondaryColor);
+        $this->globalSecondaryColor = $globalSecondaryColor;
     }
 }
