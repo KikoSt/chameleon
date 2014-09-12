@@ -21,7 +21,9 @@ class Overview extends Controller
         // create required objects
         $container = new GfxContainer();
         $connector = new APIConnector();
-        $previews = array();
+        $templates = array();
+        $previews  = array();
+        $loadError = false;
 
         $connector->setAdvertiserId($this->getAdvertiserId());
         $connector->setCompanyId($this->getCompanyId());
@@ -34,34 +36,56 @@ class Overview extends Controller
         $this->view = $this->setLayout('views/overview.phtml')->getView();
 
         // get all templates for company / advertiser
-        $templates = $connector->getTemplates();
-
-        foreach($templates as $template)
+        try
         {
-            $baseFilename = 'rtest_' . $template->getBannerTemplateId();
-            $filename = $baseFilename . '.svg';
-            $container->setOutputName($baseFilename);
-
-            $container->setSource($template->getSvgContent());
-            $container->setId($template->getBannerTemplateId());
-            $container->saveSvg();
-
-            $container->setTarget('GIF');
-            $container->render();
-
-            $preview = new StdClass();
-            $preview->filepath = str_replace($_SERVER['DOCUMENT_ROOT'], '', OUTPUT_DIR . '/' . $container->getOutputDir()) . '/' . $baseFilename . '.gif';
-            $preview->width = $container->getCanvasWidth() / 2 > 300 ? 300 : $container->getCanvasWidth() / 2;
-            $preview->height = $container->getCanvasHeight();
-            $preview->id = $template->getBannerTemplateId();
-            $preview->templateName = $filename;
-            $preview->templateId = $template->getBannerTemplateId();
-            $preview->advertiserId = $this->getAdvertiserId();
-            $preview->companyId = $this->getCompanyId();
-            $previews[] = $preview;
-
-            // unlink(SVG_DIR . $filename);
+            $templates = $connector->getTemplates();
         }
+        catch(Exception $e)
+        {
+            $this->view->message = 'An error occured: ' . $e->getMessage();
+            $loadError = true;
+        }
+
+        if(!$loadError)
+        {
+            if(count($templates) == 0)
+            {
+                $this->view->message = 'No templates found!';
+            }
+            else
+            {
+                foreach($templates as $template)
+                {
+                    $baseFilename = 'rtest_' . $template->getBannerTemplateId();
+                    $filename = $baseFilename . '.svg';
+                    $container->setOutputName($baseFilename);
+
+                    $container->setSource($template->getSvgContent());
+                    $container->setId($template->getBannerTemplateId());
+                    $container->parse();
+                    $container->saveSvg();
+
+                    $container->setTarget('GIF');
+                    $container->render();
+
+                    $preview = new StdClass();
+                    $rawpath = OUTPUT_DIR . '/' . $container->getOutputDir();
+                    $preview->filepath = str_replace($_SERVER['DOCUMENT_ROOT'], '', $rawpath) . '/' . $baseFilename . '.gif';
+                    $preview->width = $container->getCanvasWidth() / 2 > 300 ? 300 : $container->getCanvasWidth() / 2;
+                    $preview->height = $container->getCanvasHeight();
+                    $preview->id = $template->getBannerTemplateId();
+                    $preview->templateName = $filename;
+                    $preview->templateId = $template->getBannerTemplateId();
+                    $preview->advertiserId = $this->getAdvertiserId();
+                    $preview->companyId = $this->getCompanyId();
+                    $previews[] = $preview;
+
+                    // unlink(SVG_DIR . $filename);
+                }
+            }
+        }
+
+        $this->view->templates = $templates;
         $this->view->previews = $previews;
 
         return $this->view;
