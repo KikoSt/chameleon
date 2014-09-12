@@ -126,7 +126,7 @@ class GfxImage extends GfXComponent
      */
     public function renderGIF($canvas)
     {
-        if($this->hasShadow())
+        if($this->hasShadow() && $this->shadowEnabled())
         {
             $this->createShadow($canvas);
         }
@@ -308,12 +308,12 @@ class GfxImage extends GfXComponent
         if(isset($stroke) || isset($shadow))
         {
             $svg .= "\r\n" . ' style="';
-            if(isset($stroke))
+            if(isset($stroke) && $this->strokeEnabled())
             {
                 $svg .= 'stroke:' . $stroke->getColor()->getHex() . ';stroke-width:' . $stroke->getWidth() . ';';
             }
 
-            if(isset($shadow))
+            if(isset($shadow) && $this->shadowEnabled())
             {
                 $svg .= 'shadow:' . $shadow->getHex() . ';shadow-dist:' . $this->getShadowDist() . 'px;';
             }
