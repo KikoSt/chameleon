@@ -71,7 +71,7 @@ class GfxImage extends GfXComponent
         }
         else
         {
-            $this->setImageUrl('http://' . $_SERVER['SERVER_NAME'] . '/assets/image_not_found.jpg');
+            $this->setImageUrl('http://' . $_SERVER['SERVER_NAME'] . '/chameleon/assets/image_not_found.jpg');
 //            $this->setError('Image ' . $imageUrl . ' not found!');
         }
 //        $this->getContainer()->setOverallError('image', $this->getError());
@@ -364,7 +364,7 @@ class GfxImage extends GfXComponent
         }
         else
         {
-            $this->imageUrl = 'http://' . $_SERVER['SERVER_NAME'] . "/assets/image_not_found.jpg";
+            $this->imageUrl = 'http://' . $_SERVER['SERVER_NAME'] . "/chameleon/assets/image_not_found.jpg";
             //throw new Exception('Image not found: ' . $imageUrl);
         }
 
