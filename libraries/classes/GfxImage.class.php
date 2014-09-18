@@ -60,7 +60,22 @@ class GfxImage extends GfXComponent
         {
             $this->setLinkUrl((string) $svgRootNode->attributes()->linkurl);
         }
-        $this->setImageUrl($imageUrl);
+
+        //todo hack for bugfix, REMOVE !!!
+        $imageUrl = str_replace("//", "/", $imageUrl);
+        //todo hack for bugfix, REMOVE !!!
+
+        if(fopen($imageUrl, "r"))
+        {
+            $this->setImageUrl($imageUrl);
+        }
+        else
+        {
+            $this->setImageUrl('assets/image_not_found.jpg');
+//            $this->setError('Image ' . $imageUrl . ' not found!');
+        }
+
+//        $this->getContainer()->setOverallError('image', $this->getError());
     }
 
     /**
@@ -338,10 +353,12 @@ class GfxImage extends GfXComponent
     public function setImageUrl($imageUrl)
     {
         $imageUrl = preg_replace('/^\/+/', '/', $imageUrl);
+
         if(substr($imageUrl, 0, 4) !== 'http' )
         {
             $imageUrl = ROOT_DIR . $imageUrl;
         }
+
         if($imageHandle = fopen($imageUrl, "r"))
         {
             $this->imageUrl = $imageUrl;
@@ -350,6 +367,7 @@ class GfxImage extends GfXComponent
         {
             throw new Exception('Image not found: ' . $imageUrl);
         }
+
         if(is_resource($imageHandle))
         {
             fclose($imageHandle);
