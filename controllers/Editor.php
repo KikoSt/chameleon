@@ -42,7 +42,9 @@ class Editor extends Controller
         $this->view->id              = $container->getId();
         $this->view->advertiserId    = $container->getAdvertiserId();
         $this->view->companyId       = $container->getCompanyId();
-        $this->view->gif             = str_replace('var/www/', '', OUTPUT_DIR . '/' . $container->getOutputDir()) . '/' . $baseFilename . '.gif';
+        $this->view->gif             = 'http://' . $_SERVER['SERVER_NAME'] . '/chameleon/output/' . $container->getOutputDir() . '/' .
+            $baseFilename
+            . '.gif';
         $this->view->container       = $container;
         $this->view->elements        = $container->getElements();
         $this->view->fontlist        = $text->getFontListForOverview();
