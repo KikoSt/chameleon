@@ -83,7 +83,9 @@ class APIConnector
         $curl = $this->getCurl($resource, 'GET');
         $curlResponse = curl_exec($curl);
 
-        if(curl_getinfo($curl)['http_code'] != 204)
+        $info = curl_getinfo($curl);
+
+        if($info['http_code'] != 204)
         {
             $logfile = fopen('log.txt', 'w');
             fwrite($logfile, $curlResponse . "\n");
@@ -127,7 +129,9 @@ class APIConnector
         // $curl_response = curl_exec($curl);
         $curlResponse = curl_exec($curl);
 
-        if(curl_getinfo($curl)['http_code'] != 204)
+        $info = curl_getinfo($curl);
+
+        if($info['http_code'] != 204)
         {
             $logfile = fopen('log.txt', 'w');
             fwrite($logfile, $curlResponse . "\n" . json_encode($param));

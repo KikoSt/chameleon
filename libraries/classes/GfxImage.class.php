@@ -74,7 +74,6 @@ class GfxImage extends GfXComponent
             $this->setImageUrl('assets/image_not_found.jpg');
 //            $this->setError('Image ' . $imageUrl . ' not found!');
         }
-
 //        $this->getContainer()->setOverallError('image', $this->getError());
     }
 
@@ -365,7 +364,8 @@ class GfxImage extends GfXComponent
         }
         else
         {
-            throw new Exception('Image not found: ' . $imageUrl);
+            $this->imageUrl = BASE_DIR . "/assets/image_not_found.jpg";
+            //throw new Exception('Image not found: ' . $imageUrl);
         }
 
         if(is_resource($imageHandle))

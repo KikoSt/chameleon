@@ -69,7 +69,7 @@ class BannerTemplateModel implements JsonSerializable
 
     public function jsonSerialize()
     {
-        return [
+        return array(
                 'description' => $this->getDescription(),
                 'idAdvertiser' => $this->getAdvertiserId(),
                 'idBannerTemplate' => $this->getBannerTemplateId(),
@@ -80,7 +80,7 @@ class BannerTemplateModel implements JsonSerializable
                 'dimY' => $this->getDimY(),
                 'idGroup' => $this->getGroupId(),
                 'svgContent' => (string) $this->svgContent
-                ];
+               );
     }
 
     // ??
