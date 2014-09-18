@@ -364,7 +364,7 @@ class GfxImage extends GfXComponent
         }
         else
         {
-            $this->imageUrl = BASE_DIR . "/assets/image_not_found.jpg";
+            $this->imageUrl = 'http://' . $_SERVER['SERVER_NAME'] . "/assets/image_not_found.jpg";
             //throw new Exception('Image not found: ' . $imageUrl);
         }
 
