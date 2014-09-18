@@ -71,7 +71,7 @@ class GfxImage extends GfXComponent
         }
         else
         {
-            $this->setImageUrl('assets/image_not_found.jpg');
+            $this->setImageUrl('http://' . $_SERVER['SERVER_NAME'] . '/assets/image_not_found.jpg');
 //            $this->setError('Image ' . $imageUrl . ' not found!');
         }
 //        $this->getContainer()->setOverallError('image', $this->getError());
