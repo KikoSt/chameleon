@@ -1,5 +1,3 @@
-    <br /><br /><br />
-    <br /><br /><br />
     <?php
         if(!is_array($this->previews) || count($this->previews) === 0):
     ?>
@@ -8,28 +6,38 @@
         else:
     ?>
 
-    <div class="container-fluid">
+
+<div class="container-fluid" style="margin-left: 150px;">
     <div class="row" style="margin-top: 70px; padding-left: 10px;">
 
     <?php
         foreach($this->previews as $preview):
     ?>
-        <form method="post" action="index.php?page=editor">
-                <a class="thumbnail col-md-3" style="width:400px;height:300px;margin-left: 10px;">
-                    <input type="image" src="<?php echo $preview->filepath; ?>" alt=""
-                           onclick="form.submit();" style="max-width: 390px; max-height: 290px;">
-                </a>
-                <input type="hidden" name="templateId" value="<?php echo $preview->id; ?>">
-                <input type="hidden" name="advertiserId" value="<?php echo $preview->advertiserId; ?>">
-                <input type="hidden" name="companyId" value="<?php echo $preview->companyId; ?>">
-                <input type="hidden" name="templateName" value="<?php echo $preview->templateName; ?>">
+
+        <form method="post" action="index.php?page=editor" id="<?php echo $preview->templateId; ?>">
+            <div class="thumbnail col-md-3" style="width:540px;height:380px;margin-left: 10px;" onclick="$('#' + <?php echo
+            $preview->templateId; ?>).submit();">
+                <div class="row">
+                    <div class="col-md-8" style="float: left;">
+                        <image class="preview" src="<?php echo $preview->filePath; ?>" style="margin-top: <?php echo $preview->marginTop;?>px">
+                    </div>
+                    <div class="textTitle col-md-4" style="height: 372px; float: right;">
+                        placeholder
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" name="templateId" value="<?php echo $preview->templateId; ?>">
+            <input type="hidden" name="advertiserId" value="<?php echo $preview->advertiserId; ?>">
+            <input type="hidden" name="companyId" value="<?php echo $preview->companyId; ?>">
+            <input type="hidden" name="templateName" value="<?php echo $preview->templateName; ?>">
         </form>
+
     <?php
         endforeach;
         endif;
     ?>
     </div>
-    </div>
+</div>
 
 
 

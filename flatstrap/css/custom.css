@@ -12,6 +12,11 @@ li
     border-radius: 0px !important;
 }
 
+.preview{
+    max-width: 346px;
+    max-height: 362px;
+}
+
 a,
 a:hover
 {
@@ -70,7 +75,9 @@ a:hover
     border-color: #333333 !important;
 }
 
-form
+form {
+    margin: 0px;
+}
 
 .form-control[disabled]
 {
@@ -82,7 +89,7 @@ form
     /*margin-left: 0px !important;*/
 }
 
-form {
+.editor form {
     font-size: .8em !important;
 }
 
@@ -101,12 +108,46 @@ label {
 
 .thumbnail {
     text-align:center !important;
+    background-color: #333333 !important;
+    border-radius: 0px !important;
+    overflow: hidden;
+    vertical-align: middle !important;
+    padding: 1px !important;
+    position: relative;
+}
+
+.thumbnail:hover{
+    background-color: #6a6a6a !important;
+    cursor: hand;
 }
 
 .thumbnail > li {
     display: inline-block !important;
-    *display:inline !important; /* ie7 fix */
+    display:inline !important; /* ie7 fix */
     float: none !important; /* this is the part that makes it work */
 }
 
+#leftbox{
+    position: absolute;
+    margin: 0px;
+    right: auto;
+    z-index: 0;
+    left: 0px;
+    display: block;
+    visibility: visible;
+    width: 161px;
+    top: 60px;
+    bottom: 50px;
+    /*height: 557px;*/
+    display:block;
 
+    background-color: #ffffff;
+    border-right: 1px solid #c3c3c3;
+}
+
+#phone{
+    padding-top: 8px;
+    padding-right: 5px;
+    color: #cccccc;
+    font-size: 3em;
+}

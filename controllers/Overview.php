@@ -69,18 +69,26 @@ class Overview extends Controller
                     $container->render();
 
                     $preview = new StdClass();
-                    $rawpath = OUTPUT_DIR . '/' . $container->getOutputDir();
-                    $preview->filepath = str_replace($_SERVER['DOCUMENT_ROOT'], '', $rawpath) . '/' . $baseFilename . '.gif';
+                    $preview->filePath = BASE_DIR . "/output/" . $container->getOutputDir() . '/' . $baseFilename . '.gif';
                     $preview->width = $container->getCanvasWidth() / 2 > 300 ? 300 : $container->getCanvasWidth() / 2;
                     $preview->height = $container->getCanvasHeight();
-                    $preview->id = $template->getBannerTemplateId();
+                    $preview->templateId = $template->getBannerTemplateId();
                     $preview->templateName = $filename;
                     $preview->templateId = $template->getBannerTemplateId();
                     $preview->advertiserId = $this->getAdvertiserId();
                     $preview->companyId = $this->getCompanyId();
-                    $previews[] = $preview;
 
-                    // unlink(SVG_DIR . $filename);
+                    if($container->getCanvasWidth() >= $container->getCanvasHeight())
+                    {
+                        $newHeight = $container->getCanvasHeight() * (281 / $container->getCanvasWidth());
+                        $preview->marginTop = (481 - intval($newHeight)) / 4;
+                    }
+                    else
+                    {
+                        $preview->marginTop = 4;
+                    }
+
+                    $previews[] = $preview;
                 }
             }
         }
