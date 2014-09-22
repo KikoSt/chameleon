@@ -1,7 +1,7 @@
 <?php
 
 /**
- * BannerTemplateModel
+ * BannerTemplateModel  TODO add description
  *
  * @package
  * @version $id$

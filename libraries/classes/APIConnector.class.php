@@ -1,7 +1,17 @@
 <?php
-
 require_once(__ROOT__ . 'config/apiconfig.inc.php');
 
+/**
+ * Handles the API connections to the bidder
+ *
+ * PHP Version 5.5
+ *
+ * @category    Chameleon
+ * @author      Christoph Starkmann <christoph.starkmann@mediadecision.com>
+ * @author      Thomas Hummel <thomas.hummel@mediadecision.com
+ * @license     Proprietary/Closed Source
+ * @copyright   2014 Media Decision GmbH
+ */
 class APIConnector
 {
     private $serviceCalls;

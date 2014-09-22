@@ -68,8 +68,10 @@ class Overview extends Controller
                     $container->setTarget('GIF');
                     $container->render();
 
+                    $file = BASE_DIR . "/output/" . $container->getOutputDir() . '/' . $baseFilename . '.gif';
+
                     $preview = new StdClass();
-                    $preview->filePath = BASE_DIR . "/output/" . $container->getOutputDir() . '/' . $baseFilename . '.gif';
+                    $preview->filePath = $file;
                     $preview->width = $container->getCanvasWidth() / 2 > 300 ? 300 : $container->getCanvasWidth() / 2;
                     $preview->height = $container->getCanvasHeight();
                     $preview->templateId = $template->getBannerTemplateId();
@@ -77,6 +79,9 @@ class Overview extends Controller
                     $preview->templateId = $template->getBannerTemplateId();
                     $preview->advertiserId = $this->getAdvertiserId();
                     $preview->companyId = $this->getCompanyId();
+                    $preview->fileSize = $this->getRemoteFileSize($file);
+                    $preview->fileDateCreated = $this->getRemoteFileDate($file);  //replace with database timestamp
+                    $preview->fileDateGenerated = $this->getRemoteFileDate($file);
 
                     if($container->getCanvasWidth() >= $container->getCanvasHeight())
                     {
@@ -102,6 +107,41 @@ class Overview extends Controller
     public function display()
     {
         echo $this->view;
+    }
+
+    public function getRemoteFileSize($url)
+    {
+        static $regex = '/^Content-Length: *+\K\d++$/im';
+        if (!$fp = @fopen($url, 'rb')) {
+            return false;
+        }
+        if (
+            isset($http_response_header) &&
+            preg_match($regex, implode("\n", $http_response_header), $matches)
+        ) {
+            return number_format((int)$matches[0] / 1000, 2);
+        }
+
+        $fileSize = strlen(stream_get_contents($fp)) / 1000;
+
+        return $fileSize;
+    }
+
+    public function getRemoteFileDate($url)
+    {
+        $c = curl_init();
+        curl_setopt($c, CURLOPT_URL,$url);
+        curl_setopt($c, CURLOPT_HEADER,1);//Include Header In Output
+        curl_setopt($c, CURLOPT_NOBODY,1);//Set to HEAD & Exclude body
+        curl_setopt($c, CURLOPT_RETURNTRANSFER,1);//No Echo/Print
+        curl_setopt($c, CURLOPT_TIMEOUT,5);//5 seconds max, to get the HEAD header.
+        curl_setopt($c, CURLOPT_FILETIME, true);
+        $cURL_RESULT = curl_exec($c);
+
+        if($cURL_RESULT !== FALSE)
+        {
+            return date("Y-m-d H:i:s", curl_getinfo($c, CURLINFO_FILETIME));
+        }
     }
 
 //    private function clearOutputDirectory($path)
@@ -156,4 +196,6 @@ class Overview extends Controller
     {
         $this->advertiserId = $advertiserId;
     }
+
+
 }

@@ -22,7 +22,27 @@
                         <image class="preview" src="<?php echo $preview->filePath; ?>" style="margin-top: <?php echo $preview->marginTop;?>px">
                     </div>
                     <div class="textTitle col-md-4" style="height: 372px; float: right;">
-                        placeholder
+                        <div class="row">
+                            <ul class="list-group">
+                                <li class="list-group-item"><p class="text-left">Name:</p></li>
+                                <li class="list-group-item">
+                                    <p class="text-right" data-toggle="tooltip" data-placement="top" title="Here the name shows up">
+                                        <?php echo $preview->templateName;?>
+                                    </p>
+                                </li>
+                                <li class="list-group-item"><p class="text-left ">Size:</p></li>
+                                <li class="list-group-item"><p class="text-right"><?php echo $preview->fileSize;?> kb</p></li>
+                                <li class="list-group-item"><p class="text-left">Parent template:</p></li>
+                                <li class="list-group-item"><p class="text-right">147</p></li>
+                                <li class="list-group-item"><p class="text-left">Date created:</p></li>
+                                <li class="list-group-item"><p class="text-right"><?php echo $preview->fileDateCreated;?></p></li>
+                                <li class="list-group-item"><p class="text-left">Date generated:</p></li>
+                                <li class="list-group-item"><p class="text-right"><?php echo $preview->fileDateGenerated;?></p></li>
+                                <li class="list-group-item"><p class="text-left">Prod group(s):</p></li>
+                                <li class="list-group-item"><p class="text-right">Herrenbekleidung</p></li>
+                                <li class="list-group-item"><p class="text-right">Jugendbekleidung</p></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -36,6 +56,12 @@
         endforeach;
         endif;
     ?>
+
+        <!-- Button trigger modal -->
+        <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+            Launch demo modal
+        </button>
+
     </div>
 </div>
 
