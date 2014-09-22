@@ -134,7 +134,7 @@
 
             function onloadHandler(e, args) {
                 // $('#previewalert').show();
-                $("#previewImage img").attr('src', imgsrc); // + new Date().getTime())
+                $("#previewImage img").attr('src', imgsrc);
             }
 
             function onloadstartHandler() {
@@ -144,11 +144,6 @@
             }
         });
 
-
-
-        /* ***********************************
-         * PREVIEW BUTTON
-         *********************************** */
         $('#editor').on('submit', function(e){
             e.preventDefault();
 
@@ -192,7 +187,7 @@
             }
             /* ******************************************************************** */
 
-            var data = $('#editor').serializeArray(); // + "&action=" + btn;
+            var data = $('#editor').serializeArray();
 
             formData.append('action', action);
 
@@ -224,20 +219,6 @@
                 window.location.href = "index.php?page=overview";
             }
             return false;
-        });
-
-        $('#awesomeEditor #editor').bootstrapValidator({
-            testtext: {
-                validators: {
-                    notEmpty: {
-                        message: 'The price is required'
-                    },
-                    numeric: {
-                        message: 'The price must be a number'
-                    }
-                }
-            }
-
         });
     });
 </script>

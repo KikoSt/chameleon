@@ -62,7 +62,7 @@ class GfxImage extends GfXComponent
         }
 
         //todo hack for bugfix, REMOVE !!!
-        $imageUrl = str_replace("//", "/", $imageUrl);
+//        $imageUrl = str_replace("//", "/", $imageUrl);
         //todo hack for bugfix, REMOVE !!!
 
         if(fopen($imageUrl, "r"))

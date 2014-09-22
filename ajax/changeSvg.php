@@ -91,6 +91,8 @@ $svgContent = $container->createSvg();
 $container->setTarget('GIF');
 $container->render();
 
+var_dump($action);
+
 if($action === 'clone' || $action === 'save')
 {
     $connector = new APIConnector();
@@ -109,14 +111,30 @@ if($action === 'clone' || $action === 'save')
     $bannerTemplateModel->setDescription('testing');
     $bannerTemplateModel->setName('mumblebee testing');
 
-    if('save' === $action)
+
+
+    switch($action)
     {
-        $response = $connector->sendBannerTemplate($bannerTemplateModel);
+        case 'save':
+        {
+            $response = $connector->sendBannerTemplate($bannerTemplateModel);
+            break;
+        }
+        case 'clone':
+        {
+            //NYI
+            break;
+        }
     }
-    else if('clone' === $action)
-    {
-        $response = $connector->sendBannerTemplate($bannerTemplateModel);
-    }
+
+//    if('save' === $action)
+//    {
+//        $response = $connector->sendBannerTemplate($bannerTemplateModel);
+//    }
+//    else if('clone' === $action)
+//    {
+//        $response = $connector->sendBannerTemplate($bannerTemplateModel);
+//    }
 }
 
 $response = array();
