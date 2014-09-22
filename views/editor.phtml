@@ -32,7 +32,6 @@
         </div>
     </div>
 </div>
-</div>
 
 <script type="text/javascript">
     $(document).ready(function() {
@@ -134,7 +133,7 @@
 
             function onloadHandler(e, args) {
                 // $('#previewalert').show();
-                $("#previewImage img").attr('src', imgsrc);
+                $("#previewImage img").attr('src', imgsrc); // + new Date().getTime())
             }
 
             function onloadstartHandler() {
@@ -144,6 +143,11 @@
             }
         });
 
+
+
+        /* ***********************************
+         * PREVIEW BUTTON
+         *********************************** */
         $('#editor').on('submit', function(e){
             e.preventDefault();
 
@@ -156,7 +160,17 @@
                         somethingChanged = false;
                     }
                     $('#previewalert').show();
-                    response = $.parseJSON(xhr.response);
+
+console.log(xhr.response);
+
+                    fakeresponse = '{"imgsrc":"output/170/122/0/rtest_5.gif"}';
+
+console.log(fakeresponse);
+
+                    response = $.parseJSON(fakeresponse);
+
+console.log(response);
+
                     imgsrc = response.imgsrc;
                     $("#previewImage img").attr('src', imgsrc + '?' + new Date().getTime());
                 }
@@ -187,7 +201,7 @@
             }
             /* ******************************************************************** */
 
-            var data = $('#editor').serializeArray();
+            var data = $('#editor').serializeArray(); // + "&action=" + btn;
 
             formData.append('action', action);
 
@@ -219,6 +233,20 @@
                 window.location.href = "index.php?page=overview";
             }
             return false;
+        });
+
+        $('#awesomeEditor #editor').bootstrapValidator({
+            testtext: {
+                validators: {
+                    notEmpty: {
+                        message: 'The price is required'
+                    },
+                    numeric: {
+                        message: 'The price must be a number'
+                    }
+                }
+            }
+
         });
     });
 </script>

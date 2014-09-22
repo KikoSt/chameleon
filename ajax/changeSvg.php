@@ -111,37 +111,21 @@ if($action === 'clone' || $action === 'save')
     $bannerTemplateModel->setDescription('testing');
     $bannerTemplateModel->setName('mumblebee testing');
 
-
-
-    switch($action)
+    if('save' === $action)
     {
-        case 'save':
-        {
-            $response = $connector->sendBannerTemplate($bannerTemplateModel);
-            break;
-        }
-        case 'clone':
-        {
-            //NYI
-            break;
-        }
+        $response = $connector->sendBannerTemplate($bannerTemplateModel);
     }
-
-//    if('save' === $action)
-//    {
-//        $response = $connector->sendBannerTemplate($bannerTemplateModel);
-//    }
-//    else if('clone' === $action)
-//    {
-//        $response = $connector->sendBannerTemplate($bannerTemplateModel);
-//    }
+    else if('clone' === $action)
+    {
+        $response = $connector->sendBannerTemplate($bannerTemplateModel);
+    }
 }
 
 $response = array();
 
 // $imgsrc = $container->getOutputDir() . '/' . $container->getOutputName() . '.gif';
 // TODO: improve this path handling, too
-$imgsrc = 'output/' . $basePath . '/' . $container->getOutputName() . '.gif';
+$imgsrc = "output/" . $basePath . "/" . $container->getOutputName() . ".gif";
 $response['imgsrc'] = $imgsrc;
 
 echo json_encode($response);
