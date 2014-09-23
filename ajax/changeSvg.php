@@ -129,4 +129,3 @@ $imgsrc = "output/" . $basePath . "/" . $container->getOutputName() . ".gif";
 $response['imgsrc'] = $imgsrc;
 
 echo json_encode($response);
-

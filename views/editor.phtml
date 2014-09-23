@@ -161,17 +161,16 @@
                     }
                     $('#previewalert').show();
 
-console.log(xhr.response);
+console.log("xhr.response: " + xhr.response);
 
-                    fakeresponse = '{"imgsrc":"output/170/122/0/rtest_5.gif"}';
+                    response = JSON.parse(xhr.response);
 
-console.log(fakeresponse);
-
-                    response = $.parseJSON(fakeresponse);
-
-console.log(response);
+console.log("response: " + response);
 
                     imgsrc = response.imgsrc;
+
+console.log("imgsrc: " + imgsrc);
+
                     $("#previewImage img").attr('src', imgsrc + '?' + new Date().getTime());
                 }
             }
@@ -233,20 +232,6 @@ console.log(response);
                 window.location.href = "index.php?page=overview";
             }
             return false;
-        });
-
-        $('#awesomeEditor #editor').bootstrapValidator({
-            testtext: {
-                validators: {
-                    notEmpty: {
-                        message: 'The price is required'
-                    },
-                    numeric: {
-                        message: 'The price must be a number'
-                    }
-                }
-            }
-
         });
     });
 </script>
