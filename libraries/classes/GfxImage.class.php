@@ -354,7 +354,7 @@ class GfxImage extends GfXComponent
 
         if(substr($imageUrl, 0, 4) !== 'http' )
         {
-            $imageUrl = ROOT_DIR . $imageUrl;
+//            $imageUrl = ROOT_DIR . $imageUrl;
         }
 
         if($imageHandle = fopen($imageUrl, "r"))
