@@ -46,6 +46,8 @@ class Overview extends Controller
             $loadError = true;
         }
 
+//var_dump($templates);
+
         if(!$loadError)
         {
             if(count($templates) == 0)

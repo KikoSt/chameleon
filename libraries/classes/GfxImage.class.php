@@ -43,7 +43,6 @@ class GfxImage extends GfXComponent
         }
     }
 
-
     /**
      * create
      *
@@ -62,15 +61,14 @@ class GfxImage extends GfXComponent
         }
 
         $imageUrl = str_replace("//assets", "/assets", $imageUrl);
-//        $imageUrl = 'http://' . $_SERVER['SERVER_NAME'] . '/chameleon' . $imageUrl;
 
-        if(fopen($imageUrl, "r"))
+        if(fopen(ROOT_DIR . $imageUrl, "r"))
         {
             $this->setImageUrl($imageUrl);
         }
         else
         {
-            $this->setImageUrl('http://' . $_SERVER['SERVER_NAME'] . '/chameleon/assets/image_not_found.jpg');
+            $this->setImageUrl('/assets/image_not_found.jpg');
 //            $this->setError('Image ' . $imageUrl . ' not found!');
         }
 //        $this->getContainer()->setOverallError('image', $this->getError());
@@ -354,7 +352,7 @@ class GfxImage extends GfXComponent
 
         if(substr($imageUrl, 0, 4) !== 'http' )
         {
-//            $imageUrl = ROOT_DIR . $imageUrl;
+            $imageUrl = ROOT_DIR . $imageUrl;
         }
 
         if($imageHandle = fopen($imageUrl, "r"))
