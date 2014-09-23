@@ -62,7 +62,7 @@ class GfxImage extends GfXComponent
         }
 
         $imageUrl = str_replace("//assets", "/assets", $imageUrl);
-        $imageUrl = 'http://' . $_SERVER['SERVER_NAME'] . '/chameleon' . $imageUrl;
+//        $imageUrl = 'http://' . $_SERVER['SERVER_NAME'] . '/chameleon' . $imageUrl;
 
         if(fopen($imageUrl, "r"))
         {
