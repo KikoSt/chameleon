@@ -160,17 +160,8 @@
                         somethingChanged = false;
                     }
                     $('#previewalert').show();
-
-console.log("xhr.response: " + xhr.response);
-
-                    response = JSON.parse(xhr.response);
-
-console.log("response: " + response);
-
+                    response = $.parseJSON(xhr.response);
                     imgsrc = response.imgsrc;
-
-console.log("imgsrc: " + imgsrc);
-
                     $("#previewImage img").attr('src', imgsrc + '?' + new Date().getTime());
                 }
             }
@@ -232,6 +223,20 @@ console.log("imgsrc: " + imgsrc);
                 window.location.href = "index.php?page=overview";
             }
             return false;
+        });
+
+        $('#awesomeEditor #editor').bootstrapValidator({
+            testtext: {
+                validators: {
+                    notEmpty: {
+                        message: 'The price is required'
+                    },
+                    numeric: {
+                        message: 'The price must be a number'
+                    }
+                }
+            }
+
         });
     });
 </script>

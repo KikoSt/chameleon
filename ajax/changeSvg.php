@@ -91,8 +91,6 @@ $svgContent = $container->createSvg();
 $container->setTarget('GIF');
 $container->render();
 
-var_dump($action);
-
 if($action === 'clone' || $action === 'save')
 {
     $connector = new APIConnector();
@@ -101,6 +99,7 @@ if($action === 'clone' || $action === 'save')
 
     //update template in the data base
     $bannerTemplateModel = new BannerTemplateModel();
+
     $bannerTemplateModel->setSvgContent($svgContent);
     $bannerTemplateModel->setGroupId(0);
     $bannerTemplateModel->setDimX($container->getCanvasHeight());
@@ -125,7 +124,8 @@ $response = array();
 
 // $imgsrc = $container->getOutputDir() . '/' . $container->getOutputName() . '.gif';
 // TODO: improve this path handling, too
-$imgsrc = "output/" . $basePath . "/" . $container->getOutputName() . ".gif";
+$imgsrc = 'output/' . $basePath . '/' . $container->getOutputName() . '.gif';
 $response['imgsrc'] = $imgsrc;
 
 echo json_encode($response);
+

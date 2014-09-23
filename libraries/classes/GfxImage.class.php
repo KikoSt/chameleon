@@ -61,6 +61,9 @@ class GfxImage extends GfXComponent
             $this->setLinkUrl((string) $svgRootNode->attributes()->linkurl);
         }
 
+        $imageUrl = str_replace("//assets", "/assets", $imageUrl);
+        $imageUrl = 'http://' . $_SERVER['SERVER_NAME'] . '/chameleon' . $imageUrl;
+
         if(fopen($imageUrl, "r"))
         {
             $this->setImageUrl($imageUrl);
