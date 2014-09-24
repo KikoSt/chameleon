@@ -142,7 +142,7 @@ class Overview extends Controller
 
         if($cURL_RESULT !== FALSE)
         {
-            return date("Y-m-d H:i:s", curl_getinfo($c, CURLINFO_FILETIME));
+            return date("Y-m-d", curl_getinfo($c, CURLINFO_FILETIME));
         }
     }
 

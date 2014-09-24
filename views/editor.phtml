@@ -1,36 +1,52 @@
 <div class="container-fluid" style="margin-left: 150px;">
-<div id="awesomeEditor" class="row" style="margin-top: 70px; padding-left: 10px; padding-right: 10px;">
     <form enctype="multipart/form-data" id="editor" method="POST" class="form-horizontal">
-    <div class="col-md-4">
-        <div class="panel-group" id="accordion">
-                <?php
-                    $element = $this->container;
-                    include('globals.inc.php');
-                    foreach($this->elements as $element):
-                        $type = get_class($element);
-                            include($type . '.inc.php');
-                    endforeach;
-                ?>
-            <input id="templateId"   type="hidden" name="templateId"   value="<?php echo $this->templateId; ?>">
-            <input id="advertiserId" type="hidden" name="advertiserId" value="<?php echo $this->advertiserId; ?>">
-            <input id="companyId"    type="hidden" name="companyId"    value="<?php echo $this->companyId; ?>">
+    <div id="awesomeEditor" class="row" style="margin-top: 115px;">
+        <div id="nodes" class="navbar navbar-default navbar-fixed-top navbar-inverse" role="navigation" style="margin-top:61px;
+    margin-left:161px;background-color: #888888; border-color: #888888;">
+            <ul class="nav navbar-nav navbar-left">
+                <li style="padding: 14px;">
+                    Template: Content_banner_640x320 Category: Herrenkleidung, Jugendkleidung
+                    <button type="button" class="btn btn-xs" data-toggle="modal" data-target="#myModal"  style="background-color: #888888;">
+                        <span class="glyphicon glyphicon-pencil"></span>
+                    </button>
+                </li>
+            </ul>
         </div>
+        <div class="col-md-3">
+            <div class="panel-group" id="accordion">
+                    <?php
+                        $element = $this->container;
+                        include('globals.inc.php');
+                    ?>
+                <input id="templateId"   type="hidden" name="templateId"   value="<?php echo $this->templateId; ?>">
+                <input id="advertiserId" type="hidden" name="advertiserId" value="<?php echo $this->advertiserId; ?>">
+                <input id="companyId"    type="hidden" name="companyId"    value="<?php echo $this->companyId; ?>">
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div style="margin-left: 50px;">
+                <div id="previewImage" class="row text-right" style="margin-left: 5px;">
+                    <img src="<?php echo $this->gif;?>" alt="">
+                </div>
+                <div class="row" style="padding-top: 5px; margin-left: 5px;">
+                    <!--        On click render template and show the change-->
+                    <button id="preview" type="submit" class="btn btn-info">Preview</button>
+                    <!--        On click render template, show the change and save data to database-->
+                    <button id="save" type="submit" class="btn btn-danger">Save</button>
+                    <button id="clone" type="submit" class="btn btn-danger">Clone</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <?php
+            foreach($this->elements as $element):
+                $type = get_class($element);
+                include($type . '.inc.php');
+            endforeach;
+        ?>
     </div>
     </form>
-    <div class="col-md-8">
-        <div style="position: fixed; margin-left: 50px;">
-            <div id="previewImage" class="row" style="margin-left: 5px;">
-                <img src="<?php echo $this->gif;?>" alt="">
-            </div>
-            <div class="row" style="padding-top: 5px; margin-left: 5px;">
-                <!--        On click render template and show the change-->
-                <button id="preview" type="submit" class="btn btn-info" form="editor" data-loading-text="Loading...">Preview</button>
-                <!--        On click render template, show the change and save data to database-->
-                <button id="save" type="submit" class="btn btn-danger" form="editor">Save</button>
-                <button id="clone" type="submit" class="btn btn-danger" form="editor">Clone</button>
-            </div>
-        </div>
-    </div>
 </div>
 
 <script type="text/javascript">
@@ -52,7 +68,8 @@
             }
         });
 
-        $('.checkbox #shadowCheckBox').change(function() {
+        //handles the enabling/disabling of the shadow form elements
+        $('#shadowCheckBox').click(function() {
             var id = $(this).attr('value');
 
             if($(this).is(":checked"))
@@ -69,7 +86,8 @@
             }
         });
 
-        $('.checkbox #strokeCheckBox').change(function() {
+        //handles the enabling/disabling of the stroke form elements
+        $('#strokeCheckBox').click(function() {
             var id = $(this).attr('value');
 
             if($(this).is(":checked"))

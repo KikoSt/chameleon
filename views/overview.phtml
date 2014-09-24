@@ -13,7 +13,7 @@ margin-left:161px;background-color: #888888; border-color: #888888;">
         <ul class="nav navbar-nav navbar-left">
             <li style="padding: 14px;">
                 Herrenbekleidung, Jugendbekleidung
-                <button type="button" class="btn btn-xs" data-toggle="modal" data-target="#myModal" style="background-color: #888888;">
+                <button type="button" class="btn btn-xs" data-toggle="modal" data-target="#myModal"  style="background-color: #888888;">
                     <span class="glyphicon glyphicon-pencil"></span>
                 </button>
             </li>
@@ -33,26 +33,69 @@ margin-left:161px;background-color: #888888; border-color: #888888;">
                     <div class="col-md-8" style="float: left;">
                         <image class="preview" src="<?php echo $preview->filePath; ?>" style="margin-top: <?php echo $preview->marginTop;?>px">
                     </div>
-                    <div class="textTitle col-md-4" style="height: 376px; float: right;">
+                    <div class="textTitle col-md-4" style="height: 376px; float: right; font-size: 10px;">
                         <div class="row">
                             <ul class="list-group">
-                                <li class="list-group-item"><p class="text-left">Name:</p></li>
                                 <li class="list-group-item">
-                                    <p class="text-right" data-toggle="tooltip" data-placement="top" title="Here the name shows up">
-                                        <?php echo $preview->templateName;?>
-                                    </p>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p class="text-left">Name:</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="text-right"><?php echo $preview->templateName;?></p>
+                                        </div>
+                                    </div>
                                 </li>
-                                <li class="list-group-item"><p class="text-left ">Size:</p></li>
-                                <li class="list-group-item"><p class="text-right"><?php echo $preview->fileSize;?> kb</p></li>
-                                <li class="list-group-item"><p class="text-left">Parent template:</p></li>
-                                <li class="list-group-item"><p class="text-right">147</p></li>
-                                <li class="list-group-item"><p class="text-left">Date created:</p></li>
-                                <li class="list-group-item"><p class="text-right"><?php echo $preview->fileDateCreated;?></p></li>
-                                <li class="list-group-item"><p class="text-left">Date generated:</p></li>
-                                <li class="list-group-item"><p class="text-right"><?php echo $preview->fileDateGenerated;?></p></li>
-                                <li class="list-group-item"><p class="text-left">Prod group(s):</p></li>
-                                <li class="list-group-item"><p class="text-right">Herrenbekleidung</p></li>
-                                <li class="list-group-item"><p class="text-right">Jugendbekleidung</p></li>
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p class="text-left ">Size:</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="text-right"><?php echo $preview->fileSize;?> kb</p>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p class="text-left">Parent template:</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="text-right">147</p>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p class="text-left">Date created:</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="text-right"><?php echo $preview->fileDateCreated;?></p>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p class="text-left">Date generated:</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="text-right"><?php echo $preview->fileDateGenerated;?></p>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p class="text-left">Prod group(s):</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="text-right"><span class="glyphicon glyphicon-pencil"></span></p>
+                                        </div>
+                                    </div>
+                                </li>
                             </ul>
                         </div>
                     </div>

@@ -1,5 +1,5 @@
-<label class="col-md-4">Font:</label>
-<div class="col-md-8">
+<label class="col-md-6">Font:</label>
+<div class="col-md-6">
     <select class="form-control"
             name="<?php echo $element->getId();?>#fontFamily">
         <?php

@@ -1,13 +1,9 @@
 <div class="panel panel-default">
-    <a data-toggle="collapse" data-target=""
-       href="#<?php echo $element->getId();?>">
     <div class="panel-heading rectangleTitle">
         <h3 class="panel-title">
                 Rectangle: <?php echo str_replace('_', ' ', $element->getId());?>
         </h3>
     </div>
-    </a>
-    <div id="<?php echo $element->getId();?>" class="panel-collapse collapse"
     <div class="panel-body">
         <div class="container-fluid">
             <div class="row">
