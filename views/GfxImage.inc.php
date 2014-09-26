@@ -1,7 +1,8 @@
-<div class="panel panel-default">
+<div id="panel_<?php echo $element->getId();?>" class="panel panel-default component">
     <div class="panel-heading imageTitle">
         <h3 class="panel-title">
-                Image: <?php echo str_replace('_', ' ', $element->getId());?>
+            Image: <?php echo str_replace('_', ' ', $element->getId());?>
+            <span id="<?php echo $element->getId();?>" class="glyphicon glyphicon-remove-circle" style="float:right;cursor:hand;"></span>
         </h3>
     </div>
     <div class="panel-body">

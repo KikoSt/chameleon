@@ -7,33 +7,28 @@
     <div class="panel-body">
         <div class="container-fluid">
             <div class="row">
-                <label class="col-md-6">Name:</label>
+                <label class="col-md-4">Name:</label>
                 <div class=" col-md-8">
-
+                    placeholder
                 </div>
             </div>
             <div class="row">
-                <label class="col-md-4">Size:</label>
-                <div class=" col-md-8">
-
-                </div>
+                <?php include('editorComponents/globalDimensions.inc.php'); ?>
             </div>
             <div class="row">
                 <label class="col-md-4">Approx. size:</label>
                 <div class=" col-md-8">
-
+                    placeholder
                 </div>
             </div>
             <div class="row">
                 <?php include('editorComponents/globalColor.inc.php'); ?>
             </div>
-            <div class="row">
-                <?php include('editorComponents/globalFont.inc.php'); ?>
-            </div>
+            <?php include('editorComponents/globalFont.inc.php'); ?>
             <div class="row">
                 <label class="col-md-4">Categories:</label>
                 <div class=" col-md-8">
-
+                    placeholder
                 </div>
             </div>
         </div>

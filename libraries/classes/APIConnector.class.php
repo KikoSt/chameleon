@@ -65,7 +65,7 @@ class APIConnector
      * getUserStatusValues
      *
      * get all possible user status values via REST API
-     * (crrently: ACTIVE, PAUSED, DELETED)
+     * (currently: ACTIVE, PAUSED, DELETED)
      *
      * @access public
      * @return $userStatusValues a list containing all defined user status values

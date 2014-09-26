@@ -17,7 +17,7 @@ class Editor extends Controller
         $container = new GfxContainer();
         $text      = new GfxText($container);
 
-        $this->view = $this->setLayout('views/editor.phtml')->getView();
+        $this->view = $this->setLayout('views/editor_new.phtml')->getView();
 
         $templateId   = getRequestVar('templateId');
         $companyId    = getRequestVar('companyId');
@@ -50,6 +50,8 @@ class Editor extends Controller
         $this->view->fontlist        = $text->getFontListForOverview();
         $this->view->cmeoRefOptions  = $this->getCmeoRefOptions();
         $this->view->cmeoLinkOptions = $this->getCmeoLinkOptions();
+
+        $this->view->page = 'editor';
 
         $container->setTarget('GIF');
         $container->render();

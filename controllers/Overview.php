@@ -46,8 +46,6 @@ class Overview extends Controller
             $loadError = true;
         }
 
-//var_dump($templates);
-
         if(!$loadError)
         {
             if(count($templates) == 0)
@@ -102,6 +100,8 @@ class Overview extends Controller
 
         $this->view->templates = $templates;
         $this->view->previews = $previews;
+        $this->view->page = 'overview';
+        $this->view->categories = $connector->getCategories();
 
         return $this->view;
     }

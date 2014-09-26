@@ -1,16 +1,18 @@
-<div class="col-md-12">
-    <label class="col-md-1 control-label">Color:</label>
-    <div class="col-md-11">
+<div class="row">
+    <label class="col-md-4">Color:</label>
+    <div>
         <input id="fill"
                type="text"
                class="form-control picker"
                name="<?php echo $element->getId();?>#fill"
                value="<?php echo $element->getFill()->getHex();?>"
                placeholder="color"
-               style="width:100px;"
+               style="float:left;"
             />
-            <!-- colorpicker('setValue', value) here -->
-            <input type="button" value="primary" />
-            <input type="button" value="secondary" />
+        <div class="text-right">
+            <button class="btn-info" value="primary">1st</button>
+            <button class="btn-success" value="secondary">2nd</button>
+        </div>
     </div>
+
 </div>
