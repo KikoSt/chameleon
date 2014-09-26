@@ -1,6 +1,6 @@
+<?php include('navigation.inc.php');?>
 <div class="container-fluid" style="margin-left: 150px;">
     <form enctype="multipart/form-data" id="editor" method="POST" class="form-horizontal">
-    <div id="awesomeEditor" class="row" style="margin-top: 115px;margin-left: 50px;">
         <div id="nodes" class="navbar navbar-default navbar-fixed-top navbar-inverse" role="navigation" style="margin-top:61px;
     margin-left:161px;background-color: #888888; border-color: #888888;">
             <ul class="nav navbar-nav navbar-left">
@@ -12,250 +12,267 @@
                 </li>
             </ul>
         </div>
-        <div class="col-md-6">
-            <div class="panel-group" id="accordion">
-                <?php
-                    $element = $this->container;
-                    include('globals.inc.php');
-                    foreach($this->elements as $element):
-                        $type = get_class($element);
-                        include($type . '.inc.php');
-                    endforeach;
-                ?>
+        <div id="awesomeEditor" class="row" style="margin-top: 115px;margin-left: 50px;">
+            <div class="col-md-6" style="border-right: 1px solid #c3c3c3;">
+                <div class="row">
+                    <?php
+                        $element = $this->container;
+                        include('globals.inc.php');
+                    ?>
+                </div>
+                    <?php
+                        foreach($this->elements as $element):
+                            $type = get_class($element);
+                            include($type . '.inc.php');
+                        endforeach;
+                    ?>
                 <input id="templateId"   type="hidden" name="templateId"   value="<?php echo $this->templateId; ?>">
                 <input id="advertiserId" type="hidden" name="advertiserId" value="<?php echo $this->advertiserId; ?>">
                 <input id="companyId"    type="hidden" name="companyId"    value="<?php echo $this->companyId; ?>">
             </div>
-
-        </div>
-        <div class="col-md-6">
-            <div id="previewImage" class="row text-center" style="margin-left: 5px;">
-                <img src="<?php echo $this->gif;?>" alt="">
+            <div class="col-md-6">
+                <div style="position:fixed;">
+                    <div id="previewImage" class="row">
+                        <img src="<?php echo $this->gif;?>" alt="">
+                    </div>
+                    <div class="row" style="padding-top: 5px;">
+                        <!--        On click render template and show the change-->
+                        <button id="preview" type="submit" class="btn btn-info" title="Preview">
+                            <span class="glyphicon glyphicon-eye-open"></span>
+                        </button>
+                        <!--        On click render template, show the change and save data to database-->
+                        <button id="save" type="submit" class="btn btn-danger" title="Save template">
+                            <span class="glyphicon glyphicon-save"></span>
+                        </button>
+                        <button id="clone" type="submit" class="btn btn-warning" title="Clone template">
+                            <span class="glyphicon glyphicon-tags"></span>
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div class="row" style="padding-top: 5px; margin-left: 5px;">
-                <!--        On click render template and show the change-->
-                <button id="preview" type="submit" class="btn btn-info">Preview</button>
-                <!--        On click render template, show the change and save data to database-->
-                <button id="save" type="submit" class="btn btn-danger">Save</button>
-                <button id="clone" type="submit" class="btn btn-danger">Clone</button>
-            </div>
         </div>
-    </div>
     </form>
 </div>
 
 <script type="text/javascript">
-    $(document).ready(function() {
-        var btn;
-        var somethingChanged = false;
-        var xcoord = '<?php echo $element->getId();?>#x';
+$(document).ready(function() {
+    var btn;
+    var somethingChanged = false;
+    var xcoord = '<?php echo $element->getId();?>#x';
 
-        $('.btn').on('click', function(){
-            btn = $(this).attr('id');
-        });
+    $('.btn').on('click', function(){
+        btn = $(this).attr('id');
+    });
 
-        $('#previewalert').hide();
+    $('.subnav').click(function(e){
+        var id = $(this).attr('id');
+        $('#panel_' + id).show('slow');
+    });
 
-        $(window).keydown(function(e){
-            if(e.keyCode == 13) {
-                e.preventDefault();
-                return false;
-            }
-        });
+    $('.glyphicon-remove-circle').click(function(e){
+        var id = $(this).attr('id');
+        $('#panel_' + id).hide('slow');
+    });
 
-        $('.glyphicon-resize-small').click(function(){
-            console.log($(this).attr('id'));
-            $(this).hide();
-        });
-
-        //handles the enabling/disabling of the shadow form elements
-        $('#shadowCheckBox').click(function() {
-            var id = $(this).attr('value');
-
-            if($(this).is(":checked"))
-            {
-                $(this).attr("checked", true);
-                $("#" + id + "_shadowColor").attr('disabled', false).addClass('picker');
-                $("#" + id + "_shadowDist").attr('disabled', false);
-            }
-            else
-            {
-                $(this).attr("checked", false);
-                $("#" + id + "_shadowColor").attr('disabled', true).removeClass('picker').val('');
-                $("#" + id + "_shadowDist").attr('disabled', true).val('');
-            }
-        });
-
-        //handles the enabling/disabling of the stroke form elements
-        $('#strokeCheckBox').click(function() {
-            var id = $(this).attr('value');
-
-            if($(this).is(":checked"))
-            {
-                $(this).attr("checked", true);
-                $("#" + id + "_strokeColor").attr('disabled', false).addClass('picker');
-                $("#" + id + "_strokeWidth").attr('disabled', false);
-            }
-            else
-            {
-                $(this).attr("checked", false);
-                $("#" + id + "_strokeColor").attr('disabled', true).removeClass('picker').val('');
-                $("#" + id + "_strokeWidth").attr('disabled', true).val('');
-            }
-        });
-
-
-        /* ***********************************
-         * FILE UPLOAD
-         * *********************************** */
-        $('.kv-fileinput-upload').on('click', function(e){
+    $(window).keydown(function(e){
+        if(e.keyCode == 13) {
             e.preventDefault();
-
-            var imgsrc = '<?php echo $this->gif;?>';
-            var formData = new FormData();
-            var data = {};
-            var nodeList = $(document).find($('[type="file"]'));
-
-            formData.append('templateId', $('#templateId').attr('value'));
-            formData.append('advertiserId', $('#advertiserId').attr('value'));
-            formData.append('companyId', $('#companyId').attr('value'));
-            formData.append('action', 'upload');
-
-            for (var i = 0; i < nodeList.length; i++)
-            {
-                var myId = nodeList[i].getAttribute('id');
-                var targetId = myId.replace('_input', '');
-                var fileSelect = $("#" + myId);
-
-                var files = fileSelect.prop("files");
-
-                if(files.length > 0)
-                {
-                    var file = files[0];
-                    formData.append(targetId, file);
-                }
-            }
-
-            var xhr =  new XMLHttpRequest();
-            xhr.upload.addEventListener('load', onloadHandler, false);
-            xhr.onreadystatechange = function(e) {
-                if(xhr.readyState == 4) {
-                    response = $.parseJSON(xhr.response);
-                    imgsrc = response.imgsrc;
-                    $("#previewImage img").attr('src', imgsrc + '?' + new Date().getTime())
-                }
-            };
-            xhr.open('POST', '/chameleon/ajax/changeSvg.php', true);
-            xhr.send(formData);
             return false;
+        }
+    });
 
-            function onloadHandler(e, args) {
-                // $('#previewalert').show();
-                $("#previewImage img").attr('src', imgsrc); // + new Date().getTime())
-            }
+    $('.glyphicon-resize-small').click(function(){
+        console.log($(this).attr('id'));
+        $(this).hide();
+    });
 
-            function onloadstartHandler() {
-            }
+    //handles the enabling/disabling of the shadow form elements
+    $('#shadowCheckBox').click(function() {
+        var id = $(this).attr('value');
 
-            function onprogressHandler() {
-            }
-        });
+        if($(this).is(":checked"))
+        {
+            $(this).attr("checked", true);
+            $("#" + id + "_shadowColor").attr('disabled', false).addClass('picker');
+            $("#" + id + "_shadowDist").attr('disabled', false);
+        }
+        else
+        {
+            $(this).attr("checked", false);
+            $("#" + id + "_shadowColor").attr('disabled', true).removeClass('picker').val('');
+            $("#" + id + "_shadowDist").attr('disabled', true).val('');
+        }
+    });
+
+    //handles the enabling/disabling of the stroke form elements
+    $('#strokeCheckBox').click(function() {
+        var id = $(this).attr('value');
+
+        if($(this).is(":checked"))
+        {
+            $(this).attr("checked", true);
+            $("#" + id + "_strokeColor").attr('disabled', false).addClass('picker');
+            $("#" + id + "_strokeWidth").attr('disabled', false);
+        }
+        else
+        {
+            $(this).attr("checked", false);
+            $("#" + id + "_strokeColor").attr('disabled', true).removeClass('picker').val('');
+            $("#" + id + "_strokeWidth").attr('disabled', true).val('');
+        }
+    });
 
 
+    /* ***********************************
+     * FILE UPLOAD
+     * *********************************** */
+    $('.kv-fileinput-upload').on('click', function(e){
+        e.preventDefault();
 
-        /* ***********************************
-         * PREVIEW BUTTON
-         *********************************** */
-        $('#editor').on('submit', function(e){
-            e.preventDefault();
+        var imgsrc = '<?php echo $this->gif;?>';
+        var formData = new FormData();
+        var data = {};
+        var nodeList = $(document).find($('[type="file"]'));
 
-            var action = btn; // preview or save
+        formData.append('templateId', $('#templateId').attr('value'));
+        formData.append('advertiserId', $('#advertiserId').attr('value'));
+        formData.append('companyId', $('#companyId').attr('value'));
+        formData.append('action', 'upload');
 
-            var xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function(e) {
-                if(xhr.readyState == 4) {
-                    if(action === 'save') {
-                        somethingChanged = false;
-                    }
-                    $('#previewalert').show();
-                    response = $.parseJSON(xhr.response);
-                    imgsrc = response.imgsrc;
-                    $("#previewImage img").attr('src', imgsrc + '?' + new Date().getTime());
-                }
-            }
+        for (var i = 0; i < nodeList.length; i++)
+        {
+            var myId = nodeList[i].getAttribute('id');
+            var targetId = myId.replace('_input', '');
+            var fileSelect = $("#" + myId);
 
-            var formData = new FormData();
+            var files = fileSelect.prop("files");
 
-            /* ******************************************************************** */
-            var nodeList = $(document).find($('[type="file"]'));
-
-            // formData.append('templateId', $('#templateId').attr('value'));
-            // formData.append('advertiserId', $('#advertiserId').attr('value'));
-            // formData.append('companyId', $('#companyId').attr('value'));
-
-            for (var i = 0; i < nodeList.length; i++)
+            if(files.length > 0)
             {
-                var myId = nodeList[i].getAttribute('id');
-                var targetId = myId.replace('_input', '');
-                var fileSelect = $("#" + myId);
-
-                var files = fileSelect.prop("files");
-
-                if(files.length > 0)
-                {
-                    var file = files[0];
-                    formData.append(targetId, file);
-                }
+                var file = files[0];
+                formData.append(targetId, file);
             }
-            /* ******************************************************************** */
+        }
 
-            var data = $('#editor').serializeArray(); // + "&action=" + btn;
-
-            formData.append('action', action);
-
-            $.each(data, function(key, inputfield) {
-                formData.append(inputfield.name, inputfield.value);
-            });
-
-            xhr.open('POST', '/chameleon/ajax/changeSvg.php', true);
-            xhr.send(formData);
-        });
-
-        $('.picker').colorpicker();
-
-        $("#fileUpload").fileinput();
-
-        $('#awesomeEditor input').change(function() {
-            somethingChanged = true;
-        });
-
-        $('#overview').click(function() {
-            if(somethingChanged === true) {
-                var leaveConfirm = confirm('Unsaved changes detected! Continue?');
-                if(true === leaveConfirm){
-                    window.location.href = "index.php?page=overview";
-                }
+        var xhr =  new XMLHttpRequest();
+        xhr.upload.addEventListener('load', onloadHandler, false);
+        xhr.onreadystatechange = function(e) {
+            if(xhr.readyState == 4) {
+                response = $.parseJSON(xhr.response);
+                imgsrc = response.imgsrc;
+                $("#previewImage img").attr('src', imgsrc + '?' + new Date().getTime())
             }
-            else
+        };
+        xhr.open('POST', '/chameleon/ajax/changeSvg.php', true);
+        xhr.send(formData);
+        return false;
+
+        function onloadHandler(e, args) {
+            // $('#previewalert').show();
+            $("#previewImage img").attr('src', imgsrc); // + new Date().getTime())
+        }
+
+        function onloadstartHandler() {
+        }
+
+        function onprogressHandler() {
+        }
+    });
+
+
+
+    /* ***********************************
+     * PREVIEW BUTTON
+     *********************************** */
+    $('#editor').on('submit', function(e){
+        e.preventDefault();
+
+        var action = btn; // preview or save
+
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function(e) {
+            if(xhr.readyState == 4) {
+                if(action === 'save') {
+                    somethingChanged = false;
+                }
+                $('#previewalert').show();
+                response = $.parseJSON(xhr.response);
+                imgsrc = response.imgsrc;
+                $("#previewImage img").attr('src', imgsrc + '?' + new Date().getTime());
+            }
+        }
+
+        var formData = new FormData();
+
+        /* ******************************************************************** */
+        var nodeList = $(document).find($('[type="file"]'));
+
+        // formData.append('templateId', $('#templateId').attr('value'));
+        // formData.append('advertiserId', $('#advertiserId').attr('value'));
+        // formData.append('companyId', $('#companyId').attr('value'));
+
+        for (var i = 0; i < nodeList.length; i++)
+        {
+            var myId = nodeList[i].getAttribute('id');
+            var targetId = myId.replace('_input', '');
+            var fileSelect = $("#" + myId);
+
+            var files = fileSelect.prop("files");
+
+            if(files.length > 0)
             {
+                var file = files[0];
+                formData.append(targetId, file);
+            }
+        }
+        /* ******************************************************************** */
+
+        var data = $('#editor').serializeArray(); // + "&action=" + btn;
+
+        formData.append('action', action);
+
+        $.each(data, function(key, inputfield) {
+            formData.append(inputfield.name, inputfield.value);
+        });
+
+        xhr.open('POST', '/chameleon/ajax/changeSvg.php', true);
+        xhr.send(formData);
+    });
+
+    $('.picker').colorpicker();
+
+    $("#fileUpload").fileinput();
+
+    $('#awesomeEditor input').change(function() {
+        somethingChanged = true;
+    });
+
+    $('#overview').click(function() {
+        if(somethingChanged === true) {
+            var leaveConfirm = confirm('Unsaved changes detected! Continue?');
+            if(true === leaveConfirm){
                 window.location.href = "index.php?page=overview";
             }
-            return false;
-        });
+        }
+        else
+        {
+            window.location.href = "index.php?page=overview";
+        }
+        return false;
+    });
 
-        $('#awesomeEditor #editor').bootstrapValidator({
-            testtext: {
-                validators: {
-                    notEmpty: {
-                        message: 'The price is required'
-                    },
-                    numeric: {
-                        message: 'The price must be a number'
-                    }
+    $('#awesomeEditor #editor').bootstrapValidator({
+        testtext: {
+            validators: {
+                notEmpty: {
+                    message: 'The price is required'
+                },
+                numeric: {
+                    message: 'The price must be a number'
                 }
             }
+        }
 
-        });
     });
+});
 </script>
-

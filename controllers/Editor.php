@@ -17,7 +17,7 @@ class Editor extends Controller
         $container = new GfxContainer();
         $text      = new GfxText($container);
 
-        $this->view = $this->setLayout('views/editor_new.phtml')->getView();
+        $this->view = $this->setLayout('views/editor.phtml')->getView();
 
         $templateId   = getRequestVar('templateId');
         $companyId    = getRequestVar('companyId');
