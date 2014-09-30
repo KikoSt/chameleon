@@ -89,7 +89,11 @@ if(null !== $_FILES && count($_FILES) > 0)
 
 $svgContent = $container->createSvg();
 $container->setTarget('GIF');
-$container->render();
+
+if(!empty($action))
+{
+    $container->render();
+}
 
 if($action === 'clone' || $action === 'save')
 {
@@ -116,13 +120,12 @@ if($action === 'clone' || $action === 'save')
     }
     else if('clone' === $action)
     {
-        $response = $connector->sendBannerTemplate($bannerTemplateModel);
+        $response = $connector->cloneBannerTemplate($bannerTemplateModel);
     }
 }
 
 $response = array();
 
-// $imgsrc = $container->getOutputDir() . '/' . $container->getOutputName() . '.gif';
 // TODO: improve this path handling, too
 $imgsrc = 'output/' . $basePath . '/' . $container->getOutputName() . '.gif';
 $response['imgsrc'] = $imgsrc;

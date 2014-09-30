@@ -1,14 +1,14 @@
 <?php include('navigation.inc.php');?>
+
+<?php var_dump($this->storedCategories);?>
+
 <div class="container-fluid" style="margin-left: 150px;">
     <form enctype="multipart/form-data" id="editor" method="POST" class="form-horizontal">
         <div id="nodes" class="navbar navbar-default navbar-fixed-top navbar-inverse" role="navigation" style="margin-top:61px;
     margin-left:161px;background-color: #888888; border-color: #888888;">
             <ul class="nav navbar-nav navbar-left">
                 <li style="padding: 14px;">
-                    Template: Content_banner_640x320 Category: Herrenkleidung, Jugendkleidung
-                    <button type="button" class="btn btn-xs" data-toggle="modal" data-target="#myModal"  style="background-color: #888888;">
-                        <span class="glyphicon glyphicon-pencil"></span>
-                    </button>
+                    Template: <?php echo $this->fileName;?>
                 </li>
             </ul>
         </div>
@@ -18,6 +18,7 @@
                     <?php
                         $element = $this->container;
                         include('globals.inc.php');
+                        include('categories.inc.php');
                     ?>
                 </div>
                     <?php
@@ -58,7 +59,7 @@
 $(document).ready(function() {
     var btn;
     var somethingChanged = false;
-    var xcoord = '<?php echo $element->getId();?>#x';
+    var category = {};
 
     $('.btn').on('click', function(){
         btn = $(this).attr('id');
@@ -74,6 +75,11 @@ $(document).ready(function() {
         $('#panel_' + id).hide('slow');
     });
 
+    $('#editCategoriesEditor').click(function(e){
+        $('#panel_globalsCategory').show('slow');
+    });
+
+
     $(window).keydown(function(e){
         if(e.keyCode == 13) {
             e.preventDefault();
@@ -82,9 +88,9 @@ $(document).ready(function() {
     });
 
     $('.glyphicon-resize-small').click(function(){
-        console.log($(this).attr('id'));
         $(this).hide();
     });
+
 
     //handles the enabling/disabling of the shadow form elements
     $('#shadowCheckBox').click(function() {
@@ -261,18 +267,27 @@ $(document).ready(function() {
         return false;
     });
 
-    $('#awesomeEditor #editor').bootstrapValidator({
-        testtext: {
-            validators: {
-                notEmpty: {
-                    message: 'The price is required'
-                },
-                numeric: {
-                    message: 'The price must be a number'
-                }
-            }
-        }
+    $("#category").change(function() {
+        $( "#category option:selected" ).each(function() {
 
+            var key = $(this).attr('value');
+            var value = $(this).attr('title');
+
+            category[key] = value;
+        });
+        console.log(JSON.stringify(category));
+    })
+    .trigger( "change" );
+
+    $('#addCategory').click(function(){
+        $.ajax({
+            type: "POST",
+            data: JSON.parse(JSON.stringify(category)),
+            url: "/chameleon/ajax/addCategory.php",
+            success: function(msg){
+            }
+        });
     });
+
 });
 </script>

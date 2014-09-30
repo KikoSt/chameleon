@@ -14,8 +14,20 @@
 margin-left:161px;background-color: #888888; border-color: #888888;">
         <ul class="nav navbar-nav navbar-left">
             <li style="padding: 14px;">
-                Herrenbekleidung, Jugendbekleidung
-                <button type="button" class="btn btn-xs" data-toggle="modal" data-target="#myModal"  style="background-color: #888888;">
+                <?php
+                    if(!empty($_SESSION['categories'])):
+                ?>
+                    Content of session shown
+                <?php
+                    else:
+                ?>
+                    No categories selected
+                <?php
+                    endif;
+                ?>
+                <button id="editCategories" type="button" class="btn btn-xs" data-toggle="modal" data-target="#cmeoModal"
+                        style="background-color:
+                #888888;">
                     <span class="glyphicon glyphicon-pencil"></span>
                 </button>
             </li>
@@ -27,7 +39,6 @@ margin-left:161px;background-color: #888888; border-color: #888888;">
     <?php
         foreach($this->previews as $preview):
     ?>
-
         <form method="post" action="index.php?page=editor" id="<?php echo $preview->templateId; ?>">
             <div class="thumbnail col-md-3" style="width:540px;height:380px;margin-left: 10px;" onclick="$('#' + <?php echo
             $preview->templateId; ?>).submit();">
@@ -44,7 +55,7 @@ margin-left:161px;background-color: #888888; border-color: #888888;">
                                             <p class="text-left">Name:</p>
                                         </div>
                                         <div class="col-md-6">
-                                            <p class="text-right"><?php echo $preview->templateName;?></p>
+                                            <p class="text-right"><?php echo $preview->name;?></p>
                                         </div>
                                     </div>
                                 </li>
@@ -58,33 +69,39 @@ margin-left:161px;background-color: #888888; border-color: #888888;">
                                         </div>
                                     </div>
                                 </li>
+                                <?php
+                                    if(!empty($preview->parentTemplateId)):
+                                ?>
                                 <li class="list-group-item">
                                     <div class="row">
                                         <div class="col-md-6">
                                             <p class="text-left">Parent template:</p>
                                         </div>
                                         <div class="col-md-6">
-                                            <p class="text-right">147</p>
+                                            <p class="text-right"><?php echo $preview->parentTemplateId;?></p>
                                         </div>
                                     </div>
                                 </li>
+                                <?php
+                                    endif;
+                                ?>
                                 <li class="list-group-item">
                                     <div class="row">
                                         <div class="col-md-6">
                                             <p class="text-left">Date created:</p>
                                         </div>
                                         <div class="col-md-6">
-                                            <p class="text-right"><?php echo $preview->fileDateCreated;?></p>
+                                            <p class="text-right"><?php echo $preview->dateCreate;?></p>
                                         </div>
                                     </div>
                                 </li>
                                 <li class="list-group-item">
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <p class="text-left">Date generated:</p>
+                                            <p class="text-left">Date modified:</p>
                                         </div>
                                         <div class="col-md-6">
-                                            <p class="text-right"><?php echo $preview->fileDateGenerated;?></p>
+                                            <p class="text-right"><?php echo $preview->dateModified;?></p>
                                         </div>
                                     </div>
                                 </li>
@@ -92,9 +109,6 @@ margin-left:161px;background-color: #888888; border-color: #888888;">
                                     <div class="row">
                                         <div class="col-md-6">
                                             <p class="text-left">Prod group(s):</p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p class="text-right"><span class="glyphicon glyphicon-pencil"></span></p>
                                         </div>
                                     </div>
                                 </li>
@@ -119,7 +133,7 @@ margin-left:161px;background-color: #888888; border-color: #888888;">
 
 
 <!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="cmeoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -156,6 +170,9 @@ margin-left:161px;background-color: #888888; border-color: #888888;">
         </div>
     </div>
 </div>
+<script type="text/javascript">
+    $(document).ready(function()
+    {
 
-
-
+    });
+</script>

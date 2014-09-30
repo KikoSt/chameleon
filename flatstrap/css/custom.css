@@ -67,7 +67,7 @@ select
 }
 
 
-.globalTitle
+.globalsTitle
 {
     background-color: #f8bf42 !important;
 }
@@ -190,6 +190,13 @@ label {
     display: block;
     padding: 0px 0px 0px 22px !important;
     font-size: 12px;
+}
+
+#panel_globalsCategory input,
+#panel_globalsCategory select
+{
+    width: 250px !important;
+    float: left;
 }
 
 

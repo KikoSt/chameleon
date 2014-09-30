@@ -215,6 +215,14 @@ class APIConnector
         return array('valid' => true, 'message' => '');
     }
 
+    /**
+     * Returns the categories depending on the company id
+     *
+     * TODO Currently the categories are delivered sorted by name ASC
+     *
+     * @return array
+     * @throws Exception
+     */
     public function getCategories()
     {
         $resource = REST_API_SERVICE_URL . '/' . str_replace('{companyId}', $this->companyId, $this->serviceCalls['getCategories']);
@@ -357,6 +365,22 @@ class APIConnector
     }
 
     /**
+     * Clones the given template
+     *
+     * For cloning the parent template id is set to the former template id and the template id is set to NULL
+     *
+     * @param BannerTemplateModel $template
+     * @return mixed
+     */
+    public function cloneBannerTemplate(BannerTemplateModel $template)
+    {
+        $template->setParentBannerTemplateId($template->getBannerTemplateId());
+        $template->setBannerTemplateId(NULL);
+        $response = $this->sendBannerTemplate($template);
+        return $response;
+    }
+
+    /**
      * @param $templateId
      * @return mixed
      */
@@ -423,6 +447,8 @@ class APIConnector
         $bannerTemplateModel->setDimX((int) $template->dimX);
         $bannerTemplateModel->setDimY((int) $template->dimY);
         $bannerTemplateModel->setGroupId((int) $template->idGroup);
+        $bannerTemplateModel->setDateCreate($template->dateCreate);
+        $bannerTemplateModel->setDateModified($template->dateModified);
 
         return $bannerTemplateModel;
     }
@@ -534,5 +560,7 @@ class APIConnector
     {
         $this->auditUserId = $auditUserId;
     }
+
+
 }
 

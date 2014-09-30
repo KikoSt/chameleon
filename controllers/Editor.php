@@ -16,8 +16,12 @@ class Editor extends Controller
     {
         $container = new GfxContainer();
         $text      = new GfxText($container);
+        $connector = new APIConnector();
 
         $this->view = $this->setLayout('views/editor.phtml')->getView();
+
+        $connector->setAdvertiserId($this->getAdvertiserId());
+        $connector->setCompanyId($this->getCompanyId());
 
         $templateId   = getRequestVar('templateId');
         $companyId    = getRequestVar('companyId');
@@ -26,6 +30,8 @@ class Editor extends Controller
         $container->setId($templateId);
         $container->setcompanyId($companyId);
         $container->setAdvertiserId($advertiserId);
+
+        $template = $connector->getTemplateById($container->getId());
 
         $baseFilename = 'rtest_' . $container->getId();
         $filename = $baseFilename . '.svg';
@@ -37,24 +43,33 @@ class Editor extends Controller
         $container->parse();
         $container->setPreviewMode(true);
 
+        $gif = 'http://' . $_SERVER['SERVER_NAME'] . '/chameleon/output/' . $container->getOutputDir() . '/' . $baseFilename . '.gif';
+
         // view parameters
         $this->view->templateId      = $container->getId();
-        $this->view->id              = $container->getId();
         $this->view->advertiserId    = $container->getAdvertiserId();
         $this->view->companyId       = $container->getCompanyId();
-        $this->view->gif             = 'http://' . $_SERVER['SERVER_NAME'] . '/chameleon/output/' . $container->getOutputDir() . '/' .
-            $baseFilename
-            . '.gif';
+        $this->view->gif             = $gif;
         $this->view->container       = $container;
         $this->view->elements        = $container->getElements();
         $this->view->fontlist        = $text->getFontListForOverview();
         $this->view->cmeoRefOptions  = $this->getCmeoRefOptions();
         $this->view->cmeoLinkOptions = $this->getCmeoLinkOptions();
+        $this->view->name            = $template->getName();
+        $this->view->fileName        = $filename;
+        $this->view->fileSize        = getRemoteFileSize($gif);
+        $this->view->categories      = $connector->getCategories();
 
         $this->view->page = 'editor';
 
+        $this->view->storedCategories  = array_unique($_SESSION['category']);
+
         $container->setTarget('GIF');
-        $container->render();
+
+        if(!empty($_REQUEST['action']))
+        {
+            $container->render();
+        }
 
         return true;
     }
@@ -87,7 +102,6 @@ class Editor extends Controller
     private function getCmeoRefOptions()
     {
         $array = array('description', 'name', 'productImageUrl', 'productImageUrl', 'price', 'priceOld');
-
         return $array;
     }
 

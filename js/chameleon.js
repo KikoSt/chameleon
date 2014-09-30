@@ -94,10 +94,16 @@ $(document).ready(function() {
             type: 'POST',
             success: function(){
                 $('#previewalert').show();
+
                 $("#previewImage img").load(function() {
                     $(this).hide();
                     $(this).fadeIn('slow');
-                }).attr('src', imgsrc + '?' + new Date().getTime());
+                }).attr('src', imgsrc);
+
+                $('#globalsBody').load(function(){
+                    $(this).hide();
+                    $(this).fadeIn('slow');
+                });
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 alert(xhr.status);
