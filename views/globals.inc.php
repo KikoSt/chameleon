@@ -31,9 +31,9 @@
                 <label class="col-md-4">Categories:</label>
                 <div class=" col-md-8">
                     <?php
-                        foreach($this->storedCategories as $storedCategory):
+                        foreach($this->subscribedCategories as $subscribedCategory):
                     ?>
-                    <div class="row"><?php echo $storedCategory;?></div>
+                    <div class="row"><?php echo $subscribedCategory->categoryName;?></div>
                     <?php
                         endforeach;
                     ?>

@@ -272,19 +272,31 @@ $(document).ready(function() {
 
             var key = $(this).attr('value');
             var value = $(this).attr('title');
-
             category[key] = value;
         });
-        console.log(JSON.stringify(category));
     })
     .trigger( "change" );
 
     $('#addCategory').click(function(){
+        console.log(JSON.stringify(category));
+
         $.ajax({
             type: "POST",
             data: JSON.parse(JSON.stringify(category)),
             url: "/chameleon/ajax/addCategory.php",
             success: function(msg){
+            }
+        });
+    });
+
+    $('.removeCategory').click(function(){
+        var id = $(this).attr('id');
+
+        $.ajax({
+            type: "POST",
+            url: "/chameleon/ajax/removeCategory.php?id=" + id,
+            success: function(msg){
+                $('#row_' + id).remove();
             }
         });
     });

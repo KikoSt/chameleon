@@ -59,10 +59,9 @@ class Editor extends Controller
         $this->view->fileName        = $filename;
         $this->view->fileSize        = getRemoteFileSize($gif);
         $this->view->categories      = $connector->getCategories();
+        $this->view->subscribedCategories = $connector->getSubscribedCategoriesByTemplateId($container->getId());
 
         $this->view->page = 'editor';
-
-        $this->view->storedCategories  = array_unique($_SESSION['category']);
 
         $container->setTarget('GIF');
 

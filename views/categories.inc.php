@@ -8,53 +8,44 @@
     <div class="panel-body">
         <div class="container-fluid">
             <div class="row">
-                <input class="form-control" type="text" placeholder="select page category">
+                <div class="col-md-10">
+                    <input class="form-control" type="text" placeholder="select page category">
+                </div>
                 <button style="color:#000000">
                     <span class="glyphicon glyphicon-plus"></span>
                 </button>
             </div>
             <div class="row">
-                <select id="category" multiple="multiple" style="color:#000000">
-                    <?php
+                <div class="col-md-10">
+                    <select id="category" multiple="multiple" style="color:#000000">
+                        <?php
                         foreach($this->categories as $category):
-                    ?>
-                        <option value="<?php echo $category->id;?>" title="<?php echo $category->name;?>">
-                            <?php echo $category->name;?>
-                        </option>
-                    <?php
+                            ?>
+                            <option value="<?php echo $category->id;?>" title="<?php echo $category->name;?>">
+                                <?php echo $category->name;?>
+                            </option>
+                        <?php
                         endforeach;
-                    ?>
-                </select>
+                        ?>
+                    </select>
+                </div>
                 <button id="addCategory" style="color:#000000;">
                     <span class="glyphicon glyphicon-plus"></span>
                 </button>
             </div>
-            <div class="row">
-                <select class="form-control">
-                    <option>select subcategory</option>
-                    <?php
-                        foreach($this->products as $product):
-                    ?>
-                            <option></option>
-                    <?php
-                        endforeach;
-                    ?>
-                </select>
-                <button style="color:#000000">
-                    <span class="glyphicon glyphicon-plus"></span>
-                </button>
-            </div>
             <?php
-            foreach($this->storedCategories as $storedCategory):
-                ?>
-                <div id="<?php echo $storedCategory; ?>" class="row">
-                    <?php echo $storedCategory; ?>
-                    <button style="color:#000000">
+                foreach($this->storedCategories as $id => $storedCategory):
+            ?>
+                <div id="row_<?php echo $id; ?>" class="row">
+                    <div class="col-md-10">
+                        <?php echo $storedCategory; ?>
+                    </div>
+                    <button id="<?php echo $id; ?>" class="removeCategory" style="color:#000000">
                         <span class="glyphicon glyphicon-minus"></span>
                     </button>
                 </div>
             <?php
-            endforeach;
+                endforeach;
             ?>
         </div>
     </div>

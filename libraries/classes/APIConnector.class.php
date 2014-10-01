@@ -32,6 +32,7 @@ class APIConnector
         $this->serviceCalls['sendCreative']          = 'creativeImage';
         $this->serviceCalls['getEnums']              = 'enums';
         $this->serviceCalls['getCategories']         = 'company/{companyId}/categories';
+        $this->serviceCalls['getSubscribedCategories'] = 'bannerTemplate/{idBannerTemplate}/subscribedCategories';
     }
 
     /**
@@ -42,6 +43,8 @@ class APIConnector
      */
     public function getMethodList()
     {
+        //TODO why not using get_class_methods?
+
         $methodList = array_keys($this->serviceCalls);
         return $methodList;
     }
@@ -254,6 +257,25 @@ class APIConnector
         return $categoriesProcessed;
     }
 
+    public function getSubscribedCategoriesByTemplateId($templateId)
+    {
+        $resource = REST_API_SERVICE_URL . '/' . 'bannerTemplate/'.$templateId.'/subscribedCategories';
+        $curl = $this->getCurl($resource, 'GET');
+
+        $curlResponse = curl_exec($curl);
+        curl_close($curl);
+
+        $result = $this->validateResponse($curlResponse);
+        if(!$result['valid'])
+        {
+            throw new Exception('An error occured: ' . $result['message']);
+        }
+
+        $subscribedCategories = json_decode($curlResponse)->categories;
+
+        return $subscribedCategories;
+    }
+
 
 
     /**
@@ -449,6 +471,7 @@ class APIConnector
         $bannerTemplateModel->setGroupId((int) $template->idGroup);
         $bannerTemplateModel->setDateCreate($template->dateCreate);
         $bannerTemplateModel->setDateModified($template->dateModified);
+        $bannerTemplateModel->setCategorySubscriptions($template->categorySubscriptions);
 
         return $bannerTemplateModel;
     }
