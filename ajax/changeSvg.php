@@ -1,4 +1,5 @@
 <?php
+session_start();
 /**
  * Created by IntelliJ IDEA.
  * User: thomas
@@ -29,7 +30,7 @@ $templateId   = getRequestVar('templateId');
 $container->setCompanyId($companyId);
 $container->setAdvertiserId($advertiserId);
 
-// TODO: get rid of this, container should handle the path and it's adviced
+// TODO: get rid of this, container should handle the path and it's advised
 // to the the path from the container!
 $basePath = (string) $companyId . '/' . (string) $advertiserId . '/0';
 
@@ -95,7 +96,7 @@ if(!empty($action))
     $container->render();
 }
 
-if($action === 'clone' || $action === 'save')
+if($action === 'clone' || $action === 'save' || $action === 'editCategoriesEditor')
 {
     $connector = new APIConnector();
     $connector->setCompanyId(getRequestVar('companyId'));
@@ -114,7 +115,39 @@ if($action === 'clone' || $action === 'save')
     $bannerTemplateModel->setDescription('testing');
     $bannerTemplateModel->setName('mumblebee testing');
 
-    if('save' === $action)
+    $existingSubscriptions = $connector->getSubscribedCategoriesByTemplateId($templateId);
+
+    //create the category subscriptions
+    $sessionCategories = $_SESSION['category'];
+
+    foreach($existingSubscriptions as $singleSubscription)
+    {
+        $assignedCategoryId[] = $singleSubscription->idCategory;
+    }
+
+    $categorySubscriptions = array();
+
+    foreach($assignedCategoryId as $aId)
+    {
+        $categorySubscription = new stdClass();
+        $categorySubscription->idCategory = $aId;
+        $userStatus = "DELETED";
+
+        foreach($sessionCategories as $id => $singleCategory)
+        {
+            if($id === $aId)
+            {
+                $userStatus = "ACTIVE";
+            }
+        }
+
+        $categorySubscription->userStatus = $userStatus;
+        $categorySubscriptions[] = $categorySubscription;
+    }
+
+    $bannerTemplateModel->setCategorySubscriptions($categorySubscriptions);
+
+    if($action === 'save' || $action === 'editCategoriesEditor')
     {
         $response = $connector->sendBannerTemplate($bannerTemplateModel);
     }

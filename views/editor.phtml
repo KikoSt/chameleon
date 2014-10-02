@@ -1,6 +1,5 @@
 <?php include('navigation.inc.php');?>
 
-<?php var_dump($this->storedCategories);?>
 
 <div class="container-fluid" style="margin-left: 150px;">
     <form enctype="multipart/form-data" id="editor" method="POST" class="form-horizontal">
@@ -67,16 +66,16 @@ $(document).ready(function() {
 
     $('.subnav').click(function(e){
         var id = $(this).attr('id');
-        $('#panel_' + id).show('slow');
+        $('#panel_' + id).show();
     });
 
     $('.glyphicon-remove-circle').click(function(e){
         var id = $(this).attr('id');
-        $('#panel_' + id).hide('slow');
+        $('#panel_' + id).hide();
     });
 
     $('#editCategoriesEditor').click(function(e){
-        $('#panel_globalsCategory').show('slow');
+        $('#panel_globalsCategory').show();
     });
 
 
@@ -278,12 +277,19 @@ $(document).ready(function() {
     .trigger( "change" );
 
     $('#addCategory').click(function(){
-        console.log(JSON.stringify(category));
-
         $.ajax({
             type: "POST",
             data: JSON.parse(JSON.stringify(category)),
             url: "/chameleon/ajax/addCategory.php",
+            success: function(msg){
+            }
+        });
+    });
+
+    $('#saveCategory').click(function(){
+        $.ajax({
+            type: "POST",
+            url: "/chameleon/ajax/addCategory.php?action=save",
             success: function(msg){
             }
         });

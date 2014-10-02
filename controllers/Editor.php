@@ -59,7 +59,11 @@ class Editor extends Controller
         $this->view->fileName        = $filename;
         $this->view->fileSize        = getRemoteFileSize($gif);
         $this->view->categories      = $connector->getCategories();
-        $this->view->subscribedCategories = $connector->getSubscribedCategoriesByTemplateId($container->getId());
+        $subscribedCategories        = $connector->getSubscribedCategoriesByTemplateId($container->getId());
+
+        $this->view->subscribedCategories = $subscribedCategories;
+
+        $this->addSubscribedCategoriesToSession($subscribedCategories);
 
         $this->view->page = 'editor';
 
@@ -108,5 +112,13 @@ class Editor extends Controller
     {
         $array = array('companyUrl', 'categoryUrl', 'productUrl');
         return $array;
+    }
+
+    private function addSubscribedCategoriesToSession($subscribedCategories)
+    {
+        foreach($subscribedCategories as $singleCategory)
+        {
+            $_SESSION['category'][$singleCategory->idCategory] = $singleCategory->categoryName;
+        }
     }
 }

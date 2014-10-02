@@ -85,6 +85,8 @@ class Overview extends Controller
                     $preview->dateModified = date("Y-m-d H.i:s", parseJavaTimestamp($template->getDateModified()));
                     $preview->parentTemplateId = $template->getParentBannerTemplateId();
                     $preview->name = $template->getName();
+                    $preview->categorySubscription = $connector->getSubscribedCategoriesByTemplateId($template->getBannerTemplateId());
+                    $preview->templateSubsriptions = $template->getCategorySubscriptions();
 
 
                     if($container->getCanvasWidth() >= $container->getCanvasHeight())

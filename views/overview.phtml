@@ -110,6 +110,11 @@ margin-left:161px;background-color: #888888; border-color: #888888;">
                                         <div class="col-md-6">
                                             <p class="text-left">Prod group(s):</p>
                                         </div>
+                                        <div class="col-md-6">
+                                            <?php foreach($preview->categorySubscription as $category):?>
+                                                <p class="text-right"><?php echo $category->categoryName;?></p>
+                                            <?php endforeach;?>
+                                        </div>
                                     </div>
                                 </li>
                             </ul>

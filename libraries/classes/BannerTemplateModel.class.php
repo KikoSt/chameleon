@@ -83,7 +83,8 @@ class BannerTemplateModel implements JsonSerializable
                 'dimX' => $this->getDimX(),
                 'dimY' => $this->getDimY(),
                 'idGroup' => $this->getGroupId(),
-                'svgContent' => (string) $this->svgContent
+                'svgContent' => (string) $this->svgContent,
+                'categorySubscriptions' => $this->getCategorySubscriptions()
                );
     }
 

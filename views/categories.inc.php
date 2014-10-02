@@ -33,20 +33,31 @@
                     <span class="glyphicon glyphicon-plus"></span>
                 </button>
             </div>
+            <div class="row">
+                <div class="col-md-10">
+                    Currently selected categories:
+                </div>
+            </div>
             <?php
-                foreach($this->storedCategories as $id => $storedCategory):
+                foreach($_SESSION['category'] as $id => $storedCategory):
             ?>
                 <div id="row_<?php echo $id; ?>" class="row">
                     <div class="col-md-10">
                         <?php echo $storedCategory; ?>
                     </div>
-                    <button id="<?php echo $id; ?>" class="removeCategory" style="color:#000000">
+                    <button id="<?php echo $id; ?>" class="removeCategory" type="button" style="color:#000000">
                         <span class="glyphicon glyphicon-minus"></span>
                     </button>
                 </div>
             <?php
                 endforeach;
             ?>
+            <div class="row">
+                <div class="col-md-10">
+
+                </div>
+                <button id="saveCategory" type="submit" style="color:#000000">Save</button>
+            </div>
         </div>
     </div>
 </div>

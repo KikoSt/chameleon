@@ -1,6 +1,5 @@
 <?php
 session_start();
-
 include('../config/pathconfig.inc.php');
 require_once('../Bootstrap.php');
 
