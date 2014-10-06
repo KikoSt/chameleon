@@ -31,10 +31,12 @@
                 <label class="col-md-4">Categories:</label>
                 <div class=" col-md-8">
                     <?php
-                        foreach($this->subscribedCategories as $subscribedCategory):
+                        foreach($this->combinedCategories as $combinedCategories):
+                            if($combinedCategories['status'] === "ACTIVE"):
                     ?>
-                    <div class="row"><?php echo $subscribedCategory->categoryName;?></div>
+                    <div class="row"><?php echo $combinedCategories['name'];?></div>
                     <?php
+                            endif;
                         endforeach;
                     ?>
                     <button id="editCategoriesEditor" type="button" class="btn btn-xs" style="background-color: #333333;">

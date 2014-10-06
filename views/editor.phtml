@@ -282,6 +282,7 @@ $(document).ready(function() {
             data: JSON.parse(JSON.stringify(category)),
             url: "/chameleon/ajax/addCategory.php",
             success: function(msg){
+//                $('#categoryContainer').empty().load('ajax/categoriesSelection.inc.php');
             }
         });
     });
@@ -291,6 +292,7 @@ $(document).ready(function() {
             type: "POST",
             url: "/chameleon/ajax/addCategory.php?action=save",
             success: function(msg){
+                alert('reloading');
             }
         });
     });

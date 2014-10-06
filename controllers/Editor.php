@@ -11,17 +11,18 @@ class Editor extends Controller
     private $companyId;
     private $advertiserId;
     private $view;
+    private $connector;
 
     public function create()
     {
         $container = new GfxContainer();
         $text      = new GfxText($container);
-        $connector = new APIConnector();
+        $this->connector = new APIConnector();
 
         $this->view = $this->setLayout('views/editor.phtml')->getView();
 
-        $connector->setAdvertiserId($this->getAdvertiserId());
-        $connector->setCompanyId($this->getCompanyId());
+        $this->connector->setAdvertiserId($this->getAdvertiserId());
+        $this->connector->setCompanyId($this->getCompanyId());
 
         $templateId   = getRequestVar('templateId');
         $companyId    = getRequestVar('companyId');
@@ -31,7 +32,7 @@ class Editor extends Controller
         $container->setcompanyId($companyId);
         $container->setAdvertiserId($advertiserId);
 
-        $template = $connector->getTemplateById($container->getId());
+        $template = $this->connector->getTemplateById($container->getId());
 
         $baseFilename = 'rtest_' . $container->getId();
         $filename = $baseFilename . '.svg';
@@ -58,10 +59,12 @@ class Editor extends Controller
         $this->view->name            = $template->getName();
         $this->view->fileName        = $filename;
         $this->view->fileSize        = getRemoteFileSize($gif);
-        $this->view->categories      = $connector->getCategories();
-        $subscribedCategories        = $connector->getSubscribedCategoriesByTemplateId($container->getId());
+        $this->view->categories      = $this->connector->getCategories();
+        $subscribedCategories        = $this->connector->getSubscribedCategoriesByTemplateId($container->getId());
 
         $this->view->subscribedCategories = $subscribedCategories;
+
+        $this->view->combinedCategories = $this->getSubscribedCategories($template);
 
         $this->addSubscribedCategoriesToSession($subscribedCategories);
 
@@ -120,5 +123,45 @@ class Editor extends Controller
         {
             $_SESSION['category'][$singleCategory->idCategory] = $singleCategory->categoryName;
         }
+    }
+
+    private function getSubscribedCategories($template)
+    {
+        $templateCategories = $template->getCategorySubscriptions();
+        $subscribedCategories = $this->connector->getSubscribedCategoriesByTemplateId($template->getBannerTemplateId());
+        $tempArray = array();
+
+        foreach($templateCategories as $singleCategory)
+        {
+            $aSingleCategory = array();
+            $aSingleCategory['id'] = $singleCategory->idCategory;
+            $aSingleCategory['status'] = $singleCategory->userStatus;
+
+            switch($aSingleCategory['status'])
+            {
+                case "ACTIVE":
+                {
+                    $aSingleCategory['icon'] = 'ok';
+                    break;
+                }
+                case "DELETED":
+                {
+                    $aSingleCategory['icon'] = 'ban';
+                    break;
+                }
+            }
+
+            foreach($subscribedCategories as $singleSubscription)
+            {
+                if($aSingleCategory['id'] === $singleSubscription->idCategory)
+                {
+                    $aSingleCategory['name'] = $singleSubscription->categoryName;
+
+                }
+            }
+            $tempArray[] = $aSingleCategory;
+        }
+
+        return $tempArray;
     }
 }

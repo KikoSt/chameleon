@@ -29,33 +29,22 @@
                         ?>
                     </select>
                 </div>
-                <button id="addCategory" style="color:#000000;">
+                <button id="addCategory" type="button" style="color:#000000;">
                     <span class="glyphicon glyphicon-plus"></span>
                 </button>
             </div>
             <div class="row">
                 <div class="col-md-10">
-                    Currently selected categories:
+                    Assigned categories:
                 </div>
             </div>
-            <?php
-                foreach($_SESSION['category'] as $id => $storedCategory):
-            ?>
-                <div id="row_<?php echo $id; ?>" class="row">
-                    <div class="col-md-10">
-                        <?php echo $storedCategory; ?>
-                    </div>
-                    <button id="<?php echo $id; ?>" class="removeCategory" type="button" style="color:#000000">
-                        <span class="glyphicon glyphicon-minus"></span>
-                    </button>
-                </div>
-            <?php
-                endforeach;
-            ?>
+            <div id="categoryContainer">
+                <?php
+                    require_once('../ajax/categoriesSelection.inc.php');
+                ?>
+            </div>
             <div class="row">
-                <div class="col-md-10">
-
-                </div>
+                <div class="col-md-10"></div>
                 <button id="saveCategory" type="submit" style="color:#000000">Save</button>
             </div>
         </div>

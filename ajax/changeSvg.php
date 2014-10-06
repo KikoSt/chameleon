@@ -120,6 +120,9 @@ if($action === 'clone' || $action === 'save' || $action === 'editCategoriesEdito
     //create the category subscriptions
     $sessionCategories = $_SESSION['category'];
 
+    var_dump($sessionCategories);
+
+
     foreach($existingSubscriptions as $singleSubscription)
     {
         $assignedCategoryId[] = $singleSubscription->idCategory;
@@ -150,6 +153,7 @@ if($action === 'clone' || $action === 'save' || $action === 'editCategoriesEdito
     if($action === 'save' || $action === 'editCategoriesEditor')
     {
         $response = $connector->sendBannerTemplate($bannerTemplateModel);
+        unset($_SESSION['category']);
     }
     else if('clone' === $action)
     {
