@@ -228,6 +228,7 @@ class GfxText extends GfxComponent
         foreach($fontlist as $key => $font)
         {
             $fontFile = str_replace(FONT_TTF_DIR, '', $font);
+            $fontFile = trim($fontFile, '/');
             $withoutExt = preg_replace('/\\.[^.\\s]{3,4}$/', '', $fontFile);
             $cleansedFontList[$key] = $withoutExt;
         }
