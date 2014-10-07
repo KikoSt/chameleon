@@ -117,34 +117,31 @@ if($action === 'clone' || $action === 'save' || $action === 'editCategoriesEdito
 
     $existingSubscriptions = $connector->getSubscribedCategoriesByTemplateId($templateId);
 
-    //create the category subscriptions
-    $sessionCategories = $_SESSION['category'];
-
-    var_dump($sessionCategories);
-
-
     foreach($existingSubscriptions as $singleSubscription)
     {
-        $assignedCategoryId[] = $singleSubscription->idCategory;
+        $existingSubscriptionId[] = $singleSubscription->idCategory;
     }
 
     $categorySubscriptions = array();
 
-    foreach($assignedCategoryId as $aId)
+    foreach($_SESSION['category'] as $sessionId => $sessionCategory)
     {
-        $categorySubscription = new stdClass();
-        $categorySubscription->idCategory = $aId;
-        $userStatus = "DELETED";
+        //if session id not in existing id => new category => set ACTIVE
+        //if session id in existing id => user added it => set ACTIVE
+        //if existing id not in session id => user removed it => set DELETED
 
-        foreach($sessionCategories as $id => $singleCategory)
+        $categorySubscription = new stdClass();
+        $categorySubscription->idCategory = $sessionId;
+        $categorySubscription->userStatus = "ACTIVE";
+
+        foreach($existingSubscriptionId as $existingId)
         {
-            if($id === $aId)
+            if($existingId !== $sessionId)
             {
-                $userStatus = "ACTIVE";
+                var_dump($existingId);
             }
         }
 
-        $categorySubscription->userStatus = $userStatus;
         $categorySubscriptions[] = $categorySubscription;
     }
 

@@ -8,8 +8,6 @@ if(!defined('__ROOT__'))
 }
 require_once(__ROOT__ . 'libraries/functions.inc.php');
 
-var_dump($_REQUEST);
-
 if(!empty($_REQUEST))
 {
     foreach($_REQUEST as $id => $value)
@@ -23,7 +21,6 @@ if(!empty($_REQUEST))
         }
     }
 }
-var_dump($_SESSION['category']);
 
 
 
