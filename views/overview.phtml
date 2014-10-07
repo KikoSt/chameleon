@@ -1,36 +1,183 @@
-    <br /><br /><br />
-    <br /><br /><br />
-    <?php
-        if(!is_array($this->previews) || count($this->previews) === 0):
-    ?>
-        <p class="notification"><?php echo $this->message; ?></p>
-    <?php
-        else:
-    ?>
+<?php include('navigation.inc.php');?>
 
-    <div class="container-fluid">
-    <div class="row" style="margin-top: 70px; padding-left: 10px;">
+<?php
+    if(!is_array($this->previews) || count($this->previews) === 0):
+?>
+    <p class="notification"><?php echo $this->message; ?></p>
+<?php
+    else:
+?>
+
+
+<div class="container-fluid" style="margin-left: 150px;">
+    <div id="nodes" class="navbar navbar-default navbar-fixed-top navbar-inverse" role="navigation" style="margin-top:61px;
+margin-left:161px;background-color: #888888; border-color: #888888;">
+        <ul class="nav navbar-nav navbar-left">
+            <li style="padding: 14px;">
+                <?php
+                    if(!empty($_SESSION['categories'])):
+                ?>
+                    Content of session shown
+                <?php
+                    else:
+                ?>
+                    No categories selected
+                <?php
+                    endif;
+                ?>
+                <button id="editCategories" type="button" class="btn btn-xs" data-toggle="modal" data-target="#cmeoModal"
+                        style="background-color:
+                #888888;">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                </button>
+            </li>
+        </ul>
+    </div>
+
+    <div class="row" style="margin-top: 115px; padding-left: 10px;">
 
     <?php
         foreach($this->previews as $preview):
     ?>
-        <form method="post" action="index.php?page=editor">
-                <a class="thumbnail col-md-3" style="width:400px;height:300px;margin-left: 10px;">
-                    <input type="image" src="<?php echo $preview->filepath; ?>" alt=""
-                           onclick="form.submit();" style="max-width: 390px; max-height: 290px;">
-                </a>
-                <input type="hidden" name="templateId" value="<?php echo $preview->id; ?>">
-                <input type="hidden" name="advertiserId" value="<?php echo $preview->advertiserId; ?>">
-                <input type="hidden" name="companyId" value="<?php echo $preview->companyId; ?>">
-                <input type="hidden" name="templateName" value="<?php echo $preview->templateName; ?>">
+        <form method="post" action="index.php?page=editor" id="<?php echo $preview->templateId; ?>">
+            <div class="thumbnail col-md-3" style="width:540px;height:380px;margin-left: 10px;" onclick="$('#' + <?php echo
+            $preview->templateId; ?>).submit();">
+                <div class="row">
+                    <div class="col-md-8" style="float: left;">
+                        <image class="preview" src="<?php echo $preview->filePath; ?>" style="margin-top: <?php echo $preview->marginTop;?>px">
+                    </div>
+                    <div class="textTitle col-md-4" style="height: 376px; float: right; font-size: 10px;">
+                        <div class="row">
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p class="text-left">Name:</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="text-right"><?php echo $preview->name;?></p>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p class="text-left ">Size:</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="text-right"><?php echo $preview->fileSize;?> kb</p>
+                                        </div>
+                                    </div>
+                                </li>
+                                <?php
+                                    if(!empty($preview->parentTemplateId)):
+                                ?>
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p class="text-left">Parent template:</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="text-right"><?php echo $preview->parentTemplateId;?></p>
+                                        </div>
+                                    </div>
+                                </li>
+                                <?php
+                                    endif;
+                                ?>
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p class="text-left">Date created:</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="text-right"><?php echo $preview->dateCreate;?></p>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p class="text-left">Date modified:</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="text-right"><?php echo $preview->dateModified;?></p>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p class="text-left">Prod group(s):</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <?php foreach($preview->categorySubscription as $category):?>
+                                                <p class="text-right"><?php echo $category->categoryName;?></p>
+                                            <?php endforeach;?>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" name="templateId" value="<?php echo $preview->templateId; ?>">
+            <input type="hidden" name="advertiserId" value="<?php echo $preview->advertiserId; ?>">
+            <input type="hidden" name="companyId" value="<?php echo $preview->companyId; ?>">
+            <input type="hidden" name="templateName" value="<?php echo $preview->templateName; ?>">
         </form>
+
     <?php
         endforeach;
         endif;
     ?>
+
     </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="cmeoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">Select category:</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-search"></span>
+                            </div>
+                            <input class="form-control" type="text" placeholder="select page category">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <select multiple class="form-control" >
+                            <?php
+                                foreach($this->categories as $singleCategory):
+                            ?>
+                            <option value="<?php echo $singleCategory->id;?>"><?php echo $singleCategory->name;?></option>
+                            <?php
+                                endforeach;
+                            ?>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
     </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function()
+    {
 
-
-
-
+    });
+</script>

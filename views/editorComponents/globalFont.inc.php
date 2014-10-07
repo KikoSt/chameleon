@@ -1,8 +1,8 @@
-<div class="col-md-6">
-    <label class="col-md-2 control-label">Font:</label>
-    <div class="col-md-8">
+<div class="row">
+    <label class="col-md-4">Font:</label>
+    <div>
         <select class="form-control"
-                name="<?php echo $element->getId();?>#fontFamily">
+                name="<?php echo $element->getId();?>#fontFamily" style="width:150px;">
             <?php
             foreach($this->fontlist as $key => $font):
                 $selected = ($key === $element->getFontFamily()) ? "selected" : '';

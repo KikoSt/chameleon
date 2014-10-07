@@ -1,7 +1,17 @@
 <?php
-
 require_once(__ROOT__ . 'config/apiconfig.inc.php');
 
+/**
+ * Handles the API connections to the bidder
+ *
+ * PHP Version 5.5
+ *
+ * @category    Chameleon
+ * @author      Christoph Starkmann <christoph.starkmann@mediadecision.com>
+ * @author      Thomas Hummel <thomas.hummel@mediadecision.com
+ * @license     Proprietary/Closed Source
+ * @copyright   2014 Media Decision GmbH
+ */
 class APIConnector
 {
     private $serviceCalls;
@@ -22,6 +32,7 @@ class APIConnector
         $this->serviceCalls['sendCreative']          = 'creativeImage';
         $this->serviceCalls['getEnums']              = 'enums';
         $this->serviceCalls['getCategories']         = 'company/{companyId}/categories';
+        $this->serviceCalls['getSubscribedCategories'] = 'bannerTemplate/{idBannerTemplate}/subscribedCategories';
     }
 
     /**
@@ -32,6 +43,8 @@ class APIConnector
      */
     public function getMethodList()
     {
+        //TODO why not using get_class_methods?
+
         $methodList = array_keys($this->serviceCalls);
         return $methodList;
     }
@@ -55,7 +68,7 @@ class APIConnector
      * getUserStatusValues
      *
      * get all possible user status values via REST API
-     * (crrently: ACTIVE, PAUSED, DELETED)
+     * (currently: ACTIVE, PAUSED, DELETED)
      *
      * @access public
      * @return $userStatusValues a list containing all defined user status values
@@ -83,7 +96,9 @@ class APIConnector
         $curl = $this->getCurl($resource, 'GET');
         $curlResponse = curl_exec($curl);
 
-        if(curl_getinfo($curl)['http_code'] != 204)
+        $info = curl_getinfo($curl);
+
+        if($info['http_code'] != 204)
         {
             $logfile = fopen('log.txt', 'w');
             fwrite($logfile, $curlResponse . "\n");
@@ -127,7 +142,9 @@ class APIConnector
         // $curl_response = curl_exec($curl);
         $curlResponse = curl_exec($curl);
 
-        if(curl_getinfo($curl)['http_code'] != 204)
+        $info = curl_getinfo($curl);
+
+        if($info['http_code'] != 204)
         {
             $logfile = fopen('log.txt', 'w');
             fwrite($logfile, $curlResponse . "\n" . json_encode($param));
@@ -201,6 +218,14 @@ class APIConnector
         return array('valid' => true, 'message' => '');
     }
 
+    /**
+     * Returns the categories depending on the company id
+     *
+     * TODO Currently the categories are delivered sorted by name ASC
+     *
+     * @return array
+     * @throws Exception
+     */
     public function getCategories()
     {
         $resource = REST_API_SERVICE_URL . '/' . str_replace('{companyId}', $this->companyId, $this->serviceCalls['getCategories']);
@@ -230,6 +255,25 @@ class APIConnector
         }
 
         return $categoriesProcessed;
+    }
+
+    public function getSubscribedCategoriesByTemplateId($templateId)
+    {
+        $resource = REST_API_SERVICE_URL . '/' . 'bannerTemplate/'.$templateId.'/subscribedCategories';
+        $curl = $this->getCurl($resource, 'GET');
+
+        $curlResponse = curl_exec($curl);
+        curl_close($curl);
+
+        $result = $this->validateResponse($curlResponse);
+        if(!$result['valid'])
+        {
+            throw new Exception('An error occured: ' . $result['message']);
+        }
+
+        $subscribedCategories = json_decode($curlResponse)->categories;
+
+        return $subscribedCategories;
     }
 
 
@@ -343,6 +387,22 @@ class APIConnector
     }
 
     /**
+     * Clones the given template
+     *
+     * For cloning the parent template id is set to the former template id and the template id is set to NULL
+     *
+     * @param BannerTemplateModel $template
+     * @return mixed
+     */
+    public function cloneBannerTemplate(BannerTemplateModel $template)
+    {
+        $template->setParentBannerTemplateId($template->getBannerTemplateId());
+        $template->setBannerTemplateId(NULL);
+        $response = $this->sendBannerTemplate($template);
+        return $response;
+    }
+
+    /**
      * @param $templateId
      * @return mixed
      */
@@ -409,6 +469,9 @@ class APIConnector
         $bannerTemplateModel->setDimX((int) $template->dimX);
         $bannerTemplateModel->setDimY((int) $template->dimY);
         $bannerTemplateModel->setGroupId((int) $template->idGroup);
+        $bannerTemplateModel->setDateCreate($template->dateCreate);
+        $bannerTemplateModel->setDateModified($template->dateModified);
+        $bannerTemplateModel->setCategorySubscriptions($template->categorySubscriptions);
 
         return $bannerTemplateModel;
     }
@@ -520,5 +583,7 @@ class APIConnector
     {
         $this->auditUserId = $auditUserId;
     }
+
+
 }
 

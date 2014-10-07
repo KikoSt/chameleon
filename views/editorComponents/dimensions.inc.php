@@ -1,6 +1,6 @@
-<div class="col-md-3">
-    <label class="col-md-4 control-label">Width:</label>
-    <div class="col-md-8">
+<div class="row">
+    <label class="col-md-4">Width:</label>
+    <div>
         <input type="text"
                class="form-control"
                name="<?php echo $element->getId();?>#width"
@@ -9,9 +9,9 @@
             />
     </div>
 </div>
-<div class="col-md-3">
-    <label class="col-md-4 control-label">Height:</label>
-    <div class="col-md-8">
+<div class="row">
+    <label class="col-md-4">Height:</label>
+    <div>
     <input type="text"
            class="form-control"
            name="<?php echo $element->getId();?>#height"

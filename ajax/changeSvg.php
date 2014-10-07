@@ -1,4 +1,5 @@
 <?php
+session_start();
 /**
  * Created by IntelliJ IDEA.
  * User: thomas
@@ -29,7 +30,7 @@ $templateId   = getRequestVar('templateId');
 $container->setCompanyId($companyId);
 $container->setAdvertiserId($advertiserId);
 
-// TODO: get rid of this, container should handle the path and it's adviced
+// TODO: get rid of this, container should handle the path and it's advised
 // to the the path from the container!
 $basePath = (string) $companyId . '/' . (string) $advertiserId . '/0';
 
@@ -89,9 +90,13 @@ if(null !== $_FILES && count($_FILES) > 0)
 
 $svgContent = $container->createSvg();
 $container->setTarget('GIF');
-$container->render();
 
-if($action === 'clone' || $action === 'save')
+if(!empty($action))
+{
+    $container->render();
+}
+
+if($action === 'clone' || $action === 'save' || $action === 'editCategoriesEditor')
 {
     $connector = new APIConnector();
     $connector->setCompanyId(getRequestVar('companyId'));
@@ -99,6 +104,7 @@ if($action === 'clone' || $action === 'save')
 
     //update template in the data base
     $bannerTemplateModel = new BannerTemplateModel();
+
     $bannerTemplateModel->setSvgContent($svgContent);
     $bannerTemplateModel->setGroupId(0);
     $bannerTemplateModel->setDimX($container->getCanvasHeight());
@@ -109,19 +115,51 @@ if($action === 'clone' || $action === 'save')
     $bannerTemplateModel->setDescription('testing');
     $bannerTemplateModel->setName('mumblebee testing');
 
-    if('save' === $action)
+    $existingSubscriptions = $connector->getSubscribedCategoriesByTemplateId($templateId);
+
+    foreach($existingSubscriptions as $singleSubscription)
+    {
+        $existingSubscriptionId[] = $singleSubscription->idCategory;
+    }
+
+    $categorySubscriptions = array();
+
+    foreach($_SESSION['category'] as $sessionId => $sessionCategory)
+    {
+        //if session id not in existing id => new category => set ACTIVE
+        //if session id in existing id => user added it => set ACTIVE
+        //if existing id not in session id => user removed it => set DELETED
+
+        $categorySubscription = new stdClass();
+        $categorySubscription->idCategory = $sessionId;
+        $categorySubscription->userStatus = "ACTIVE";
+
+        foreach($existingSubscriptionId as $existingId)
+        {
+            if($existingId !== $sessionId)
+            {
+                var_dump($existingId);
+            }
+        }
+
+        $categorySubscriptions[] = $categorySubscription;
+    }
+
+    $bannerTemplateModel->setCategorySubscriptions($categorySubscriptions);
+
+    if($action === 'save' || $action === 'editCategoriesEditor')
     {
         $response = $connector->sendBannerTemplate($bannerTemplateModel);
+        unset($_SESSION['category']);
     }
     else if('clone' === $action)
     {
-        $response = $connector->sendBannerTemplate($bannerTemplateModel);
+        $response = $connector->cloneBannerTemplate($bannerTemplateModel);
     }
 }
 
 $response = array();
 
-// $imgsrc = $container->getOutputDir() . '/' . $container->getOutputName() . '.gif';
 // TODO: improve this path handling, too
 $imgsrc = 'output/' . $basePath . '/' . $container->getOutputName() . '.gif';
 $response['imgsrc'] = $imgsrc;

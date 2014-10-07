@@ -43,7 +43,6 @@ class GfxImage extends GfXComponent
         }
     }
 
-
     /**
      * create
      *
@@ -60,7 +59,19 @@ class GfxImage extends GfXComponent
         {
             $this->setLinkUrl((string) $svgRootNode->attributes()->linkurl);
         }
-        $this->setImageUrl($imageUrl);
+
+        $imageUrl = str_replace("//assets", "/assets", $imageUrl);
+
+        if(fopen(BASE_DIR . $imageUrl, "r"))
+        {
+            $this->setImageUrl($imageUrl);
+        }
+        else
+        {
+            $this->setImageUrl('/assets/image_not_found.jpg');
+//            $this->setError('Image ' . $imageUrl . ' not found!');
+        }
+//        $this->getContainer()->setOverallError('image', $this->getError());
     }
 
     /**
@@ -189,7 +200,8 @@ class GfxImage extends GfXComponent
      */
     public function resizeImage($file, $crop=false)
     {
-        list($originalWidth, $originalHeight) = getimagesize($file);
+        list($originalWidth, $originalHeight) = getimagesize(BASE_DIR . $file);
+
         if($originalWidth <= 0 || $originalHeight <=0)
         {
             throw new Exception('Getting file ' . $file . ' obviously failed; Dimensions <= zero found');
@@ -268,17 +280,17 @@ class GfxImage extends GfXComponent
             case "jpg":
             case "jpeg":
             {
-                $image = imagecreatefromjpeg($file);
+                $image = imagecreatefromjpeg(BASE_DIR . $file);
                 break;
             }
             case "png":
             {
-                $image = imagecreatefrompng($file);
+                $image = imagecreatefrompng(BASE_DIR . $file);
                 break;
             }
             case "gif":
             {
-                $image = imagecreatefromgif($file);
+                $image = imagecreatefromgif(BASE_DIR . $file);
                 break;
             }
             default:
@@ -302,7 +314,7 @@ class GfxImage extends GfXComponent
         $svg .= "\r\n" . '<image';
         $svg .= "\r\n" . ' cmeo:ref="' . $this->getCmeoRef(). '"';
         $svg .= "\r\n" . ' cmeo:link="' . $this->getCmeoLink(). '"';
-        $svg .= "\r\n" . ' xlink:href="' . str_replace('/var/www/chameleon', '', $this->getImageUrl()) . '"';
+        $svg .= "\r\n" . ' xlink:href="' . $this->getImageUrl() . '"';
         $svg .= "\r\n" . ' linkurl="' . $this->getLinkUrl() . '"';
 
         if(isset($stroke) || isset($shadow))
@@ -338,18 +350,17 @@ class GfxImage extends GfXComponent
     public function setImageUrl($imageUrl)
     {
         $imageUrl = preg_replace('/^\/+/', '/', $imageUrl);
-        if(substr($imageUrl, 0, 4) !== 'http' )
-        {
-            $imageUrl = ROOT_DIR . $imageUrl;
-        }
-        if($imageHandle = fopen($imageUrl, "r"))
+
+        if($imageHandle = fopen(BASE_DIR . $imageUrl, "r"))
         {
             $this->imageUrl = $imageUrl;
         }
         else
         {
-            throw new Exception('Image not found: ' . $imageUrl);
+            $this->imageUrl = "/assets/image_not_found.jpg";
+            //throw new Exception('Image not found: ' . $imageUrl);
         }
+
         if(is_resource($imageHandle))
         {
             fclose($imageHandle);

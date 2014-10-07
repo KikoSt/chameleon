@@ -18,6 +18,8 @@ class Overview extends Controller
      */
     public function create()
     {
+        $_SESSION['categories'] = array();
+
         // create required objects
         $container = new GfxContainer();
         $connector = new APIConnector();
@@ -68,25 +70,42 @@ class Overview extends Controller
                     $container->setTarget('GIF');
                     $container->render();
 
+                    $file = BASE_DIR . "/output/" . $container->getOutputDir() . '/' . $baseFilename . '.gif';
+
                     $preview = new StdClass();
-                    $rawpath = OUTPUT_DIR . '/' . $container->getOutputDir();
-                    $preview->filepath = str_replace($_SERVER['DOCUMENT_ROOT'], '', $rawpath) . '/' . $baseFilename . '.gif';
+                    $preview->filePath = $file;
                     $preview->width = $container->getCanvasWidth() / 2 > 300 ? 300 : $container->getCanvasWidth() / 2;
                     $preview->height = $container->getCanvasHeight();
-                    $preview->id = $template->getBannerTemplateId();
                     $preview->templateName = $filename;
                     $preview->templateId = $template->getBannerTemplateId();
                     $preview->advertiserId = $this->getAdvertiserId();
                     $preview->companyId = $this->getCompanyId();
-                    $previews[] = $preview;
+                    $preview->fileSize = getRemoteFileSize($file);
+                    $preview->dateCreate = date("Y-m-d H.i:s", parseJavaTimestamp($template->getDateCreate()));
+                    $preview->dateModified = date("Y-m-d H.i:s", parseJavaTimestamp($template->getDateModified()));
+                    $preview->parentTemplateId = $template->getParentBannerTemplateId();
+                    $preview->name = $template->getName();
+                    $preview->categorySubscription = $connector->getSubscribedCategoriesByTemplateId($template->getBannerTemplateId());
+                    $preview->templateSubsriptions = $template->getCategorySubscriptions();
 
-                    // unlink(SVG_DIR . $filename);
+
+                    if($container->getCanvasWidth() >= $container->getCanvasHeight())
+                    {
+                        $newHeight = $container->getCanvasHeight() * (281 / $container->getCanvasWidth());
+                        $preview->marginTop = (481 - intval($newHeight)) / 4;
+                    }
+                    else
+                    {
+                        $preview->marginTop = 4;
+                    }
+                    $previews[] = $preview;
                 }
             }
         }
 
-        $this->view->templates = $templates;
         $this->view->previews = $previews;
+        $this->view->page = 'overview';
+        $this->view->categories = $connector->getCategories();
 
         return $this->view;
     }
@@ -148,4 +167,6 @@ class Overview extends Controller
     {
         $this->advertiserId = $advertiserId;
     }
+
+
 }

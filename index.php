@@ -1,5 +1,4 @@
 <?php
-
 require_once('config/config.inc.php');
 
 $advertiserId = 122;
@@ -30,4 +29,4 @@ $redirect->setCompanyId($companyId);
 require_once('views/header.phtml');
 $redirect->create();
 $redirect->display();
-require_once('views/footer.phtml');
+//require_once('views/footer.phtml');

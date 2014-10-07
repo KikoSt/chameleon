@@ -459,7 +459,7 @@ class GfxContainer
 
         imageDestroy($updatedCanvas);
 
-        chmod(OUTPUT_DIR . '/' . $this->getOutputDir() . '/' . $this->getOutputFilename() . '.gif', 0777);
+//        chmod(OUTPUT_DIR . '/' . $this->getOutputDir() . '/' . $this->getOutputFilename() . '.gif', 0777);
     }
 
 
