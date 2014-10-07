@@ -107,7 +107,7 @@ class Editor extends Controller
 
     private function getCmeoRefOptions()
     {
-        $array = array('description', 'name', 'productImageUrl', 'productImageUrl', 'price', 'priceOld');
+        $array = array('description', 'name', 'productImageUrl', 'price', 'priceOld');
         return $array;
     }
 
