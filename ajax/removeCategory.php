@@ -13,3 +13,5 @@ if(!empty($_REQUEST['id']) || $_REQUEST['id'] !== 'undefined')
 {
     unset($_SESSION['category'][$_REQUEST['id']]);
 }
+
+var_dump($_SESSION['category']);

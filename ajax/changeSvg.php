@@ -117,32 +117,25 @@ if($action === 'clone' || $action === 'save' || $action === 'editCategoriesEdito
 
     $existingSubscriptions = $connector->getSubscribedCategoriesByTemplateId($templateId);
 
+    $categorySubscriptions = array();
+
     foreach($existingSubscriptions as $singleSubscription)
     {
-        $existingSubscriptionId[] = $singleSubscription->idCategory;
+        $categorySubscription = new stdClass();
+        $categorySubscription->idCategory = $singleSubscription->idCategory;
+        $categorySubscription->userStatus = "DELETED";
+        $categorySubscriptions[] = $categorySubscription;
     }
-
-    $categorySubscriptions = array();
 
     foreach($_SESSION['category'] as $sessionId => $sessionCategory)
     {
-        //if session id not in existing id => new category => set ACTIVE
-        //if session id in existing id => user added it => set ACTIVE
-        //if existing id not in session id => user removed it => set DELETED
-
-        $categorySubscription = new stdClass();
-        $categorySubscription->idCategory = $sessionId;
-        $categorySubscription->userStatus = "ACTIVE";
-
-        foreach($existingSubscriptionId as $existingId)
+        foreach($categorySubscriptions as $singleSubscription)
         {
-            if($existingId !== $sessionId)
+            if($sessionId === $singleSubscription->idCategory)
             {
-                var_dump($existingId);
+                $singleSubscription->userStatus = "ACTIVE";
             }
         }
-
-        $categorySubscriptions[] = $categorySubscription;
     }
 
     $bannerTemplateModel->setCategorySubscriptions($categorySubscriptions);
