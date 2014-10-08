@@ -39,7 +39,8 @@
                             endif;
                         endforeach;
                     ?>
-                    <button id="editCategoriesEditor" type="button" class="btn btn-xs" style="background-color: #333333;">
+                    <button id="editCategoriesEditor" type="button" class="btn btn-xs" data-toggle="modal" data-target="#categorySelect"
+                            style="background-color: #333333;">
                         <span class="glyphicon glyphicon-pencil"></span>
                     </button>
                 </div>

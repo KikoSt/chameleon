@@ -96,7 +96,7 @@ if(!empty($action))
     $container->render();
 }
 
-if($action === 'clone' || $action === 'save' || $action === 'editCategoriesEditor')
+if($action === 'clone' || $action === 'save' || $action === 'saveCategory')
 {
     $connector = new APIConnector();
     $connector->setCompanyId(getRequestVar('companyId'));
@@ -127,6 +127,8 @@ if($action === 'clone' || $action === 'save' || $action === 'editCategoriesEdito
         $categorySubscriptions[] = $categorySubscription;
     }
 
+    var_dump($_SESSION['category']);
+
     foreach($_SESSION['category'] as $sessionId => $sessionCategory)
     {
         foreach($categorySubscriptions as $singleSubscription)
@@ -138,12 +140,13 @@ if($action === 'clone' || $action === 'save' || $action === 'editCategoriesEdito
         }
     }
 
+    var_dump($categorySubscriptions);
+
     $bannerTemplateModel->setCategorySubscriptions($categorySubscriptions);
 
-    if($action === 'save' || $action === 'editCategoriesEditor')
+    if($action === 'save' || $action === 'saveCategory')
     {
         $response = $connector->sendBannerTemplate($bannerTemplateModel);
-        unset($_SESSION['category']);
     }
     else if('clone' === $action)
     {
