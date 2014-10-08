@@ -1,6 +1,6 @@
 <?php
     foreach($this->combinedCategories as $combinedCategories):
-//        if($combinedCategories['status'] === "ACTIVE"):
+        if($combinedCategories['status'] === "ACTIVE"):
 ?>
             <div id="row_<?php echo $combinedCategories['id']; ?>" class="row">
                 <div class="col-md-10">
@@ -12,5 +12,5 @@
                 <span class="<?php echo $combinedCategories['icon']; ?>"></span>
             </div>
 <?php
-//        endif;
+        endif;
     endforeach;

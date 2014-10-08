@@ -66,7 +66,7 @@ class Editor extends Controller
 
         $this->view->combinedCategories = $this->getSubscribedCategories($template);
 
-        $this->addSubscribedCategoriesToSession($subscribedCategories);
+        $this->addSubscribedCategoriesToSession($this->view->combinedCategories);
 
         $this->view->page = 'editor';
 
@@ -119,9 +119,13 @@ class Editor extends Controller
 
     private function addSubscribedCategoriesToSession($subscribedCategories)
     {
+        $_SESSION['category'] = array();
         foreach($subscribedCategories as $singleCategory)
         {
-            $_SESSION['category'][$singleCategory->idCategory] = $singleCategory->categoryName;
+            if($singleCategory['status'] === "ACTIVE")
+            {
+                $_SESSION['category'][$singleCategory['id']] = $singleCategory['name'];
+            }
         }
     }
 
@@ -129,7 +133,7 @@ class Editor extends Controller
     {
         $templateCategories = $template->getCategorySubscriptions();
         $subscribedCategories = $this->connector->getSubscribedCategoriesByTemplateId($template->getBannerTemplateId());
-        $tempArray = array();
+        $combinedCategory = array();
 
         foreach($templateCategories as $singleCategory)
         {
@@ -137,31 +141,16 @@ class Editor extends Controller
             $aSingleCategory['id'] = $singleCategory->idCategory;
             $aSingleCategory['status'] = $singleCategory->userStatus;
 
-            switch($aSingleCategory['status'])
-            {
-                case "ACTIVE":
-                {
-                    $aSingleCategory['icon'] = 'ok';
-                    break;
-                }
-                case "DELETED":
-                {
-                    $aSingleCategory['icon'] = 'ban';
-                    break;
-                }
-            }
-
             foreach($subscribedCategories as $singleSubscription)
             {
                 if($aSingleCategory['id'] === $singleSubscription->idCategory)
                 {
                     $aSingleCategory['name'] = $singleSubscription->categoryName;
-
                 }
             }
-            $tempArray[] = $aSingleCategory;
+            $combinedCategory[] = $aSingleCategory;
         }
 
-        return $tempArray;
+        return $combinedCategory;
     }
 }

@@ -9,7 +9,7 @@ div,
 li,
 .btn
 {
-    border-radius: 0px !important;
+    border-radius: 0 !important;
 }
 
 .preview
@@ -41,14 +41,16 @@ a:hover
 {
     padding: 1px !important;
     height: 20px !important;
-    border-radius: 0px !important;
+    border-radius: 0 !important;
 }
 
 input,
 select
 {
-    width:125px !important;
+    /*width:125px !important;*/
 }
+
+
 
 .col-md-1,
 .col-md-2,
@@ -126,11 +128,6 @@ form {
     background-color: #d9d9d9 !important;
 }
 
-.checkbox input[type=checkbox]
-{
-    /*margin-left: 0px !important;*/
-}
-
 .editor form {
     font-size: .8em !important;
 }
@@ -190,13 +187,6 @@ label {
     display: block;
     padding: 0px 0px 0px 22px !important;
     font-size: 12px;
-}
-
-#panel_globalsCategory input,
-#panel_globalsCategory select
-{
-    width: 240px !important;
-    float: left;
 }
 
 

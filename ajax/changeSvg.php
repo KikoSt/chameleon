@@ -96,7 +96,7 @@ if(!empty($action))
     $container->render();
 }
 
-if($action === 'clone' || $action === 'save' || $action === 'editCategoriesEditor')
+if($action === 'clone' || $action === 'save' || $action === 'saveCategory')
 {
     $connector = new APIConnector();
     $connector->setCompanyId(getRequestVar('companyId'));
@@ -117,40 +117,36 @@ if($action === 'clone' || $action === 'save' || $action === 'editCategoriesEdito
 
     $existingSubscriptions = $connector->getSubscribedCategoriesByTemplateId($templateId);
 
-    foreach($existingSubscriptions as $singleSubscription)
-    {
-        $existingSubscriptionId[] = $singleSubscription->idCategory;
-    }
-
     $categorySubscriptions = array();
 
-    foreach($_SESSION['category'] as $sessionId => $sessionCategory)
+    foreach($existingSubscriptions as $singleSubscription)
     {
-        //if session id not in existing id => new category => set ACTIVE
-        //if session id in existing id => user added it => set ACTIVE
-        //if existing id not in session id => user removed it => set DELETED
-
         $categorySubscription = new stdClass();
-        $categorySubscription->idCategory = $sessionId;
-        $categorySubscription->userStatus = "ACTIVE";
-
-        foreach($existingSubscriptionId as $existingId)
-        {
-            if($existingId !== $sessionId)
-            {
-                var_dump($existingId);
-            }
-        }
-
+        $categorySubscription->idCategory = $singleSubscription->idCategory;
+        $categorySubscription->userStatus = "DELETED";
         $categorySubscriptions[] = $categorySubscription;
     }
 
+    var_dump($_SESSION['category']);
+
+    foreach($_SESSION['category'] as $sessionId => $sessionCategory)
+    {
+        foreach($categorySubscriptions as $singleSubscription)
+        {
+            if($sessionId === $singleSubscription->idCategory)
+            {
+                $singleSubscription->userStatus = "ACTIVE";
+            }
+        }
+    }
+
+    var_dump($categorySubscriptions);
+
     $bannerTemplateModel->setCategorySubscriptions($categorySubscriptions);
 
-    if($action === 'save' || $action === 'editCategoriesEditor')
+    if($action === 'save' || $action === 'saveCategory')
     {
         $response = $connector->sendBannerTemplate($bannerTemplateModel);
-        unset($_SESSION['category']);
     }
     else if('clone' === $action)
     {

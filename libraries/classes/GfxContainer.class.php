@@ -106,7 +106,6 @@ class GfxContainer
      * createSvg
      *
      * @access public
-     * @return void
      */
     public function createSvg()
     {
