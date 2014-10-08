@@ -1,5 +1,5 @@
 <div class="row">
-    <label for="strokeCheckBox" class="col-md-4">shadow:</label>
+    <label for="strokeCheckBox" class="col-md-4">Shadow:</label>
     <input id="shadowCheckBox"
            class="myCheckbox"
            type="checkbox"

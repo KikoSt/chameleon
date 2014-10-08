@@ -1,5 +1,5 @@
 <div class="row">
-    <label for="strokeCheckBox" class="col-md-4">stroke:</label>
+    <label for="strokeCheckBox" class="col-md-4">Stroke:</label>
     <input id="strokeCheckBox"
            class="myCheckbox"
            type="checkbox"
