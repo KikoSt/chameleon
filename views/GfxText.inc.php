@@ -10,7 +10,7 @@
             include('editorComponents/color.inc.php');
             include('editorComponents/text.inc.php');
             include('editorComponents/fontFamily.inc.php');
-            include('editorComponents/coords.inc.php');
+            // include('editorComponents/coords.inc.php');
             include('editorComponents/cmeo.inc.php');
             include('editorComponents/shadow.inc.php');
             include('editorComponents/stroke.inc.php');

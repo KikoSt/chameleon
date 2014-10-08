@@ -8,6 +8,7 @@
 
         >
 </div>
+<!--
 <div class="row">
     <label class="col-md-4 text-center" for="<?php echo $element->getId();?>_shadowColor">Color:</label>
     <input id="<?php echo $element->getId();?>_shadowColor"
@@ -30,6 +31,6 @@
            <?php echo (empty($element->getShadowColor())) ? 'disabled' : '';?>
         />
 </div>
-
+-->
 
 

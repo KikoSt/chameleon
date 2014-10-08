@@ -9,6 +9,7 @@
         <div class="row">
             <?php include('editorComponents/imageUrl.inc.php'); ?>
         </div>
+        <!--
         <div class="row">
             <?php
                 include('editorComponents/coords.inc.php');
@@ -19,6 +20,7 @@
             include('editorComponents/dimensions.inc.php');
             ?>
         </div>
+        -->
         <div class="row">
             <?php
                 include('editorComponents/cmeo.inc.php');

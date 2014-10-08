@@ -7,6 +7,7 @@
            <?php echo (!empty($element->getStroke())) ? 'checked' : '';?>
         >
 </div>
+<!--
 <div class="row">
     <label class="col-md-4 text-center" for="<?php echo $element->getId();?>_strokeColor">Color:</label>
     <input id="<?php echo $element->getId();?>_strokeColor"
@@ -29,4 +30,4 @@
            <?php echo (empty($element->getStroke())) ? 'disabled' : '';?>
     />
 </div>
-
+-->
