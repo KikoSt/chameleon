@@ -74,6 +74,8 @@ class Overview extends Controller
 
                     $preview = new StdClass();
                     $preview->filePath = $file;
+                    $preview->bannerWidth = $container->getCanvasWidth();
+                    $preview->bannerHeight = $container->getCanvasHeight();
                     $preview->width = $container->getCanvasWidth() / 2 > 300 ? 300 : $container->getCanvasWidth() / 2;
                     $preview->height = $container->getCanvasHeight();
                     $preview->templateName = $filename;
