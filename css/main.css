@@ -13,3 +13,8 @@ body {
     width: 150px;
 }
 
+a.subnav
+{
+    cursor: pointer;
+}
+
