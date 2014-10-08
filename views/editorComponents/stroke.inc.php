@@ -1,5 +1,5 @@
 <div class="row">
-    <label for="strokeCheckBox" class="col-md-4">stroke:</label>
+    <label for="strokeCheckBox" class="col-md-3">stroke:</label>
     <input id="strokeCheckBox"
            class="myCheckbox"
            type="checkbox"
@@ -7,8 +7,9 @@
            <?php echo (!empty($element->getStroke())) ? 'checked' : '';?>
         >
 </div>
+<?php if($this->premiumUser):?>
 <div class="row">
-    <label class="col-md-4 text-center" for="<?php echo $element->getId();?>_strokeColor">Color:</label>
+    <label class="col-md-3 text-center" for="<?php echo $element->getId();?>_strokeColor">Color:</label>
     <input id="<?php echo $element->getId();?>_strokeColor"
            type="text"
            class="form-control picker"
@@ -19,7 +20,7 @@
         />
 </div>
 <div class="row">
-    <label class="col-md-4 text-center" for="<?php echo $element->getId();?>_strokeColor">Width:</label>
+    <label class="col-md-3 text-center" for="<?php echo $element->getId();?>_strokeColor">Width:</label>
     <input id="<?php echo $element->getId();?>_strokeWidth"
            type="text"
            class="form-control"
@@ -29,4 +30,4 @@
            <?php echo (empty($element->getStroke())) ? 'disabled' : '';?>
     />
 </div>
-
+<?php endif;?>

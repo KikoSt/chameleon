@@ -28,7 +28,13 @@
                 <?php include('editorComponents/globalFont.inc.php'); ?>
             </div>
             <div class="row">
-                <label class="col-md-4">Categories:</label>
+                <label class="col-md-4">
+                    Categories:
+                    <button id="editCategoriesEditor" type="button" class="btn btn-xs" data-toggle="modal" data-target="#categorySelect"
+                            style="background-color: #333333; color: #FFFFFF;">
+                        <span class="glyphicon glyphicon-pencil"></span>
+                    </button>
+                </label>
                 <div class=" col-md-8">
                     <?php
                         foreach($this->combinedCategories as $combinedCategories):
@@ -39,10 +45,6 @@
                             endif;
                         endforeach;
                     ?>
-                    <button id="editCategoriesEditor" type="button" class="btn btn-xs" data-toggle="modal" data-target="#categorySelect"
-                            style="background-color: #333333;">
-                        <span class="glyphicon glyphicon-pencil"></span>
-                    </button>
                 </div>
             </div>
         </div>

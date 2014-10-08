@@ -1,5 +1,5 @@
 <div class="row">
-    <label for="strokeCheckBox" class="col-md-4">shadow:</label>
+    <label for="strokeCheckBox" class="col-md-3">shadow:</label>
     <input id="shadowCheckBox"
            class="myCheckbox"
            type="checkbox"
@@ -8,8 +8,9 @@
 
         >
 </div>
+<?php if($this->premiumUser):?>
 <div class="row">
-    <label class="col-md-4 text-center" for="<?php echo $element->getId();?>_shadowColor">Color:</label>
+    <label class="col-md-3 text-center" for="<?php echo $element->getId();?>_shadowColor">Color:</label>
     <input id="<?php echo $element->getId();?>_shadowColor"
            type="text"
            class="form-control picker"
@@ -20,7 +21,7 @@
         />
 </div>
 <div class="row">
-    <label class="col-md-4 text-center" for="<?php echo $element->getId();?>_shadowDist">Dist:</label>
+    <label class="col-md-3 text-center" for="<?php echo $element->getId();?>_shadowDist">Dist:</label>
     <input id="<?php echo $element->getId();?>_shadowDist"
            type="text"
            class="form-control"
@@ -30,6 +31,6 @@
            <?php echo (empty($element->getShadowColor())) ? 'disabled' : '';?>
         />
 </div>
-
+<?php endif;?>
 
 

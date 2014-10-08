@@ -70,6 +70,9 @@ class Editor extends Controller
 
         $this->view->page = 'editor';
 
+        //TODO for development, replace after implementing into Bidder
+        $this->view->premiumUser = false;
+
         $container->setTarget('GIF');
 
         if(!empty($_REQUEST['action']))

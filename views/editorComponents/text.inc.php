@@ -1,5 +1,5 @@
 <div class="row">
-    <label for="<?php echo $element->getId();?>#text" class="col-md-4">Text:</label>
+    <label for="<?php echo $element->getId();?>#text" class="col-md-3">Text:</label>
     <input id="<?php echo $element->getId();?>#text"
            type="text"
            class="form-control"

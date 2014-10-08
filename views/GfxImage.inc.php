@@ -7,31 +7,17 @@
     </div>
     <div class="panel-body">
         <div class="row">
-            <?php include('editorComponents/imageUrl.inc.php'); ?>
-        </div>
-        <div class="row">
             <?php
-                include('editorComponents/coords.inc.php');
-            ?>
-        </div>
-        <div class="row">
-            <?php
-            include('editorComponents/dimensions.inc.php');
-            ?>
-        </div>
-        <div class="row">
-            <?php
+                include('editorComponents/imageUrl.inc.php');
+
+                if($this->premiumUser):
+                    include('editorComponents/coords.inc.php');
+                    include('editorComponents/dimensions.inc.php');
+                endif;
+
                 include('editorComponents/cmeo.inc.php');
-            ?>
-        </div>
-        <div class="row">
-            <?php
-            include('editorComponents/shadow.inc.php');
-            ?>
-        </div>
-        <div class="row">
-            <?php
-            include('editorComponents/stroke.inc.php');
+                include('editorComponents/shadow.inc.php');
+                include('editorComponents/stroke.inc.php');
             ?>
         </div>
     </div>

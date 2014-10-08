@@ -127,8 +127,6 @@ if($action === 'clone' || $action === 'save' || $action === 'saveCategory')
         $categorySubscriptions[] = $categorySubscription;
     }
 
-    var_dump($_SESSION['category']);
-
     foreach($_SESSION['category'] as $sessionId => $sessionCategory)
     {
         foreach($categorySubscriptions as $singleSubscription)
@@ -139,8 +137,6 @@ if($action === 'clone' || $action === 'save' || $action === 'saveCategory')
             }
         }
     }
-
-    var_dump($categorySubscriptions);
 
     $bannerTemplateModel->setCategorySubscriptions($categorySubscriptions);
 
