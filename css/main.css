@@ -7,3 +7,9 @@ body {
     float: right;
     cursor: pointer !important;
 }
+
+#primary-color, #secondary-color
+{
+    width: 150px;
+}
+
