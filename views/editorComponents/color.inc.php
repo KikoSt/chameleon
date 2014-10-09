@@ -9,9 +9,8 @@
                placeholder="color"
                style="float:left;"
             />
-        <div class="text-right">
-            <button id="<?php echo $element->getId();?>#primary" class="btn-info presetcolor">1st</button>
-            <button id="<?php echo $element->getId();?>#secondary" class="btn-success presetcolor">2nd</button>
-        </div>
+        <button id="<?php echo $element->getId();?>#primary" class="btn btn-xs btn-info preset presetcolor" style="margin-left: 3px;
+        ">1st</button>
+        <button id="<?php echo $element->getId();?>#secondary" class="btn btn-xs btn-success preset presetcolor">2nd</button>
     </div>
 </div>

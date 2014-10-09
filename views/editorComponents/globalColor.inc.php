@@ -1,5 +1,5 @@
 <div class="row">
-    <label class="col-md-4">Primary color:</label>
+    <label class="col-md-4">1st color:</label>
     <div>
         <input id="primary-color"
                type="text"
@@ -11,7 +11,7 @@
     </div>
 </div>
 <div class="row">
-    <label class="col-md-4">Secondary color:</label>
+    <label class="col-md-4">2nd color:</label>
     <div>
         <input id="secondary-color"
                type="text"

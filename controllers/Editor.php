@@ -60,17 +60,12 @@ class Editor extends Controller
         $this->view->fileName        = $filename;
         $this->view->fileSize        = getRemoteFileSize($gif);
         $this->view->categories      = $this->connector->getCategories();
-        $subscribedCategories        = $this->connector->getSubscribedCategoriesByTemplateId($container->getId());
-
-        $this->view->subscribedCategories = $subscribedCategories;
-
+        $this->view->subscribedCategories = $this->connector->getSubscribedCategoriesByTemplateId($container->getId());
         $this->view->combinedCategories = $this->getSubscribedCategories($template);
-
         $this->view->activeCategories = $this->getActiveCategories($this->view->combinedCategories);
+        $this->view->page = 'editor';
 
         $this->addSubscribedCategoriesToSession($this->view->combinedCategories);
-
-        $this->view->page = 'editor';
 
         //TODO for development, replace after implementing into Bidder
         $this->view->premiumUser = false;

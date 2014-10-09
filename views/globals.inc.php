@@ -14,7 +14,7 @@
             </div>
                 <?php include('editorComponents/globalDimensions.inc.php'); ?>
             <div class="row">
-                <label class="col-md-4">Approx. size:</label>
+                <label class="col-md-4">File size:</label>
                 <div>
                     <input type="text" disabled="disabled" value="<?php echo $this->fileSize;?> kB">
                 </div>

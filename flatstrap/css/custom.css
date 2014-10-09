@@ -193,3 +193,17 @@ input[type="text"]:disabled
     font-size: 14px;
 }
 
+.presetcolor
+{
+    height: 20px !important;
+    width: 32px !important;
+}
+
+.presetfont
+{
+    height: 20px !important;
+    width: 67px !important;
+}
+
+
+
