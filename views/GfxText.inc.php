@@ -13,7 +13,7 @@
             // include('editorComponents/coords.inc.php');
             include('editorComponents/cmeo.inc.php');
             include('editorComponents/shadow.inc.php');
-            include('editorComponents/stroke.inc.php');
+            // include('editorComponents/stroke.inc.php');
         ?>
     </div>
 </div>
