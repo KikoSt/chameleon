@@ -84,13 +84,13 @@ class GfXComponent implements Linkable, Resizeable
             {
                 $shadowColor = new GfxColor($styles['shadow']);
                 $shadowDist = (int) $styles['shadow-dist'];
-                $this->setShadowColor($shadowColor);
-                $this->setShadowDist($shadowDist);
+                $shadow = new GfxShadow($shadowColor, $shadowDist);
+                $this->setShadow($shadow);
                 $this->enableShadow();
             }
         }
 
-        $ref = (string) $svgRootNode->attributes('cmeo', true)->ref;
+        $ref =  (string) $svgRootNode->attributes('cmeo', true)->ref;
         $link = (string) $svgRootNode->attributes('cmeo', true)->link;
         if(!empty($ref))
         {
@@ -108,10 +108,9 @@ class GfXComponent implements Linkable, Resizeable
 
     public function hasShadow()
     {
-        $shadowColor = $this->getShadowColor();
-        $shadowDist = $this->getShadowDist();
+        $shadow = $this->getShadow();
 
-        if(isset($shadowColor, $shadowDist))
+        if(!empty($shadow))
         {
             return true;
         }
@@ -133,16 +132,6 @@ class GfXComponent implements Linkable, Resizeable
         return false;
     }
 
-    public function getShadowColor()
-    {
-        return $this->shadowColor;
-    }
-
-    public function getShadowDist()
-    {
-        return $this->shadowDist;
-    }
-
     public function disableStroke()
     {
         $this->strokeEnabled = false;
@@ -161,16 +150,6 @@ class GfXComponent implements Linkable, Resizeable
     public function enableShadow()
     {
         $this->shadowEnabled = true;
-    }
-
-    public function setShadowColor(GfxColor $shadowColor)
-    {
-        $this->shadowColor = $shadowColor;
-    }
-
-    public function setShadowDist($shadowDist)
-    {
-        $this->shadowDist = $shadowDist;
     }
 
     protected function addClickableLink($canvas)
@@ -195,14 +174,24 @@ class GfXComponent implements Linkable, Resizeable
         return $canvas;
     }
 
+    public function getShadow()
+    {
+        return $this->shadow;
+    }
+
+    public function setShadow(GfxShadow $shadow)
+    {
+        $this->shadow = $shadow;
+    }
+
     public function getStroke()
     {
         return $this->stroke;
     }
 
-    public function setStroke(GfxStroke $oColor)
+    public function setStroke(GfxStroke $stroke)
     {
-        $this->stroke = $oColor;
+        $this->stroke = $stroke;
     }
 
     public function setLinkUrl($linkUrl)

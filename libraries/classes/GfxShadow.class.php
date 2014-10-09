@@ -3,6 +3,8 @@
 /**
  * GfxShadow
  *
+ * container class for shadows used by GfxComponents
+ *
  * @package
  * @version $id$
  * @copyright 1997-2005 The PHP Group

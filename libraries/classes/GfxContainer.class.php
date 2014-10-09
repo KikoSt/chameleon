@@ -493,16 +493,13 @@ class GfxContainer
     {
         $valueList = array();
 
+        // process all form data and store the information referenced by their element id in a dictionary
         foreach($formData AS $key => $value)
         {
             // svg values consist of element id and parameter name:
             // background#width
             // values without # are ignored (for example the action parameter)
-            if(!strpos($key, '#'))
-            {
-                continue;
-            }
-            else
+            if(strpos($key, '#'))
             {
                 list($id, $parameter) = explode('#', $key);
 

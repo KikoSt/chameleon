@@ -211,7 +211,6 @@ class GfxImage extends GfXComponent
         $newWidth  = $this->getWidth();
         $newHeight = $this->getHeight();
 
-
         $cachedFile = IMGCACHE_DIR . '/' . $this->getContainer()->getOutputDir() . '/' . urlencode($file);
         if(file_exists($cachedFile))
         {
