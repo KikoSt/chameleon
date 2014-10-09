@@ -117,13 +117,13 @@ class GfxText extends GfxComponent
     {
         $text = new SWFText();
 
-        if($this->getShadowColor() !== null)
+        if($this->hasShadow())
         {
             $shadow = new GfxText($this->getContainer());
             $shadow->setWidth($this->getWidth());
             $shadow->setHeight($this->getHeight());
-            $shadow->setX($this->getX() + (int) $this->getShadowDist());
-            $shadow->setY($this->getY() + (int) $this->getShadowDist());
+            $shadow->setX($this->getX() + (int) $this->getShadow()->getDist());
+            $shadow->setY($this->getY() + (int) $this->getShadow()->getDist());
 
             if(null !== $this->getSWFFont()) {
                 $shadow->setFontFamily($this->getFontFamily());
@@ -131,7 +131,7 @@ class GfxText extends GfxComponent
                 throw new Exception('No font set!');
             }
 
-            $shadowColor = $this->getShadowColor();
+            $shadowColor = $this->getShadow()->getColor();
             $shadowColor->setAlpha(128); // currently not working, most likely due to the text type!
             $shadow->setFill($shadowColor);
             $shadow->setFontSize($this->getFontSize());
@@ -202,17 +202,17 @@ class GfxText extends GfxComponent
     public function renderShadow($canvas)
     {
         $color = imagecolorallocatealpha($canvas,
-                                         $this->getShadowColor()->getR(),
-                                         $this->getShadowColor()->getG(),
-                                         $this->getShadowColor()->getB(),
+                                         $this->getShadow()->getColor()->getR(),
+                                         $this->getShadow()->getColor()->getG(),
+                                         $this->getShadow()->getColor()->getB(),
                                          50
                  );
 
         imagettftext($canvas,
             $this->getFontSize(),
             0,
-            $this->getX() + $this->getShadowDist(),
-            $this->getY() + $this->getShadowDist(),
+            $this->getX() + $this->getShadow()->getDist(),
+            $this->getY() + $this->getShadow()->getDist(),
             $color,
             $this->getGIFFont(),
             utf8_decode(str_replace('€', ' Euro', $this->getText()))
@@ -238,7 +238,7 @@ class GfxText extends GfxComponent
     public function getSvg()
     {
         $stroke = $this->getStroke();
-        $shadow = $this->getShadowColor();
+        $shadow = $this->getShadow();
 
         $svg = '';
         $svg .= "\r\n" . '<text xml:space="preserve"';
@@ -255,9 +255,9 @@ class GfxText extends GfxComponent
             $svg .= "\r\n" . ' stroke-width="' . $stroke->getWidth() . '"';
         }
 
-        if(isset($shadow))
+        if(isset($shadow) && $this->shadowEnabled())
         {
-            $svg .= "\r\n" . ' style="shadow:' . $shadow->getHex() . ';shadow-dist:' . $this->getShadowDist() . 'px;"';
+            $svg .= "\r\n" . ' style="shadow:' . $shadow->getColor()->getHex() . ';shadow-dist:' . $shadow->getDist() . 'px;"';
         }
 
         $svg .= "\r\n" . ' x="' . $this->getX() . '"';

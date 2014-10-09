@@ -96,14 +96,14 @@ class GfxImage extends GfXComponent
 
         }
 
-        if($this->getShadowColor() !== null)
+        if($this->hasShadow())
         {
             $shadow = new GfxRectangle($this->getContainer());
             $shadow->setWidth($this->getWidth());
             $shadow->setHeight($this->getHeight());
-            $shadow->setX($this->getX() + (int) $this->getShadowDist());
-            $shadow->setY($this->getY() + (int) $this->getShadowDist());
-            $shadowColor = $this->getShadowColor();
+            $shadow->setX($this->getX() + (int) $this->getShadow()->getDist());
+            $shadow->setY($this->getY() + (int) $this->getShadow()->getDist());
+            $shadowColor = $this->getShadow()->getColor();
             $shadowColor->setAlpha(128);
             $shadow->setFill($shadowColor);
             $shadow->renderSWF($canvas);
@@ -142,6 +142,11 @@ class GfxImage extends GfXComponent
             $this->createShadow($canvas);
         }
 
+        if($this->hasStroke() && $this->strokeEnabled())
+        {
+            $this->createStroke($canvas);
+        }
+
         $dst = $this->resizeImage($this->getImageUrl());
 
         if($this->getContainer()->getPreviewMode() !== true)
@@ -161,14 +166,14 @@ class GfxImage extends GfXComponent
     public function createShadow($canvas)
     {
         $color = imagecolorallocatealpha($canvas,
-                                         $this->getShadowColor()->getR(),
-                                         $this->getShadowColor()->getG(),
-                                         $this->getShadowColor()->getB(),
+                                         $this->getShadow()->getColor()->getR(),
+                                         $this->getShadow()->getColor()->getG(),
+                                         $this->getShadow()->getColor()->getB(),
                                          50
                  );
 
-        $x1 = $this->getX() + $this->getShadowDist();
-        $y1 = $this->getY() + $this->getShadowDist();
+        $x1 = $this->getX() + $this->getShadow()->getDist();
+        $y1 = $this->getY() + $this->getShadow()->getDist();
         $x2 = $x1 + $this->getWidth();
         $y2 = $y1 + $this->getHeight();
 
@@ -177,10 +182,11 @@ class GfxImage extends GfXComponent
 
     public function createStroke($canvas)
     {
+        // $this->getStroke()->setWidth(1);
         $color = imagecolorallocate($canvas,
-            $this->getShadowColor()->getR(),
-            $this->getShadowColor()->getG(),
-            $this->getShadowColor()->getB()
+            $this->getStroke()->getColor()->getR(),
+            $this->getStroke()->getColor()->getG(),
+            $this->getStroke()->getColor()->getB()
         );
 
         $x1 = $this->getX() - $this->getStroke()->getWidth();
@@ -228,7 +234,6 @@ class GfxImage extends GfXComponent
 
         $resizedWidth = $newWidth;
         $resizedHeight = $newHeight;
-
         $newX = ($this->getWidth() - $newWidth) / 2;
         $newY = ($this->getHeight() - $newHeight) / 2;
 
@@ -307,7 +312,7 @@ class GfxImage extends GfXComponent
     public function getSvg()
     {
         $stroke = $this->getStroke();
-        $shadow = $this->getShadowColor();
+        $shadow = $this->getShadow();
 
         $svg = '';
         $svg .= "\r\n" . '<image';
@@ -316,7 +321,7 @@ class GfxImage extends GfXComponent
         $svg .= "\r\n" . ' xlink:href="' . $this->getImageUrl() . '"';
         $svg .= "\r\n" . ' linkurl="' . $this->getLinkUrl() . '"';
 
-        if(isset($stroke) || isset($shadow))
+        if(isset($stroke) || isset($shadow) && !empty($shadow))
         {
             $svg .= "\r\n" . ' style="';
             if(isset($stroke) && $this->strokeEnabled())
@@ -326,7 +331,7 @@ class GfxImage extends GfXComponent
 
             if(isset($shadow) && $this->shadowEnabled())
             {
-                $svg .= 'shadow:' . $shadow->getHex() . ';shadow-dist:' . $this->getShadowDist() . 'px;';
+                $svg .= 'shadow:' . $this->getShadow()->getColor()->getHex() . ';shadow-dist:' . $this->getShadow()->getDist() . 'px;';
             }
             $svg .= '"';
         }

@@ -542,15 +542,32 @@ class GfxContainer
 
                 if($param === "fill" || $param === "shadowColor")
                 {
+                    if($param === 'shadowColor')
+                    {
+                        $value = '#000000';
+                        $element->enableShadow();
+                    }
                     $color = new GfxColor($value);
                     $element->$func($color);
+                }
+                elseif($param === 'shadow')
+                {
+                    $shadowColor = new GfxColor('#000000');
+                    $shadowDist = 2;
+                    $shadow = new GfxShadow($shadowColor, $shadowDist);
+                    $element->setShadow($shadow);
                     $element->enableShadow();
                 }
-                elseif($param === "stroke")
+                elseif($param === 'stroke')
                 {
-                    $stroke = new GfxStroke(new GfxColor($value), 1);
-                    $element->$func($stroke);
+                    // color and width will currently not be set via the editor besides "extended mode",
+                    // so we default them to black and 1px
+                    $value = '#000000';
+                    $strokeWidth = 1;
+                    $stroke = new GfxStroke(new GfxColor($value), $strokeWidth);
+                    $element->setStroke($stroke);
                     $element->enableStroke();
+                    $hasShadow = true;
                 }
                 elseif($param === "strokeWidth")
                 {

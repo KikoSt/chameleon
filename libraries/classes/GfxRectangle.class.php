@@ -56,14 +56,14 @@ class GfxRectangle extends GfxShape
 
         }
 
-        if($this->shadowEnabled() && $this->getShadowColor() instanceof GfxColor)
+        if($this->shadowEnabled() && $this->getShadow()->getColor() instanceof GfxColor)
         {
             $shadow = new GfxRectangle($this->getContainer());
             $shadow->setWidth($this->getWidth());
             $shadow->setHeight($this->getHeight());
-            $shadow->setX($this->getX() + (int) $this->getShadowDist());
-            $shadow->setY($this->getY() + (int) $this->getShadowDist());
-            $shadowColor = $this->getShadowColor();
+            $shadow->setX($this->getX() + (int) $this->getShadow()->getDist());
+            $shadow->setY($this->getY() + (int) $this->getShadow()->getDist());
+            $shadowColor = $this->getShadow()->getColor();
             $shadowColor->setAlpha(128);
             $shadow->setFill($shadowColor);
             $canvas = $shadow->renderSWF($canvas);
@@ -128,14 +128,14 @@ class GfxRectangle extends GfxShape
     public function createShadow($canvas)
     {
         $color = imagecolorallocatealpha($canvas,
-            $this->getShadowColor()->getR(),
-            $this->getShadowColor()->getG(),
-            $this->getShadowColor()->getB(),
+            $this->getShadow()->getColor()->getR(),
+            $this->getShadow()->getColor()->getG(),
+            $this->getShadow()->getColor()->getB(),
             50
         );
 
-        $x1 = $this->getX() + $this->getShadowDist();
-        $y1 = $this->getY() + $this->getShadowDist();
+        $x1 = $this->getX() + $this->getShadow()->getDist();
+        $y1 = $this->getY() + $this->getShadow()->getDist();
 
         $x2 = $x1 + $this->getWidth();
         $y2 = $y1 + $this->getHeight();
@@ -146,9 +146,9 @@ class GfxRectangle extends GfxShape
     public function createStroke($canvas)
     {
         $color = imagecolorallocate($canvas,
-            $this->getShadowColor()->getR(),
-            $this->getShadowColor()->getG(),
-            $this->getShadowColor()->getB()
+            $this->getStroke()->getColor()->getR(),
+            $this->getStroke()->getColor()->getG(),
+            $this->getStroke()->getColor()->getB()
         );
 
         $x1 = $this->getX() - $this->getStroke()->getWidth();
@@ -162,7 +162,7 @@ class GfxRectangle extends GfxShape
     public function getSvg()
     {
         $stroke = $this->getStroke();
-        $shadow = $this->getShadowColor();
+        $shadow = $this->getShadow();
 
         $svg = '';
 
@@ -178,7 +178,7 @@ class GfxRectangle extends GfxShape
 
         if(isset($shadow))
         {
-            $svg .= "\r\n" . ' style="shadow:' . $shadow->getHex() . ';shadow-dist:' . $this->getShadowDist() . 'px;"';
+            $svg .= "\r\n" . ' style="shadow:' . $shadow->getColor()->getHex() . ';shadow-dist:' . $shadow->getDist() . 'px;"';
         }
 
         $svg .= "\r\n" . ' x="' . $this->getX() . '"';
