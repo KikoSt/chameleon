@@ -32,21 +32,17 @@
     </div>
     <div id="categoryContainer">
         <?php
-            $temp = $this->combinedCategories;
-
-            foreach($this->combinedCategories as $combinedCategories):
-                if($combinedCategories['status'] === "ACTIVE"):
-                    ?>
-                    <div id="row_<?php echo $combinedCategories['id']; ?>" class="row">
-                        <div class="col-md-10">
-                            <?php echo $combinedCategories['name']; ?>
-                        </div>
-                        <button id="<?php echo $combinedCategories['id']; ?>" class="removeCategory" type="button" style="color:#000000">
-                            <span class="glyphicon glyphicon-minus"></span>
-                        </button>
-                    </div>
-                <?php
-                endif;
+            foreach($this->activeCategories as $activeCategory):
+        ?>
+            <div id="row_<?php echo $activeCategory['id']; ?>" class="row">
+                <div class="col-md-10">
+                    <?php echo $activeCategory['name']; ?>
+                </div>
+                <button id="<?php echo $activeCategory['id']; ?>" class="removeCategory" type="button" style="color:#000000">
+                    <span class="glyphicon glyphicon-minus"></span>
+                </button>
+            </div>
+        <?php
             endforeach;
         ?>
     </div>

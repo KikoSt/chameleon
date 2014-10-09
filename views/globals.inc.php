@@ -8,41 +8,35 @@
         <div class="container-fluid">
             <div class="row">
                 <label class="col-md-4">Name:</label>
-                <div class=" col-md-8">
-                    <?php echo $this->name;?>
+                <div>
+                    <input type="text" disabled="disabled" value="<?php echo $this->name;?>">
                 </div>
             </div>
-            <div class="row">
                 <?php include('editorComponents/globalDimensions.inc.php'); ?>
-            </div>
             <div class="row">
                 <label class="col-md-4">Approx. size:</label>
-                <div class=" col-md-8">
-                    <?php echo $this->fileSize;?> kB
+                <div>
+                    <input type="text" disabled="disabled" value="<?php echo $this->fileSize;?> kB">
                 </div>
             </div>
+            <?php
+                include('editorComponents/globalColor.inc.php');
+                include('editorComponents/globalFont.inc.php');
+            ?>
             <div class="row">
-                <?php include('editorComponents/globalColor.inc.php'); ?>
-            </div>
-            <div class="row">
-                <?php include('editorComponents/globalFont.inc.php'); ?>
-            </div>
-            <div class="row">
-                <label class="col-md-4">
+                <label class="col-md-4" style="height: <?php echo count($this->activeCategories) * 22?>px;">
                     Categories:
                     <button id="editCategoriesEditor" type="button" class="btn btn-xs" data-toggle="modal" data-target="#categorySelect"
                             style="background-color: #333333; color: #FFFFFF;">
                         <span class="glyphicon glyphicon-pencil"></span>
                     </button>
                 </label>
-                <div class=" col-md-8">
+                <div>
                     <?php
-                        foreach($this->combinedCategories as $combinedCategories):
-                            if($combinedCategories['status'] === "ACTIVE"):
+                        foreach($this->activeCategories as $activeCategory):
                     ?>
-                    <div class="row"><?php echo $combinedCategories['name'];?></div>
+                    <input type="text" disabled="disabled" value="<?php echo $activeCategory['name'];?>">
                     <?php
-                            endif;
                         endforeach;
                     ?>
                 </div>

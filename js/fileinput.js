@@ -25,7 +25,7 @@
         '      <param name="quality" value="high" />\n';
 
     var DEFAULT_PREVIEW = '<div class="file-preview-other" ' + STYLE_SETTING + '>\n' +
-        '       <h2><i class="glyphicon glyphicon-file"></i></h2>\n' +
+//        '       <h2><i class="glyphicon glyphicon-file"></i></h2>\n' +
         '   </div>';
     var defaultLayoutTemplates = {
         main1: '{preview}\n' +
@@ -45,7 +45,7 @@
             '   <div class="file-preview-status text-center text-success"></div>\n' +
             '</div>',
         caption: '<div tabindex="-1" class="form-control file-caption {class}">\n' +
-            '   <span class="glyphicon glyphicon-file kv-caption-icon"></span><div class="file-caption-name"></div>\n' +
+            '   <div class="file-caption-name"></div>\n' +
             '</div>',
         modal: '<div id="{id}" class="modal fade">\n' +
             '  <div class="modal-dialog modal-lg">\n' +
@@ -245,7 +245,7 @@
             self.$preview = getElement(options, 'elPreviewImage', self.$container.find('.file-preview-thumbnails'));
             self.$previewStatus = getElement(options, 'elPreviewStatus', self.$container.find('.file-preview-status'));
             var content = self.initialPreview;
-            self.initialPreviewCount = isArray(content) ? content.length : (content.length > 0 ? content.split(self.initialDelimiter).length : 0)
+            self.initialPreviewCount = isArray(content) ? content.length : (content.length > 0 ? content.split(self.initialDelimiter).length : 0);
             self.initPreview();
             self.original = {
                 preview: self.$preview.html(),
@@ -721,14 +721,14 @@
         previewSettings: defaultPreviewSettings,
         fileTypeSettings: defaultFileTypeSettings,
         browseLabel: '',
-        browseIcon: '<i class="glyphicon glyphicon-folder-open"></i> &nbsp;',
-        browseClass: 'btn btn-primary',
+        browseIcon: '',
+        browseClass: 'btn btn-primary glyphicon glyphicon-folder-open fi-browse',
         removeLabel: '',
-        removeIcon: '<i class="glyphicon glyphicon-ban-circle"></i> ',
-        removeClass: 'btn btn-danger',
+        removeIcon: '',
+        removeClass: 'btn btn-danger glyphicon glyphicon-ban-circle fi-remove',
         uploadLabel: '',
-        uploadIcon: '<i class="glyphicon glyphicon-upload"></i> ',
-        uploadClass: 'btn btn-success',
+        uploadIcon: '',
+        uploadClass: 'btn btn-success glyphicon glyphicon-upload fi-upload',
         uploadUrl: null,
         maxFileSize: 0,
         maxFileCount: 0,
@@ -744,7 +744,7 @@
         msgProgress: 'Loading file {index} of {files} - {name} - {percent}% completed.',
         msgSelected: '{n} files selected',
         previewFileType: 'image',
-        wrapTextLength: 25,
+        wrapTextLength: 100,
         wrapIndicator: ' <span class="wrap-indicator" title="{title}" onclick="{dialog}">[&hellip;]</span>',
         elCaptionContainer: null,
         elCaptionText: null,

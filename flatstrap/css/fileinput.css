@@ -27,7 +27,7 @@
 .btn-file {
     position: relative;
     overflow: hidden;
-    height: 28px !important;
+    height: 18px !important;
     width: 40px !important;
 }
 
@@ -59,7 +59,7 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    width: 50px;
+    width: 100px;
 }
 .file-error-message {
     background-color: #f2dede;
@@ -139,4 +139,12 @@
     font-weight: bold;
     color: #245269;
     cursor: pointer;
+}
+
+.fi-upload,
+.fi-browse,
+.fi-remove
+{
+    height: 20px !important;
+    width: 32px !important;
 }

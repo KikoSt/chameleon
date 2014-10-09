@@ -66,6 +66,8 @@ class Editor extends Controller
 
         $this->view->combinedCategories = $this->getSubscribedCategories($template);
 
+        $this->view->activeCategories = $this->getActiveCategories($this->view->combinedCategories);
+
         $this->addSubscribedCategoriesToSession($this->view->combinedCategories);
 
         $this->view->page = 'editor';
@@ -155,5 +157,17 @@ class Editor extends Controller
         }
 
         return $combinedCategory;
+    }
+
+    private function getActiveCategories($subscribedCategories)
+    {
+        foreach($subscribedCategories as $id => $singleCategory)
+        {
+            if($singleCategory['status'] !== "ACTIVE")
+            {
+                unset($subscribedCategories[$id]);
+            }
+        }
+        return $subscribedCategories;
     }
 }

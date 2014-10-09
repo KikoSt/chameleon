@@ -1,4 +1,4 @@
-<div class="col-md-12">
+<div class="row">
     <label class="col-md-3">Image:</label>
     <div>
         <input id="<?php echo $element->getId();?>_input"

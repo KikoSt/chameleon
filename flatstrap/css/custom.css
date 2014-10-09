@@ -186,3 +186,10 @@ label {
     width: 100% !important;
 }
 
+input[type="text"]:disabled
+{
+    color: #555555;
+    cursor: not-allowed;
+    font-size: 14px;
+}
+
