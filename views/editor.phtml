@@ -325,10 +325,22 @@ $(document).ready(function() {
         });
     });
 
-    $('#primary-color').change(function(){
-        console.log('changed');
-    });
+    $('.presetcolor').click(function(){
+        var primsec = $(this).attr('id').split('#');
+        var str1 = "#panel_";
+        var str2 = primsec[0];
+        var str3 = " #fill";
+        var identifier = str1.concat(str2,str3)
 
+        if(primsec[1] == 'primary')
+        {
+            $(identifier).val('<?php echo $this->container->getPrimaryColor()->getHex();?>');
+        }
+        else
+        {
+            $(identifier).val('<?php echo $this->container->getSecondaryColor()->getHex();?>')
+        }
+    });
 
 
 });

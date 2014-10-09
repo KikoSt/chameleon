@@ -10,9 +10,8 @@
                style="float:left;"
             />
         <div class="text-right">
-            <button class="btn-info" value="primary">1st</button>
-            <button class="btn-success" value="secondary">2nd</button>
+            <button id="<?php echo $element->getId();?>#primary" class="btn-info presetcolor">1st</button>
+            <button id="<?php echo $element->getId();?>#secondary" class="btn-success presetcolor">2nd</button>
         </div>
     </div>
-
 </div>
