@@ -63,7 +63,7 @@ $container->setId($templateId);
 $container->parse();
 
 // TODO
-// FOR NOW, it is of huge importance that this next portion is located before
+// FOR NOW, it is of huge importance that this is executed before
 // the files change section since the changeElementValue method will update
 // the imgSources with the old values, being changed (corrected) again below
 
@@ -127,8 +127,6 @@ if($action === 'clone' || $action === 'save' || $action === 'saveCategory')
         $categorySubscriptions[] = $categorySubscription;
     }
 
-    var_dump($_SESSION['category']);
-
     foreach($_SESSION['category'] as $sessionId => $sessionCategory)
     {
         foreach($categorySubscriptions as $singleSubscription)
@@ -140,15 +138,14 @@ if($action === 'clone' || $action === 'save' || $action === 'saveCategory')
         }
     }
 
-    var_dump($categorySubscriptions);
-
     $bannerTemplateModel->setCategorySubscriptions($categorySubscriptions);
 
     if($action === 'save' || $action === 'saveCategory')
     {
+        // var_dump($bannerTemplateModel->getSvgContent());
         $response = $connector->sendBannerTemplate($bannerTemplateModel);
     }
-    else if('clone' === $action)
+    else if($action === 'clone')
     {
         $response = $connector->cloneBannerTemplate($bannerTemplateModel);
     }
