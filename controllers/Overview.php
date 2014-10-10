@@ -85,11 +85,11 @@ class Overview extends Controller
                     $preview->fileSize = getRemoteFileSize($file);
                     $preview->dateCreate = date("Y-m-d H.i:s", parseJavaTimestamp($template->getDateCreate()));
                     $preview->dateModified = date("Y-m-d H.i:s", parseJavaTimestamp($template->getDateModified()));
+                    $preview->templateId = $template->getBannerTemplateId();
                     $preview->parentTemplateId = $template->getParentBannerTemplateId();
                     $preview->name = $template->getName();
                     $preview->categorySubscription = $connector->getSubscribedCategoriesByTemplateId($template->getBannerTemplateId());
                     $preview->templateSubsriptions = $template->getCategorySubscriptions();
-
 
                     if($container->getCanvasWidth() >= $container->getCanvasHeight())
                     {
