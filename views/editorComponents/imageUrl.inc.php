@@ -1,6 +1,6 @@
-<div class="col-md-12">
-    <label class="col-md-1 control-label">Image:</label>
-    <div class="col-md-11">
+<div class="row">
+    <label class="col-md-3">Image:</label>
+    <div>
         <input id="<?php echo $element->getId();?>_input"
                type="file"
                class="file"

@@ -232,10 +232,6 @@ $(document).ready(function() {
         /* ******************************************************************** */
         var nodeList = $(document).find($('[type="file"]'));
 
-        // formData.append('templateId', $('#templateId').attr('value'));
-        // formData.append('advertiserId', $('#advertiserId').attr('value'));
-        // formData.append('companyId', $('#companyId').attr('value'));
-
         for (var i = 0; i < nodeList.length; i++)
         {
             var myId = nodeList[i].getAttribute('id');
@@ -302,7 +298,8 @@ $(document).ready(function() {
             data: JSON.parse(JSON.stringify(category)),
             url: "/chameleon/ajax/addCategory.php",
             success: function(msg){
-//                $('#categoryContainer').empty().load('ajax/categoriesSelection.inc.php');
+                $('#categoryContainer').load('ajax/categoriesSelection.inc.php');
+//                parent.location.reload();
             }
         });
     });
@@ -312,14 +309,13 @@ $(document).ready(function() {
             type: "POST",
             url: "/chameleon/ajax/addCategory.php?action=save",
             success: function(msg){
-//                alert('reloading');
+
             }
         });
     });
 
-    $('.removeCategory').click(function(){
+    $('#categoryContainer .removeCategory').click(function(){
         var id = $(this).attr('id');
-
         $.ajax({
             type: "POST",
             url: "/chameleon/ajax/removeCategory.php?id=" + id,
@@ -328,6 +324,30 @@ $(document).ready(function() {
             }
         });
     });
+
+    $('.preset').click(function(){
+        var identifier = $(this).attr('id').split('#');
+
+        switch(identifier[1])
+        {
+            case "primary":
+            {
+                $('#panel_'+identifier[0]+' #fill').val('<?php echo $this->container->getPrimaryColor()->getHex();?>');
+                break;
+            }
+            case "secondary":
+            {
+                $('#panel_'+identifier[0]+' #fill').val('<?php echo $this->container->getSecondaryColor()->getHex();?>');
+                break;
+            }
+            case "presetFont":
+            {
+                document.getElementById(identifier[0]+'#fontFamily').value = '<?php echo $this->container->getFontFamily();?>';
+                break;
+            }
+        }
+    });
+
 
 });
 </script>

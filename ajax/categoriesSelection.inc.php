@@ -1,16 +1,15 @@
 <?php
-    foreach($this->combinedCategories as $combinedCategories):
-        if($combinedCategories['status'] === "ACTIVE"):
+    session_start();
+    foreach($_SESSION['category'] as $id => $value):
 ?>
-            <div id="row_<?php echo $combinedCategories['id']; ?>" class="row">
-                <div class="col-md-10">
-                    <?php echo $combinedCategories['name']; ?>
-                </div>
-                <button id="<?php echo $combinedCategories['id']; ?>" class="removeCategory" type="button" style="color:#000000">
-                    <span class="glyphicon glyphicon-minus"></span>
-                </button>
-                <span class="<?php echo $combinedCategories['icon']; ?>"></span>
-            </div>
+<div id="row_<?php echo $id;?>" class="row">
+    <div class="col-md-10">
+        <?php echo $value;?>
+    </div>
+    <button id="<?php echo $id;?>" class="removeCategory" type="button" style="color:#000000">
+        <span class="glyphicon glyphicon-minus"></span>
+    </button>
+</div>
 <?php
-        endif;
     endforeach;
+?>

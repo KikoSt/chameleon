@@ -1,5 +1,5 @@
 @import url("bootstrap.min.css");
-@import url("fileinput.min.css");
+@import url("fileinput.css");
 @import url("reset.min.css");
 
 /* Overwrite all bootstrap css rules with a rounded corner to create a flat design */
@@ -134,7 +134,6 @@ form {
 
 label {
     margin-top: 2px !important;
-    baseline: middle !important;
 }
 
 .thumbnail {
@@ -149,12 +148,12 @@ label {
 
 .thumbnail:hover{
     background-color: #6a6a6a !important;
-    cursor: hand;
+    cursor: pointer;
 }
 
 .thumbnail > li {
     display: inline-block !important;
-    display:inline !important; /* ie7 fix */
+    display: inline !important; /* ie7 fix */
     float: none !important; /* this is the part that makes it work */
 }
 
@@ -169,24 +168,42 @@ label {
     width: 161px;
     top: 60px;
     bottom: 50px;
-    display:block;
     background-color: #ffffff;
     border-right: 1px solid #c3c3c3;
-}
-
-#phone{
-    padding-top: 8px;
-    padding-right: 5px;
-    color: #cccccc;
-    font-size: 3em;
 }
 
 .subnav
 {
     position: relative;
     display: block;
-    padding: 0px 0px 0px 22px !important;
+    padding: 0 0 0 22px !important;
     font-size: 12px;
 }
+
+#categorySelect input,
+#categorySelect select
+{
+    width: 100% !important;
+}
+
+input[type="text"]:disabled
+{
+    color: #555555;
+    cursor: not-allowed;
+    font-size: 14px;
+}
+
+.presetcolor
+{
+    height: 20px !important;
+    width: 32px !important;
+}
+
+.presetfont
+{
+    height: 20px !important;
+    width: 67px !important;
+}
+
 
 

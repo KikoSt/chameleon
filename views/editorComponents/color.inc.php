@@ -1,5 +1,5 @@
 <div class="row">
-    <label class="col-md-4">Color:</label>
+    <label class="col-md-3">Color:</label>
     <div>
         <input id="fill"
                type="text"
@@ -9,10 +9,8 @@
                placeholder="color"
                style="float:left;"
             />
-        <div class="text-right">
-            <button class="btn-info" value="primary">1st</button>
-            <button class="btn-success" value="secondary">2nd</button>
-        </div>
+        <button id="<?php echo $element->getId();?>#primary" class="btn btn-xs btn-info preset presetcolor" style="margin-left: 3px;
+        ">1st</button>
+        <button id="<?php echo $element->getId();?>#secondary" class="btn btn-xs btn-success preset presetcolor">2nd</button>
     </div>
-
 </div>

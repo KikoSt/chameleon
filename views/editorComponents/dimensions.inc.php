@@ -1,5 +1,5 @@
 <div class="row">
-    <label class="col-md-4">Width:</label>
+    <label class="col-md-3">Width:</label>
     <div>
         <input type="text"
                class="form-control"
@@ -10,7 +10,7 @@
     </div>
 </div>
 <div class="row">
-    <label class="col-md-4">Height:</label>
+    <label class="col-md-3">Height:</label>
     <div>
     <input type="text"
            class="form-control"

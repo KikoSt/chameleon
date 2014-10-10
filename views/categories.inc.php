@@ -32,7 +32,18 @@
     </div>
     <div id="categoryContainer">
         <?php
-            require_once('../ajax/categoriesSelection.inc.php');
+            foreach($this->activeCategories as $activeCategory):
+        ?>
+            <div id="row_<?php echo $activeCategory['id']; ?>" class="row">
+                <div class="col-md-10">
+                    <?php echo $activeCategory['name']; ?>
+                </div>
+                <button id="<?php echo $activeCategory['id']; ?>" class="removeCategory" type="button" style="color:#000000">
+                    <span class="glyphicon glyphicon-minus"></span>
+                </button>
+            </div>
+        <?php
+            endforeach;
         ?>
     </div>
 </div>
