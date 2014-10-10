@@ -98,14 +98,6 @@ $(document).ready(function() {
         $('#panel_globalsCategory').show();
     });
 
-
-    $(window).keydown(function(e){
-        if(e.keyCode == 13) {
-            e.preventDefault();
-            return false;
-        }
-    });
-
     $('.glyphicon-resize-small').click(function(){
         $(this).hide();
     });
@@ -215,17 +207,22 @@ $(document).ready(function() {
         var action = btn; // preview or save
 
         var xhr = new XMLHttpRequest();
+
+
         xhr.onreadystatechange = function(e) {
             if(xhr.readyState == 4) {
                 if(action === 'save') {
                     somethingChanged = false;
                 }
-                $('#previewalert').show();
+//                $('#previewalert').show();
+
                 response = $.parseJSON(xhr.response);
                 imgsrc = response.imgsrc;
+
                 $("#previewImage img").attr('src', imgsrc + '?' + new Date().getTime());
             }
         }
+
 
         var formData = new FormData();
 
@@ -292,6 +289,7 @@ $(document).ready(function() {
     })
     .trigger( "change" );
 
+
     $('#addCategory').click(function(){
         $.ajax({
             type: "POST",
@@ -348,6 +346,10 @@ $(document).ready(function() {
         }
     });
 
+    $('#globalFont').change(function(){
+        $(this).closest('form').trigger('submit');
+<!--        document.getElementById('globalFont').value = '--><?php //echo $this->container->getFontFamily();?><!--';-->
+    });
 
 });
 </script>

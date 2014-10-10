@@ -6,13 +6,10 @@
     </div>
     <div id="globalsBody" class="panel-body">
         <div class="container-fluid">
-            <div class="row">
-                <label class="col-md-4">Name:</label>
-                <div>
-                    <input type="text" disabled="disabled" value="<?php echo $this->name;?>">
-                </div>
-            </div>
-                <?php include('editorComponents/globalDimensions.inc.php'); ?>
+                <?php
+                    include('editorComponents/globalName.inc.php');
+                    include('editorComponents/globalDimensions.inc.php');
+                ?>
             <div class="row">
                 <label class="col-md-4">File size:</label>
                 <div>

@@ -23,9 +23,9 @@ $svgHandler = new SvgFileHandler();
 // TODO: auditUser information MUST be provided by caller!
 $auditUserId = 14;
 
-$companyId    = getRequestVar('companyId');
-$advertiserId = getRequestVar('advertiserId');
-$templateId   = getRequestVar('templateId');
+$companyId      = getRequestVar('companyId');
+$advertiserId   = getRequestVar('advertiserId');
+$templateId     = getRequestVar('templateId');
 
 $container->setCompanyId($companyId);
 $container->setAdvertiserId($advertiserId);
@@ -94,12 +94,7 @@ $container->setTarget('GIF');
 if(!empty($action))
 {
     $container->render();
-}
 
-var_dump($action);
-
-if($action === 'clone' || $action === 'save' || $action === 'saveCategory')
-{
     $connector = new APIConnector();
     $connector->setCompanyId(getRequestVar('companyId'));
     $connector->setAdvertiserId(getRequestVar('advertiserId'));
@@ -115,7 +110,15 @@ if($action === 'clone' || $action === 'save' || $action === 'saveCategory')
     $bannerTemplateModel->setAuditUserId($auditUserId);
     $bannerTemplateModel->setAdvertiserId($advertiserId);
     $bannerTemplateModel->setDescription('testing');
-    $bannerTemplateModel->setName('mumblebee testing');
+
+    //TODO while uploading an image, there's no template name present
+    //TODO option 1: set a hidden field with the tamplate name
+    //TODO option 2: fetch the templateName using the given template id
+    //have to figure it out
+    if(isset($_REQUEST['templateName']))
+    {
+        $bannerTemplateModel->setName($_REQUEST['templateName']);
+    }
 
     $existingSubscriptions = $connector->getSubscribedCategoriesByTemplateId($templateId);
 
@@ -142,13 +145,13 @@ if($action === 'clone' || $action === 'save' || $action === 'saveCategory')
 
     $bannerTemplateModel->setCategorySubscriptions($categorySubscriptions);
 
-    if($action === 'save' || $action === 'saveCategory')
-    {
-        $response = $connector->sendBannerTemplate($bannerTemplateModel);
-    }
-    else if('clone' === $action)
+    if('clone' === $action)
     {
         $response = $connector->cloneBannerTemplate($bannerTemplateModel);
+    }
+    else
+    {
+        $response = $connector->sendBannerTemplate($bannerTemplateModel);
     }
 }
 
