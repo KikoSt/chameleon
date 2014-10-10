@@ -96,8 +96,6 @@ if(!empty($action))
     $container->render();
 }
 
-var_dump($action);
-
 if($action === 'clone' || $action === 'save' || $action === 'saveCategory')
 {
     $connector = new APIConnector();
