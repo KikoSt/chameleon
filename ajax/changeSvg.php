@@ -112,7 +112,7 @@ if(!empty($action))
     $bannerTemplateModel->setDescription('testing');
 
     //TODO while uploading an image, there's no template name present
-    //TODO option 1: set a hidden field with the tamplate name
+    //TODO option 1: set a hidden field with the template name
     //TODO option 2: fetch the templateName using the given template id
     //have to figure it out
     if(isset($_REQUEST['templateName']))

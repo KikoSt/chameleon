@@ -225,3 +225,4 @@ class BannerTemplateModel implements JsonSerializable
         $this->categorySubscriptions = $categorySubscriptions;
     }
 }
+

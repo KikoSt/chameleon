@@ -1,22 +1,23 @@
 <div class="row">
-    <label class="col-md-4">Width:</label>
+    <label class="col-md-4">Dimensions:</label>
     <div>
-        <input type="text"
-               class="form-control"
-               name="<?php echo $element->getId();?>#width"
-               value="<?php echo $element->getCanvasWidth();?>"
-               placeholder="<?php echo $element->getCanvasWidth();?>"
-            />
-    </div>
-</div>
-<div class="row">
-    <label class="col-md-4">Height:</label>
-    <div>
-        <input type="text"
-               class="form-control"
-               name="<?php echo $element->getId();?>#height"
-               value="<?php echo $element->getCanvasHeight();?>"
-               placeholder="<?php echo $element->getCanvasHeight();?>"
-            />
+        <select id="allowedDimensions"
+                class="form-control"
+                name="<?php echo $element->getId();?>#globalDimensions">
+            <?php
+                $selected = false;
+                foreach($this->allowedDimensions as $dimension):
+                    $selected = ($dimension->width === $template->getDimY() && $dimension->height === $template->getDimX() ?
+                        "selected" : "");
+                    if($dimension->width > 0 && $dimension->height > 0):
+            ?>
+                <option value="<?php echo $dimension->width; ?>x<?php echo $dimension->height; ?>" <?php echo $selected;?>>
+                    <?php echo $dimension->width; ?>x<?php echo $dimension->height; ?> (<?php echo $dimension->name; ?>)
+                </option>
+            <?php
+                    endif;
+                endforeach;
+            ?>
+        </select>
     </div>
 </div>

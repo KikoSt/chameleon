@@ -40,7 +40,7 @@ class Editor extends Controller
         // render gif for editor view
         $container->setCategoryId(0); // general, so ZERO here
         $container->setOutputName($baseFilename);
-        $container->setSource($filename);
+        $container->setSource($template->getSvgContent());
         $container->parse();
         $container->setPreviewMode(true);
 
@@ -63,6 +63,10 @@ class Editor extends Controller
         $this->view->subscribedCategories = $this->connector->getSubscribedCategoriesByTemplateId($container->getId());
         $this->view->combinedCategories = $this->getSubscribedCategories($template);
         $this->view->activeCategories = $this->getActiveCategories($this->view->combinedCategories);
+        $this->view->allowedDimensions = $this->connector->getAllowedBannerDimensions();
+
+        $this->view->template = $template;
+
         $this->view->page = 'editor';
 
         $this->addSubscribedCategoriesToSession($this->view->combinedCategories);

@@ -80,6 +80,21 @@ class APIConnector
         return $userStatusValues;
     }
 
+    /**
+     * getAllowedBannerDimensions
+     *
+     * get the allowed banner dimensions via REST API
+     *
+     * @access public
+     * @return $userStatusValues a list containing all defined user status values
+     */
+    public function getAllowedBannerDimensions()
+    {
+        $enums = $this->getEnums();
+        $allowedDimensions = $enums->imageDimensions;
+        return $allowedDimensions;
+    }
+
 
     /**
      * getEnums

@@ -1,6 +1,5 @@
 <?php include('navigation.inc.php');?>
 
-
 <div class="container-fluid" style="margin-left: 150px;">
     <form enctype="multipart/form-data" id="editor" method="POST" class="form-horizontal">
         <div id="nodes" class="navbar navbar-default navbar-fixed-top navbar-inverse" role="navigation" style="margin-top:61px;
@@ -36,9 +35,9 @@
                     </div>
                     <div class="row" style="padding-top: 5px;">
                         <!--        On click render template and show the change-->
-                        <button id="preview" type="submit" class="btn btn-info" title="Preview">
-                            <span class="glyphicon glyphicon-eye-open"></span>
-                        </button>
+<!--                        <button id="preview" type="submit" class="btn btn-info" title="Preview">-->
+<!--                            <span class="glyphicon glyphicon-eye-open"></span>-->
+<!--                        </button>-->
                         <!--        On click render template, show the change and save data to database-->
                         <button id="save" type="submit" class="btn btn-danger" title="Save template">
                             <span class="glyphicon glyphicon-save"></span>
@@ -348,8 +347,13 @@ $(document).ready(function() {
 
     $('#globalFont').change(function(){
         $(this).closest('form').trigger('submit');
-<!--        document.getElementById('globalFont').value = '--><?php //echo $this->container->getFontFamily();?><!--';-->
     });
+
+    $('#allowedDimensions').change(function(){
+        $(this).closest('form').trigger('submit');
+    });
+
+
 
 });
 </script>
