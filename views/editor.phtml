@@ -35,12 +35,12 @@
                     </div>
                     <div class="row" style="padding-top: 5px;">
                         <!--        On click render template and show the change-->
-<!--                        <button id="preview" type="submit" class="btn btn-info" title="Preview">-->
-<!--                            <span class="glyphicon glyphicon-eye-open"></span>-->
-<!--                        </button>-->
-                        <!--        On click render template, show the change and save data to database-->
+                        <button id="preview" type="submit" class="btn btn-info" title="Preview">
+                            <span class="glyphicon glyphicon-eye-open"></span>
+                        </button>
+<!--                                On click render template, show the change and save data to database-->
                         <button id="save" type="submit" class="btn btn-danger" title="Save template">
-                            <span class="glyphicon glyphicon-save"></span>
+                            <span class="glyphicon glyphicon-export"></span>
                         </button>
                         <button id="clone" type="submit" class="btn btn-warning" title="Clone template">
                             <span class="glyphicon glyphicon-tags"></span>
@@ -79,7 +79,14 @@ $(document).ready(function() {
     var somethingChanged = false;
     var category = {};
 
-    $('.btn').on('click', function(){
+    $(window).keydown(function(e){
+        if(e.keyCode == 13) {
+            e.preventDefault();
+            return false;
+        }
+    });
+
+    $('.btn').on('click', function(e){
         btn = $(this).attr('id');
     });
 
@@ -256,7 +263,23 @@ $(document).ready(function() {
         xhr.send(formData);
     });
 
-    $('.picker').colorpicker();
+    $('.picker').colorpicker().focusout(function(){
+        $(this).closest('form').trigger('submit').bind('ajax:complete', function(){
+
+            //get the current primary and secondary color from rewritten svg
+
+
+
+            if($(this).attr('id') == 'primary-color')
+            {
+                $('#primary-color').val('<?php echo $this->container->getPrimaryColor()->getHex();?>');
+            }
+            else
+            {
+                $('#secondary-color').val('<?php echo $this->container->getSecondaryColor()->getHex();?>');
+            }
+        });
+    });
 
     $("#fileUpload").fileinput();
 
@@ -345,15 +368,8 @@ $(document).ready(function() {
         }
     });
 
-    $('#globalFont').change(function(){
-        $(this).closest('form').trigger('submit');
-    });
-
-    $('#allowedDimensions').change(function(){
-        $(this).closest('form').trigger('submit');
-    });
-
-
-
+//    $('select').change(function(){
+//        $(this).closest('form').trigger('submit');
+//    });
 });
 </script>

@@ -145,11 +145,12 @@ if(!empty($action))
 
     $bannerTemplateModel->setCategorySubscriptions($categorySubscriptions);
 
-    if('clone' === $action)
+    if($action === 'clone')
     {
         $response = $connector->cloneBannerTemplate($bannerTemplateModel);
     }
-    else
+
+    if($action === 'save')
     {
         $response = $connector->sendBannerTemplate($bannerTemplateModel);
     }

@@ -1,8 +1,7 @@
 <div class="row">
     <label class="col-md-4">Font:</label>
     <div>
-        <select id="globalFont"
-                class="form-control"
+        <select class="form-control"
                 name="<?php echo $element->getId();?>#fontFamily">
             <?php
                 foreach($this->fontlist as $key => $font):
@@ -13,6 +12,5 @@
                 endforeach;
             ?>
         </select>
-        <input type="hidden" value="globalFont" name="action"/>
     </div>
 </div>

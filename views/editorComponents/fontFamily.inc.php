@@ -10,7 +10,7 @@
                 <option value="<?php echo $key; ?>" <?php echo $selected;?>><?php echo $font; ?></option>
             <?php endforeach; ?>
         </select>
-        <button id="<?php echo $element->getId();?>#presetFont" class="btn btn-xs btn-info preset presetfont"
+        <button id="<?php echo $element->getId();?>#presetFont" type="button" class="btn btn-xs btn-info preset presetfont"
                 style="margin-left:3px;">predefined</button>
     </div>
 </div>

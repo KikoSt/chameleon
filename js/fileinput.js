@@ -31,7 +31,7 @@
         main1: '{preview}\n' +
             '<div class="input-group {class}">\n' +
             '   {caption}\n' +
-            '   <div class="input-group-btn">\n' +
+            '   <div>\n' +
             '       {remove}\n' +
             '       {upload}\n' +
             '       {browse}\n' +
