@@ -131,23 +131,34 @@ class Editor extends Controller
 
     private function getSubscribedCategories($template)
     {
-        $templateCategories = $template->getCategorySubscriptions();
+        $templateCategories   = $template->getCategorySubscriptions();
         $subscribedCategories = $this->connector->getSubscribedCategoriesByTemplateId($template->getBannerTemplateId());
-        $combinedCategory = array();
+        $combinedCategory     = array();
 
+        $categoryNames = array();
+
+        // preparing a list containing all relevant category names indexed by the category IDs
+        foreach($subscribedCategories AS $curCategory)
+        {
+            $categoryNames[$curCategory->idCategory] = $curCategory->categoryName;
+        }
+
+        // the templateCategories collection only contains the current active state (DELETED, ACTIVE ...) and the category ID.
+        // adding names here
         foreach($templateCategories as $singleCategory)
         {
             $aSingleCategory = array();
-            $aSingleCategory['id'] = $singleCategory->idCategory;
+            $aSingleCategory['id']     = $singleCategory->idCategory;
             $aSingleCategory['status'] = $singleCategory->userStatus;
+            $aSingleCategory['name']   = $singleCategory->categoryName;
 
-            foreach($subscribedCategories as $singleSubscription)
-            {
-                if($aSingleCategory['id'] === $singleSubscription->idCategory)
-                {
-                    $aSingleCategory['name'] = $singleSubscription->categoryName;
-                }
-            }
+            // foreach($subscribedCategories as $singleSubscription)
+            // {
+            //     if($aSingleCategory['id'] === $singleSubscription->idCategory)
+            //     {
+            //         $aSingleCategory['name'] = $singleSubscription->categoryName;
+            //     }
+            // }
             $combinedCategory[] = $aSingleCategory;
         }
 
@@ -163,6 +174,7 @@ class Editor extends Controller
                 unset($subscribedCategories[$id]);
             }
         }
+
         return $subscribedCategories;
     }
 }
