@@ -1,6 +1,5 @@
 <?php include('navigation.inc.php');?>
 
-
 <div class="container-fluid" style="margin-left: 150px;">
     <form enctype="multipart/form-data" id="editor" method="POST" class="form-horizontal">
         <div id="nodes" class="navbar navbar-default navbar-fixed-top navbar-inverse" role="navigation" style="margin-top:61px;
@@ -36,9 +35,9 @@
                     </div>
                     <div class="row" style="padding-top: 5px;">
                         <!--        On click render template and show the change-->
-                        <button id="preview" type="submit" class="btn btn-info" title="Preview">
-                            <span class="glyphicon glyphicon-eye-open"></span>
-                        </button>
+<!--                        <button id="preview" type="submit" class="btn btn-info" title="Preview">-->
+<!--                            <span class="glyphicon glyphicon-eye-open"></span>-->
+<!--                        </button>-->
                         <!--        On click render template, show the change and save data to database-->
                         <button id="save" type="submit" class="btn btn-danger" title="Save template">
                             <span class="glyphicon glyphicon-save"></span>
@@ -95,14 +94,6 @@ $(document).ready(function() {
 
     $('#editCategoriesEditor').click(function(e){
         $('#panel_globalsCategory').show();
-    });
-
-
-    $(window).keydown(function(e){
-        if(e.keyCode == 13) {
-            e.preventDefault();
-            return false;
-        }
     });
 
     $('.glyphicon-resize-small').click(function(){
@@ -214,17 +205,22 @@ $(document).ready(function() {
         var action = btn; // preview or save
 
         var xhr = new XMLHttpRequest();
+
+
         xhr.onreadystatechange = function(e) {
             if(xhr.readyState == 4) {
                 if(action === 'save') {
                     somethingChanged = false;
                 }
-                $('#previewalert').show();
+//                $('#previewalert').show();
+
                 response = $.parseJSON(xhr.response);
                 imgsrc = response.imgsrc;
+
                 $("#previewImage img").attr('src', imgsrc + '?' + new Date().getTime());
             }
         }
+
 
         var formData = new FormData();
 
@@ -291,6 +287,7 @@ $(document).ready(function() {
     })
     .trigger( "change" );
 
+
     $('#addCategory').click(function(){
         var data = {};
         data.templateId   = '<?php echo $this->templateId; ?>';
@@ -355,6 +352,15 @@ $(document).ready(function() {
             }
         }
     });
+
+    $('#globalFont').change(function(){
+        $(this).closest('form').trigger('submit');
+    });
+
+    $('#allowedDimensions').change(function(){
+        $(this).closest('form').trigger('submit');
+    });
+
 
 
 });

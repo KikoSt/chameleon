@@ -62,6 +62,8 @@ class GfxImage extends GfXComponent
 
         $imageUrl = str_replace("//assets", "/assets", $imageUrl);
 
+
+
         if(fopen(BASE_DIR . $imageUrl, "r"))
         {
             $this->setImageUrl($imageUrl);

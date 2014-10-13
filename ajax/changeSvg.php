@@ -23,9 +23,9 @@ $svgHandler = new SvgFileHandler();
 // TODO: auditUser information MUST be provided by caller!
 $auditUserId = 14;
 
-$companyId    = getRequestVar('companyId');
-$advertiserId = getRequestVar('advertiserId');
-$templateId   = getRequestVar('templateId');
+$companyId      = getRequestVar('companyId');
+$advertiserId   = getRequestVar('advertiserId');
+$templateId     = getRequestVar('templateId');
 
 $container->setCompanyId($companyId);
 $container->setAdvertiserId($advertiserId);
@@ -113,16 +113,23 @@ if($action === 'clone' || $action === 'save' || $action === 'saveCategory')
     $bannerTemplateModel->setAuditUserId($auditUserId);
     $bannerTemplateModel->setAdvertiserId($advertiserId);
     $bannerTemplateModel->setDescription('testing');
-    $bannerTemplateModel->setName('mumblebee testing');
 
-    if($action === 'save')
+    //TODO while uploading an image, there's no template name present
+    //TODO option 1: set a hidden field with the template name
+    //TODO option 2: fetch the templateName using the given template id
+    //have to figure it out
+    if(isset($_REQUEST['templateName']))
     {
-        // var_dump($bannerTemplateModel->getSvgContent());
-        $response = $connector->sendBannerTemplate($bannerTemplateModel);
+        $bannerTemplateModel->setName($_REQUEST['templateName']);
     }
-    else if($action === 'clone')
+
+    if('clone' === $action)
     {
         $response = $connector->cloneBannerTemplate($bannerTemplateModel);
+    }
+    else
+    {
+        $response = $connector->sendBannerTemplate($bannerTemplateModel);
     }
 }
 

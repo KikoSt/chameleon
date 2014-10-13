@@ -25,7 +25,7 @@ class GfxContainer
     private $editorOptions;
     private $allowedTargets;
 
-    private $globalFontFamily;
+    private $fontFamily;
     private $globalPrimaryColor;
     private $globalSecondaryColor;
 
@@ -513,14 +513,15 @@ class GfxContainer
 
         // global parameters are identified by the template id instead of the element id
         $globalSettings = $valueList[$this->getId()];
-        $width          = $globalSettings['width'];
-        $height         = $globalSettings['height'];
+
+        $dimensions = $this->getGlobalWidthAndHeight($globalSettings['globalDimensions']);
+
         $fontFamily     = $globalSettings['fontFamily'];
         $primaryColor   = new GfxColor($globalSettings['primary-color']);
         $secondaryColor = new GfxColor($globalSettings['secondary-color']);
 
-        $this->setCanvasWidth($width);
-        $this->setCanvasHeight($height);
+        $this->setCanvasWidth($dimensions->width);
+        $this->setCanvasHeight($dimensions->height);
 
         $this->setPrimaryColor($primaryColor);
         $this->setSecondaryColor($secondaryColor);
@@ -827,4 +828,17 @@ class GfxContainer
     {
         $this->globalSecondaryColor = $globalSecondaryColor;
     }
+
+    private function getGlobalWidthAndHeight($globalDimensions)
+    {
+        $dimensions = new stdClass();
+
+        $explode = explode('x', $globalDimensions);
+        $dimensions->width = $explode[0];
+        $dimensions->height = $explode[1];
+
+        return $dimensions;
+    }
+
+
 }

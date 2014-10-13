@@ -192,10 +192,11 @@ class GfxText extends GfxComponent
                      $this->getY(),
                      $textColor,
                      $this->getGIFFont(),
-                     str_replace('€', ' Euro', $this->getText())
+//                     str_replace('€', ' Euro', $this->getText())
+                    $this->getText()  //TODO € works actually, we have to keep an eye on it
         );
 
-                     // utf8_decode(str_replace('€', ' Euro', $this->getText()))
+
         return $canvas;
     }
 

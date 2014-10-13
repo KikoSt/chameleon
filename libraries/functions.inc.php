@@ -74,3 +74,4 @@ function getRemoteFileDate($url)
         return date("Y-m-d", curl_getinfo($c, CURLINFO_FILETIME));
     }
 }
+
