@@ -29,13 +29,11 @@
         '   </div>';
     var defaultLayoutTemplates = {
         main1: '{preview}\n' +
-            '<div class="input-group {class}">\n' +
+            '<div class="input-group {class}" style="display: inline; margin-left: 3px;">\n' +
             '   {caption}\n' +
-            '   <div>\n' +
-            '       {remove}\n' +
-            '       {upload}\n' +
-            '       {browse}\n' +
-            '   </div>\n' +
+            '   {remove}\n' +
+            '   {upload}\n' +
+            '   {browse}\n' +
             '</div>',
         main2: '{preview}\n{remove}\n{upload}\n{browse}\n',
         preview: '<div class="file-preview {class}">\n' +

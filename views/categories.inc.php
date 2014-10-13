@@ -3,9 +3,11 @@
         <div class="col-md-10">
             <input class="form-control" type="text" placeholder="select page category">
         </div>
-        <button style="color:#000000">
-            <span class="glyphicon glyphicon-plus"></span>
-        </button>
+        <div>
+            <button class="modalBtn">
+                <span class="glyphicon glyphicon-plus"></span>
+            </button>
+        </div>
     </div>
     <div class="row">
         <div class="col-md-10">
@@ -36,7 +38,7 @@
         ?>
             <div id="row_<?php echo $activeCategory['id']; ?>" class="row">
                 <div class="col-md-10">
-                    <?php echo $activeCategory['name']; ?>
+                    <input type="text" disabled="disabled" value="<?php echo $activeCategory['name']; ?>"/>
                 </div>
                 <button id="<?php echo $activeCategory['id']; ?>" class="removeCategory" type="button" style="color:#000000">
                     <span class="glyphicon glyphicon-minus"></span>
