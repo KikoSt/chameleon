@@ -292,35 +292,44 @@ $(document).ready(function() {
     .trigger( "change" );
 
     $('#addCategory').click(function(){
+        var data = {};
+        data.templateId   = '<?php echo $this->templateId; ?>';
+        data.categoryId   = $('#category').find(':selected').val();
+        data.categoryName = $.trim($('#category').find(':selected').text());
+        data.advertiserId = $('#advertiserId').attr('value');
+        data.companyId    = $('#companyId').attr('value');
+        var pstdata = JSON.stringify(data);
         $.ajax({
             type: "POST",
-            data: JSON.parse(JSON.stringify(category)),
-            url: "/chameleon/ajax/addCategory.php",
-            success: function(msg){
-                $('#categoryContainer').load('ajax/categoriesSelection.inc.php');
-//                parent.location.reload();
-            }
-        });
-    });
-
-    $('#saveCategory').click(function(){
-        $.ajax({
-            type: "POST",
-            url: "/chameleon/ajax/addCategory.php?action=save",
-            success: function(msg){
-
-            }
+            data: data,
+            dataType: "json",
+            url: "/chameleon/ajax/addCategory.php"
+        }).done(function(){
+            $('#categoryContainer').load('ajax/categoriesSelection.inc.php?templateId=<?php echo $this->templateId; ?>');
+        }).fail(function(){
+            $('#categoryContainer').load('ajax/categoriesSelection.inc.php?templateId=<?php echo $this->templateId; ?>');
         });
     });
 
     $('#categoryContainer .removeCategory').click(function(){
-        var id = $(this).attr('id');
+        var data = {};
+        data.templateId   = '<?php echo $this->templateId; ?>';
+        var id            = $(this).attr('id');
+        data.categoryId   = id;
+        data.categoryName = $.trim($('#category').find(':selected').text());
+        data.advertiserId = $('#advertiserId').attr('value');
+        data.companyId    = $('#companyId').attr('value');
         $.ajax({
-            type: "POST",
-            url: "/chameleon/ajax/removeCategory.php?id=" + id,
-            success: function(msg){
-                $('#row_' + id).remove();
-            }
+            type: 'POST',
+            data: data,
+            dataType: "json",
+            url:  '/chameleon/ajax/removeCategory.php'
+        }).done(function(){
+            console.log('done');
+            $('#row_' + id).remove();
+        }).fail(function(){
+            $('#row_' + id).remove();
+            console.log('fail');
         });
     });
 
