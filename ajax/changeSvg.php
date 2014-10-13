@@ -115,32 +115,7 @@ if($action === 'clone' || $action === 'save' || $action === 'saveCategory')
     $bannerTemplateModel->setDescription('testing');
     $bannerTemplateModel->setName('mumblebee testing');
 
-    $existingSubscriptions = $connector->getSubscribedCategoriesByTemplateId($templateId);
-
-    $categorySubscriptions = array();
-
-    foreach($existingSubscriptions as $singleSubscription)
-    {
-        $categorySubscription = new stdClass();
-        $categorySubscription->idCategory = $singleSubscription->idCategory;
-        $categorySubscription->userStatus = "DELETED";
-        $categorySubscriptions[] = $categorySubscription;
-    }
-
-    foreach($_SESSION['category'] as $sessionId => $sessionCategory)
-    {
-        foreach($categorySubscriptions as $singleSubscription)
-        {
-            if($sessionId === $singleSubscription->idCategory)
-            {
-                $singleSubscription->userStatus = "ACTIVE";
-            }
-        }
-    }
-
-    $bannerTemplateModel->setCategorySubscriptions($categorySubscriptions);
-
-    if($action === 'save' || $action === 'saveCategory')
+    if($action === 'save')
     {
         // var_dump($bannerTemplateModel->getSvgContent());
         $response = $connector->sendBannerTemplate($bannerTemplateModel);
