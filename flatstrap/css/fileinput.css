@@ -27,8 +27,8 @@
 .btn-file {
     position: relative;
     overflow: hidden;
-    height: 18px !important;
-    width: 40px !important;
+    height: 20px !important;
+    width: 32px !important;
 }
 
 .btn-file input[type=file] {
@@ -49,7 +49,7 @@
 .file-caption .glyphicon {
     display: inline-block;
     min-width: 18px;
-    float: left;
+    /*float: left;*/
     margin-top: 2px;
 }
 
@@ -141,10 +141,19 @@
     cursor: pointer;
 }
 
+/* Custimizing */
+
 .fi-upload,
 .fi-browse,
 .fi-remove
 {
+    padding: 1px 0 0 0;
+    top: 0;
     height: 20px !important;
-    width: 32px !important;
+    width: 28px !important;
+}
+
+.kv-fileinput-caption
+{
+    width:150px !important;
 }

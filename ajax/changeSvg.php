@@ -18,6 +18,7 @@ if(!defined('__ROOT__'))
 require_once(__ROOT__ . 'libraries/functions.inc.php');
 
 $container = new GfxContainer();
+$connector = new APIConnector();
 $svgHandler = new SvgFileHandler();
 
 // TODO: auditUser information MUST be provided by caller!
@@ -29,6 +30,9 @@ $templateId     = getRequestVar('templateId');
 
 $container->setCompanyId($companyId);
 $container->setAdvertiserId($advertiserId);
+
+$connector->setCompanyId($companyId);
+$connector->setAdvertiserId($advertiserId);
 
 // TODO: get rid of this, container should handle the path and it's advised
 // to the the path from the container!
@@ -52,13 +56,10 @@ if(!empty($_FILES))
     }
 }
 
-//set file name
-$baseFilename = 'rtest_' . $templateId;
-$filename = $baseFilename . '.svg';
-$container->setOutputName($baseFilename);
+$template = $connector->getTemplateById($templateId);
 
 //parse the svg
-$container->setSource($filename);
+$container->setSource($template->getSvgContent());
 $container->setId($templateId);
 $container->parse();
 
@@ -123,11 +124,12 @@ if($action === 'clone' || $action === 'save' || $action === 'saveCategory')
         $bannerTemplateModel->setName($_REQUEST['templateName']);
     }
 
-    if('clone' === $action)
+    if($action === 'clone' )
     {
         $response = $connector->cloneBannerTemplate($bannerTemplateModel);
     }
-    else
+
+    if($action === 'save')
     {
         $response = $connector->sendBannerTemplate($bannerTemplateModel);
     }
@@ -136,6 +138,7 @@ if($action === 'clone' || $action === 'save' || $action === 'saveCategory')
 $response = array();
 
 // TODO: improve this path handling, too
+$container->setOutputName($templateId . '_' . $container->getCanvasHeight() . 'x' . $container->getCanvasWidth());
 $imgsrc = 'output/' . $basePath . '/' . $container->getOutputName() . '.gif';
 $response['imgsrc'] = $imgsrc;
 

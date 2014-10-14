@@ -6,7 +6,7 @@
         </h3>
     </div>
     <div class="panel-body">
-        <div class="row">
+        <div class="container-fluid">
             <?php
                 include('editorComponents/imageUrl.inc.php');
 

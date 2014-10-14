@@ -155,31 +155,13 @@ margin-left:161px;background-color: #888888; border-color: #888888;">
 <div class="modal fade" id="cmeoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <div class="modal-header textTitle">
+                <button type="button" class="close" data-dismiss="modal"><span class="glyphicon glyphicon-remove-circle"></span></button>
                 <h4 class="modal-title" id="myModalLabel">Select category:</h4>
             </div>
             <div class="modal-body">
                 <form role="form">
-                    <div class="form-group">
-                        <div class="input-group">
-                            <div class="input-group-addon">
-                                <span class="glyphicon glyphicon-search"></span>
-                            </div>
-                            <input class="form-control" type="text" placeholder="select page category">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <select multiple class="form-control" >
-                            <?php
-                                foreach($this->categories as $singleCategory):
-                            ?>
-                            <option value="<?php echo $singleCategory->id;?>"><?php echo $singleCategory->name;?></option>
-                            <?php
-                                endforeach;
-                            ?>
-                        </select>
-                    </div>
+                        <?php include('categories.inc.php'); ?>
                 </form>
             </div>
             <div class="modal-footer">

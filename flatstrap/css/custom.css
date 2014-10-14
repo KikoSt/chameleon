@@ -24,11 +24,6 @@ a:hover
     text-decoration: none !important;
 }
 
-.panel-heading
-{
-    color: #ffffff !important;
-}
-
 .row
 {
     margin-bottom: 2px !important;
@@ -72,6 +67,7 @@ select
 .globalsTitle
 {
     background-color: #f8bf42 !important;
+    color: #ffffff !important;
 }
 
 .imageTitle
@@ -108,9 +104,13 @@ select
     float:left;
 }
 
+.panel-heading
+{
+    color: #ffffff !important;
+}
+
 .component
 {
-    height:465px;
     display: none;
 }
 
@@ -172,16 +172,23 @@ label {
     border-right: 1px solid #c3c3c3;
 }
 
+#leftbox .nav
+{
+    width: 161px;
+}
+
 .subnav
 {
     position: relative;
     display: block;
     padding: 0 0 0 22px !important;
     font-size: 12px;
+    /*color: #428bca !important;*/
+    /*background-color: #FFFFFF !important;*/
 }
 
-#categorySelect input,
-#categorySelect select
+.modal input,
+.modal select
 {
     width: 100% !important;
 }
@@ -203,6 +210,30 @@ input[type="text"]:disabled
 {
     height: 20px !important;
     width: 67px !important;
+}
+
+.modal-body button
+{
+    height: 20px;
+    color: #000000;
+    margin-top: 3px;
+}
+
+.modal-content
+{
+    color: #FFFFFF !important;
+    background-color: #333333 !important;
+    border-color: #333333 !important;
+}
+
+.active
+{
+    /*background-color: #428bca;*/
+}
+
+.active a
+{
+    /*color: #FFFFFF !important;*/
 }
 
 

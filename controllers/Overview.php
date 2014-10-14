@@ -90,6 +90,7 @@ class Overview extends Controller
                     $preview->name = $template->getName();
                     $preview->categorySubscription = $connector->getSubscribedCategoriesByTemplateId($template->getBannerTemplateId());
                     $preview->templateSubsriptions = $template->getCategorySubscriptions();
+                    $preview->page = 'overview';
 
                     if($container->getCanvasWidth() >= $container->getCanvasHeight())
                     {

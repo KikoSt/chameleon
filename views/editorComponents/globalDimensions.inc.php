@@ -1,8 +1,7 @@
 <div class="row">
     <label class="col-md-4">Dimensions:</label>
     <div>
-        <select id="allowedDimensions"
-                class="form-control"
+        <select class="form-control"
                 name="<?php echo $element->getId();?>#globalDimensions">
             <?php
                 $selected = false;
