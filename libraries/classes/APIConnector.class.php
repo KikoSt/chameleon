@@ -33,6 +33,7 @@ class APIConnector
         $this->serviceCalls['getEnums']              = 'enums';
         $this->serviceCalls['getCategories']         = 'company/{companyId}/categories';
         $this->serviceCalls['getSubscribedCategories'] = 'bannerTemplate/{idBannerTemplate}/subscribedCategories';
+        $this->serviceCalls['postTemplateQuery']     = 'query/bannerTemplates';
     }
 
     /**
@@ -394,6 +395,19 @@ class APIConnector
         $resource = REST_API_SERVICE_URL . '/' . $this->serviceCalls['postTemplate'];
         $curl = $this->getCurl($resource, 'POST');
         curl_setopt($curl, CURLOPT_POSTFIELDS, $template);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+
+        $curlResponse = curl_exec($curl);
+        curl_close($curl);
+        return $curlResponse;
+    }
+
+    public function sendBannerTemplateQuery(BannerTemplateQuery $bannerTemplateQuery)
+    {
+        $bannerTemplateQuery = json_encode($bannerTemplateQuery->jsonSerialize());
+        $resource = REST_API_SERVICE_URL . '/' . $this->serviceCalls['postTemplateQuery'];
+        $curl = $this->getCurl($resource, 'POST');
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $bannerTemplateQuery);
         curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
 
         $curlResponse = curl_exec($curl);

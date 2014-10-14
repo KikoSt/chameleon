@@ -40,8 +40,7 @@ margin-left:161px;background-color: #888888; border-color: #888888;">
         foreach($this->previews as $preview):
     ?>
         <form method="post" action="index.php?page=editor" id="<?php echo $preview->templateId; ?>">
-            <div class="thumbnail col-md-3" style="width:540px;height:380px;margin-left: 10px;" onclick="$('#' + <?php echo
-            $preview->templateId; ?>).submit();">
+            <div class="thumbnail col-md-3" onclick="$('#' + <?php echo $preview->templateId; ?>).submit();">
                 <div class="row">
                     <div class="col-md-8" style="float: left;">
                         <image class="preview" src="<?php echo $preview->filePath; ?>" style="margin-top: <?php echo $preview->marginTop;?>px">

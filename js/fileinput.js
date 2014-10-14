@@ -31,7 +31,6 @@
         main1: '{preview}\n' +
             '<div class="input-group {class}" style="display: inline; margin-left: 3px;">\n' +
             '   {caption}\n' +
-            '   {remove}\n' +
             '   {upload}\n' +
             '   {browse}\n' +
             '</div>',
