@@ -288,7 +288,7 @@ $(document).ready(function() {
     .trigger( "change" );
 
 
-    $('#addCategory').click(function(){
+    $('body').on('click', '#addCategory', function(e) {
         var data = {};
         var categoryId    = $('#category').find(':selected').val()
         var categoryName  = $.trim($('#category').find(':selected').text());
@@ -304,18 +304,14 @@ $(document).ready(function() {
             dataType: "json",
             url: "/chameleon/ajax/addCategory.php"
         }).done(function(){
-            $('#categoryContainer').load('ajax/categoriesSelection.inc.php?templateId=<?php echo $this->templateId; ?>');
-            var node = '<input type="text" disabled="disabled" id="subscription_' + categoryId + ' value="' + categoryName + '">';
-            $('global_categories').append($(node));
         }).fail(function(){
             $('#categoryContainer').load('ajax/categoriesSelection.inc.php?templateId=<?php echo $this->templateId; ?>');
-            // console.log($('#subscription_' + categoryId));
-            var node = $('<input type="text" disabled="disabled" id="subscription_' + categoryId + ' value="' + categoryName + '">');
-            $('global_categories').append(node);
+            var node = '<input type="text" disabled="disabled" id="subscription_' + categoryId + '" value="' + categoryName + '">';
+            $('#global_categories').append(node);
         });
     });
 
-    $('#categoryContainer .removeCategory').click(function(){
+    $('body').on('click', '#categoryContainer .removeCategory', function(e) {
         var data = {};
         data.templateId   = '<?php echo $this->templateId; ?>';
         var categoryId    = $(this).attr('id');
@@ -329,11 +325,9 @@ $(document).ready(function() {
             dataType: "json",
             url:  '/chameleon/ajax/removeCategory.php'
         }).done(function(){
-            console.log('done');
-            $('#row_' + id).remove();
         }).fail(function(){
-            $('#row_' + id).remove();
-            console.log('fail');
+            $('#row_' + categoryId).remove();
+            $('#subscription_' + categoryId).remove();
         });
     });
 
