@@ -92,7 +92,9 @@ $(document).ready(function() {
 
     $('.subnav').click(function(e){
         var id = $(this).attr('id');
+        $('.component').hide();
         $('#panel_' + id).show();
+
     });
 
     $('.glyphicon-remove-circle').click(function(e){
