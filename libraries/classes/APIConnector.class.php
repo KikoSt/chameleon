@@ -113,11 +113,11 @@ class APIConnector
 
         $info = curl_getinfo($curl);
 
-        if($info['http_code'] != 204)
+        if($info['http_code'] != 204 && $info['http_code'] != 200)
         {
-            $logfile = fopen('log.txt', 'w');
-            fwrite($logfile, $curlResponse . "\n");
-            fclose($logfile);
+//            $logfile = fopen('log.txt', 'w');
+//            fwrite($logfile, $curlResponse . "\n");
+//            fclose($logfile);
         }
         curl_close($curl);
         $enums = json_decode($curlResponse);
