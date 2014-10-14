@@ -20,7 +20,7 @@
                 include('editorComponents/globalColor.inc.php');
                 include('editorComponents/globalFont.inc.php');
             ?>
-            <div class="row">
+            <div id="global_categories" class="row">
                 <label class="col-md-4" style="height: <?php echo count($this->activeCategories) * 22?>px;">
                     Categories:
                     <button id="editCategoriesEditor" type="button" class="btn btn-xs" data-toggle="modal" data-target="#categorySelect"
@@ -32,7 +32,7 @@
                     <?php
                         foreach($this->activeCategories as $activeCategory):
                     ?>
-                    <input type="text" disabled="disabled" value="<?php echo $activeCategory['name'];?>">
+                    <input type="text" disabled="disabled" id="subscription_<?php echo $activeCategory['id']; ?>" value="<?php echo $activeCategory['name'];?>">
                     <?php
                         endforeach;
                     ?>
