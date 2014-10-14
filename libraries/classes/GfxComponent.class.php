@@ -13,6 +13,7 @@ class GfXComponent implements Linkable, Resizeable
     private $id;
     private $fill;
     private $stroke;
+    private $shadow;
     private $shadowEnabled, $strokeEnabled;
     private $linkUrl;
     private $shadowColor;
