@@ -290,9 +290,11 @@ $(document).ready(function() {
 
     $('#addCategory').click(function(){
         var data = {};
+        var categoryId    = $('#category').find(':selected').val()
+        var categoryName  = $.trim($('#category').find(':selected').text());
         data.templateId   = '<?php echo $this->templateId; ?>';
-        data.categoryId   = $('#category').find(':selected').val();
-        data.categoryName = $.trim($('#category').find(':selected').text());
+        data.categoryId   = categoryId;
+        data.categoryName = categoryName;
         data.advertiserId = $('#advertiserId').attr('value');
         data.companyId    = $('#companyId').attr('value');
         var pstdata = JSON.stringify(data);
@@ -303,16 +305,21 @@ $(document).ready(function() {
             url: "/chameleon/ajax/addCategory.php"
         }).done(function(){
             $('#categoryContainer').load('ajax/categoriesSelection.inc.php?templateId=<?php echo $this->templateId; ?>');
+            var node = '<input type="text" disabled="disabled" id="subscription_' + categoryId + ' value="' + categoryName + '">';
+            $('global_categories').append($(node));
         }).fail(function(){
             $('#categoryContainer').load('ajax/categoriesSelection.inc.php?templateId=<?php echo $this->templateId; ?>');
+            // console.log($('#subscription_' + categoryId));
+            var node = $('<input type="text" disabled="disabled" id="subscription_' + categoryId + ' value="' + categoryName + '">');
+            $('global_categories').append(node);
         });
     });
 
     $('#categoryContainer .removeCategory').click(function(){
         var data = {};
         data.templateId   = '<?php echo $this->templateId; ?>';
-        var id            = $(this).attr('id');
-        data.categoryId   = id;
+        var categoryId    = $(this).attr('id');
+        data.categoryId   = categoryId;
         data.categoryName = $.trim($('#category').find(':selected').text());
         data.advertiserId = $('#advertiserId').attr('value');
         data.companyId    = $('#companyId').attr('value');
