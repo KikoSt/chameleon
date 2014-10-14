@@ -266,8 +266,12 @@ class GfxContainer
             }
 
             $filename  = $this->getId();
-            $filename .= '_' . preg_replace("/[^a-zA-Z0-9]/", "", $this->getProductData()->getName());
-            $filename .= '_' . $this->getProductData()->getProductId();
+
+            if($this->getProductData())
+            {
+                $filename .= '_' . preg_replace("/[^a-zA-Z0-9]/", "", $this->getProductData()->getName());
+                $filename .= '_' . $this->getProductData()->getProductId();
+            }
             $filename .= '_' . $this->getCanvasHeight();
             $filename .= 'x' . $this->getCanvasWidth();
         }
