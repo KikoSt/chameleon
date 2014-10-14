@@ -263,23 +263,7 @@ $(document).ready(function() {
         xhr.send(formData);
     });
 
-    $('.picker').colorpicker().focusout(function(){
-        $(this).closest('form').trigger('submit').bind('ajax:complete', function(){
-
-            //get the current primary and secondary color from rewritten svg
-
-
-
-            if($(this).attr('id') == 'primary-color')
-            {
-                $('#primary-color').val('<?php echo $this->container->getPrimaryColor()->getHex();?>');
-            }
-            else
-            {
-                $('#secondary-color').val('<?php echo $this->container->getSecondaryColor()->getHex();?>');
-            }
-        });
-    });
+    $('.picker').colorpicker();
 
     $("#fileUpload").fileinput();
 
@@ -352,17 +336,19 @@ $(document).ready(function() {
         {
             case "primary":
             {
-                $('#panel_'+identifier[0]+' #fill').val('<?php echo $this->container->getPrimaryColor()->getHex();?>');
+                $('#panel_'+identifier[0]+' #fill').val($('#primary-color').val());
                 break;
             }
             case "secondary":
             {
-                $('#panel_'+identifier[0]+' #fill').val('<?php echo $this->container->getSecondaryColor()->getHex();?>');
+                $('#panel_'+identifier[0]+' #fill').val($('#secondary-color').val());
                 break;
             }
             case "presetFont":
             {
-                document.getElementById(identifier[0]+'#fontFamily').value = '<?php echo $this->container->getFontFamily();?>';
+                $("select option").filter(function() {
+                    return $(this).text() == $('#presetFontFamily option:selected').text();
+                }).prop('selected', true);
                 break;
             }
         }
