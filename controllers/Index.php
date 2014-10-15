@@ -7,7 +7,7 @@
  */
 class Index extends Controller
 {
-    public function getRedirect($page)
+    public function getController($page)
     {
         switch($page)
         {

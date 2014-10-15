@@ -21,14 +21,14 @@ else
     $page = $_REQUEST['page'];
 }
 
-$redirect = $myIndex->getRedirect($page);
+$pageController = $myIndex->getController($page);
 
-$redirect->setAdvertiserId($advertiserId);
-$redirect->setCompanyId($companyId);
+$pageController->setAdvertiserId($advertiserId);
+$pageController->setCompanyId($companyId);
 $pageController->setAuditUserId($auditUserId);
 
 // create page
 require_once('views/header.phtml');
-$redirect->create();
-$redirect->display();
+$pageController->create();
+$pageController->display();
 //require_once('views/footer.phtml');
