@@ -1,10 +1,11 @@
 <div class="row">
-    <label for="strokeCheckBox" class="col-md-3">shadow:</label>
+    <label for="strokeCheckBox" class="col-md-3">Shadow:</label>
     <input id="shadowCheckBox"
            class="myCheckbox"
            type="checkbox"
+           name="<?php echo $element->getId();?>#shadow"
            value="<?php echo $element->getId();?>"
-        <?php echo (!empty($element->getShadowColor())) ? 'checked' : '';?>
+        <?php echo ($element->hasShadow()) ? 'checked' : '';?>
 
         >
 </div>
@@ -32,5 +33,3 @@
         />
 </div>
 <?php endif;?>
-
-

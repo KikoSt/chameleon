@@ -64,8 +64,7 @@
                 <?php include('categories.inc.php'); ?>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <button id="saveCategory" class="btn btn-primary" form="editor">Save changes</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -298,36 +297,46 @@ $(document).ready(function() {
     .trigger( "change" );
 
 
-    $('#addCategory').click(function(){
+    $('body').on('click', '#addCategory', function(e) {
+        var data = {};
+        var categoryId    = $('#category').find(':selected').val()
+        var categoryName  = $.trim($('#category').find(':selected').text());
+        data.templateId   = '<?php echo $this->templateId; ?>';
+        data.categoryId   = categoryId;
+        data.categoryName = categoryName;
+        data.advertiserId = $('#advertiserId').attr('value');
+        data.companyId    = $('#companyId').attr('value');
+        var pstdata = JSON.stringify(data);
         $.ajax({
             type: "POST",
-            data: JSON.parse(JSON.stringify(category)),
-            url: "/chameleon/ajax/addCategory.php",
-            success: function(msg){
-                $('#categoryContainer').load('ajax/categoriesSelection.inc.php');
-//                parent.location.reload();
-            }
+            data: data,
+            dataType: "json",
+            url: "/chameleon/ajax/addCategory.php"
+        }).done(function(){
+        }).fail(function(){
+            $('#categoryContainer').load('ajax/categoriesSelection.inc.php?templateId=<?php echo $this->templateId; ?>');
+            var node = '<input type="text" disabled="disabled" id="subscription_' + categoryId + '" value="' + categoryName + '">';
+            $('#global_categories').append(node);
         });
     });
 
-    $('#saveCategory').click(function(){
+    $('body').on('click', '#categoryContainer .removeCategory', function(e) {
+        var data = {};
+        data.templateId   = '<?php echo $this->templateId; ?>';
+        var categoryId    = $(this).attr('id');
+        data.categoryId   = categoryId;
+        data.categoryName = $.trim($('#category').find(':selected').text());
+        data.advertiserId = $('#advertiserId').attr('value');
+        data.companyId    = $('#companyId').attr('value');
         $.ajax({
-            type: "POST",
-            url: "/chameleon/ajax/addCategory.php?action=save",
-            success: function(msg){
-
-            }
-        });
-    });
-
-    $('#categoryContainer .removeCategory').click(function(){
-        var id = $(this).attr('id');
-        $.ajax({
-            type: "POST",
-            url: "/chameleon/ajax/removeCategory.php?id=" + id,
-            success: function(msg){
-                $('#row_' + id).remove();
-            }
+            type: 'POST',
+            data: data,
+            dataType: "json",
+            url:  '/chameleon/ajax/removeCategory.php'
+        }).done(function(){
+        }).fail(function(){
+            $('#row_' + categoryId).remove();
+            $('#subscription_' + categoryId).remove();
         });
     });
 

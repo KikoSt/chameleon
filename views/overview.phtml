@@ -61,6 +61,26 @@ margin-left:161px;background-color: #888888; border-color: #888888;">
                                 <li class="list-group-item">
                                     <div class="row">
                                         <div class="col-md-6">
+                                            <p class="text-left">ID:</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="text-right"><?php echo $preview->templateId;?></p>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p class="text-left">Parent ID:</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="text-right"><?php echo (!empty($preview->parentTemplateId) ? $preview->parentTemplateId : 'n/a');?></p>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-md-6">
                                             <p class="text-left">Dimensions:</p>
                                         </div>
                                         <div class="col-md-6">
@@ -78,22 +98,6 @@ margin-left:161px;background-color: #888888; border-color: #888888;">
                                         </div>
                                     </div>
                                 </li>
-                                <?php
-                                    if(!empty($preview->parentTemplateId)):
-                                ?>
-                                <li class="list-group-item">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <p class="text-left">Parent template:</p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p class="text-right"><?php echo $preview->parentTemplateId;?></p>
-                                        </div>
-                                    </div>
-                                </li>
-                                <?php
-                                    endif;
-                                ?>
                                 <li class="list-group-item">
                                     <div class="row">
                                         <div class="col-md-6">

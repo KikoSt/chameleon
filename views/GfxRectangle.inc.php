@@ -9,12 +9,10 @@
         <div class="container-fluid">
             <?php
                 include('editorComponents/color.inc.php');
-
                 if($this->premiumUser):
                     include('editorComponents/coords.inc.php');
                     include('editorComponents/dimensions.inc.php');
                 endif;
-
                 include('editorComponents/cmeo.inc.php');
                 include('editorComponents/shadow.inc.php');
                 include('editorComponents/stroke.inc.php');

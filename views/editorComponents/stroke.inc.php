@@ -1,8 +1,9 @@
 <div class="row">
-    <label for="strokeCheckBox" class="col-md-3">stroke:</label>
+    <label for="strokeCheckBox" class="col-md-3">Stroke:</label>
     <input id="strokeCheckBox"
            class="myCheckbox"
            type="checkbox"
+           name="<?php echo $element->getId();?>#stroke"
            value="<?php echo $element->getId();?>"
            <?php echo (!empty($element->getStroke())) ? 'checked' : '';?>
         >
