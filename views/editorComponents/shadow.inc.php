@@ -1,5 +1,5 @@
 <div class="row">
-    <label for="strokeCheckBox" class="col-md-3">Shadow:</label>
+    <label for="shadowCheckBox" class="col-md-3">Shadow:</label>
     <input id="shadowCheckBox"
            class="myCheckbox"
            type="checkbox"
@@ -16,9 +16,9 @@
            type="text"
            class="form-control picker"
            name="<?php echo $element->getId();?>#shadowColor"
-           value="<?php echo (null !== $element->getShadowColor()) ? $element->getShadowColor()->getHex() : '';?>"
-           placeholder="<?php echo (null !== $element->getShadowColor()) ? $element->getShadowColor()->getHex() : '';?>"
-           <?php echo (empty($element->getShadowColor())) ? 'disabled' : '';?>
+           value="<?php echo (null !== $element->getShadow()) ? $element->getShadow()->getColor()->getHex() : '#000000';?>"
+           placeholder="<?php echo (null !== $element->getShadow()) ? $element->getShadow()->getColor()->getHex() : '#000000';?>"
+           <?php echo (empty($element->getShadow())) ? 'disabled' : '#000000';?>
         />
 </div>
 <div class="row">
@@ -27,9 +27,9 @@
            type="text"
            class="form-control"
            name="<?php echo $element->getId();?>#shadowDist"
-           value="<?php echo $element->getShadowDist();?>"
-           placeholder="<?php echo $element->getShadowDist();?>"
-           <?php echo (empty($element->getShadowColor())) ? 'disabled' : '';?>
+           value="<?php echo(null !== $element->getShadow() ?  $element->getShadow()->getDist() : '');?>"
+           placeholder="<?php echo(null !== $element->getShadow() ?  $element->getShadow()->getDist() : '');?>"
+           <?php echo (empty($element->getShadow())) ? 'disabled' : '';?>
         />
 </div>
 <?php endif;?>

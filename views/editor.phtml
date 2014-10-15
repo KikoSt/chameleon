@@ -85,65 +85,28 @@ $(document).ready(function() {
         }
     });
 
-    $('.btn').on('click', function(e){
+    $('.btn').on('click', function(e) {
         btn = $(this).attr('id');
     });
 
-    $('.subnav').click(function(e){
+    $('.subnav').on('click', function(e) {
         var id = $(this).attr('id');
         $('.component').hide();
         $('#panel_' + id).show();
 
     });
 
-    $('.glyphicon-remove-circle').click(function(e){
+    $('.glyphicon-remove-circle').on('click', function(e) {
         var id = $(this).attr('id');
         $('#panel_' + id).hide();
     });
 
-    $('#editCategoriesEditor').click(function(e){
+    $('#editCategoriesEditor').on('click', function(e) {
         $('#panel_globalsCategory').show();
     });
 
-    $('.glyphicon-resize-small').click(function(){
+    $('.glyphicon-resize-small').on('click', function(e) {
         $(this).hide();
-    });
-
-
-    //handles the enabling/disabling of the shadow form elements
-    $('#shadowCheckBox').click(function() {
-        var id = $(this).attr('value');
-
-        if($(this).is(":checked"))
-        {
-            $(this).attr("checked", true);
-            $("#" + id + "_shadowColor").attr('disabled', false).addClass('picker');
-            $("#" + id + "_shadowDist").attr('disabled', false);
-        }
-        else
-        {
-            $(this).attr("checked", false);
-            $("#" + id + "_shadowColor").attr('disabled', true).removeClass('picker').val('');
-            $("#" + id + "_shadowDist").attr('disabled', true).val('');
-        }
-    });
-
-    //handles the enabling/disabling of the stroke form elements
-    $('#strokeCheckBox').click(function() {
-        var id = $(this).attr('value');
-
-        if($(this).is(":checked"))
-        {
-            $(this).attr("checked", true);
-            $("#" + id + "_strokeColor").attr('disabled', false).addClass('picker');
-            $("#" + id + "_strokeWidth").attr('disabled', false);
-        }
-        else
-        {
-            $(this).attr("checked", false);
-            $("#" + id + "_strokeColor").attr('disabled', true).removeClass('picker').val('');
-            $("#" + id + "_strokeWidth").attr('disabled', true).val('');
-        }
     });
 
 
@@ -365,8 +328,45 @@ $(document).ready(function() {
         }
     });
 
-//    $('select').change(function(){
-//        $(this).closest('form').trigger('submit');
-//    });
+    //handles the enabling/disabling of the shadow form elements
+    $('#shadowCheckBox.myCheckbox').click(function(e) {
+        var id = $(this).attr('value');
+
+        if($(this).is(":checked"))
+        {
+            $(this).attr("checked", true);
+            $("#" + id + "_shadowColor").attr('disabled', false).addClass('picker');
+            $("#" + id + "_shadowDist").attr('disabled', false);
+        }
+        else
+        {
+            $(this).attr("checked", false);
+            $("#" + id + "_shadowColor").attr('disabled', true).removeClass('picker');
+            $("#" + id + "_shadowDist").attr('disabled', true);
+        }
+    });
+
+    //handles the enabling/disabling of the stroke form elements
+    $('#strokeCheckBox.myCheckBox').click(function(e) {
+        console.log('st!');
+        var id = $(this).attr('value');
+
+        if($(this).is(":checked"))
+        {
+            $(this).attr("checked", true);
+            $("#" + id + "_strokeColor").attr('disabled', false).addClass('picker');
+            $("#" + id + "_strokeWidth").attr('disabled', false);
+        }
+        else
+        {
+            $(this).attr("checked", false);
+            $("#" + id + "_strokeColor").attr('disabled', true).removeClass('picker');
+            $("#" + id + "_strokeWidth").attr('disabled', true);
+        }
+    });
+
+
+    console.log($('#shadowCheckBox').click());
+
 });
 </script>
