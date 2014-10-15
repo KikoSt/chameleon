@@ -40,7 +40,7 @@ class Editor extends Controller
 
         $template = $this->connector->getTemplateById($container->getId());
 
-        $baseFilename = 'rtest_' . $container->getId();
+        $baseFilename = getPreviewFileName($template);
         $filename = $baseFilename . '.svg';
 
         // render gif for editor view

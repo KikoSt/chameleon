@@ -75,3 +75,23 @@ function getRemoteFileDate($url)
     }
 }
 
+
+function getPreviewFileName($template)
+{
+    if(!defined('PREVIEW_NAME'))
+    {
+        $previewFileName = 'preview';
+    }
+    else
+    {
+        $datetime    = new Datetime();
+        $dateStr     = $datetime->format('Y-m-d');
+        $timeStr     = $datetime->format('H:i:s');
+        $dateTimeStr = $dateStr . ' ' . $timeStr;
+
+        $placeholders    = array('<advertiserId>', '<templateId>', '<width>', '<height>', '<date>', '<datetime>');
+        $replacements    = array($template->getAdvertiserId(), $template->getBannerTemplateId(), $template->getDimX(), $template->getDimY(), $dateStr, $dateTimeStr);
+        $previewFileName = str_replace($placeholders, $replacements, PREVIEW_NAME);
+    }
+    return $previewFileName;
+}

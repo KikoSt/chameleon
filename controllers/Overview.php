@@ -58,7 +58,7 @@ class Overview extends Controller
             {
                 foreach($templates as $template)
                 {
-                    $baseFilename = 'rtest_' . $template->getBannerTemplateId();
+                    $baseFilename = getPreviewFileName($template);
                     $filename = $baseFilename . '.svg';
                     $container->setOutputName($baseFilename);
 
