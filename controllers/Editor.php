@@ -155,14 +155,6 @@ class Editor extends Controller
             $aSingleCategory['id']     = $singleCategory->idCategory;
             $aSingleCategory['status'] = $singleCategory->userStatus;
             $aSingleCategory['name']   = $singleCategory->categoryName;
-
-            // foreach($subscribedCategories as $singleSubscription)
-            // {
-            //     if($aSingleCategory['id'] === $singleSubscription->idCategory)
-            //     {
-            //         $aSingleCategory['name'] = $singleSubscription->categoryName;
-            //     }
-            // }
             $combinedCategory[] = $aSingleCategory;
         }
 
