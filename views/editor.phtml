@@ -320,7 +320,9 @@ $(document).ready(function() {
             }
             case "presetFont":
             {
-                $("select option").filter(function() {
+                var id = identifier[0] + "#fontfamily";
+
+                $('select option').filter(function() {
                     return $(this).text() == $('#presetFontFamily option:selected').text();
                 }).prop('selected', true);
                 break;

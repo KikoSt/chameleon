@@ -209,7 +209,7 @@ foreach($productCategories AS $category)
             $container->render();
             $then = time();
             echo 'D: ' . ($then - $now) . "\n";
-            $container->cleanup();
+//            $container->cleanup();
             echo ++$count . "\n\n";
         }
     }

@@ -10,6 +10,7 @@ li,
 .btn
 {
     border-radius: 0 !important;
+    overflow: visible;
 }
 
 .preview
@@ -144,6 +145,9 @@ label {
     vertical-align: middle !important;
     padding: 1px !important;
     position: relative;
+    width: 540px;
+    height: 380px;
+    margin-left: 10px;
 }
 
 .thumbnail:hover{
@@ -198,6 +202,7 @@ input[type="text"]:disabled
     color: #555555;
     cursor: not-allowed;
     font-size: 14px;
+    border-radius: 0 !important;
 }
 
 .presetcolor
@@ -215,6 +220,7 @@ input[type="text"]:disabled
 .modal-body button
 {
     height: 20px;
+    width: 32px;
     color: #000000;
     margin-top: 3px;
 }
@@ -224,6 +230,12 @@ input[type="text"]:disabled
     color: #FFFFFF !important;
     background-color: #333333 !important;
     border-color: #333333 !important;
+}
+
+.modal-content .btn .glyphicon
+{
+    top: -4px !important;
+    left: -3px !important;
 }
 
 .active
