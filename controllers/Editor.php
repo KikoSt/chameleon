@@ -24,9 +24,15 @@ class Editor extends Controller
         $this->connector->setAdvertiserId($this->getAdvertiserId());
         $this->connector->setCompanyId($this->getCompanyId());
 
+        $auditUserId  = $this->getAuditUserId();
         $templateId   = getRequestVar('templateId');
-        $companyId    = getRequestVar('companyId');
-        $advertiserId = getRequestVar('advertiserId');
+        $companyId    = $this->getCompanyId();
+        $advertiserId = $this->getAdvertiserId();
+
+        if(!isset($auditUserId) || empty($auditUserId))
+        {
+            return false;
+        }
 
         $container->setId($templateId);
         $container->setcompanyId($companyId);
@@ -48,6 +54,7 @@ class Editor extends Controller
 
         // view parameters
         $this->view->templateId      = $container->getId();
+        $this->view->auditUserId     = $auditUserId;
         $this->view->advertiserId    = $container->getAdvertiserId();
         $this->view->companyId       = $container->getCompanyId();
         $this->view->gif             = $gif;
@@ -107,6 +114,16 @@ class Editor extends Controller
     public function setAdvertiserId($advertiserId)
     {
         $this->advertiserId = $advertiserId;
+    }
+
+    public function setAuditUserId($auditUserId)
+    {
+        $this->auditUserId = $auditUserId;
+    }
+
+    public function getAuditUserId()
+    {
+        return $this->auditUserId;
     }
 
     private function getCmeoRefOptions()

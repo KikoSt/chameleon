@@ -1,8 +1,9 @@
 <?php
 require_once('config/config.inc.php');
 
+$auditUserId  = 666;
 $advertiserId = 122;
-$companyId = 170;
+$companyId    = 170;
 
 $myIndex = new Index();
 
@@ -24,6 +25,7 @@ $redirect = $myIndex->getRedirect($page);
 
 $redirect->setAdvertiserId($advertiserId);
 $redirect->setCompanyId($companyId);
+$pageController->setAuditUserId($auditUserId);
 
 // create page
 require_once('views/header.phtml');

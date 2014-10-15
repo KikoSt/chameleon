@@ -118,58 +118,33 @@ class Overview extends Controller
         echo $this->view;
     }
 
-//    private function clearOutputDirectory($path)
-//    {
-//        $files = glob($path . '*.*');
-//
-//        foreach ($files as $file)
-//        {
-//            if (is_file($file))
-//            {
-//                unlink($file);
-//            }
-//        }
-//    }
-
-    /**
-     * Get companyId.
-     *
-     * @return companyId.
-     */
-    public function getCompanyId()
-    {
-        return $this->companyId;
-    }
-
-    /**
-     * Set companyId.
-     *
-     * @param companyId the value to set.
-     */
     public function setCompanyId($companyId)
     {
         $this->companyId = $companyId;
     }
 
-    /**
-     * Get advertiserId.
-     *
-     * @return advertiserId.
-     */
-    public function getAdvertiserId()
+    public function getCompanyId()
     {
-        return $this->advertiserId;
+        return $this->companyId;
     }
 
-    /**
-     * Set advertiserId.
-     *
-     * @param advertiserId the value to set.
-     */
     public function setAdvertiserId($advertiserId)
     {
         $this->advertiserId = $advertiserId;
     }
 
+    public function getAdvertiserId()
+    {
+        return $this->advertiserId;
+    }
 
+    public function setAuditUserId($auditUserId)
+    {
+        $this->auditUserId = $auditUserId;
+    }
+
+    public function getAuditUserId()
+    {
+        return $this->auditUserId;
+    }
 }

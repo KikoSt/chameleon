@@ -21,12 +21,15 @@ $container = new GfxContainer();
 $connector = new APIConnector();
 $svgHandler = new SvgFileHandler();
 
-// TODO: auditUser information MUST be provided by caller!
-$auditUserId = 14;
-
+$auditUserId    = getRequestVar('auditUserId');;
 $companyId      = getRequestVar('companyId');
 $advertiserId   = getRequestVar('advertiserId');
 $templateId     = getRequestVar('templateId');
+
+if(!isset($auditUserId) || empty($auditUserId))
+{
+    return false;
+}
 
 $container->setCompanyId($companyId);
 $container->setAdvertiserId($advertiserId);
