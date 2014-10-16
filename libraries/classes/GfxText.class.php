@@ -79,7 +79,6 @@ class GfxText extends GfxComponent
 
     public function getHeight()
     {
-        echo $this->getTextHeight();
         return $this->getTextHeight();
     }
 
