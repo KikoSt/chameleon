@@ -32,7 +32,7 @@
             <div class="col-md-6">
                 <div style="position:fixed;">
                     <div id="previewImage" class="row">
-                        <img src="<?php echo $this->gif;?>" alt="">
+                        <img src="<?php echo $this->gif;?>" alt="" usemap="#template_selection">
                     </div>
                     <div class="row" style="padding-top: 5px;">
                         <!--        On click render template and show the change-->
@@ -52,7 +52,7 @@
         </div>
     </form>
 </div>
-
+<?php echo $this->imageMap; ?>
 <!-- Modal -->
 <div class="modal fade" id="categorySelect" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">

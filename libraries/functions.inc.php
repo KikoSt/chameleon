@@ -74,3 +74,51 @@ function getRemoteFileDate($url)
         return date("Y-m-d", curl_getinfo($c, CURLINFO_FILETIME));
     }
 }
+
+function getPreviewFileName($template)
+{
+    if(!defined('PREVIEW_NAME'))
+    {
+        $previewFileName = 'preview';
+    }
+    else
+    {
+        $datetime    = new Datetime();
+        $dateStr     = $datetime->format('Y-m-d');
+        $timeStr     = $datetime->format('H:i:s');
+        $dateTimeStr = $dateStr . ' ' . $timeStr;
+
+        $placeholders    = array('<advertiserId>', '<templateId>', '<width>', '<height>', '<date>', '<datetime>');
+        $replacements    = array($template->getAdvertiserId(), $template->getBannerTemplateId(), $template->getDimX(), $template->getDimY(), $dateStr, $dateTimeStr);
+        $previewFileName = str_replace($placeholders, $replacements, PREVIEW_NAME);
+    }
+    return $previewFileName;
+}
+
+
+
+
+function getImageMap($container)
+{
+    $imageMap = '<map name="template_selection">';
+    foreach($container->getElements() AS $curElement)
+    {
+        echo $curElement->getId() . ' / ';
+        $imageMap .= "\n";
+        $imageMap .= '<area shape="rect" coords="';
+        $imageMap .= $curElement->getX() . ',';
+        $imageMap .= $curElement->getY() . ',';
+        $imageMap .= $curElement->getX() + $curElement->getWidth() . ',';
+        $imageMap .= $curElement->getY() + $curElement->getHeight();
+        $imageMap .= '"';
+        $imageMap .= ' alt="' . $curElement->getId() . '"';
+        $imageMap .= ' href="http://www.mediadecision.com"';
+        $imageMap .= ' title="' . $curElement->getId() . '"';
+        $imageMap .= ' />';
+    }
+    $imageMap .= "\n";
+    $imageMap .= '</map>';
+    return $imageMap;
+}
+
+
