@@ -67,6 +67,23 @@ class GfxText extends GfxComponent
         return($width);
     }
 
+    public function getWidth()
+    {
+        echo $this->getTextWidth();
+        return $this->getTextWidth() * 1.2;
+    }
+
+    public function getTextHeight()
+    {
+        return $this->getFontSize();
+    }
+
+    public function getHeight()
+    {
+        echo $this->getTextHeight();
+        return $this->getTextHeight();
+    }
+
     public function updateData()
     {
         parent::updateData();
