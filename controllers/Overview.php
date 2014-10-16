@@ -64,7 +64,16 @@ class Overview extends Controller
 
                     $container->setSource($template->getSvgContent());
                     $container->setId($template->getBannerTemplateId());
-                    $container->parse();
+
+                    try
+                    {
+                        $container->parse();
+                    }
+                    catch(Exception $e)
+                    {
+                        continue;
+                    }
+
                     $container->saveSvg();
 
                     $container->setTarget('GIF');

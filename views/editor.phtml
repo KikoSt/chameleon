@@ -293,22 +293,30 @@ $(document).ready(function() {
 
     $('.picker').colorpicker().on('changeColor', function(e){
         var color = e.color.toHex();
+        var id = $(this).attr('name').split('#');
         $(this).val(color);
+
+        if(id[1] === 'primary-color' || id[1] === 'secondary-color')
+        {
+            $('#' + id[1] + '--preview').css("background-color", color);
+        }
+        else
+        {
+            $('#' + id[0] + '--preview').css("background-color", color);
+        }
     });
 
-    $('#primary-color').focusout(function(){
-        var color = $('#primary-color').val();
-        $('.primary').css("background-color", color);
-    });
-
-    $('#secondary-color').focusout(function(){
-        var color = $('#secondary-color').val();
-        $('.secondary').css("background-color", color);
+    $('.globalColor').focusout(function(){
+        var id = $(this).attr('id');
+        var color = $('#'+id).val();
+        var idsplit = id.split('-');
+        $('.'+idsplit[0]).css("background-color", color);
+        $('#' + id + '--preview').css("background-color", color);
     });
 
     $("#fileUpload").fileinput();
 
-    $('#awesomeEditor input').change(function() {
+    $('#awesomeEditor').find('input').change(function() {
         somethingChanged = true;
     });
 
@@ -389,14 +397,14 @@ $(document).ready(function() {
             {
                 var primaryColor = $('#primary-color').val();
                 $('#panel_'+identifier[0]+' #fill').val(primaryColor);
-
+                $('[name="'+identifier[0]+'#fill"]').colorpicker('setValue', primaryColor);
                 break;
             }
             case "secondary":
             {
                 var secondaryColor = $('#secondary-color').val();
                 $('#panel_'+identifier[0]+' #fill').val(secondaryColor);
-
+                $('[name="'+identifier[0]+'#fill"]').colorpicker('setValue', secondaryColor);
                 break;
             }
             case "presetFont":

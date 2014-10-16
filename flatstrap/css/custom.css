@@ -46,7 +46,11 @@ select
     width:150px !important;
 }
 
-
+.picker
+{
+    width:118px !important;
+    cursor: pointer;
+}
 
 .col-md-1,
 .col-md-2,
@@ -91,7 +95,8 @@ select
     color: #000000 !important;
     background-color: #45b686  !important;
     border-color: #45b686 !important;
-    padding: 0px !important;
+    padding: 0 !important;
+    font-size: 10px;
 }
 
 .panel
@@ -140,7 +145,7 @@ label {
 .thumbnail {
     text-align:center !important;
     background-color: #333333 !important;
-    border-radius: 0px !important;
+    border-radius: 0 !important;
     overflow: hidden;
     vertical-align: middle !important;
     padding: 1px !important;
@@ -148,6 +153,10 @@ label {
     width: 540px;
     height: 380px;
     margin-left: 10px;
+}
+
+.thumbnail-half{
+    width: 270px;
 }
 
 .thumbnail:hover{
@@ -248,6 +257,8 @@ input[type="text"]:disabled
 {
     /*color: #FFFFFF !important;*/
 }
+
+/* just for development */
 
 
 
