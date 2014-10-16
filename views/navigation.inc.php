@@ -4,6 +4,7 @@
         <li id="overview" class="<?php echo ($this->page === 'overview' ) ? 'active' : '';?>">
             <a href="index.php?page=overview">Overview</a>
         </li>
+        <!--
         <li class="<?php echo ($this->page === 'editor' ) ? 'active' : 'hidden';?>">
             <a href="#">Edit</a>
             <ul class="nav nav-list">
@@ -16,6 +17,7 @@
                 ?>
             </ul>
         </li>
+        -->
         <li class="">
             <a href="#">Manage</a>
         </li>
