@@ -115,6 +115,7 @@ function getImageMap($container)
         {
             $imageMap .= (int) $curElement->getY() . ',';
         }
+
         $imageMap .= (int) $curElement->getX() + $curElement->getWidth() . ',';
         if($curElement instanceof GfxText)
         {
