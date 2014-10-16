@@ -95,3 +95,43 @@ function getPreviewFileName($template)
     }
     return $previewFileName;
 }
+
+
+function getImageMap($container)
+{
+    $imageMap = '<map name="template_selection">';
+    $elements = $container->getElements();
+    $elements = array_reverse($elements);
+    foreach($elements AS $curElement)
+    {
+        $imageMap .= "\n";
+        $imageMap .= '<area shape="rect" coords="';
+        $imageMap .= (int) $curElement->getX() . ',';
+        if($curElement instanceof GfxText)
+        {
+            $imageMap .= (int) $curElement->getY() - $curElement->getHeight() . ',';
+        }
+        else
+        {
+            $imageMap .= (int) $curElement->getY() . ',';
+        }
+        $imageMap .= (int) $curElement->getX() + $curElement->getWidth() . ',';
+        if($curElement instanceof GfxText)
+        {
+            $imageMap .= (int) $curElement->getY();
+        }
+        else
+        {
+            $imageMap .= (int) $curElement->getY() + $curElement->getHeight();
+        }
+        $imageMap .= '"';
+        $imageMap .= ' alt="' . $curElement->getId() . '"';
+        $imageMap .= ' title="' . $curElement->getId() . '"';
+        $imageMap .= ' id="' .$curElement->getId() . '"';
+        $imageMap .= ' class="subnav"';
+        $imageMap .= ' />';
+    }
+    $imageMap .= "\n";
+    $imageMap .= '</map>';
+    return $imageMap;
+}

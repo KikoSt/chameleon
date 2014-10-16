@@ -53,6 +53,7 @@ class Editor extends Controller
         $gif = 'http://' . $_SERVER['SERVER_NAME'] . '/chameleon/output/' . $container->getOutputDir() . '/' . $baseFilename . '.gif';
 
         // view parameters
+        $this->view->imageMap        = getImageMap($container);
         $this->view->templateId      = $container->getId();
         $this->view->auditUserId     = $auditUserId;
         $this->view->advertiserId    = $container->getAdvertiserId();
@@ -67,6 +68,10 @@ class Editor extends Controller
         $this->view->fileName        = $filename;
         $this->view->fileSize        = getRemoteFileSize($gif);
         $this->view->categories      = $this->connector->getCategories();
+        // TODO: the same call is invoked twice here, once when calling connector->getSubscribedCategoriesByTemplateId,
+        //       once within getSubscribedCategories
+        //       Most likely, we wouldn't need this at all any longer since all "subscribed categories are provided
+        //       along with the template
         $this->view->subscribedCategories = $this->connector->getSubscribedCategoriesByTemplateId($container->getId());
         $this->view->combinedCategories = $this->getSubscribedCategories($template);
         $this->view->activeCategories = $this->getActiveCategories($this->view->combinedCategories);
