@@ -99,6 +99,7 @@ function getPreviewFileName($template)
 
 function getImageMap($container)
 {
+    $textfieldpadding = 3;
     $imageMap = '<map name="template_selection">';
     $elements = $container->getElements();
     $elements = array_reverse($elements);
@@ -106,23 +107,25 @@ function getImageMap($container)
     {
         $imageMap .= "\n";
         $imageMap .= '<area shape="rect" coords="';
-        $imageMap .= (int) $curElement->getX() . ',';
         if($curElement instanceof GfxText)
         {
-            $imageMap .= (int) $curElement->getY() - $curElement->getHeight() . ',';
+            $imageMap .= (int) ($curElement->getX() - $textfieldpadding) . ',';
+            $imageMap .= (int) ($curElement->getY() - $curElement->getHeight() - $textfieldpadding) . ',';
         }
         else
         {
+            $imageMap .= (int) $curElement->getX() . ',';
             $imageMap .= (int) $curElement->getY() . ',';
         }
 
-        $imageMap .= (int) $curElement->getX() + $curElement->getWidth() . ',';
         if($curElement instanceof GfxText)
         {
-            $imageMap .= (int) $curElement->getY();
+            $imageMap .= (int) ($curElement->getX() + $curElement->getWidth() + $textfieldpadding) . ',';
+            $imageMap .= (int) ($curElement->getY() + $textfieldpadding);
         }
         else
         {
+            $imageMap .= (int) $curElement->getX() + $curElement->getWidth() . ',';
             $imageMap .= (int) $curElement->getY() + $curElement->getHeight();
         }
         $imageMap .= '"';
