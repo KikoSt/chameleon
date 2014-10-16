@@ -80,12 +80,15 @@ $(document).ready(function() {
     var somethingChanged = false;
     var category = {};
 
+    $('img[usemap]').maphilight();
+
     $('.btn').on('click', function(){
         btn = $(this).attr('id');
     });
 
     $('.subnav').click(function(e){
         var id = $(this).attr('id');
+        $('.component').hide();
         $('#panel_' + id).show();
     });
 
