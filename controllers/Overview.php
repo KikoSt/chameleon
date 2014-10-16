@@ -35,7 +35,7 @@ class Overview extends Controller
         $container->setCategoryId(0);
         $container->setPreviewMode(true);
 
-        $this->view = $this->setLayout('views/overview.phtml')->getView();
+        $this->view = $this->setLayout('views/overview_proto.phtml')->getView();
 
         // get all templates for company / advertiser
         try
@@ -92,8 +92,8 @@ class Overview extends Controller
                     $preview->advertiserId = $this->getAdvertiserId();
                     $preview->companyId = $this->getCompanyId();
                     $preview->fileSize = getRemoteFileSize($file);
-                    $preview->dateCreate = date("Y-m-d H.i:s", parseJavaTimestamp($template->getDateCreate()));
-                    $preview->dateModified = date("Y-m-d H.i:s", parseJavaTimestamp($template->getDateModified()));
+                    $preview->dateCreate = date("Y-m-d H:i:s", parseJavaTimestamp($template->getDateCreate()));
+                    $preview->dateModified = date("Y-m-d H:i:s", parseJavaTimestamp($template->getDateModified()));
                     $preview->templateId = $template->getBannerTemplateId();
                     $preview->parentTemplateId = $template->getParentBannerTemplateId();
                     $preview->name = $template->getName();

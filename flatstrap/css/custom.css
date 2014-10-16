@@ -5,6 +5,10 @@
 /* Overwrite all bootstrap css rules with a rounded corner to create a flat design */
 /* TODO integrate where possible into Chameleon own bootstrap css */
 
+body
+{
+    background-color: #e8e8e8;
+}
 div,
 li,
 .btn
@@ -44,6 +48,10 @@ input,
 select
 {
     width:150px !important;
+}
+
+#overview select{
+    width:100% !important;
 }
 
 .picker
@@ -90,13 +98,21 @@ select
     background-color: #45b686 !important;
 }
 
+.overviewTitle
+{
+    background-color: #4583c6 !important;
+    color: #ffffff !important;
+    font-size: 1.4em;
+    margin-bottom: 3px;
+}
+
 .list-group-item
 {
-    color: #000000 !important;
-    background-color: #45b686  !important;
-    border-color: #45b686 !important;
+    color: #555 !important;
+    background-color: transparent;
+    border-color: transparent;
     padding: 0 !important;
-    font-size: 10px;
+    font-size: 1.3em;
 }
 
 .panel
@@ -126,7 +142,7 @@ select
 }
 
 form {
-    margin: 0px;
+    margin: 0;
 }
 
 .form-control[disabled]
@@ -144,7 +160,6 @@ label {
 
 .thumbnail {
     text-align:center !important;
-    background-color: #333333 !important;
     border-radius: 0 !important;
     overflow: hidden;
     vertical-align: middle !important;
@@ -160,8 +175,7 @@ label {
 }
 
 .thumbnail:hover{
-    background-color: #6a6a6a !important;
-    cursor: pointer;
+    background-color: #9bbadb !important;
 }
 
 .thumbnail > li {

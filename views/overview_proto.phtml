@@ -1,0 +1,94 @@
+<?php include('navigation.inc.php');?>
+
+<?php
+    if(!is_array($this->previews) || count($this->previews) === 0):
+?>
+    <p class="notification"><?php echo $this->message; ?></p>
+<?php
+    else:
+?>
+<div class="container-fluid" style="margin-left: 150px;">
+    <div id="nodes" class="navbar navbar-default navbar-fixed-top navbar-inverse" role="navigation" style="margin-top:61px;
+margin-left:161px;background-color: #888888; border-color: #888888;">
+        <ul class="nav navbar-nav navbar-left">
+            <li style="padding: 14px;">
+                <?php
+                    if(!empty($_SESSION['categories'])):
+                ?>
+                    Content of session shown
+                <?php
+                    else:
+                ?>
+                    No categories selected
+                <?php
+                    endif;
+                ?>
+                <button id="editCategories" type="button" class="btn btn-xs" data-toggle="modal" data-target="#cmeoModal"
+                        style="background-color:
+                #888888;">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                </button>
+            </li>
+        </ul>
+    </div>
+
+    <div id="overview" class="row" style="margin-top: 115px;">
+    <?php
+        foreach($this->previews as $preview):
+    ?>
+        <form method="post" action="index.php?page=editor" id="<?php echo $preview->templateId; ?>">
+            <div class="row">
+                <div class="thumbnail thumbnail-half col-md-2">
+                    <div class="overviewTitle">Template</div>
+                    <image class="preview" src="<?php echo $preview->filePath; ?>">
+                    <?php include('overviewComponents/facts.inc.php'); ?>
+                </div>
+                <?php
+
+                    include('overviewComponents/categoryAlignment.inc.php');
+                    include('overviewComponents/examples.inc.php');
+                    include('overviewComponents/action.inc.php');
+                ?>
+            </div>
+            <input type="hidden" name="templateId" value="<?php echo $preview->templateId; ?>">
+            <input type="hidden" name="advertiserId" value="<?php echo $preview->advertiserId; ?>">
+            <input type="hidden" name="companyId" value="<?php echo $preview->companyId; ?>">
+            <input type="hidden" name="templateName" value="<?php echo $preview->templateName; ?>">
+        </form>
+
+    <?php
+        break;
+        endforeach;
+        endif;
+    ?>
+
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="cmeoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header textTitle">
+                <button type="button" class="close" data-dismiss="modal"><span class="glyphicon glyphicon-remove-circle"></span></button>
+                <h4 class="modal-title" id="myModalLabel">Select category:</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                        <?php include('categories.inc.php'); ?>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function()
+    {
+
+    });
+</script>
