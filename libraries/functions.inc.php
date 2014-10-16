@@ -101,19 +101,35 @@ function getPreviewFileName($template)
 function getImageMap($container)
 {
     $imageMap = '<map name="template_selection">';
-    foreach($container->getElements() AS $curElement)
+    $elements = $container->getElements();
+    $elements = array_reverse($elements);
+    foreach($elements AS $curElement)
     {
-        echo $curElement->getId() . ' / ';
         $imageMap .= "\n";
         $imageMap .= '<area shape="rect" coords="';
-        $imageMap .= $curElement->getX() . ',';
-        $imageMap .= $curElement->getY() . ',';
-        $imageMap .= $curElement->getX() + $curElement->getWidth() . ',';
-        $imageMap .= $curElement->getY() + $curElement->getHeight();
+        $imageMap .= (int) $curElement->getX() . ',';
+        if($curElement instanceof GfxText)
+        {
+            $imageMap .= (int) $curElement->getY() - $curElement->getHeight() . ',';
+        }
+        else
+        {
+            $imageMap .= (int) $curElement->getY() . ',';
+        }
+        $imageMap .= (int) $curElement->getX() + $curElement->getWidth() . ',';
+        if($curElement instanceof GfxText)
+        {
+            $imageMap .= (int) $curElement->getY();
+        }
+        else
+        {
+            $imageMap .= (int) $curElement->getY() + $curElement->getHeight();
+        }
         $imageMap .= '"';
         $imageMap .= ' alt="' . $curElement->getId() . '"';
-        $imageMap .= ' href="http://www.mediadecision.com"';
         $imageMap .= ' title="' . $curElement->getId() . '"';
+        $imageMap .= ' id="' .$curElement->getId() . '"';
+        $imageMap .= ' class="subnav"';
         $imageMap .= ' />';
     }
     $imageMap .= "\n";
