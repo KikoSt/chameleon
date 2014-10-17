@@ -94,6 +94,7 @@ if(null !== $_FILES && count($_FILES) > 0)
 
 $svgContent = $container->createSvg();
 $container->setTarget('GIF');
+$container->setOutputName(getPreviewFileName($template));
 
 if(!empty($action))
 {
@@ -141,7 +142,7 @@ if($action === 'clone' || $action === 'save' || $action === 'saveCategory')
 $response = array();
 
 // TODO: improve this path handling, too
-$container->setOutputName($templateId . '_' . $container->getCanvasHeight() . 'x' . $container->getCanvasWidth());
+$container->setOutputName(getPreviewFileName($template));
 $imgsrc = 'output/' . $basePath . '/' . $container->getOutputName() . '.gif';
 $response['imgsrc'] = $imgsrc;
 
