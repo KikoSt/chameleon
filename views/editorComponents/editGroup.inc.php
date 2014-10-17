@@ -6,7 +6,7 @@
                class="form-control"
                name="<?php echo $element->getId();?>#editGroup"
                value="<?php echo $element->getEditGroup();?>"
-               placeholder="<?php echo $element->getEditGroup();?>"
+               placeholder="<?php echo (int) $element->getEditGroup();?>"
                style="float:left;"
             />
     </div>
