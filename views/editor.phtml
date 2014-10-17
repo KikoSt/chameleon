@@ -345,7 +345,7 @@ $(document).ready(function() {
     .trigger( "change" );
 
 
-    $('body').on('click', '#addCategory', function(e) {
+    $('.addCategoryEditor').click(function(e) {
         var data = {};
         var categoryId    = $('#category').find(':selected').val()
         var categoryName  = $.trim($('#category').find(':selected').text());
@@ -368,7 +368,7 @@ $(document).ready(function() {
         });
     });
 
-    $('body').on('click', '#categoryContainer .removeCategory', function(e) {
+    $('.removeCategoryEditor').click(function(e) {
         var data = {};
         data.templateId   = '<?php echo $this->templateId; ?>';
         var categoryId    = $(this).attr('id');
@@ -418,36 +418,6 @@ $(document).ready(function() {
             }
         }
     });
-
-    $('#btnRight').click(function(e) {
-        var selectedOpts = $('#lstBox1 option:selected');
-        if (selectedOpts.length == 0) {
-            alert("Nothing to move.");
-            e.preventDefault();
-        }
-
-        $('#lstBox2').append($(selectedOpts).clone());
-        $(selectedOpts).remove();
-        e.preventDefault();
-    });
-
-    $('#btnLeft').click(function(e) {
-        var selectedOpts = $('#lstBox2 option:selected');
-        if (selectedOpts.length == 0) {
-            alert("Nothing to move.");
-            e.preventDefault();
-        }
-
-        $('#lstBox1').append($(selectedOpts).clone());
-        $(selectedOpts).remove();
-        e.preventDefault();
-    });
-
-    $('.carousel').carousel({
-        interval: 2000
-    });
-
-
 
 //    $('select').change(function(){
 //        $(this).closest('form').trigger('submit');

@@ -36,6 +36,7 @@ class Overview extends Controller
         $container->setPreviewMode(true);
 
         $this->view = $this->setLayout('views/overview_proto.phtml')->getView();
+        $this->view->advertiserId = $this->getAdvertiserId();
 
         // get all templates for company / advertiser
         try
@@ -98,8 +99,9 @@ class Overview extends Controller
                     $preview->parentTemplateId = $template->getParentBannerTemplateId();
                     $preview->name = $template->getName();
                     $preview->categorySubscription = $connector->getSubscribedCategoriesByTemplateId($template->getBannerTemplateId());
-                    $preview->templateSubsriptions = $template->getCategorySubscriptions();
+                    $preview->templateSubscription = $template->getCategorySubscriptions();
                     $preview->page = 'overview';
+
 
                     if($container->getCanvasWidth() >= $container->getCanvasHeight())
                     {

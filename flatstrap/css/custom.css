@@ -174,7 +174,13 @@ label {
     width: 270px;
 }
 
-.thumbnail:hover{
+.thumbnail-quarter{
+    width: 135px;
+}
+
+/*.thumbnail:hover,*/
+option:hover
+{
     background-color: #9bbadb !important;
 }
 

@@ -10,6 +10,7 @@ require('../libraries/classes/BannerTemplateModel.class.php');
 
 $success = true;
 
+
 if(!isset($_POST['templateId']))
 {
     $success = false;

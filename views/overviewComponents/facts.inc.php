@@ -1,4 +1,4 @@
-<div style="margin-top: 50px;">Facts</div>
+<div class="overviewTitle" style="margin-top: 50px;">Facts</div>
 <div>
     <ul class="list-group">
         <li class="list-group-item">

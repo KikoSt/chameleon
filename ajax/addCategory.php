@@ -43,8 +43,6 @@ if($success)
     $connector = new APIConnector();
     $template = $connector->getTemplateById($_POST['templateId']);
 
-    var_dump($template);
-
     // add subscription
     $newSubscription = new StdClass();
     $newSubscription->idCategory = (int) $categoryId;

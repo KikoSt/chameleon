@@ -1,14 +1,4 @@
 <div class="container-fluid">
-<!--    <div class="row">-->
-<!--        <div class="col-md-10">-->
-<!--            <input class="form-control" type="text" placeholder="select page category">-->
-<!--        </div>-->
-<!--        <div>-->
-<!--            <button class="btn btn-success modalBtn">-->
-<!--                <span class="glyphicon glyphicon-plus"></span>-->
-<!--            </button>-->
-<!--        </div>-->
-<!--    </div>-->
     <div class="row">
         <div class="col-md-10">
             <select id="category" multiple="multiple" style="color:#000000">
@@ -23,7 +13,7 @@
                 ?>
             </select>
         </div>
-        <button id="addCategory" type="button" style="color:#000000;" class="btn btn-success ">
+        <button id="addCategory" type="button" style="color:#000000;" class="btn btn-success addCategoryEditor">
             <span class="glyphicon glyphicon-plus"></span>
         </button>
     </div>
@@ -40,7 +30,7 @@
                 <div class="col-md-10">
                     <input type="text" disabled="disabled" value="<?php echo $activeCategory['name']; ?>"/>
                 </div>
-                <button id="<?php echo $activeCategory['id']; ?>" class="removeCategory btn btn-danger" type="button" style="color:#000000">
+                <button id="<?php echo $activeCategory['id']; ?>" class="btn btn-danger removeCategoryEditor" type="button" style="color:#000000">
                     <span class="glyphicon glyphicon-minus"></span>
                 </button>
             </div>

@@ -23,13 +23,10 @@ $template = $connector->getTemplateById($templateId);
 
 $subscriptions = $template->getCategorySubscriptions();
 
-foreach($subscriptions as $curCategory)
-{
+foreach($subscriptions as $curCategory):
     $id    = $curCategory->idCategory;
     $value = $curCategory->categoryName;
-
-    if($curCategory->userStatus === 'ACTIVE')
-    {
+    if($curCategory->userStatus === 'ACTIVE'):
 ?>
 <div id="row_<?php echo $id;?>" class="row">
     <div class="col-md-10">
@@ -40,6 +37,6 @@ foreach($subscriptions as $curCategory)
     </button>
 </div>
 <?php
-    }
-}
-?>
+    endif;
+endforeach;
+

@@ -32,12 +32,12 @@ margin-left:161px;background-color: #888888; border-color: #888888;">
         </ul>
     </div>
 
-    <div id="overview" class="row" style="margin-top: 115px;">
+    <div id="overview" class="row" style="margin-top: 120px;">
     <?php
         foreach($this->previews as $preview):
     ?>
-        <form method="post" action="index.php?page=editor" id="<?php echo $preview->templateId; ?>">
-            <div class="row">
+
+            <div id="template_<?php echo $preview->templateId; ?>" class="row">
                 <div class="thumbnail thumbnail-half col-md-2">
                     <div class="overviewTitle">Template</div>
                     <image class="preview" src="<?php echo $preview->filePath; ?>">
@@ -54,7 +54,7 @@ margin-left:161px;background-color: #888888; border-color: #888888;">
             <input type="hidden" name="advertiserId" value="<?php echo $preview->advertiserId; ?>">
             <input type="hidden" name="companyId" value="<?php echo $preview->companyId; ?>">
             <input type="hidden" name="templateName" value="<?php echo $preview->templateName; ?>">
-        </form>
+
 
     <?php
         break;
@@ -89,6 +89,72 @@ margin-left:161px;background-color: #888888; border-color: #888888;">
 <script type="text/javascript">
     $(document).ready(function()
     {
+        $('#addCategory').click(function(e) {
+            var selectedOpts = $('#availableCategory option:selected');
+            if (selectedOpts.length == 0) {
+                alert("Nothing to move.");
+                e.preventDefault();
+            }
 
+            $('#assignedCategory').append($(selectedOpts).clone());
+            $(selectedOpts).remove();
+            e.preventDefault();
+        });
+
+        $('#removeCategory').click(function(e) {
+            var selectedOpts = $('#assignedCategory option:selected');
+            if (selectedOpts.length == 0) {
+                alert("Nothing to move.");
+                e.preventDefault();
+            }
+
+            $('#availableCategory').append($(selectedOpts).clone());
+            $(selectedOpts).remove();
+            e.preventDefault();
+        });
+
+        $('.carousel').carousel({
+            interval: 4000
+        });
+
+        $('.addCategoryOverview').click(function(e) {
+            var id = $(this).attr('id').split('-');
+            var data = {};
+            var categoryId    = $('#availableCategory').find(':selected').val();
+            var categoryName  = $.trim($('#availableCategory').find(':selected').text());
+            data.advertiserId = id[2];
+            data.templateId   = id[1];
+            data.categoryId   = categoryId;
+            data.categoryName = categoryName;
+            data.companyId    = $('#companyId').attr('value');
+            $.ajax({
+                type: "POST",
+                data: data,
+                dataType: "json",
+                url: "/chameleon/ajax/addCategory.php"
+            }).done(function(){
+            }).fail(function(){
+            });
+        });
+
+        $('.removeCategoryOverview').click(function(e) {
+            var id = $(this).attr('id').split('-');
+            var data = {};
+            var categoryId    = $('#assignedCategory').find(':selected').val();
+            var categoryName  = $.trim($('#assignedCategory').find(':selected').text());
+            data.advertiserId = id[2];
+            data.templateId   = id[1];
+            data.categoryId   = categoryId;
+            data.categoryName = categoryName;
+            data.companyId    = $('#companyId').attr('value');
+            $.ajax({
+                type: 'POST',
+                data: data,
+                dataType: "json",
+                url:  '/chameleon/ajax/removeCategory.php'
+            }).done(function(){
+            }).fail(function(){
+            });
+        })
     });
 </script>

@@ -1,5 +1,9 @@
-<div class="thumbnail thumbnail-half col-md-4">
-    <div class="overviewTitle">Choose your action:</div>
-    <button><i class="fa fa-files-o fa-5x"></i></button>
-    <button><i class="fa fa-pencil-square-o fa-5x"></i></button>
+<div class="thumbnail thumbnail-quarter col-md-2">
+    <div class="overviewTitle">Action:</div>
+    <div class="row" style="margin-top: 120px;">
+        <button><i class="fa fa-files-o fa-5x"></i></button>
+    </div>
+    <div class="row">
+        <button><i class="fa fa-pencil-square-o fa-5x"></i></button>
+    </div>
 </div>
