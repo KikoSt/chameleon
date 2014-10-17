@@ -378,7 +378,6 @@ class GfXComponent implements Linkable, Resizeable
 
     public function getEditGroup()
     {
-        return 2;
         return $this->editGroup;
     }
 }

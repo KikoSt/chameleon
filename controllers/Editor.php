@@ -85,6 +85,7 @@ class Editor extends Controller
 
         //TODO for development, replace after implementing into Bidder
         $this->view->premiumUser = false;
+        $this->view->premiumUser = true;
 
         $container->setTarget('GIF');
 

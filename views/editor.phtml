@@ -185,7 +185,7 @@ $(document).ready(function() {
      * PREVIEW BUTTON
      *********************************** */
     $('#editor').on('submit', function(e){
-        // e.preventDefault();
+        e.preventDefault();
         var action = btn;
         var xhr = new XMLHttpRequest();
         $("#previewImage img").unbind('mapster');
