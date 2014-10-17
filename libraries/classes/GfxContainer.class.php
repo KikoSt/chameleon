@@ -256,10 +256,6 @@ class GfxContainer
         }
         else
         {
-//             if('' === $this->getCompanyId() || '' === $this->getAdvertiserId())
-//             {
-//                 throw new Exception('Company or advertiser id not set');
-//             }
             if('' == $this->getId())
             {
                 throw new Exception('Template id not set');
