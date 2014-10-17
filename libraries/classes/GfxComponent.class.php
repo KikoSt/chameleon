@@ -18,6 +18,7 @@ class GfXComponent implements Linkable, Resizeable
     private $linkUrl;
     private $shadowColor;
     private $shadowDist;
+    private $editGroup;
 
     private $cmeoRef;
     private $cmeoLink;
@@ -91,8 +92,9 @@ class GfXComponent implements Linkable, Resizeable
             }
         }
 
-        $ref =  (string) $svgRootNode->attributes('cmeo', true)->ref;
-        $link = (string) $svgRootNode->attributes('cmeo', true)->link;
+        $ref       = (string) $svgRootNode->attributes('cmeo', true)->ref;
+        $link      = (string) $svgRootNode->attributes('cmeo', true)->link;
+        $editGroup = (int) $svgRootNode->attributes('cmeo', true)->editGroup;
         if(!empty($ref))
         {
             $this->getContainer()->registerDataUpdate($ref, $this);
@@ -104,6 +106,10 @@ class GfXComponent implements Linkable, Resizeable
             $this->getContainer()->registerDataUpdate($link, $this);
             $this->setCmeoLink($link);
             $this->setLink($link);
+        }
+        if(!empty($editGroup))
+        {
+            $this->setEditGroup($editGroup);
         }
     }
 
@@ -365,4 +371,14 @@ class GfXComponent implements Linkable, Resizeable
         return $this->strokeEnabled;
     }
 
+    public function setEditGroup($editGroup)
+    {
+        $this->editGroup = $editGroup;
+    }
+
+    public function getEditGroup()
+    {
+        return 2;
+        return $this->editGroup;
+    }
 }
