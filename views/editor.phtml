@@ -86,8 +86,6 @@ $(document).ready(function() {
         }
     });
 
-    $('img[usemap]').maphilight();
-
     $('.btn').on('click', function(e) {
         btn = $(this).attr('id');
     });
@@ -150,7 +148,7 @@ $(document).ready(function() {
             if(xhr.readyState == 4) {
                 response = $.parseJSON(xhr.response);
                 imgsrc = response.imgsrc;
-                $("#previewImage img").attr('src', imgsrc + '?' + new Date().getTime())
+                $("#previewImage img").attr('src', imgsrc + '?' + new Date().getTime());
             }
         };
         xhr.open('POST', '/chameleon/ajax/changeSvg.php', true);
@@ -159,7 +157,9 @@ $(document).ready(function() {
 
         function onloadHandler(e, args) {
             // $('#previewalert').show();
-            $("#previewImage img").attr('src', imgsrc); // + new Date().getTime())
+            response = $.parseJSON(xhr.response);
+            imgsrc = response.imgsrc;
+            $("#previewImage img").attr('src', imgsrc + new Date().getTime());
         }
 
         function onloadstartHandler() {
@@ -170,29 +170,34 @@ $(document).ready(function() {
     });
 
 
+    $("#previewImage img").mapster({
+        fillColor: 'ff0000',
+        fillOpacity: 0.3,
+        stroke: true,
+        strokeColor: 'ff0000',
+        singleSelect: true,
+        clickNavigate: false
+    });
+
 
     /* ***********************************
      * PREVIEW BUTTON
      *********************************** */
     $('#editor').on('submit', function(e){
-        e.preventDefault();
-
-        var action = btn; // preview or save
-
+        // e.preventDefault();
+        var action = btn;
         var xhr = new XMLHttpRequest();
-
+        $("#previewImage img").unbind('mapster');
 
         xhr.onreadystatechange = function(e) {
             if(xhr.readyState == 4) {
                 if(action === 'save') {
                     somethingChanged = false;
                 }
-//                $('#previewalert').show();
-
                 response = $.parseJSON(xhr.response);
                 imgsrc = response.imgsrc;
-
-                $("#previewImage img").attr('src', imgsrc + '?' + new Date().getTime());
+                $("#previewImage img").unbind('mapster');
+                $("#previewImage img").attr('src', imgsrc + '?ts=' + new Date().getTime());
             }
         }
 
@@ -353,7 +358,6 @@ $(document).ready(function() {
 
     //handles the enabling/disabling of the stroke form elements
     $('#strokeCheckBox.myCheckBox').click(function(e) {
-        console.log('st!');
         var id = $(this).attr('value');
 
         if($(this).is(":checked"))
@@ -369,9 +373,5 @@ $(document).ready(function() {
             $("#" + id + "_strokeWidth").attr('disabled', true);
         }
     });
-
-
-    console.log($('#shadowCheckBox').click());
-
 });
 </script>
