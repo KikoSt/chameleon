@@ -129,6 +129,7 @@ function getImageMap($container)
             $imageMap .= (int) $curElement->getY() + $curElement->getHeight();
         }
         $imageMap .= '"';
+        $imageMap .= ' href="#"';
         $imageMap .= ' alt="' . $curElement->getId() . '"';
         $imageMap .= ' title="' . $curElement->getId() . '"';
         $imageMap .= ' id="' .$curElement->getId() . '"';
