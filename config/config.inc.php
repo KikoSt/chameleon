@@ -13,4 +13,3 @@ include(__ROOT__ . 'config/apiconfig.inc.php');
 include(__ROOT__ . 'config/bannersizes.inc.php');
 include(__ROOT__ . 'config/fontconfig.inc.php');
 
-define('PREVIEW_NAME', 'preview_<templateId>_<width>x<height>');
