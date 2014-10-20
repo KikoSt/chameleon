@@ -7,17 +7,6 @@
     </div>
     <div class="panel-body">
         <div class="container-fluid">
-            Group <?php echo $element->getId(); ?>:<br />
-            <?php
-                foreach($element->getElements() AS $elem)
-                {
-                    echo $elem->getId() . ' / ';
-                }
-            ?>
-            <br />
-            <br />
-        </div>
-        <div class="container-fluid">
         <?php
             if($this->premiumUser):
                 include('editorComponents/coords.inc.php');
