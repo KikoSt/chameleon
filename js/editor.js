@@ -18,10 +18,7 @@ $(document).ready(function() {
         var id = $(this).attr('id');
         $('.component').hide();
         $('#panel_' + id).show();
-        $('#grouppanel_1').show();
-        $('#grouppanel_2').show();
-        $('#grouppanel_3').show();
-        $('#grouppanel_4').show();
+        $('#grouppanel_' + $('#panel_' + id).attr('group')).show();
 
     });
 
@@ -305,5 +302,4 @@ $(document).ready(function() {
 
     // TODO: add a "initial" element to ALL templates?!
     $('area#head_large').trigger('click');
-    $('#grouppanel_2').show();
 });
