@@ -18,12 +18,23 @@
                         include('globals.inc.php');
                     ?>
                 </div>
+                    <!-- RENDER COMPONENT EDITOR COMPONENTS -->
                     <?php
                         foreach($this->elements as $element):
                             $type = get_class($element);
                             include($type . '.inc.php');
                         endforeach;
                     ?>
+                    <!-- END RENDER COMPONENT EDITOR COMPONENTS -->
+
+                    <!-- RENDER GROUP EDITOR COMPONENTS -->
+                        <?php
+                        foreach($this->container->getGroups() AS $element)
+                        {
+                            include('GfxGroup.inc.php');
+                        }
+                        ?>
+                    <!-- END RENDER GROUP EDITOR COMPONENTS -->
                 <input id="templateId"   type="hidden" name="templateId"   value="<?php echo $this->templateId; ?>">
                 <input id="auditUserId"  type="hidden" name="auditUserId"  value="<?php echo $this->auditUserId; ?>">
                 <input id="advertiserId" type="hidden" name="advertiserId" value="<?php echo $this->advertiserId; ?>">
@@ -31,15 +42,18 @@
             </div>
             <div class="col-md-6">
                 <div style="position:fixed;">
+                    <!-- PREVIEW IMAGE -->
                     <div id="previewImage" class="row">
                         <img src="<?php echo $this->gif;?>" alt="" usemap="#template_selection">
                     </div>
+                    <!-- END PREVIEW IMAGE -->
+                    <!-- BUTTONS SAVE / CLONE -->
                     <div class="row" style="padding-top: 5px;">
                         <!--        On click render template and show the change-->
                         <button id="preview" type="submit" class="btn btn-info" title="Preview">
                             <span class="glyphicon glyphicon-eye-open"></span>
                         </button>
-<!--                                On click render template, show the change and save data to database-->
+                        <!-- On click render template, show the change and save data to database-->
                         <button id="save" type="submit" class="btn btn-danger" title="Save template">
                             <span class="glyphicon glyphicon-export"></span>
                         </button>
@@ -47,6 +61,7 @@
                             <span class="glyphicon glyphicon-tags"></span>
                         </button>
                     </div>
+                    <!-- END BUTTONS SAVE / CLONE -->
                 </div>
             </div>
         </div>
