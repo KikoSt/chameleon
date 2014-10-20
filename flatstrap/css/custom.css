@@ -71,6 +71,11 @@ select
     color: #ffffff !important;
 }
 
+.groupTitle
+{
+    background-color: #000055 !important;
+}
+
 .imageTitle
 {
     background-color: #4583c6 !important;
