@@ -29,6 +29,8 @@ class GfxContainer
     private $globalPrimaryColor;
     private $globalSecondaryColor;
 
+    private $groups;
+
     // Path information:
     // the baseDir is either SVG_DIR or OUTPUT_DIR for now, depending on whether
     //   SVG operations or rendering is required -> NOT stored here
@@ -60,6 +62,7 @@ class GfxContainer
         $this->dataRegistry = array();
         $this->animationRegistry = array();
         $this->previewMode = false;
+        $this->groups = array();
     }
 
     public function __destruct()
@@ -194,8 +197,24 @@ class GfxContainer
             {
                 $gfxInstance->create($child);
                 $this->addElement($gfxInstance);
+
+                if(!empty($gfxInstance->getEditGroup()))
+                {
+                    if(!array_key_exists($gfxInstance->getEditGroup(), $this->groups))
+                    {
+                        $dummy = new GfxGroup($gfxInstance->getEditGroup(), $this);
+                        $this->groups[$gfxInstance->getEditGroup()] = $dummy;
+                    }
+                }
             }
             unset($gfxInstance);
+        }
+
+        ksort($this->groups);
+
+        foreach($this->groups AS $group)
+        {
+            $group->create();
         }
     }
 
@@ -722,6 +741,11 @@ class GfxContainer
     public function getProductData()
     {
         return $this->productData;
+    }
+
+    public function getGroups()
+    {
+        return $this->groups;
     }
 
     /**
