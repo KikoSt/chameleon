@@ -18,6 +18,14 @@
                         include('globals.inc.php');
                     ?>
                 </div>
+                    <!-- RENDER GROUP EDITOR COMPONENTS -->
+                        <?php
+                        foreach($this->container->getGroups() AS $element)
+                        {
+                            include('GfxGroup.inc.php');
+                        }
+                        ?>
+                    <!-- END RENDER GROUP EDITOR COMPONENTS -->
                     <!-- RENDER COMPONENT EDITOR COMPONENTS -->
                     <?php
                         foreach($this->elements as $element):
@@ -27,14 +35,6 @@
                     ?>
                     <!-- END RENDER COMPONENT EDITOR COMPONENTS -->
 
-                    <!-- RENDER GROUP EDITOR COMPONENTS -->
-                        <?php
-                        foreach($this->container->getGroups() AS $element)
-                        {
-                            include('GfxGroup.inc.php');
-                        }
-                        ?>
-                    <!-- END RENDER GROUP EDITOR COMPONENTS -->
                 <input id="templateId"   type="hidden" name="templateId"   value="<?php echo $this->templateId; ?>">
                 <input id="auditUserId"  type="hidden" name="auditUserId"  value="<?php echo $this->auditUserId; ?>">
                 <input id="advertiserId" type="hidden" name="advertiserId" value="<?php echo $this->advertiserId; ?>">
