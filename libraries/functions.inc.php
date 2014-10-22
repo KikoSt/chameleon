@@ -97,14 +97,14 @@ function getPreviewFileName($template)
 }
 
 
-function getImageMap($container)
+function getImageMap($container, $displayComponentLinks)
 {
     $textfieldpadding = 3;
     $imageMap = '<map name="template_selection">';
     $elements = $container->getElements();
     $elements = array_reverse($elements);
 
-    if($displayGroupLinks)
+    if(!$displayComponentLinks)
     {
         foreach($container->getGroups() AS $curGroup)
         {
@@ -126,6 +126,10 @@ function getImageMap($container)
 
     foreach($elements AS $curElement)
     {
+         if($displayComponentLinks) // || $curElement->getEditGroup() != 0)
+         {
+             continue;
+         }
         $imageMap .= "\n";
         $imageMap .= '<area shape="rect" coords="';
         if($curElement instanceof GfxText)
