@@ -22,11 +22,27 @@ $(document).ready(function() {
 
     $('.subnav').on('click', function(e) {
         var id = $(this).attr('id');
-        $('.component').hide();
-        $('#panel_' + id).show();
-        $('#grouppanel_' + $('#panel_' + id).attr('data-groupid')).show();
-        $('#' + id + '--primary').css("background-color", $('#primary-color').val());
-        $('#' + id + '--secondary').css("background-color", $('#secondary-color').val());
+        if(id.substr(0, 5) != 'group') {
+            $('.component').hide();
+            $('#panel_' + id).show();
+            $('#grouppanel_' + $('#panel_' + id).attr('data-groupid')).show();
+            $('#' + id + '--primary').css("background-color", $('#primary-color').val());
+            $('#' + id + '--secondary').css("background-color", $('#secondary-color').val());
+            $('#' + $('#panel_' + id).attr('data-groupid') + '--fgprimary').css("background-color", $('#primary-color').val());
+            $('#' + $('#panel_' + id).attr('data-groupid') + '--fgsecondary').css("background-color", $('#secondary-color').val());
+            $('#' + $('#panel_' + id).attr('data-groupid') + '--bgprimary').css("background-color", $('#primary-color').val());
+            $('#' + $('#panel_' + id).attr('data-groupid') + '--bgsecondary').css("background-color", $('#secondary-color').val());
+        } else {
+            $('.component').hide();
+            id = id.substr(6, 10);
+            $('#grouppanel_' + id).show();
+            $('#' + id + '--primary').css("background-color", $('#primary-color').val());
+            $('#' + id + '--secondary').css("background-color", $('#secondary-color').val());
+            $('#' + id + '--fgprimary').css("background-color", $('#primary-color').val());
+            $('#' + id + '--fgsecondary').css("background-color", $('#secondary-color').val());
+            $('#' + id + '--bgprimary').css("background-color", $('#primary-color').val());
+            $('#' + id + '--bgsecondary').css("background-color", $('#secondary-color').val());
+        }
     });
 
     $('.glyphicon-remove-circle').on('click', function(e) {
@@ -214,7 +230,6 @@ $(document).ready(function() {
         $('.'+idsplit[0]).css("background-color", color);
         $('#' + id + '--preview').css("background-color", color);
     });
-
 
     $("#fileUpload").fileinput();
 
@@ -471,8 +486,6 @@ $(document).ready(function() {
 
     $('.preset').on('click', function(){
         var identifier = $(this).attr('id').split('--');
-
-        console.log(identifier);
 
         switch(identifier[1])
         {
