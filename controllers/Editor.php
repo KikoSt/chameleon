@@ -52,8 +52,21 @@ class Editor extends Controller
 
         $gif = 'http://' . $_SERVER['SERVER_NAME'] . '/chameleon/output/' . $container->getOutputDir() . '/' . $baseFilename . '.gif';
 
+        // $this->view->premiumUser = false;
+
+        if(isset($_REQUEST['advanced']))
+        {
+            if($_REQUEST['advanced'] == 'true') {
+            $this->view->premiumUser = true;
+            } else {
+                $this->view->premiumUser = false;
+            }
+        }
+
+        $this->view->premiumUser = true;
+
         // view parameters
-        $this->view->imageMap        = getImageMap($container);
+        $this->view->imageMap        = getImageMap($container, $premiumUser);
         $this->view->templateId      = $container->getId();
         $this->view->auditUserId     = $auditUserId;
         $this->view->advertiserId    = $container->getAdvertiserId();
@@ -84,8 +97,6 @@ class Editor extends Controller
         $this->addSubscribedCategoriesToSession($this->view->combinedCategories);
 
         //TODO for development, replace after implementing into Bidder
-        $this->view->premiumUser = false;
-        $this->view->premiumUser = true;
 
         $container->setTarget('GIF');
 
