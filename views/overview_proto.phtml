@@ -8,43 +8,20 @@
     else:
 ?>
 <div class="container-fluid" style="margin-left: 150px;">
-    <div id="nodes" class="navbar navbar-default navbar-fixed-top navbar-inverse" role="navigation" style="margin-top:61px;
-margin-left:161px;background-color: #888888; border-color: #888888;">
-        <ul class="nav navbar-nav navbar-left">
-            <li style="padding: 14px;">
-                <?php
-                    if(!empty($_SESSION['categories'])):
-                ?>
-                    Content of session shown
-                <?php
-                    else:
-                ?>
-                    No categories selected
-                <?php
-                    endif;
-                ?>
-                <button id="editCategories" type="button" class="btn btn-xs" data-toggle="modal" data-target="#cmeoModal"
-                        style="background-color:
-                #888888;">
-                    <span class="glyphicon glyphicon-pencil"></span>
-                </button>
-            </li>
-        </ul>
-    </div>
-
-    <div id="overview" class="row" style="margin-top: 120px;">
+    <div id="overview" style="margin-top: 75px;">
     <?php
         foreach($this->previews as $preview):
     ?>
-
-            <div id="template_<?php echo $preview->templateId; ?>" class="row">
+            <div id="template_<?php echo $preview->templateId; ?>" class="row template" style="background-color: #F2F2F2;">
                 <div class="thumbnail thumbnail-half col-md-2">
                     <div class="overviewTitle">Template</div>
-                    <image class="preview" src="<?php echo $preview->filePath; ?>">
+                    <div style="min-height: 160px;">
+                        <image src="<?php echo $preview->filePath; ?>">
+                    </div>
+
                     <?php include('overviewComponents/facts.inc.php'); ?>
                 </div>
                 <?php
-
                     include('overviewComponents/categoryAlignment.inc.php');
                     include('overviewComponents/examples.inc.php');
                     include('overviewComponents/action.inc.php');
@@ -55,9 +32,7 @@ margin-left:161px;background-color: #888888; border-color: #888888;">
             <input type="hidden" name="companyId" value="<?php echo $preview->companyId; ?>">
             <input type="hidden" name="templateName" value="<?php echo $preview->templateName; ?>">
 
-
     <?php
-        break;
         endforeach;
         endif;
     ?>
@@ -65,27 +40,6 @@ margin-left:161px;background-color: #888888; border-color: #888888;">
     </div>
 </div>
 
-
-<!-- Modal -->
-<div class="modal fade" id="cmeoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header textTitle">
-                <button type="button" class="close" data-dismiss="modal"><span class="glyphicon glyphicon-remove-circle"></span></button>
-                <h4 class="modal-title" id="myModalLabel">Select category:</h4>
-            </div>
-            <div class="modal-body">
-                <form role="form">
-                        <?php include('categories.inc.php'); ?>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
-        </div>
-    </div>
-</div>
 <script type="text/javascript">
     $(document).ready(function()
     {
@@ -118,14 +72,31 @@ margin-left:161px;background-color: #888888; border-color: #888888;">
         });
 
         $('.addCategoryOverview').click(function(e) {
+            e.preventDefault();
             var id = $(this).attr('id').split('-');
+            var templateId = id[1];
+            var advertiserId = id[2];
             var data = {};
-            var categoryId    = $('#availableCategory').find(':selected').val();
-            var categoryName  = $.trim($('#availableCategory').find(':selected').text());
-            data.advertiserId = id[2];
-            data.templateId   = id[1];
-            data.categoryId   = categoryId;
-            data.categoryName = categoryName;
+            var category = [];
+
+            console.log(id);
+
+            $('#availableCategory-'+templateId).find('option:selected').each(function(i,selected){
+                var subscription = {};
+                subscription.id = $(selected).val();
+                subscription.name = $.trim($(selected).text());
+
+                category.push(subscription);
+
+                var node = '<option value="' + subscription.id + '">' + subscription.name + '</option>';
+                $('#assignedCategory-'+templateId).append(node);
+                $('#availableCategory-'+templateId).find("option[value='"+subscription.id+"']").remove();
+            });
+
+            data.category = category;
+            data.advertiserId = advertiserId;
+            data.templateId   = templateId;
+
             data.companyId    = $('#companyId').attr('value');
             $.ajax({
                 type: "POST",
@@ -134,18 +105,34 @@ margin-left:161px;background-color: #888888; border-color: #888888;">
                 url: "/chameleon/ajax/addCategory.php"
             }).done(function(){
             }).fail(function(){
+
             });
         });
 
         $('.removeCategoryOverview').click(function(e) {
+            e.preventDefault();
+
             var id = $(this).attr('id').split('-');
+            var templateId = id[1];
+            var advertiserId = id[2];
             var data = {};
-            var categoryId    = $('#assignedCategory').find(':selected').val();
-            var categoryName  = $.trim($('#assignedCategory').find(':selected').text());
-            data.advertiserId = id[2];
-            data.templateId   = id[1];
-            data.categoryId   = categoryId;
-            data.categoryName = categoryName;
+            var category = [];
+
+            $('#assignedCategory-'+templateId).find('option:selected').each(function(i,selected){
+                var subscription = {};
+                subscription.id = $(selected).val();
+                subscription.name = $.trim($(selected).text());
+
+                category.push(subscription);
+
+                $("#assignedCategory-"+templateId).find("option[value='"+subscription.id+"']").remove();
+                var node = '<option value="' + subscription.id + '">'+subscription.name+'</option>';
+                $('#availableCategory-'+templateId).append(node);
+            });
+
+            data.category = category;
+            data.advertiserId = advertiserId;
+            data.templateId   = templateId;
             data.companyId    = $('#companyId').attr('value');
             $.ajax({
                 type: 'POST',
@@ -155,6 +142,35 @@ margin-left:161px;background-color: #888888; border-color: #888888;">
             }).done(function(){
             }).fail(function(){
             });
+        });
+
+        $(".cloneTemplate").click(function(){
+
+            var id = $(this).attr('id').split('-');
+            var templateId = id[1];
+            var advertiserId = id[2];
+            var companyId = id[3];
+            var data = {};
+
+            data.advertiserId = advertiserId;
+            data.templateId   = templateId;
+
+            $.ajax({
+                type: 'POST',
+                data: data,
+                dataType: "json",
+                url:  '/chameleon/ajax/cloneTemplate.php',
+                success: function(response){
+
+                    console.log(response);
+
+                    var url = window.location.origin + '/chameleon/index.php?page=editor&templateId=' + response.idBannerTemplate +
+                        '&companyId=' + companyId + '&advertiserId=' + advertiserId;
+                    window.location.replace(url);
+                }
+            });
         })
+
+
     });
 </script>

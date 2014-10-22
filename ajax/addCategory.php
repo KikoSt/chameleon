@@ -15,12 +15,7 @@ if(!isset($_POST['templateId']))
     $success = false;
 }
 
-if(!isset($_POST['categoryName']))
-{
-    $success = false;
-}
-
-if(!isset($_POST['categoryId']))
+if(!isset($_POST['category']))
 {
     $success = false;
 }
@@ -30,29 +25,31 @@ if(!isset($_POST['advertiserId']))
     $success = false;
 }
 
-
 if($success)
 {
-    // prepare required variables
-    $templateId   = $_POST['templateId'];
-    $categoryName = $_POST['categoryName'];
-    $categoryId   = $_POST['categoryId'];
-    $advertiserId = $_POST['advertiserId'];
-
     // get template via REST API
     $connector = new APIConnector();
     $template = $connector->getTemplateById($_POST['templateId']);
 
-    // add subscription
-    $newSubscription = new StdClass();
-    $newSubscription->idCategory = (int) $categoryId;
-    $newSubscription->userStatus = 'ACTIVE';
-    $newSubscription->categoryName = $categoryName;
+    // prepare required variables
+    $templateId = $_POST['templateId'];
+    $advertiserId = $_POST['advertiserId'];
 
+    $template->setAdvertiserId((int)$advertiserId);
     $subscriptions = $template->getCategorySubscriptions();
-    array_push($subscriptions, $newSubscription);
+
+    foreach($_POST['category'] as $category)
+    {
+        // add subscription
+        $newSubscription = new StdClass();
+        $newSubscription->idCategory = (int)$category['id'];
+        $newSubscription->userStatus = 'ACTIVE';
+        $newSubscription->categoryName = $category['name'];
+
+        array_push($subscriptions, $newSubscription);
+    }
+
     $template->setCategorySubscriptions($subscriptions);
-    $template->setAdvertiserId((int) $advertiserId);
 
     // store template
     $result = $connector->sendBannerTemplate($template);

@@ -57,6 +57,8 @@ class Overview extends Controller
             }
             else
             {
+                $categories = $connector->getCategories();
+
                 foreach($templates as $template)
                 {
                     $baseFilename = 'rtest_' . $template->getBannerTemplateId();
@@ -98,20 +100,9 @@ class Overview extends Controller
                     $preview->templateId = $template->getBannerTemplateId();
                     $preview->parentTemplateId = $template->getParentBannerTemplateId();
                     $preview->name = $template->getName();
-                    $preview->categorySubscription = $connector->getSubscribedCategoriesByTemplateId($template->getBannerTemplateId());
                     $preview->templateSubscription = $template->getCategorySubscriptions();
-                    $preview->page = 'overview';
+                    $preview->availableCategories = $this->getPrunedAvailableCategories($categories, $preview->templateSubscription);
 
-
-                    if($container->getCanvasWidth() >= $container->getCanvasHeight())
-                    {
-                        $newHeight = $container->getCanvasHeight() * (281 / $container->getCanvasWidth());
-                        $preview->marginTop = (481 - intval($newHeight)) / 4;
-                    }
-                    else
-                    {
-                        $preview->marginTop = 4;
-                    }
                     $previews[] = $preview;
                 }
             }
@@ -119,7 +110,6 @@ class Overview extends Controller
 
         $this->view->previews = $previews;
         $this->view->page = 'overview';
-        $this->view->categories = $connector->getCategories();
 
         return $this->view;
     }
@@ -127,6 +117,25 @@ class Overview extends Controller
     public function display()
     {
         echo $this->view;
+    }
+
+    private function getPrunedAvailableCategories($categories, $templateSubscriptions)
+    {
+        $prunedCategories = array();
+
+        foreach($categories as $category)
+        {
+            $prunedCategories[$category->id] = $category->name;
+        }
+
+        foreach($templateSubscriptions as $subscription)
+        {
+            if($subscription->userStatus === "ACTIVE")
+            {
+                unset($prunedCategories[$subscription->idCategory]);
+            }
+        }
+        return $prunedCategories;
     }
 
 //    private function clearOutputDirectory($path)
@@ -181,6 +190,4 @@ class Overview extends Controller
     {
         $this->advertiserId = $advertiserId;
     }
-
-
 }

@@ -428,6 +428,7 @@ class APIConnector
         $template->setParentBannerTemplateId($template->getBannerTemplateId());
         $template->setBannerTemplateId(NULL);
         $response = $this->sendBannerTemplate($template);
+
         return $response;
     }
 
@@ -612,7 +613,5 @@ class APIConnector
     {
         $this->auditUserId = $auditUserId;
     }
-
-
 }
 

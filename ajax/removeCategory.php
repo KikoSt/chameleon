@@ -10,18 +10,12 @@ require('../libraries/classes/BannerTemplateModel.class.php');
 
 $success = true;
 
-
 if(!isset($_POST['templateId']))
 {
     $success = false;
 }
 
-if(!isset($_POST['categoryName']))
-{
-    $success = false;
-}
-
-if(!isset($_POST['categoryId']))
+if(!isset($_POST['category']))
 {
     $success = false;
 }
@@ -35,28 +29,29 @@ if(!isset($_POST['advertiserId']))
 if($success)
 {
     // get template via REST API
-
-    $templateId   = (int) $_POST['templateId'];
-    $categoryName = $_POST['categoryName'];
-    $categoryId   = (int) $_POST['categoryId'];
-    $advertiserId = (int) $_POST['advertiserId'];
-
     $connector = new APIConnector();
     $template = $connector->getTemplateById($_POST['templateId']);
+    $template->setAdvertiserId((int)$_POST['advertiserId']);
 
     // remove subscription
     $subscriptions = $template->getCategorySubscriptions();
 
-    foreach($subscriptions AS $curSubscription)
+    $idSubscriptions = array();
+
+    foreach($_POST['category'] as $category)
     {
-        if($curSubscription->idCategory === $categoryId)
+        $idSubscriptions[(int)$category['id']] = $category['name'];
+    }
+
+    foreach ($subscriptions AS $curSubscription)
+    {
+        if (array_key_exists($curSubscription->idCategory, $idSubscriptions))
         {
             $curSubscription->userStatus = 'DELETED';
         }
     }
 
     $template->setCategorySubscriptions($subscriptions);
-    $template->setAdvertiserId((int) $advertiserId);
 
     // store template
     $result = $connector->sendBannerTemplate($template);

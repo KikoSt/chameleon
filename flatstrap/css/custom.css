@@ -5,22 +5,12 @@
 /* Overwrite all bootstrap css rules with a rounded corner to create a flat design */
 /* TODO integrate where possible into Chameleon own bootstrap css */
 
-body
-{
-    background-color: #e8e8e8;
-}
 div,
 li,
 .btn
 {
     border-radius: 0 !important;
     overflow: visible;
-}
-
-.preview
-{
-    max-width: 346px;
-    max-height: 362px;
 }
 
 a,
@@ -167,7 +157,8 @@ label {
     position: relative;
     width: 540px;
     height: 380px;
-    margin-left: 10px;
+    margin-left: 30px;
+    margin-top: 10px;
 }
 
 .thumbnail-half{
@@ -178,20 +169,21 @@ label {
     width: 135px;
 }
 
-/*.thumbnail:hover,*/
-option:hover
-{
-    background-color: #9bbadb !important;
-}
-
 .thumbnail > li {
     display: inline-block !important;
     display: inline !important; /* ie7 fix */
     float: none !important; /* this is the part that makes it work */
 }
 
+.thumbnail > div > img
+{
+    padding: 5px;
+    max-width: 260px !important;
+    max-height: 160px !important;
+}
+
 #leftbox{
-    position: absolute;
+    position: fixed;
     margin: 0px;
     right: auto;
     z-index: 0;
@@ -216,8 +208,6 @@ option:hover
     display: block;
     padding: 0 0 0 22px !important;
     font-size: 12px;
-    /*color: #428bca !important;*/
-    /*background-color: #FFFFFF !important;*/
 }
 
 .modal input,
@@ -268,17 +258,6 @@ input[type="text"]:disabled
     left: -3px !important;
 }
 
-.active
-{
-    /*background-color: #428bca;*/
+.template{
+    margin-bottom: 30px !important;
 }
-
-.active a
-{
-    /*color: #FFFFFF !important;*/
-}
-
-/* just for development */
-
-
-

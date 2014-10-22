@@ -1,4 +1,4 @@
-<div class="overviewTitle" style="margin-top: 50px;">Facts</div>
+<div class="overviewTitle">Facts</div>
 <div>
     <ul class="list-group">
         <li class="list-group-item">
@@ -34,10 +34,10 @@
         <li class="list-group-item">
             <div class="row">
                 <div class="col-md-6">
-                    <p class="text-left ">Size:</p>
+                    <p class="text-left ">Approx. size:</p>
                 </div>
                 <div class="col-md-6">
-                    <p class="text-left"><?php echo $preview->fileSize;?> kb</p>
+                    <p class="text-left"><?php echo $preview->fileSize;?> kB</p>
                 </div>
             </div>
         </li>
