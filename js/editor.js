@@ -385,8 +385,7 @@ $(document).ready(function() {
 //                }
 //            }
         }
-        $('#preview').trigger('click');
-        console.log('click triggered');
+        $('#editor').trigger('submit');
         somethingChanged = true;
     });
 
