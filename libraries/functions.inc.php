@@ -103,6 +103,27 @@ function getImageMap($container)
     $imageMap = '<map name="template_selection">';
     $elements = $container->getElements();
     $elements = array_reverse($elements);
+
+    if($displayGroupLinks)
+    {
+        foreach($container->getGroups() AS $curGroup)
+        {
+            $imageMap .= "\n";
+            $imageMap .= '<area shape="rect" coords="';
+            $imageMap .= (int) $curGroup->getX() . ',';
+            $imageMap .= (int) $curGroup->getY() . ',';
+            $imageMap .= (int) $curGroup->getX() + $curGroup->getWidth() . ',';
+            $imageMap .= (int) $curGroup->getY() + $curGroup->getHeight();
+            $imageMap .= '"';
+            $imageMap .= ' href="#"';
+            $imageMap .= ' alt="group_' . $curGroup->getId() . '"';
+            $imageMap .= ' title="group_' . $curGroup->getId() . '"';
+            $imageMap .= ' id="group_' .$curGroup->getId() . '"';
+            $imageMap .= ' class="subnav"';
+            $imageMap .= ' />';
+        }
+    }
+
     foreach($elements AS $curElement)
     {
         $imageMap .= "\n";
