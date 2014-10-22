@@ -13,6 +13,8 @@
  {
     private $id;
     private $x, $y;
+    private $maxX, $maxY;
+    private $width, $height;
     private $fontFamily;
     private $fontSize;
     private $link;
@@ -31,6 +33,8 @@
         $this->container = $container;
         $this->x = $this->container->getCanvasWidth();
         $this->y = $this->container->getCanvasHeight();
+        $this->width = 0;
+        $this->height = 0;
     }
 
     public function create()
@@ -47,6 +51,15 @@
                 if($element->getY() < $this->getY())
                 {
                     $this->setY($element->getY());
+                }
+
+                if((int)$element->getWidth() > (int)$this->width)
+                {
+                    $this->width = $element->getWidth();
+                }
+                if($element->getHeight() > $this->height)
+                {
+                    $this->height = $element->getHeight();
                 }
 
                 // foreground and background color: Rectangle defines bg, text defines fg
@@ -91,6 +104,16 @@
     public function setY($y)
     {
         $this->y = $y;
+    }
+
+    public function getWidth()
+    {
+        return $this->width;
+    }
+
+    public function getHeight()
+    {
+        return $this->height;
     }
 
     public function getForegroundColor()

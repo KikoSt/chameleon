@@ -54,4 +54,9 @@ class TemplateEngine
     {
         return $this->variables['height'];
     }
+
+//    public function getGroups()
+//    {
+//        return $this->variables['groups'];
+//    }
 }
