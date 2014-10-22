@@ -1,4 +1,4 @@
-<div id="panel_<?php echo $element->getId();?>" class="panel panel-default component">
+<div id="panel_<?php echo $element->getId();?>" data-type="text" data-groupid="<?php echo $element->getEditGroup(); ?>" class="panel panel-default component">
     <div class="panel-heading texttitle">
         <h3 class="panel-title ">
                 Text: <?php echo str_replace('_', ' ', $element->getId());?>
@@ -16,6 +16,7 @@
             endif;
             include('editorComponents/cmeo.inc.php');
             include('editorComponents/shadow.inc.php');
+            include('editorComponents/editGroup.inc.php');
             // include('editorComponents/stroke.inc.php');
         ?>
         </div>

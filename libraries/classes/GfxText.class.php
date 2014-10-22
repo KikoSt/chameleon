@@ -29,7 +29,6 @@ class GfxText extends GfxComponent
     {
         parent::create($svgRootNode);
 
-        //$this->setText(utf8_decode((string) $svgRootNode));
         $this->setText(((string) $svgRootNode));
 
         $attr = $svgRootNode->attributes();
@@ -90,9 +89,6 @@ class GfxText extends GfxComponent
         {
             if(!empty($this->getRef()))
             {
-//                 echo 'Product information found; ';
-//                 echo '[' . $this->getRef() . ']';
-//                 echo "\n";
                 $productData = $this->getContainer()->getProductData();
 
                 $newValue = $productData->{'get' . $this->getRef()}();
@@ -120,11 +116,6 @@ class GfxText extends GfxComponent
                 }
                 $this->setText($newValue);
             }
-
-//             if(!empty($this->getLink()))
-//             {
-//                 echo "\n[" . $this->getLink() . "]\n";
-//             }
         }
     }
 
@@ -260,6 +251,7 @@ class GfxText extends GfxComponent
         $svg .= "\r\n" . '<text xml:space="preserve"';
         $svg .= "\r\n" . ' cmeo:ref="' . $this->getCmeoRef(). '"';
         $svg .= "\r\n" . ' cmeo:link="' . $this->getCmeoLink(). '"';
+        $svg .= "\r\n" . ' cmeo:editGroup="' . $this->getEditGroup(). '"';
         $svg .= "\r\n" . ' text-anchor="' . $this->getTextAnchor() . '"';
         $svg .= "\r\n" . ' font-family="' . $this->getFontFamily() . '"';
         $svg .= "\r\n" . ' font-size="' . $this->getFontSize() . '"';

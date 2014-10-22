@@ -320,6 +320,7 @@ class GfxImage extends GfXComponent
         $svg .= "\r\n" . '<image';
         $svg .= "\r\n" . ' cmeo:ref="' . $this->getCmeoRef(). '"';
         $svg .= "\r\n" . ' cmeo:link="' . $this->getCmeoLink(). '"';
+        $svg .= "\r\n" . ' cmeo:editGroup="' . $this->getEditGroup(). '"';
         $svg .= "\r\n" . ' xlink:href="' . $this->getImageUrl() . '"';
         $svg .= "\r\n" . ' linkurl="' . $this->getLinkUrl() . '"';
 

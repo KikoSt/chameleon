@@ -5,7 +5,7 @@
                type="text"
                class="form-control picker"
                name="<?php echo $element->getId();?>#fill"
-               value="<?php echo $element->getFill()->getHex();?>"
+               value="<?php echo (!empty($element->getFill()) ? $element->getFill()->getHex() : '#000000');?>"
                placeholder="color"
                style="float:left;"
             />
