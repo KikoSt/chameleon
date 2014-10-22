@@ -1,10 +1,10 @@
 <div class="row">
     <label class="col-md-3">Bg color:</label>
     <div>
-        <input id="fill"
+        <input id="bgcolor"
                type="text"
                class="form-control picker"
-               name="<?php echo $element->getId();?>#fill"
+               name="<?php echo $element->getId();?>#bgcolor"
                value="<?php echo (!empty($element->getBackgroundcolor()) ? $element->getBackgroundcolor()->getHex() : '#000000');?>"
                placeholder="color"
                style="float:left;"

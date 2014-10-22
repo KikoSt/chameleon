@@ -1,4 +1,4 @@
-<div id="panel_<?php echo $element->getId();?>" group="<?php echo $element->getEditGroup(); ?>" class="panel panel-default component">
+<div id="panel_<?php echo $element->getId();?>" data-type="text" data-groupid="<?php echo $element->getEditGroup(); ?>" class="panel panel-default component">
     <div class="panel-heading texttitle">
         <h3 class="panel-title ">
                 Text: <?php echo str_replace('_', ' ', $element->getId());?>
