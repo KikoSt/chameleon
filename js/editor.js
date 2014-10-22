@@ -469,19 +469,25 @@ $(document).ready(function() {
         });
     });
 
-    $('.preset').click(function(){
-        var identifier = $(this).attr('id').split('#');
+    $('.preset').on('click', function(){
+        var identifier = $(this).attr('id').split('--');
+
+        console.log(identifier);
 
         switch(identifier[1])
         {
             case "primary":
             {
-                $('#panel_'+identifier[0]+' #fill').val($('#primary-color').val());
+                var primaryColor = $('#primary-color').val();
+                $('#panel_'+identifier[0]+' #fill').val(primaryColor);
+                $('[name="'+identifier[0]+'#fill"]').colorpicker('setValue', primaryColor);
                 break;
             }
             case "secondary":
             {
-                $('#panel_'+identifier[0]+' #fill').val($('#secondary-color').val());
+                var secondaryColor = $('#secondary-color').val();
+                $('#panel_'+identifier[0]+' #fill').val(secondaryColor);
+                $('[name="'+identifier[0]+'#fill"]').colorpicker('setValue', secondaryColor);
                 break;
             }
             case "presetFont":
@@ -494,6 +500,7 @@ $(document).ready(function() {
                 break;
             }
         }
+        $('#editor').trigger('submit');
     });
 
     //handles the enabling/disabling of the shadow form elements
