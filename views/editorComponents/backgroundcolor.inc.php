@@ -9,9 +9,8 @@
                placeholder="color"
                style="float:left;"
             />
-        <button id="<?php echo $element->getId();?>#primary" type="button" class="btn btn-xs btn-info preset presetcolor"
-                style="margin-left: 3px;
-        ">1st</button>
-        <button id="<?php echo $element->getId();?>#secondary" type="button" class="btn btn-xs btn-success preset presetcolor">2nd</button>
+        <div id="<?php echo $element->getId();?>--preview" class="presetcolor" style="display: inline; float: left; background-color: <?php echo (!empty($element->getBackgroundcolor()) ? $element->getBackgroundColor()->getHex() : '#000000');?>;"></div>
+        <button id="<?php echo $element->getId();?>--bgprimary" style="margin-left: 3px;" type="button" class="btn btn-xs preset presetcolor primary"></button>
+        <button id="<?php echo $element->getId();?>--bgsecondary" type="button" class="btn btn-xs preset presetcolor secondary"></button>
     </div>
 </div>
