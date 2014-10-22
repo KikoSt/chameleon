@@ -18,7 +18,7 @@ $(document).ready(function() {
         var id = $(this).attr('id');
         $('.component').hide();
         $('#panel_' + id).show();
-        $('#grouppanel_' + $('#panel_' + id).attr('group')).show();
+        $('#grouppanel_' + $('#panel_' + id).attr('data-groupid')).show();
 
     });
 
@@ -34,6 +34,12 @@ $(document).ready(function() {
     $('.glyphicon-resize-small').on('click', function(e) {
         $(this).hide();
     });
+
+
+    function updateEditGroup(groupId, param, value) {
+        console.log('Updating group ' + groupId + ', param ' + param + ' = ' + value);
+    }
+
 
 
     /* ***********************************
@@ -163,11 +169,211 @@ $(document).ready(function() {
 
     $('.picker').colorpicker();
 
+    $('.picker').colorpicker().on('changeColor', function(e) {
+        $(this).attr('value', e.color.toHex());
+    });
+
+    $('.picker').colorpicker().on('show', function(e) {
+        // enable preview update for this color picker again
+        $(this).data('disable_update', false);
+    });
+
+    $('.picker').colorpicker().on('hide', function(e) {
+        // for some strange unknown reason, after the color picker had been selected once
+        // it will always receive a hide event when the page is clicked somewhere.
+        // We disable permanent updates here and enable them again when the picker is opened
+        if($(this).data('disable_update') != true) {
+            $(this).trigger('change');
+        }
+        $(this).data('disable_update', true);
+    });
+
+
     $("#fileUpload").fileinput();
 
-    $('#awesomeEditor input').change(function() {
+    $('#awesomeEditor input, #awesomeEditor select').change(function() {
+        var groupId = 0;
+        var groupEdit = false;
+        var attributeName = '';
+
+        // TODO: recalculate groups
+
+        if($(this).parents('[id^=grouppanel]').length) {
+            // if group is edited:
+            groupId = $(this).parents('[id^=grouppanel]').attr('id').replace('grouppanel_', '');
+            if(groupId > 0) {
+                // NOTE: the value attribute specifies the initial value of an input,
+                // but the value property specifies the current value - this comes in
+                // VERY handy here :)
+                // console.log($(this).prop('value'));
+                // console.log($(this).attr('value'));
+                //
+                // find the name of the edited attribute
+                // console.log(this);
+                attributeName = $(this).attr('name').replace(/.*\#/i, '');
+
+                // console.log(attributeName);
+
+                updateField = $(document).find('[name="' + groupId + '#' + attributeName + '"]');
+
+                // console.log('UpdateField: %o', updateField);
+
+                var oldValue = $(this).attr('value');
+                var newValue = $(this).prop('value');
+
+                var elements = $("[data-groupid=" + groupId + "]");
+
+                // TODO: Update imageMap
+                //       implement colorpicker updates
+
+                // Note: even if the single component editor panes aren't displayed
+                // we need to update them in order to have the data up to date for generating
+                // previews and saving!
+
+                switch(attributeName) {
+                    case 'x':
+                    case 'y':
+                        var delta = newValue - oldValue;
+
+                        console.log(newValue + ' - ' + oldValue + ' = ' + delta);
+
+                        elements.each(function (i, member) {
+                            var inElem = $(member).find('[name$="#' + attributeName + '"]');
+                            elementName = inElem.attr('name').replace(/\#.*/i, '')
+                            $(inElem).prop('value', (Number(inElem.prop('value')) + Number(delta)));
+                            $(inElem).attr('value', (Number(inElem.attr('value')) + Number(delta)));
+
+                            // find image map area element
+
+                            $("#previewImage img").unbind('mapster');
+
+                            var imapElement = $('area#' + elementName);
+                            var coords = $(imapElement).attr('coords').split(',');
+
+                            if(attributeName === 'x') {
+                                coords[0] = Number(coords[0]) + Number(delta);
+                                coords[1] = Number(coords[1]);
+                                coords[2] = Number(coords[2]) + Number(delta);
+                                coords[3] = Number(coords[3]);
+                            } else if(attributeName === 'y') {
+                                coords[0] = Number(coords[0]);
+                                coords[1] = Number(coords[1]) + Number(delta);
+                                coords[2] = Number(coords[2]);
+                                coords[3] = Number(coords[3]) + Number(delta);
+                            }
+
+                            coords = coords.join(',');
+                            // console.log(coords);
+
+                            $(imapElement).attr('coords', coords);
+                            $(imapElement).prop('coords', coords);
+
+                            $("#previewImage img").mapster({
+                                fillColor: 'ff005',
+                                fillOpacity: 0.1,
+                                strokeWidth: 3,
+                                stroke: true,
+                                strokeColor: 'ff0000',
+                                singleSelect: true,
+                                clickNavigate: false
+                            });
+
+                            var coords = $(imapElement).attr('coords').split(',');
+                            console.log(coords);
+                        });
+                        // TODO: calculate new image map coordinates
+                        //
+                        break;
+                    case 'text':
+                        console.log('text');
+                        elements.each(function (i, member) {
+                            inElem = $(member).find('[name$="' + attributeName + '"]');
+                            // console.log('s% ==? %s', inElem.attr('value'), Number(inElem.attr('value')));
+                            $(inElem).prop('value', newValue);
+                            $(inElem).attr('value', newValue);
+                        });
+                        break;
+                    case 'fontFamily':
+                        console.log('fontFamily');
+                        elements.each(function (i, member) {
+                            inElem = $(member).find('[name$="' + attributeName + '"]');
+                            if($(inElem).find('option[value="' + newValue + '"]').length) {
+                                $(inElem).find('option[value="' + newValue + '"]').prop('selected', true);
+                            }
+                        });
+                        break;
+                    case 'cmeoLink':
+                        console.log('cmeoLink');
+                        elements.each(function (i, member) {
+                            inElem = $(member).find('[name$="' + attributeName + '"]');
+                            if($(inElem).find('option[value="' + newValue + '"]').length) {
+                                $(inElem).find('option[value="' + newValue + '"]').prop('selected', true);
+                            }
+                        });
+                        break;
+                    case 'fgcolor':
+                        console.log('fgcolor');
+                        elements.each(function (i, member) {
+                            if($(member).attr('data-type') == "text") {
+                                inElem = $(member).find('[name$="fill"]');
+                                $(inElem).prop('value', newValue);
+                                $(inElem).attr('value', newValue);
+                            }
+                        });
+                        break;
+                    case 'bgcolor':
+                        console.log('bgcolor');
+                        elements.each(function (i, member) {
+                            if($(member).attr('data-type') == "rectangle") {
+                                inElem = $(member).find('[name$="fill"]');
+                                $(inElem).prop('value', newValue);
+                                $(inElem).attr('value', newValue);
+                            }
+                        });
+                        break;
+                    default:
+                        console.log('Attribute %s not known ... ', attributeName);
+                        break;
+                }
+            }
+        } else {
+            var elementName = $(this).attr('name').replace(/\#.*/i, '');
+            console.log(elementName);
+
+            // if individual element is edited:
+//            groupId = Number($(this).parents('[data-groupid]').attr('data-groupid'));
+//            console.log('group');
+//            console.log($(this));
+//            groupEdit = true;
+//            if(groupId > 0) {
+//                attributeName = $(this).attr('name').replace(/.*\#/i, '');
+//
+//                updateField = $(document).find('[name="' + groupId + '#' + attributeName + '"]');
+//
+//                if(attributeName === 'x' || attributeName === 'y') {
+//                    var oldValue = $(this).attr('value');
+//                    var newValue = $(this).prop('value');
+//                    var delta = newValue - oldValue;
+//                    updateField.attr('value', (Number(updateField.attr('value')) + Number(delta)));
+//                }
+//            }
+        }
+        $('#preview').trigger('click');
+        console.log('click triggered');
         somethingChanged = true;
     });
+
+    function updateGroupFromElements(groupId) {
+    }
+
+    function updateElementsFromGroup(groupId) {
+    }
+
+    function getElementsByGroupId(groupId) {
+        var elements = $(document).find("[data-groupid=" + groupId + "]");
+        console.log(elements);
+        return elements;
+    }
 
     $('#overview').click(function() {
         if(somethingChanged === true) {
