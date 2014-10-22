@@ -33,7 +33,9 @@
         $this->container = $container;
         $this->x = $this->container->getCanvasWidth();
         $this->y = $this->container->getCanvasHeight();
-        $this->width = 0;
+        $this->maxX   = 0;
+        $this->maxY   = 0;
+        $this->width  = 0;
         $this->height = 0;
     }
 
@@ -44,22 +46,32 @@
             // check all elements of the container for elements with matching groupId,
             if($element->getEditGroup() === $this->getId())
             {
-                if((int)$element->getX() < (int)$this->getX())
-                {
-                    $this->setX($element->getX());
-                }
-                if($element->getY() < $this->getY())
-                {
-                    $this->setY($element->getY());
+                $elemX      = (int)$element->getX();
+                $elemY      = (int)$element->getY();
+                $elemWidth  = (int)$element->getWidth();
+                $elemHeight = (int)$element->getHeight();
+
+                if($element instanceof GfxText) {
+                    $elemY -= $elemHeight;
                 }
 
-                if((int)$element->getWidth() > (int)$this->width)
+                // TODO: adjust for text :(
+                if($elemX < (int)$this->getX())
                 {
-                    $this->width = $element->getWidth();
+                    $this->setX($elemX);
                 }
-                if($element->getHeight() > $this->height)
+                if($elemY < $this->getY())
                 {
-                    $this->height = $element->getHeight();
+                    $this->setY($elemY);
+                }
+
+                if($elemX + $elemWidth > (int)$this->maxX)
+                {
+                    $this->maxX = (int)$elemX + (int)$elemWidth;
+                }
+                if($elemY + $elemHeight > (int)$this->maxY)
+                {
+                    $this->maxY = (int)$elemY + (int)$elemHeight;
                 }
 
                 // foreground and background color: Rectangle defines bg, text defines fg
@@ -82,6 +94,10 @@
                 // $this->elements[] = $element;
             }
         }
+
+        $this->width  = $this->maxX - $this->x;
+        $this->height = $this->maxY - $this->y;
+
     }
 
 
