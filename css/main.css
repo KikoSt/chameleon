@@ -1,5 +1,6 @@
 body {
     font-family: 'Clear Sans Light', Arial, sans-serif !important;
+    background-color: #e8e8e8;
 }
 
 .glyphicon-remove-circle
@@ -16,5 +17,11 @@ body {
 a.subnav
 {
     cursor: pointer;
+}
+
+.preview
+{
+    max-width: 346px;
+    max-height: 362px;
 }
 

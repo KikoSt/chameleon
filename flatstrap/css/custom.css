@@ -13,12 +13,6 @@ li,
     overflow: visible;
 }
 
-.preview
-{
-    max-width: 346px;
-    max-height: 362px;
-}
-
 a,
 a:hover
 {
@@ -46,7 +40,15 @@ select
     width:150px !important;
 }
 
+#overview select{
+    width:100% !important;
+}
 
+.picker
+{
+    width:118px !important;
+    cursor: pointer;
+}
 
 .col-md-1,
 .col-md-2,
@@ -86,12 +88,21 @@ select
     background-color: #45b686 !important;
 }
 
+.overviewTitle
+{
+    background-color: #4583c6 !important;
+    color: #ffffff !important;
+    font-size: 1.4em;
+    margin-bottom: 3px;
+}
+
 .list-group-item
 {
-    color: #000000 !important;
-    background-color: #45b686  !important;
-    border-color: #45b686 !important;
-    padding: 0px !important;
+    color: #555 !important;
+    background-color: transparent;
+    border-color: transparent;
+    padding: 0 !important;
+    font-size: 1.3em;
 }
 
 .panel
@@ -121,7 +132,7 @@ select
 }
 
 form {
-    margin: 0px;
+    margin: 0;
 }
 
 .form-control[disabled]
@@ -139,20 +150,23 @@ label {
 
 .thumbnail {
     text-align:center !important;
-    background-color: #333333 !important;
-    border-radius: 0px !important;
+    border-radius: 0 !important;
     overflow: hidden;
     vertical-align: middle !important;
     padding: 1px !important;
     position: relative;
     width: 540px;
     height: 380px;
-    margin-left: 10px;
+    margin-left: 30px;
+    margin-top: 10px;
 }
 
-.thumbnail:hover{
-    background-color: #6a6a6a !important;
-    cursor: pointer;
+.thumbnail-half{
+    width: 270px;
+}
+
+.thumbnail-quarter{
+    width: 135px;
 }
 
 .thumbnail > li {
@@ -161,8 +175,15 @@ label {
     float: none !important; /* this is the part that makes it work */
 }
 
+.thumbnail > div > img
+{
+    padding: 5px;
+    max-width: 260px !important;
+    max-height: 160px !important;
+}
+
 #leftbox{
-    position: absolute;
+    position: fixed;
     margin: 0px;
     right: auto;
     z-index: 0;
@@ -187,8 +208,6 @@ label {
     display: block;
     padding: 0 0 0 22px !important;
     font-size: 12px;
-    /*color: #428bca !important;*/
-    /*background-color: #FFFFFF !important;*/
 }
 
 .modal input,
@@ -209,6 +228,7 @@ input[type="text"]:disabled
 {
     height: 20px !important;
     width: 32px !important;
+    border: 1px solid #FFFFFF;
 }
 
 .presetfont
@@ -238,15 +258,6 @@ input[type="text"]:disabled
     left: -3px !important;
 }
 
-.active
-{
-    /*background-color: #428bca;*/
+.template{
+    margin-bottom: 30px !important;
 }
-
-.active a
-{
-    /*color: #FFFFFF !important;*/
-}
-
-
-

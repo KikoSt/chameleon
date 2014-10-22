@@ -35,7 +35,8 @@ class Overview extends Controller
         $container->setCategoryId(0);
         $container->setPreviewMode(true);
 
-        $this->view = $this->setLayout('views/overview.phtml')->getView();
+        $this->view = $this->setLayout('views/overview_proto.phtml')->getView();
+        $this->view->advertiserId = $this->getAdvertiserId();
 
         // get all templates for company / advertiser
         try
@@ -56,6 +57,8 @@ class Overview extends Controller
             }
             else
             {
+                $categories = $connector->getCategories();
+
                 foreach($templates as $template)
                 {
                     $baseFilename = getPreviewFileName($template);
@@ -64,12 +67,16 @@ class Overview extends Controller
 
                     $container->setSource($template->getSvgContent());
                     $container->setId($template->getBannerTemplateId());
-                    try {
+
+                    try
+                    {
                         $container->parse();
                     }
                     catch(Exception $e)
                     {
+                        continue;
                     }
+
                     $container->saveSvg();
 
                     $container->setTarget('GIF');
@@ -88,24 +95,14 @@ class Overview extends Controller
                     $preview->advertiserId = $this->getAdvertiserId();
                     $preview->companyId = $this->getCompanyId();
                     $preview->fileSize = getRemoteFileSize($file);
-                    $preview->dateCreate = date("Y-m-d H.i:s", parseJavaTimestamp($template->getDateCreate()));
-                    $preview->dateModified = date("Y-m-d H.i:s", parseJavaTimestamp($template->getDateModified()));
+                    $preview->dateCreate = date("Y-m-d H:i:s", parseJavaTimestamp($template->getDateCreate()));
+                    $preview->dateModified = date("Y-m-d H:i:s", parseJavaTimestamp($template->getDateModified()));
                     $preview->templateId = $template->getBannerTemplateId();
                     $preview->parentTemplateId = $template->getParentBannerTemplateId();
                     $preview->name = $template->getName();
-                    $preview->categorySubscription = $connector->getSubscribedCategoriesByTemplateId($template->getBannerTemplateId());
-                    $preview->templateSubsriptions = $template->getCategorySubscriptions();
-                    $preview->page = 'overview';
+                    $preview->templateSubscription = $template->getCategorySubscriptions();
+                    $preview->availableCategories = $this->getPrunedAvailableCategories($categories, $preview->templateSubscription);
 
-                    if($container->getCanvasWidth() >= $container->getCanvasHeight())
-                    {
-                        $newHeight = $container->getCanvasHeight() * (281 / $container->getCanvasWidth());
-                        $preview->marginTop = (481 - intval($newHeight)) / 4;
-                    }
-                    else
-                    {
-                        $preview->marginTop = 4;
-                    }
                     $previews[] = $preview;
                 }
             }
@@ -113,7 +110,6 @@ class Overview extends Controller
 
         $this->view->previews = $previews;
         $this->view->page = 'overview';
-        $this->view->categories = $connector->getCategories();
 
         return $this->view;
     }
@@ -126,6 +122,25 @@ class Overview extends Controller
     public function setCompanyId($companyId)
     {
         $this->companyId = $companyId;
+    }
+
+    private function getPrunedAvailableCategories($categories, $templateSubscriptions)
+    {
+        $prunedCategories = array();
+
+        foreach($categories as $category)
+        {
+            $prunedCategories[$category->id] = $category->name;
+        }
+
+        foreach($templateSubscriptions as $subscription)
+        {
+            if($subscription->userStatus === "ACTIVE")
+            {
+                unset($prunedCategories[$subscription->idCategory]);
+            }
+        }
+        return $prunedCategories;
     }
 
     public function getCompanyId()

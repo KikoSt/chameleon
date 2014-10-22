@@ -1,7 +1,7 @@
 <div class="row">
     <label class="col-md-3">Font:</label>
     <div>
-        <select class="form-control" id="<?php echo $element->getId();?>#fontFamily"
+        <select class="form-control" id="<?php echo $element->getId();?>_fontFamily"
                 name="<?php echo $element->getId();?>#fontFamily" style="float:left;">
             <?php
             foreach($this->fontlist as $key => $font):

@@ -11,6 +11,20 @@
             </ul>
         </div>
         <div id="awesomeEditor" class="row" style="margin-top: 115px;margin-left: 50px;">
+            <div>
+                <div class="alert alert-info alert-dismissible previewalert" role="alert">
+                    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    Preview created!
+                </div>
+                <div class="alert alert-success alert-dismissible savealert" role="alert">
+                    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    Template changes saved!
+                </div>
+                <div class="alert alert-danger alert-dismissible clonealert" role="alert">
+                    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <span class="">Clone created, you're now working on the creative!</span>
+                </div>
+            </div>
             <div class="col-md-6" style="border-right: 1px solid #c3c3c3;">
                 <div class="row">
                     <?php
@@ -46,6 +60,18 @@
                         <button id="clone" type="submit" class="btn btn-warning" title="Clone template">
                             <span class="glyphicon glyphicon-tags"></span>
                         </button>
+                    </div>
+                    <div class="alert alert-info alert-dismissible previewalert" role="alert">
+                        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        Preview created!
+                    </div>
+                    <div class="alert alert-success alert-dismissible savealert" role="alert">
+                        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        Tamplate changes saved!
+                    </div>
+                    <div class="alert alert-danger alert-dismissible clonealert" role="alert">
+                        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        Clone created, you're now working on the creative!
                     </div>
                 </div>
             </div>
@@ -88,12 +114,22 @@ $(document).ready(function() {
 
     $('.btn').on('click', function(e) {
         btn = $(this).attr('id');
+
+        if(btn ==='clone' || btn ==='save' || btn === 'preview')
+        {
+            $("."+btn+"alert").removeClass("in").show().delay(1000).addClass("in").fadeOut(2000);
+        }
     });
+
+    $('.alert').hide();
 
     $('.subnav').on('click', function(e) {
         var id = $(this).attr('id');
+
         $('.component').hide();
         $('#panel_' + id).show();
+        $('#' + id + '--primary').css("background-color", $('#primary-color').val());
+        $('#' + id + '--secondary').css("background-color", $('#secondary-color').val());
 
     });
 
@@ -110,6 +146,41 @@ $(document).ready(function() {
         $(this).hide();
     });
 
+    //handles the enabling/disabling of the shadow form elements
+    $('#shadowCheckBox').click(function() {
+        var id = $(this).attr('value');
+
+        if($(this).is(":checked"))
+        {
+            $(this).attr("checked", true);
+            $("#" + id + "_shadowColor").attr('disabled', false).addClass('picker');
+            $("#" + id + "_shadowDist").attr('disabled', false);
+        }
+        else
+        {
+            $(this).attr("checked", false);
+            $("#" + id + "_shadowColor").attr('disabled', true).removeClass('picker').val('');
+            $("#" + id + "_shadowDist").attr('disabled', true).val('');
+        }
+    });
+
+    //handles the enabling/disabling of the stroke form elements
+    $('#strokeCheckBox').click(function() {
+        var id = $(this).attr('value');
+
+        if($(this).is(":checked"))
+        {
+            $(this).attr("checked", true);
+            $("#" + id + "_strokeColor").attr('disabled', false).addClass('picker');
+            $("#" + id + "_strokeWidth").attr('disabled', false);
+        }
+        else
+        {
+            $(this).attr("checked", false);
+            $("#" + id + "_strokeColor").attr('disabled', true).removeClass('picker').val('');
+            $("#" + id + "_strokeWidth").attr('disabled', true).val('');
+        }
+    });
 
     /* ***********************************
      * FILE UPLOAD
@@ -156,7 +227,7 @@ $(document).ready(function() {
         return false;
 
         function onloadHandler(e, args) {
-            // $('#previewalert').show();
+            $('#previewalert').show();
             response = $.parseJSON(xhr.response);
             imgsrc = response.imgsrc;
             $("#previewImage img").attr('src', imgsrc + new Date().getTime());
@@ -168,7 +239,6 @@ $(document).ready(function() {
         function onprogressHandler() {
         }
     });
-
 
     $("#previewImage img").mapster({
         fillColor: 'ff005',
@@ -192,7 +262,8 @@ $(document).ready(function() {
 
         xhr.onreadystatechange = function(e) {
             if(xhr.readyState == 4) {
-                if(action === 'save') {
+                if(action === 'save')
+                {
                     somethingChanged = false;
                 }
                 response = $.parseJSON(xhr.response);
@@ -200,12 +271,10 @@ $(document).ready(function() {
                 $("#previewImage img").unbind('mapster');
                 $("#previewImage img").attr('src', imgsrc + '?ts=' + new Date().getTime());
             }
+
         }
 
-
         var formData = new FormData();
-
-        /* ******************************************************************** */
         var nodeList = $(document).find($('[type="file"]'));
 
         for (var i = 0; i < nodeList.length; i++)
@@ -222,9 +291,8 @@ $(document).ready(function() {
                 formData.append(targetId, file);
             }
         }
-        /* ******************************************************************** */
 
-        var data = $('#editor').serializeArray(); // + "&action=" + btn;
+        var data = $('#editor').serializeArray();
 
         formData.append('action', action);
 
@@ -236,11 +304,32 @@ $(document).ready(function() {
         xhr.send(formData);
     });
 
-    $('.picker').colorpicker();
+    $('.picker').colorpicker().on('changeColor', function(e){
+        var color = e.color.toHex();
+        var id = $(this).attr('name').split('#');
+        $(this).val(color);
+
+        if(id[1] === 'primary-color' || id[1] === 'secondary-color')
+        {
+            $('#' + id[1] + '--preview').css("background-color", color);
+        }
+        else
+        {
+            $('#' + id[0] + '--preview').css("background-color", color);
+        }
+    });
+
+    $('.globalColor').focusout(function(){
+        var id = $(this).attr('id');
+        var color = $('#'+id).val();
+        var idsplit = id.split('-');
+        $('.'+idsplit[0]).css("background-color", color);
+        $('#' + id + '--preview').css("background-color", color);
+    });
 
     $("#fileUpload").fileinput();
 
-    $('#awesomeEditor input').change(function() {
+    $('#awesomeEditor').find('input').change(function() {
         somethingChanged = true;
     });
 
@@ -269,7 +358,7 @@ $(document).ready(function() {
     .trigger( "change" );
 
 
-    $('body').on('click', '#addCategory', function(e) {
+    $('.addCategoryEditor').click(function(e) {
         var data = {};
         var categoryId    = $('#category').find(':selected').val()
         var categoryName  = $.trim($('#category').find(':selected').text());
@@ -292,7 +381,7 @@ $(document).ready(function() {
         });
     });
 
-    $('body').on('click', '#categoryContainer .removeCategory', function(e) {
+    $('.removeCategoryEditor').click(function(e) {
         var data = {};
         data.templateId   = '<?php echo $this->templateId; ?>';
         var categoryId    = $(this).attr('id');
@@ -313,26 +402,30 @@ $(document).ready(function() {
     });
 
     $('.preset').click(function(){
-        var identifier = $(this).attr('id').split('#');
+        var identifier = $(this).attr('id').split('--');
 
         switch(identifier[1])
         {
             case "primary":
             {
-                $('#panel_'+identifier[0]+' #fill').val($('#primary-color').val());
+                var primaryColor = $('#primary-color').val();
+                $('#panel_'+identifier[0]+' #fill').val(primaryColor);
+                $('[name="'+identifier[0]+'#fill"]').colorpicker('setValue', primaryColor);
                 break;
             }
             case "secondary":
             {
-                $('#panel_'+identifier[0]+' #fill').val($('#secondary-color').val());
+                var secondaryColor = $('#secondary-color').val();
+                $('#panel_'+identifier[0]+' #fill').val(secondaryColor);
+                $('[name="'+identifier[0]+'#fill"]').colorpicker('setValue', secondaryColor);
                 break;
             }
             case "presetFont":
             {
-                var id = identifier[0] + "#fontfamily";
+                var id = "#" + identifier[0] + "_fontFamily";
 
-                $('select option').filter(function() {
-                    return $(this).text() == $('#presetFontFamily option:selected').text();
+                $(id + ' option').filter(function() {
+                    return $(this).text() === $('#presetFontFamily').find('option:selected').text();
                 }).prop('selected', true);
                 break;
             }
