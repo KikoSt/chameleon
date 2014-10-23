@@ -126,40 +126,39 @@ function getImageMap($container, $displayComponentLinks)
 
     foreach($elements AS $curElement)
     {
-         if($displayComponentLinks) // || $curElement->getEditGroup() != 0)
+         if($displayComponentLinks || $curElement->getEditGroup() == 0)
          {
-             continue;
-         }
-        $imageMap .= "\n";
-        $imageMap .= '<area shape="rect" coords="';
-        if($curElement instanceof GfxText)
-        {
-            $imageMap .= (int) ($curElement->getX() - $textfieldpadding) . ',';
-            $imageMap .= (int) ($curElement->getY() - $curElement->getHeight() - $textfieldpadding) . ',';
-        }
-        else
-        {
-            $imageMap .= (int) $curElement->getX() . ',';
-            $imageMap .= (int) $curElement->getY() . ',';
-        }
+            $imageMap .= "\n";
+            $imageMap .= '<area shape="rect" coords="';
+            if($curElement instanceof GfxText)
+            {
+                $imageMap .= (int) ($curElement->getX() - $textfieldpadding) . ',';
+                $imageMap .= (int) ($curElement->getY() - $curElement->getHeight() - $textfieldpadding) . ',';
+            }
+            else
+            {
+                $imageMap .= (int) $curElement->getX() . ',';
+                $imageMap .= (int) $curElement->getY() . ',';
+            }
 
-        if($curElement instanceof GfxText)
-        {
-            $imageMap .= (int) ($curElement->getX() + $curElement->getWidth() + $textfieldpadding) . ',';
-            $imageMap .= (int) ($curElement->getY() + $textfieldpadding);
+            if($curElement instanceof GfxText)
+            {
+                $imageMap .= (int) ($curElement->getX() + $curElement->getWidth() + $textfieldpadding) . ',';
+                $imageMap .= (int) ($curElement->getY() + $textfieldpadding);
+            }
+            else
+            {
+                $imageMap .= (int) $curElement->getX() + $curElement->getWidth() . ',';
+                $imageMap .= (int) $curElement->getY() + $curElement->getHeight();
+            }
+            $imageMap .= '"';
+            $imageMap .= ' href="#"';
+            $imageMap .= ' alt="' . $curElement->getId() . '"';
+            $imageMap .= ' title="' . $curElement->getId() . '"';
+            $imageMap .= ' id="' .$curElement->getId() . '"';
+            $imageMap .= ' class="subnav"';
+            $imageMap .= ' />';
         }
-        else
-        {
-            $imageMap .= (int) $curElement->getX() + $curElement->getWidth() . ',';
-            $imageMap .= (int) $curElement->getY() + $curElement->getHeight();
-        }
-        $imageMap .= '"';
-        $imageMap .= ' href="#"';
-        $imageMap .= ' alt="' . $curElement->getId() . '"';
-        $imageMap .= ' title="' . $curElement->getId() . '"';
-        $imageMap .= ' id="' .$curElement->getId() . '"';
-        $imageMap .= ' class="subnav"';
-        $imageMap .= ' />';
     }
     $imageMap .= "\n";
     $imageMap .= '</map>';
