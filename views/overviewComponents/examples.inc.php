@@ -1,9 +1,9 @@
 <div class="thumbnail col-md-4">
     <div class="overviewTitle">Preview of existing creatives</div>
-    <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+    <div id="carousel-example-generic" class="carousel slide" data-ride="carousel" style="margin-top: 10px;">
 
         <!-- Wrapper for slides -->
-        <div class="carousel-inner">
+        <div class="carousel-inner" style="padding-left: 5px; padding-right: 5px;">
             <div class="item active">
                 <img src="<?php echo BASE_DIR;?>/output/170/122/0/rtest_117.gif" alt="..."
                      style="max-height: 350px; display: block;margin: auto">
@@ -17,13 +17,6 @@
                      style="max-height: 350px; display: block;margin: auto">
             </div>
         </div>
-
-        <!-- Indicators -->
-<!--        <ol class="carousel-indicators">-->
-<!--            <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>-->
-<!--            <li data-target="#carousel-example-generic" data-slide-to="1"></li>-->
-<!--            <li data-target="#carousel-example-generic" data-slide-to="2"></li>-->
-<!--        </ol>-->
 
         <!-- Controls -->
         <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">

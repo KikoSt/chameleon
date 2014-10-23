@@ -99,7 +99,8 @@ class Overview extends Controller
                     $preview->dateModified = date("Y-m-d H:i:s", parseJavaTimestamp($template->getDateModified()));
                     $preview->templateId = $template->getBannerTemplateId();
                     $preview->parentTemplateId = $template->getParentBannerTemplateId();
-                    $preview->name = $template->getName();
+                    $preview->shortDescription = $this->getShortenedDescription($template->getName());
+                    $preview->description = $template->getName();
                     $preview->templateSubscription = $template->getCategorySubscriptions();
                     $preview->availableCategories = $this->getPrunedAvailableCategories($categories, $preview->templateSubscription);
 
@@ -122,6 +123,20 @@ class Overview extends Controller
     public function setCompanyId($companyId)
     {
         $this->companyId = $companyId;
+    }
+
+    private function getShortenedDescription($description)
+    {
+        if(str_word_count($description, 0) == 1)
+        {
+            $description = substr($description, 0, 20) . '...';
+        }
+        else if(strlen($description) > 60)
+        {
+            $description = substr($description, 0, 60) . '...';
+        }
+
+        return $description;
     }
 
     private function getPrunedAvailableCategories($categories, $templateSubscriptions)
