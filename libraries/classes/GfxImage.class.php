@@ -53,7 +53,6 @@ class GfxImage extends GfXComponent
     public function create($svgRootNode)
     {
         parent::create($svgRootNode);
-        $attr = $svgRootNode->attributes();
         $imageUrl = (string) $svgRootNode->attributes('xlink', true)->href;
         if((string) $svgRootNode->attributes()->linkurl !== '')
         {
