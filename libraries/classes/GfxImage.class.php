@@ -62,18 +62,7 @@ class GfxImage extends GfXComponent
 
         $imageUrl = str_replace("//assets", "/assets", $imageUrl);
 
-
-
-        if(fopen(BASE_DIR . $imageUrl, "r"))
-        {
-            $this->setImageUrl($imageUrl);
-        }
-        else
-        {
-            $this->setImageUrl('/assets/image_not_found.jpg');
-//            $this->setError('Image ' . $imageUrl . ' not found!');
-        }
-//        $this->getContainer()->setOverallError('image', $this->getError());
+        $this->setImageUrl($imageUrl);
     }
 
     /**
@@ -208,11 +197,15 @@ class GfxImage extends GfXComponent
      */
     public function resizeImage($file, $crop=false)
     {
+        if(false === file_get_contents(BASE_DIR . $file, 0, null, 0, 1))
+        {
+            $file = '/assets/image_not_found.jpg';
+        }
         list($originalWidth, $originalHeight) = getimagesize(BASE_DIR . $file);
 
         if($originalWidth <= 0 || $originalHeight <=0)
         {
-            throw new Exception('Getting file ' . $file . ' obviously failed; Dimensions <= zero found');
+            throw new Exception('Getting file ' . $file . ' failed; Dimensions <= zero found');
         }
         $aspectRatio = $originalWidth / $originalHeight;
 
@@ -352,26 +345,12 @@ class GfxImage extends GfXComponent
      * check if file exists and set image url
      *
      * @param $imageUrl
-     * @throws FileNotFoundException
      */
     public function setImageUrl($imageUrl)
     {
         $imageUrl = preg_replace('/^\/+/', '/', $imageUrl);
 
-        if($imageHandle = fopen(BASE_DIR . $imageUrl, "r"))
-        {
-            $this->imageUrl = $imageUrl;
-        }
-        else
-        {
-            $this->imageUrl = "/assets/image_not_found.jpg";
-            //throw new Exception('Image not found: ' . $imageUrl);
-        }
-
-        if(is_resource($imageHandle))
-        {
-            fclose($imageHandle);
-        }
+        $this->imageUrl = $imageUrl;
     }
 
     /**
