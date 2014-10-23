@@ -180,11 +180,11 @@ label {
     float: none !important; /* this is the part that makes it work */
 }
 
-.thumbnail > div > img
+.thumbnail > div > a > img
 {
-    padding: 5px;
+    padding: 8px 5px;
     max-width: 260px !important;
-    max-height: 160px !important;
+    max-height: 215px !important;
 }
 
 #leftbox{
@@ -242,7 +242,7 @@ input[type="text"]:disabled
     width: 67px !important;
 }
 
-.modal-body button
+.editor-modal-body button
 {
     height: 20px;
     width: 32px;
@@ -250,14 +250,14 @@ input[type="text"]:disabled
     margin-top: 3px;
 }
 
-.modal-content
+.editor-modal-content
 {
     color: #FFFFFF !important;
     background-color: #333333 !important;
     border-color: #333333 !important;
 }
 
-.modal-content .btn .glyphicon
+.editor-modal-content .btn .glyphicon
 {
     top: -4px !important;
     left: -3px !important;
@@ -265,4 +265,9 @@ input[type="text"]:disabled
 
 .template{
     margin-bottom: 30px !important;
+}
+
+.fa-5_3x
+{
+    font-size: 5.3em;
 }

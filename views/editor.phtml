@@ -12,20 +12,6 @@
             </ul>
         </div>
         <div id="awesomeEditor" class="row" style="margin-top: 115px;margin-left: 50px;">
-            <div>
-                <div class="alert alert-info alert-dismissible previewalert" role="alert">
-                    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    Preview created!
-                </div>
-                <div class="alert alert-success alert-dismissible savealert" role="alert">
-                    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    Template changes saved!
-                </div>
-                <div class="alert alert-danger alert-dismissible clonealert" role="alert">
-                    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    <span class="">Clone created, you're now working on the creative!</span>
-                </div>
-            </div>
             <div class="col-md-6" style="border-right: 1px solid #c3c3c3;">
                 <div class="row">
                     <?php
@@ -87,12 +73,12 @@
 <!-- Modal -->
 <div class="modal fade" id="categorySelect" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
+        <div class="modal-content editor-modal-content">
             <div class="modal-header globalsTitle">
                 <button type="button" class="close" data-dismiss="modal"><span class="glyphicon glyphicon-remove-circle"></span></button>
                 <h4 class="modal-title" id="myModalLabel">Select categories:</h4>
             </div>
-            <div class="modal-body">
+            <div class="modal-body editor-modal-body">
                 <?php include('categories.inc.php'); ?>
             </div>
             <div class="modal-footer">

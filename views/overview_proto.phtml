@@ -15,18 +15,41 @@
             <div id="template_<?php echo $preview->templateId; ?>" class="row template" style="background-color: #F2F2F2;">
                 <div class="thumbnail thumbnail-half col-md-2">
                     <div class="overviewTitle">Template</div>
-                    <div style="min-height: 160px;">
-                        <image src="<?php echo $preview->filePath; ?>">
+                    <div style="min-height: 215px;">
+                        <a href="<?php echo BASE_DIR;?>/index.php?page=editor&templateId=<?php echo $preview->templateId; ?>">
+                            <image src="<?php echo $preview->filePath; ?>"
+                                   onmouseover="showtrail('<?php echo $preview->filePath; ?>', 'Test',<?php echo $preview->bannerWidth; ?>,
+                                   <?php echo $preview->bannerHeight; ?>)"
+                                   onmouseout="hidetrail()">
+                            </image>
+                        </a>
                     </div>
 
                     <?php include('overviewComponents/facts.inc.php'); ?>
                 </div>
                 <?php
-                    include('overviewComponents/categoryAlignment.inc.php');
+                    include('overviewComponents/category.inc.php');
                     include('overviewComponents/examples.inc.php');
                     include('overviewComponents/action.inc.php');
                 ?>
             </div>
+            <div class="modal fade" id="categorySelect-<?php echo $preview->templateId; ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header imageTitle">
+                            <button type="button" class="close" data-dismiss="modal"><span class="glyphicon glyphicon-remove-circle"></span></button>
+                            <h4 class="modal-title" id="myModalLabel">Select categories:</h4>
+                        </div>
+                        <div class="modal-body">
+                            <?php include('overviewComponents/categoryAlignment.inc.php'); ?>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal -->
             <input type="hidden" name="templateId" value="<?php echo $preview->templateId; ?>">
             <input type="hidden" name="advertiserId" value="<?php echo $preview->advertiserId; ?>">
             <input type="hidden" name="companyId" value="<?php echo $preview->companyId; ?>">
