@@ -57,15 +57,16 @@ class Editor extends Controller
         if(isset($_REQUEST['advanced']))
         {
             if($_REQUEST['advanced'] == 'true') {
-            $this->view->premiumUser = true;
+            $premiumUser = true;
             } else {
-                $this->view->premiumUser = false;
+                $premiumUser = false;
             }
         }
 
-        $this->view->premiumUser = true;
+        $premiumUser = false;
 
         // view parameters
+        $this->view->premiumUser     = $premiumUser;
         $this->view->imageMap        = getImageMap($container, $premiumUser);
         $this->view->templateId      = $container->getId();
         $this->view->auditUserId     = $auditUserId;
