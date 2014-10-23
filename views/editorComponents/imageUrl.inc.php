@@ -5,7 +5,7 @@
            class="file"
            name="<?php echo $element->getId();?>#imageUrl"
            value="test.try"
-           data-show-upload="true"
+           data-show-upload="false"
            data-show-preview="false"
            placeholder="<?php echo $element->getImageUrl();?>"
         />
