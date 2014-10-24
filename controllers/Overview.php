@@ -104,6 +104,20 @@ class Overview extends Controller
                     $preview->templateSubscription = $template->getCategorySubscriptions();
                     $preview->availableCategories = $this->getPrunedAvailableCategories($categories, $preview->templateSubscription);
 
+                    if((int)$container->getCanvasWidth() > (int)$container->getCanvasHeight())
+                    {
+                        if($container->getCanvasHeight() > 210)
+                        {
+                            $preview->margin = ($container->getCanvasHeight() - 210)/2;
+                        }
+                        else
+                        {
+                            $preview->margin = (210 - $container->getCanvasHeight())/2;
+                        }
+
+                    }
+
+
                     $previews[] = $preview;
                 }
             }

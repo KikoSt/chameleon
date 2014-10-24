@@ -14,7 +14,7 @@
     <label class="col-md-3 text-center" for="<?php echo $element->getId();?>_shadowColor">Color:</label>
     <input id="<?php echo $element->getId();?>_shadowColor"
            type="text"
-           class="form-control picker"
+           class="form-control picker cursor-pointer"
            name="<?php echo $element->getId();?>#shadowColor"
            value="<?php echo (null !== $element->getShadow()) ? $element->getShadow()->getColor()->getHex() : '#000000';?>"
            placeholder="<?php echo (null !== $element->getShadow()) ? $element->getShadow()->getColor()->getHex() : '#000000';?>"

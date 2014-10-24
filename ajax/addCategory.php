@@ -53,6 +53,7 @@ if($success)
 
     // store template
     $result = $connector->sendBannerTemplate($template);
+    var_dump($result);
 }
 
 return $success;

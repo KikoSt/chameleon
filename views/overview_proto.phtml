@@ -15,12 +15,13 @@
             <div id="template_<?php echo $preview->templateId; ?>" class="row template" style="background-color: #F2F2F2;">
                 <div class="thumbnail thumbnail-half col-md-2">
                     <div class="overviewTitle">Template</div>
-                    <div style="min-height: 215px;">
+                    <div style="min-height: 170px;">
                         <a href="<?php echo BASE_DIR;?>/index.php?page=editor&templateId=<?php echo $preview->templateId; ?>">
                             <image src="<?php echo $preview->filePath; ?>"
                                    onmouseover="showtrail('<?php echo $preview->filePath; ?>', 'Test',<?php echo $preview->bannerWidth; ?>,
                                    <?php echo $preview->bannerHeight; ?>)"
-                                   onmouseout="hidetrail()">
+                                   onmouseout="hidetrail()"
+                                   style="margin-top: <?php echo $preview->margin;?>px;">
                             </image>
                         </a>
                     </div>
@@ -37,14 +38,13 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header imageTitle">
-                            <button type="button" class="close" data-dismiss="modal"><span class="glyphicon glyphicon-remove-circle"></span></button>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span class="glyphicon glyphicon-remove-circle cursor-pointer"></span>
+                            </button>
                             <h4 class="modal-title" id="myModalLabel">Select categories:</h4>
                         </div>
                         <div class="modal-body">
                             <?php include('overviewComponents/categoryAlignment.inc.php'); ?>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         </div>
                     </div>
                 </div>
@@ -95,6 +95,10 @@
         });
 
         $('.addCategoryOverview').click(function(e) {
+            $(".modal-body form").block({
+                message: '<h1>Assigning categories...</h1>',
+                css: { border: '3px solid #a00' }
+            });
             e.preventDefault();
             var id = $(this).attr('id').split('-');
             var templateId = id[1];
@@ -102,25 +106,18 @@
             var data = {};
             var category = [];
 
-            console.log(id);
-
             $('#availableCategory-'+templateId).find('option:selected').each(function(i,selected){
                 var subscription = {};
                 subscription.id = $(selected).val();
                 subscription.name = $.trim($(selected).text());
-
                 category.push(subscription);
-
-                var node = '<option value="' + subscription.id + '">' + subscription.name + '</option>';
-                $('#assignedCategory-'+templateId).append(node);
-                $('#availableCategory-'+templateId).find("option[value='"+subscription.id+"']").remove();
             });
 
             data.category = category;
             data.advertiserId = advertiserId;
             data.templateId   = templateId;
-
             data.companyId    = $('#companyId').attr('value');
+
             $.ajax({
                 type: "POST",
                 data: data,
@@ -128,13 +125,25 @@
                 url: "/chameleon/ajax/addCategory.php"
             }).done(function(){
             }).fail(function(){
+                category.forEach(function(singleCategory){
+                    var item = '<div id="'+singleCategory.id+'" class="row"><p class="text-left overviewTitle categoryItem">' + singleCategory.name +
+                        '</p></div>';
+                    $('#categoryContainerOverview-'+templateId).append(item);
 
+                    var node = '<option value="' + singleCategory.id + '">' + singleCategory.name + '</option>';
+                    $('#assignedCategory-'+templateId).append(node);
+                    $('#availableCategory-'+templateId).find("option[value='"+singleCategory.id+"']").remove();
+                });
+                $(".modal-body form").unblock();
             });
         });
 
         $('.removeCategoryOverview').click(function(e) {
+            $(".modal-body form").block({
+                message: '<h1>Removing categories</h1>',
+                css: { border: '3px solid #a00' }
+            });
             e.preventDefault();
-
             var id = $(this).attr('id').split('-');
             var templateId = id[1];
             var advertiserId = id[2];
@@ -145,12 +154,7 @@
                 var subscription = {};
                 subscription.id = $(selected).val();
                 subscription.name = $.trim($(selected).text());
-
                 category.push(subscription);
-
-                $("#assignedCategory-"+templateId).find("option[value='"+subscription.id+"']").remove();
-                var node = '<option value="' + subscription.id + '">'+subscription.name+'</option>';
-                $('#availableCategory-'+templateId).append(node);
             });
 
             data.category = category;
@@ -161,9 +165,17 @@
                 type: 'POST',
                 data: data,
                 dataType: "json",
-                url:  '/chameleon/ajax/removeCategory.php'
+                url: '/chameleon/ajax/removeCategory.php'
             }).done(function(){
             }).fail(function(){
+                category.forEach(function(singleCategory){
+                    $("#assignedCategory-"+templateId).find("option[value='"+singleCategory.id+"']").remove();
+                    var node = '<option value="' + singleCategory.id + '">'+singleCategory.name+'</option>';
+                    $('#availableCategory-'+templateId).append(node);
+                    $('#assigned-'+singleCategory.id).empty().remove();
+
+                });
+                $(".modal-body form").unblock();
             });
         });
 
@@ -184,16 +196,11 @@
                 dataType: "json",
                 url:  '/chameleon/ajax/cloneTemplate.php',
                 success: function(response){
-
-                    console.log(response);
-
                     var url = window.location.origin + '/chameleon/index.php?page=editor&templateId=' + response.idBannerTemplate +
                         '&companyId=' + companyId + '&advertiserId=' + advertiserId;
                     window.location.replace(url);
                 }
             });
         })
-
-
     });
 </script>

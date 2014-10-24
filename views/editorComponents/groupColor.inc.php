@@ -3,7 +3,7 @@
     <div>
         <input id="primary-color"
                type="text"
-               class="form-control picker"
+               class="form-control picker cursor-pointer"
                name="<?php echo $element->getId();?>#primary-color"
                value="<?php echo $element->getForegroundColor()->getHex();?>"
                placeholder="color"
@@ -15,7 +15,7 @@
     <div>
         <input id="secondary-color"
                type="text"
-               class="form-control picker"
+               class="form-control picker cursor-pointer"
                name="<?php echo $element->getId();?>#secondary-color"
                value="<?php echo $element->getBackgroundColor()->getHex(); ?>"
                placeholder="color"

@@ -12,4 +12,3 @@ include(__ROOT__ . 'config/pathconfig.inc.php');
 include(__ROOT__ . 'config/apiconfig.inc.php');
 include(__ROOT__ . 'config/bannersizes.inc.php');
 include(__ROOT__ . 'config/fontconfig.inc.php');
-

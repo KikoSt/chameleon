@@ -13,7 +13,7 @@
     <label class="col-md-3 text-center" for="<?php echo $element->getId();?>_strokeColor">Color:</label>
     <input id="<?php echo $element->getId();?>_strokeColor"
            type="text"
-           class="form-control picker"
+           class="form-control picker cursor-pointer"
            name="<?php echo $element->getId();?>#strokeColor"
            value="<?php echo (null !== $element->getStroke()) ? $element->getStroke()->getColor()->getHex() : '#000000';?>"
            placeholder="<?php echo (null !== $element->getStroke()) ? $element->getStroke()->getColor()->getHex() : '#000000';?>"

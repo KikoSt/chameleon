@@ -47,6 +47,10 @@ select
 .picker
 {
     width:118px !important;
+}
+
+.cursor-pointer
+{
     cursor: pointer;
 }
 
@@ -95,10 +99,19 @@ select
 
 .overviewTitle
 {
-    background-color: #4583c6 !important;
-    color: #ffffff !important;
+    background-color: #4583c6;
+    color: #ffffff;
     font-size: 1.4em;
     margin-bottom: 3px;
+}
+
+.categoryItem
+{
+    background-color: #e8e8e8;
+    color: #000000;
+    font-size: 1em;
+    margin: 0 3px;
+    padding-left: 3px;
 }
 
 .list-group-item
