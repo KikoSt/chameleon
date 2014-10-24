@@ -14,18 +14,19 @@
     ?>
             <div id="template_<?php echo $preview->templateId; ?>" class="row template" style="background-color: #F2F2F2;">
                 <div class="thumbnail thumbnail-half col-md-2">
-                    <div class="overviewTitle">Template</div>
-                    <div style="min-height: 170px;">
-                        <a href="<?php echo BASE_DIR;?>/index.php?page=editor&templateId=<?php echo $preview->templateId; ?>">
-                            <image src="<?php echo $preview->filePath; ?>"
-                                   onmouseover="showtrail('<?php echo $preview->filePath; ?>', 'Test',<?php echo $preview->bannerWidth; ?>,
-                                   <?php echo $preview->bannerHeight; ?>)"
-                                   onmouseout="hidetrail()"
-                                   style="margin-top: <?php echo $preview->margin;?>px;">
-                            </image>
-                        </a>
+                    <div class="row" style="height: 215px;">
+                        <div class="overviewTitle">Template</div>
+                        <div>
+                            <a href="<?php echo BASE_DIR;?>/index.php?page=editor&templateId=<?php echo $preview->templateId; ?>">
+                                <image class="thumbnail-preview" src="<?php echo $preview->filePath; ?>"
+                                       onmouseover="showtrail('<?php echo $preview->filePath; ?>', 'Preview',
+                                       <?php echo $preview->bannerDimension->width; ?>,
+                                       <?php echo $preview->bannerDimension->height; ?>);"
+                                       onmouseout="hidetrail();">
+                                </image>
+                            </a>
+                        </div>
                     </div>
-
                     <?php include('overviewComponents/facts.inc.php'); ?>
                 </div>
                 <?php

@@ -193,7 +193,7 @@ label {
     float: none !important; /* this is the part that makes it work */
 }
 
-.thumbnail > div > a > img
+.thumbnail-preview
 {
     padding: 8px 5px;
     max-width: 260px !important;
