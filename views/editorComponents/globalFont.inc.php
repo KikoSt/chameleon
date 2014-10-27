@@ -1,5 +1,5 @@
 <div class="row">
-    <label class="col-md-4">Font:</label>
+    <label class="col-md-4">CD Font:</label>
     <div>
         <select id="presetFontFamily"
                 class="form-control"
