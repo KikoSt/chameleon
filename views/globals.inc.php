@@ -1,7 +1,7 @@
 <div class="panel panel-default" style="min-height: 350px;">
     <div class="panel-heading globalsTitle">
         <h3 class="panel-title">
-                info and settings for template:
+                info and settings for this template:
         </h3>
     </div>
     <div id="globalsBody" class="panel-body">
