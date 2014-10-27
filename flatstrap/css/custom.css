@@ -69,13 +69,13 @@ select
 
 .globalsTitle
 {
-    background-color: #f8bf42 !important;
+    background-color: #c3c544 !important;
     color: #ffffff !important;
 }
 
 .groupTitle
 {
-    background-color: #000055 !important;
+    background-color: #c54644 !important;
 }
 
 .imageTitle
@@ -85,12 +85,12 @@ select
 
 .rectangleTitle
 {
-    background-color: #7b1fa2 !important;
+    background-color: #c54482 !important;
 }
 
 .textTitle
 {
-    background-color: #45b686 !important;
+    background-color: #44c587 !important;
 }
 
 .overviewTitle
