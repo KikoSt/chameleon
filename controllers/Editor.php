@@ -51,6 +51,7 @@ class Editor extends Controller
         $container->setPreviewMode(true);
 
         $gif = 'http://' . $_SERVER['SERVER_NAME'] . '/chameleon/output/' . $container->getOutputDir() . '/' . $baseFilename . '.gif';
+        $swf = 'http://' . $_SERVER['SERVER_NAME'] . '/chameleon/output/' . $container->getOutputDir() . '/' . $baseFilename . '.swf';
 
         // $this->view->premiumUser = false;
 
@@ -73,6 +74,7 @@ class Editor extends Controller
         $this->view->advertiserId    = $container->getAdvertiserId();
         $this->view->companyId       = $container->getCompanyId();
         $this->view->gif             = $gif;
+        $this->view->swf             = $swf;
         $this->view->container       = $container;
         $this->view->elements        = $container->getElements();
         $this->view->fontlist        = $text->getFontListForOverview();
@@ -100,6 +102,14 @@ class Editor extends Controller
         //TODO for development, replace after implementing into Bidder
 
         $container->setTarget('GIF');
+
+        if(!empty($_REQUEST['action']))
+        {
+            $container->render();
+        }
+
+        $container->setTarget('SWF');
+        $container->render();
 
         if(!empty($_REQUEST['action']))
         {

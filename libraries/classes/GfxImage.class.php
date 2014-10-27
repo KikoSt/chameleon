@@ -99,11 +99,11 @@ class GfxImage extends GfXComponent
             $shadow->renderSWF($canvas);
 
         }
-        $imgPath = 'tmp/file' . time() . rand() . '.jpg';
+        $imgPath = '/tmp/file' . time() . rand() . '.jpg';
 
         $output = $this->resizeImage($this->getImageUrl(), $this->getWidth(), $this->getHeight(), false);
 
-        imagejpeg($output, $imgPath, 100);
+        $result = imagejpeg($output, $imgPath, 100);
         imagedestroy($output);
         $output = null;
         unset($output);

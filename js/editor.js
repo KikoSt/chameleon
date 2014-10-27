@@ -178,7 +178,12 @@ $(document).ready(function() {
                 response = $.parseJSON(xhr.response);
                 imgsrc = response.imgsrc;
                 $("#previewImage img").unbind('mapster');
-                $("#previewImage img").attr('src', imgsrc + '?ts=' + new Date().getTime());
+                var gifsrc = imgsrc + '.gif' + '?ts=' + new Date().getTime();
+                var swfsrc = imgsrc + '.swf' + '?ts=' + new Date().getTime();
+                $("#previewImage img").attr('src', gifsrc);
+                $("[name='movie']").attr('value', swfsrc);
+                $("[name='movie']").prop('value', swfsrc);
+                $("#previewImage object").prop('data', swfsrc);
             }
         }
 
