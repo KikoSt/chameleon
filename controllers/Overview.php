@@ -35,7 +35,7 @@ class Overview extends Controller
         $container->setCategoryId(0);
         $container->setPreviewMode(true);
 
-        $this->view = $this->setLayout('views/overview_proto.phtml')->getView();
+        $this->view = $this->setLayout('views/overview.phtml')->getView();
         $this->view->advertiserId = $this->getAdvertiserId();
 
         // get all templates for company / advertiser

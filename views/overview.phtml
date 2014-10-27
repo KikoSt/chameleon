@@ -7,139 +7,54 @@
 <?php
     else:
 ?>
-
-
-<div class="container-fluid" style="margin-left: 150px;">
-    <div id="nodes" class="navbar navbar-default navbar-fixed-top navbar-inverse" role="navigation" style="margin-top:61px;
-margin-left:161px;background-color: #888888; border-color: #888888;">
-        <ul class="nav navbar-nav navbar-left">
-            <li style="padding: 14px;">
-                <?php
-                    if(!empty($_SESSION['categories'])):
-                ?>
-                    Content of session shown
-                <?php
-                    else:
-                ?>
-                    No categories selected
-                <?php
-                    endif;
-                ?>
-                <button id="editCategories" type="button" class="btn btn-xs" data-toggle="modal" data-target="#cmeoModal"
-                        style="background-color:
-                #888888;">
-                    <span class="glyphicon glyphicon-pencil"></span>
-                </button>
-            </li>
-        </ul>
-    </div>
-
-    <div class="row" style="margin-top: 115px; padding-left: 10px;">
-
+<div class="container-fluid margin-left-150">
+    <div id="overviewView">
     <?php
         foreach($this->previews as $preview):
     ?>
-        <form method="post" action="index.php?page=editor" id="<?php echo $preview->templateId; ?>">
-            <div class="thumbnail col-md-3" onclick="$('#' + <?php echo $preview->templateId; ?>).submit();">
-                <div class="row">
-                    <div class="col-md-8" style="float: left;">
-                        <image class="preview" src="<?php echo $preview->filePath; ?>" style="margin-top: <?php echo $preview->marginTop;?>px">
+            <div id="template_<?php echo $preview->templateId; ?>" class="row template">
+                <div class="thumbnail thumbnail-half col-md-2">
+                    <div class="row templatePreviewRow">
+                        <div class="overviewTitle">Template</div>
+                        <div>
+                            <a href="<?php echo BASE_DIR;?>/index.php?page=editor&templateId=<?php echo $preview->templateId; ?>">
+                                <image class="thumbnail-preview" src="<?php echo $preview->filePath; ?>"
+                                       onmouseover="showtrail('<?php echo $preview->filePath; ?>', 'Preview',
+                                       <?php echo $preview->bannerDimension->width; ?>,
+                                       <?php echo $preview->bannerDimension->height; ?>);"
+                                       onmouseout="hidetrail();">
+                                </image>
+                            </a>
+                        </div>
                     </div>
-                    <div class="textTitle col-md-4" style="height: 376px; float: right; font-size: 10px;">
-                        <div class="row">
-                            <ul class="list-group">
-                                <li class="list-group-item">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <p class="text-left">Name:</p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p class="text-right"><?php echo $preview->name;?></p>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="list-group-item">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <p class="text-left">ID:</p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p class="text-right"><?php echo $preview->templateId;?></p>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="list-group-item">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <p class="text-left">Parent ID:</p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p class="text-right"><?php echo (!empty($preview->parentTemplateId) ? $preview->parentTemplateId : 'n/a');?></p>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="list-group-item">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <p class="text-left">Dimensions:</p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p class="text-right"><?php echo $preview->bannerWidth . ' x ' . $preview->bannerHeight;?> px</p>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="list-group-item">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <p class="text-left ">Size:</p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p class="text-right"><?php echo $preview->fileSize;?> kb</p>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="list-group-item">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <p class="text-left">Date created:</p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p class="text-right"><?php echo $preview->dateCreate;?></p>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="list-group-item">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <p class="text-left">Date modified:</p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p class="text-right"><?php echo $preview->dateModified;?></p>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="list-group-item">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <p class="text-left">Prod group(s):</p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <?php foreach($preview->categorySubscription as $category):?>
-                                                <p class="text-right"><?php echo $category->categoryName;?></p>
-                                            <?php endforeach;?>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
+                    <?php include('overviewComponents/facts.inc.php'); ?>
+                </div>
+                <?php
+                    include('overviewComponents/category.inc.php');
+                    include('overviewComponents/examples.inc.php');
+                    include('overviewComponents/action.inc.php');
+                ?>
+            </div>
+            <div class="modal fade" id="categorySelect-<?php echo $preview->templateId; ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header imageTitle">
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span class="glyphicon glyphicon-remove-circle cursor-pointer"></span>
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">Select categories:</h4>
+                        </div>
+                        <div class="modal-body">
+                            <?php include('overviewComponents/categoryAlignment.inc.php'); ?>
                         </div>
                     </div>
                 </div>
             </div>
+            <!-- Modal -->
             <input type="hidden" name="templateId" value="<?php echo $preview->templateId; ?>">
             <input type="hidden" name="advertiserId" value="<?php echo $preview->advertiserId; ?>">
             <input type="hidden" name="companyId" value="<?php echo $preview->companyId; ?>">
             <input type="hidden" name="templateName" value="<?php echo $preview->templateName; ?>">
-        </form>
 
     <?php
         endforeach;
@@ -149,32 +64,144 @@ margin-left:161px;background-color: #888888; border-color: #888888;">
     </div>
 </div>
 
-
-<!-- Modal -->
-<div class="modal fade" id="cmeoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header textTitle">
-                <button type="button" class="close" data-dismiss="modal">
-                    <span class="glyphicon glyphicon-remove-circle cursor-pointer"></span>
-                </button>
-                <h4 class="modal-title" id="myModalLabel">Select category:</h4>
-            </div>
-            <div class="modal-body">
-                <form role="form">
-                        <?php include('categories.inc.php'); ?>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
-        </div>
-    </div>
-</div>
 <script type="text/javascript">
     $(document).ready(function()
     {
+        $('#addCategory').click(function(e) {
+            var selectedOpts = $('#availableCategory option:selected');
+            if (selectedOpts.length == 0) {
+                alert("Nothing to move.");
+                e.preventDefault();
+            }
 
+            $('#assignedCategory').append($(selectedOpts).clone());
+            $(selectedOpts).remove();
+            e.preventDefault();
+        });
+
+        $('#removeCategory').click(function(e) {
+            var selectedOpts = $('#assignedCategory option:selected');
+            if (selectedOpts.length == 0) {
+                alert("Nothing to move.");
+                e.preventDefault();
+            }
+
+            $('#availableCategory').append($(selectedOpts).clone());
+            $(selectedOpts).remove();
+            e.preventDefault();
+        });
+
+        $('.carousel').carousel({
+            interval: 4000
+        });
+
+        $('.addCategoryOverview').click(function(e) {
+            $(".modal-body form").block({
+                message: '<h1>Assigning categories...</h1>',
+                css: { border: '3px solid #a00' }
+            });
+            e.preventDefault();
+            var id = $(this).attr('id').split('-');
+            var templateId = id[1];
+            var advertiserId = id[2];
+            var data = {};
+            var category = [];
+
+            $('#availableCategory-'+templateId).find('option:selected').each(function(i,selected){
+                var subscription = {};
+                subscription.id = $(selected).val();
+                subscription.name = $.trim($(selected).text());
+                category.push(subscription);
+            });
+
+            data.category = category;
+            data.advertiserId = advertiserId;
+            data.templateId   = templateId;
+            data.companyId    = $('#companyId').attr('value');
+
+            $.ajax({
+                type: "POST",
+                data: data,
+                dataType: "json",
+                url: "/chameleon/ajax/addCategory.php"
+            }).done(function(){
+            }).fail(function(){
+                category.forEach(function(singleCategory){
+                    var item = '<div id="'+singleCategory.id+'" class="row"><p class="text-left overviewTitle categoryItem">' + singleCategory.name +
+                        '</p></div>';
+                    $('#categoryContainerOverview-'+templateId).append(item);
+
+                    var node = '<option value="' + singleCategory.id + '">' + singleCategory.name + '</option>';
+                    $('#assignedCategory-'+templateId).append(node);
+                    $('#availableCategory-'+templateId).find("option[value='"+singleCategory.id+"']").remove();
+                });
+                $(".modal-body form").unblock();
+            });
+        });
+
+        $('.removeCategoryOverview').click(function(e) {
+            $(".modal-body form").block({
+                message: '<h1>Removing categories</h1>',
+                css: { border: '3px solid #a00' }
+            });
+            e.preventDefault();
+            var id = $(this).attr('id').split('-');
+            var templateId = id[1];
+            var advertiserId = id[2];
+            var data = {};
+            var category = [];
+
+            $('#assignedCategory-'+templateId).find('option:selected').each(function(i,selected){
+                var subscription = {};
+                subscription.id = $(selected).val();
+                subscription.name = $.trim($(selected).text());
+                category.push(subscription);
+            });
+
+            data.category = category;
+            data.advertiserId = advertiserId;
+            data.templateId   = templateId;
+            data.companyId    = $('#companyId').attr('value');
+            $.ajax({
+                type: 'POST',
+                data: data,
+                dataType: "json",
+                url: '/chameleon/ajax/removeCategory.php'
+            }).done(function(){
+            }).fail(function(){
+                category.forEach(function(singleCategory){
+                    $("#assignedCategory-"+templateId).find("option[value='"+singleCategory.id+"']").remove();
+                    var node = '<option value="' + singleCategory.id + '">'+singleCategory.name+'</option>';
+                    $('#availableCategory-'+templateId).append(node);
+                    $('#assigned-'+singleCategory.id).empty().remove();
+
+                });
+                $(".modal-body form").unblock();
+            });
+        });
+
+        $(".cloneTemplate").click(function(){
+
+            var id = $(this).attr('id').split('-');
+            var templateId = id[1];
+            var advertiserId = id[2];
+            var companyId = id[3];
+            var data = {};
+
+            data.advertiserId = advertiserId;
+            data.templateId   = templateId;
+
+            $.ajax({
+                type: 'POST',
+                data: data,
+                dataType: "json",
+                url:  '/chameleon/ajax/cloneTemplate.php',
+                success: function(response){
+                    var url = window.location.origin + '/chameleon/index.php?page=editor&templateId=' + response.idBannerTemplate +
+                        '&companyId=' + companyId + '&advertiserId=' + advertiserId;
+                    window.location.replace(url);
+                }
+            });
+        })
     });
 </script>

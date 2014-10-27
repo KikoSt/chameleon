@@ -2,7 +2,7 @@
     <div class="overviewTitle">
         Assigned categories
         <span id="editAssignedCategory"
-              class="fa fa-pencil-square-o cursor-pointer"
+              class="fa fa-pencil-square-o cursor-pointer color-black"
               data-toggle="modal"
               data-target="#categorySelect-<?php echo $preview->templateId; ?>">
         </span>
@@ -13,7 +13,10 @@
                 if($templateSubscription->userStatus === 'ACTIVE'):
         ?>
                     <div id="assigned-<?php echo $templateSubscription->idCategory;?>" class="row">
-                        <p class="text-left overviewTitle categoryItem"><?php echo $templateSubscription->categoryName;?></p>
+                        <p class="text-left categoryItem">
+                            <a class="fa fa-trash categoryItem cursor-pointer" title="Remove category"></a>
+                            <?php echo $templateSubscription->categoryName;?>
+                        </p>
                     </div>
         <?php
                 endif;

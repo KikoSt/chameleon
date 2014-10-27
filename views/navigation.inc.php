@@ -1,5 +1,5 @@
 <div id="leftbox">
-    <div style="position:fixed;">
+    <div>
     <ul class="nav nav-list">
         <li id="overview" class="<?php echo ($this->page === 'overview' ) ? 'active' : '';?>">
             <a href="index.php?page=overview">Overview</a>

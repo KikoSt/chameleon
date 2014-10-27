@@ -56,7 +56,7 @@ function show(imagename,title,width,height){
 		defaultimageheight = height
 		defaultimagewidth = width
 	
-		document.onmousemove=followmouse; 
+		document.onmousemove=followmouse;
 
 		
 		newHTML = '<div class="border_preview" style="width:'+  width +'px;height:'+ height +'px"><div id="loader_container"><div id="loader"><div align="center">Loading image preview...</div><div id="loader_bg"><div id="progress"> </div></div></div></div>';

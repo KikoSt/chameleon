@@ -15,12 +15,12 @@
     <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-<div style="display: none; position: absolute; z-index: 110; left: 400; top: 100; width: 15; height: 15" id="preview_div"></div>
+<div id="preview_div" style="position: absolute;"></div>
 <div id="topbar" class="navbar navbar-default navbar-fixed-top navbar-inverse" role="navigation">
-    <div class="container" style="width: 100%">
-        <div class="navbar-header" style="height: 60px;">
-            <img class="navbar-brand" src="images/mdlogo_white-border.png.xhtml" style="height: 60px;"/>
+    <div class="container">
+        <div class="navbar-header">
+            <img id="logo" class="navbar-brand" src="images/mdlogo_white-border.png"/>
         </div>
-        <div style="color:#ffffff;text-align:right;padding-top:15px;line-height:15px;height:60px;"><?php echo $auditUserId; ?><br />username</div>
+        <div id="userInformation"><?php echo $auditUserId; ?><br/>username</div>
     </div>
 </div>
