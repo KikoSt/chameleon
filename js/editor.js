@@ -123,13 +123,22 @@ $(document).ready(function() {
         }
     });
 
+    function componentToHex(c) {
+        var hex = Number(c).toString(16);
+        return hex.length == 1 ? "0" + hex : hex;
+    }
+
+    function colorToHex(rgb) {
+        var rgb = rgb.substring(4, rgb.length-1).replace(/ /g, '').split(',');
+        return "#" + componentToHex(rgb[0]) + componentToHex(rgb[1]) + componentToHex(rgb[2]);
+    }
 
     // prepare image map
     var highlightColor = {};
-    highlightColor['text']      = '00ff00';
-    highlightColor['image']     = 'ffff00';
-    highlightColor['rectangle'] = 'ffffff';
-    highlightColor['group']     = '0000ff';
+    highlightColor['text']      = colorToHex($('.textTitle').css('background-color')).replace('#', '');
+    highlightColor['image']     = colorToHex($('.imageTitle').css('background-color')).replace('#', '');
+    highlightColor['rectangle'] = colorToHex($('.textTitle').css('background-color')).replace('#', '');
+    highlightColor['group']     = colorToHex($('.groupTitle').css('background-color')).replace('#', '');
 
     var areas = [];
     var areaList = $('[name="template_selection"]').find('area');
@@ -141,7 +150,7 @@ $(document).ready(function() {
 
     $("#previewImage img").mapster({
         fillColor: 'ff005',
-        fillOpacity: 0.3,
+        fillOpacity: 0,
         strokeWidth: 2,
         stroke: true,
         strokeColor: 'ff0000',
