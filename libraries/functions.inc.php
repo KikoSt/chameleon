@@ -120,6 +120,7 @@ function getImageMap($container, $displayComponentLinks)
             $imageMap .= ' title="group_' . $curGroup->getId() . '"';
             $imageMap .= ' id="group_' .$curGroup->getId() . '"';
             $imageMap .= ' class="subnav"';
+            $imageMap .= ' data-key="' . $curGroup->getId() . '_group"';
             $imageMap .= ' />';
         }
     }
@@ -157,6 +158,12 @@ function getImageMap($container, $displayComponentLinks)
             $imageMap .= ' title="' . $curElement->getId() . '"';
             $imageMap .= ' id="' .$curElement->getId() . '"';
             $imageMap .= ' class="subnav"';
+            $imageMap .= ' data-key="';
+            $imageMap .= $curElement->getId();
+            if($curElement instanceof GfxText) $imageMap .= '_text';
+            if($curElement instanceof GfxImage) $imageMap .= '_image';
+            if($curElement instanceof GfxRectangle) $imageMap .= '_rectangle';
+            $imageMap .= '"';
             $imageMap .= ' />';
         }
     }

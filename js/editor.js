@@ -124,14 +124,31 @@ $(document).ready(function() {
     });
 
 
+    // prepare image map
+    var highlightColor = {};
+    highlightColor['text']      = '00ff00';
+    highlightColor['image']     = 'ffff00';
+    highlightColor['rectangle'] = 'ffffff';
+    highlightColor['group']     = '0000ff';
+
+    var areas = [];
+    var areaList = $('[name="template_selection"]').find('area');
+    $.each(areaList, function(index, value) {
+        value = $(value).attr("data-key").replace('area#', '');
+        var type = value.split('_').pop();
+        areas.push({ key: value, strokeColor: highlightColor[type]});
+    });
+
     $("#previewImage img").mapster({
         fillColor: 'ff005',
-        fillOpacity: 0.1,
-        strokeWidth: 3,
+        fillOpacity: 0.3,
+        strokeWidth: 2,
         stroke: true,
         strokeColor: 'ff0000',
         singleSelect: true,
-        clickNavigate: false
+        clickNavigate: false,
+        mapKey: 'data-key',
+        areas: areas
     });
 
 
@@ -231,12 +248,48 @@ $(document).ready(function() {
         $('#' + id + '--preview').css("background-color", color);
     });
 
-    $("#fileUpload").fileinput();
+    $('[id$="_input"]').fileinput({
+        'showUpload': false,
+        'showPreview': false,
+        'showCaption': true,
+    });
 
     $('#awesomeEditor input, #awesomeEditor select').change(function() {
         var groupId = 0;
         var groupEdit = false;
         var attributeName = '';
+
+        // shadow / stroke
+
+        if($(this).attr('id').indexOf('shadowCheckBox'))
+        {
+            if($(this).is(":checked"))
+            {
+                $(this).attr("checked", true);
+            //    $(this).attr('disabled', false).addClass('picker');
+            //    $(this).attr('disabled', false);
+            }
+            else
+            {
+                $(this).attr("checked", false);
+            //    $("#" + id + "_shadowColor").attr('disabled', true).removeClass('picker');
+            //    $("#" + id + "_shadowDist").attr('disabled', true);
+            }
+        } else if($(this).attr('id').indexOf('shadowCheckBox')) {
+
+            if($(this).is(":checked"))
+            {
+                $(this).attr("checked", true);
+            //    $("#" + id + "_strokeColor").attr('disabled', false).addClass('picker');
+            //    $("#" + id + "_strokeWidth").attr('disabled', false);
+            }
+            else
+            {
+                $(this).attr("checked", false);
+            //    $("#" + id + "_strokeColor").attr('disabled', true).removeClass('picker');
+            //    $("#" + id + "_strokeWidth").attr('disabled', true);
+            }
+        }
 
         // TODO: recalculate groups
 
@@ -251,14 +304,9 @@ $(document).ready(function() {
                 // console.log($(this).attr('value'));
                 //
                 // find the name of the edited attribute
-                // console.log(this);
                 attributeName = $(this).attr('name').replace(/.*\#/i, '');
 
-                // console.log(attributeName);
-
                 updateField = $(document).find('[name="' + groupId + '#' + attributeName + '"]');
-
-                // console.log('UpdateField: %o', updateField);
 
                 var oldValue = $(this).attr('value');
                 var newValue = $(this).prop('value');
@@ -276,8 +324,6 @@ $(document).ready(function() {
                     case 'x':
                     case 'y':
                         var delta = newValue - oldValue;
-
-                        console.log(newValue + ' - ' + oldValue + ' = ' + delta);
 
                         elements.each(function (i, member) {
                             var inElem = $(member).find('[name$="#' + attributeName + '"]');
@@ -305,7 +351,6 @@ $(document).ready(function() {
                             }
 
                             coords = coords.join(',');
-                            // console.log(coords);
 
                             $(imapElement).attr('coords', coords);
                             $(imapElement).prop('coords', coords);
@@ -321,22 +366,18 @@ $(document).ready(function() {
                             });
 
                             var coords = $(imapElement).attr('coords').split(',');
-                            console.log(coords);
                         });
                         // TODO: calculate new image map coordinates
                         //
                         break;
                     case 'text':
-                        console.log('text');
                         elements.each(function (i, member) {
                             inElem = $(member).find('[name$="' + attributeName + '"]');
-                            // console.log('s% ==? %s', inElem.attr('value'), Number(inElem.attr('value')));
                             $(inElem).prop('value', newValue);
                             $(inElem).attr('value', newValue);
                         });
                         break;
                     case 'fontFamily':
-                        console.log('fontFamily');
                         elements.each(function (i, member) {
                             inElem = $(member).find('[name$="' + attributeName + '"]');
                             if($(inElem).find('option[value="' + newValue + '"]').length) {
@@ -345,7 +386,6 @@ $(document).ready(function() {
                         });
                         break;
                     case 'cmeoLink':
-                        console.log('cmeoLink');
                         elements.each(function (i, member) {
                             inElem = $(member).find('[name$="' + attributeName + '"]');
                             if($(inElem).find('option[value="' + newValue + '"]').length) {
@@ -354,7 +394,6 @@ $(document).ready(function() {
                         });
                         break;
                     case 'fgcolor':
-                        console.log('fgcolor');
                         elements.each(function (i, member) {
                             if($(member).attr('data-type') == "text") {
                                 inElem = $(member).find('[name$="fill"]');
@@ -364,7 +403,6 @@ $(document).ready(function() {
                         });
                         break;
                     case 'bgcolor':
-                        console.log('bgcolor');
                         elements.each(function (i, member) {
                             if($(member).attr('data-type') == "rectangle") {
                                 inElem = $(member).find('[name$="fill"]');
@@ -374,13 +412,11 @@ $(document).ready(function() {
                         });
                         break;
                     default:
-                        console.log('Attribute %s not known ... ', attributeName);
                         break;
                 }
             }
         } else {
             var elementName = $(this).attr('name').replace(/\#.*/i, '');
-            console.log(elementName);
 
             // if individual element is edited:
 //            groupId = Number($(this).parents('[data-groupid]').attr('data-groupid'));
@@ -400,8 +436,8 @@ $(document).ready(function() {
 //                }
 //            }
         }
-        $('#editor').trigger('submit');
         somethingChanged = true;
+        $('#editor').trigger('submit');
     });
 
     function updateGroupFromElements(groupId) {
@@ -412,7 +448,6 @@ $(document).ready(function() {
 
     function getElementsByGroupId(groupId) {
         var elements = $(document).find("[data-groupid=" + groupId + "]");
-        console.log(elements);
         return elements;
     }
 
@@ -514,42 +549,6 @@ $(document).ready(function() {
             }
         }
         $('#editor').trigger('submit');
-    });
-
-    //handles the enabling/disabling of the shadow form elements
-    $('#shadowCheckBox.myCheckbox').click(function(e) {
-        var id = $(this).attr('value');
-
-        if($(this).is(":checked"))
-        {
-            $(this).attr("checked", true);
-            $("#" + id + "_shadowColor").attr('disabled', false).addClass('picker');
-            $("#" + id + "_shadowDist").attr('disabled', false);
-        }
-        else
-        {
-            $(this).attr("checked", false);
-            $("#" + id + "_shadowColor").attr('disabled', true).removeClass('picker');
-            $("#" + id + "_shadowDist").attr('disabled', true);
-        }
-    });
-
-    //handles the enabling/disabling of the stroke form elements
-    $('#strokeCheckBox.myCheckBox').click(function(e) {
-        var id = $(this).attr('value');
-
-        if($(this).is(":checked"))
-        {
-            $(this).attr("checked", true);
-            $("#" + id + "_strokeColor").attr('disabled', false).addClass('picker');
-            $("#" + id + "_strokeWidth").attr('disabled', false);
-        }
-        else
-        {
-            $(this).attr("checked", false);
-            $("#" + id + "_strokeColor").attr('disabled', true).removeClass('picker');
-            $("#" + id + "_strokeWidth").attr('disabled', true);
-        }
     });
 
     // TODO: add a "initial" element to ALL templates?!
