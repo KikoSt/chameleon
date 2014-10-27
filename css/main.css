@@ -36,29 +36,6 @@ a.subnav
     margin-left: 75px !important;
 }
 
-#previewImage, .alert
-{
-    margin-left: 50px !important;
-    margin-right: 60px !important;
-}
-
-.alert
-{
-    position: absolute;
-    width: 200px;
-    top: 50%;
-    left: 50%;
-    margin-left: -100px;
-    box-shadow: 5px 5px 5px #888888;
-}
-
-#save_button
-{
-    position: absolute;
-    bottom: -50px;
-    right: 60px;
-}
-
 ul.nav-list
 {
     color: #000000 !important;
@@ -116,5 +93,41 @@ select, select > option
 input:disabled
 {
     pointer:default;
+}
+
+div#previewImage > h2, div#previewSwf > h2 {
+    font-size: 1.2em;
+    font-weight: bold;
+    padding-bottom: 8px;
+}
+
+#previewSwf {
+    margin-top: 10px;
+    padding: 20px 60px 35px 60px;
+    background: #b2b2b2;
+    /* display: none; */
+}
+
+#previewImage, .alert
+{
+    padding: 20px 60px 35px 60px;
+    background: #b2b2b2;
+}
+
+.alert
+{
+    position: absolute;
+    width: 200px;
+    top: 50%;
+    left: 50%;
+    margin-left: -100px;
+    box-shadow: 5px 5px 5px #888888;
+}
+
+#save_button
+{
+    position: absolute;
+    bottom: -50px;
+    right: 60px;
 }
 

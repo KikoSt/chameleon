@@ -13,7 +13,7 @@
             </ul>
         </div>
         <div id="awesomeEditor" class="row" style="margin-top: 115px;margin-left: 50px;">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="row">
                     <?php
                         $element = $this->container;
@@ -42,22 +42,48 @@
                 <input id="advertiserId" type="hidden" name="advertiserId" value="<?php echo $this->advertiserId; ?>">
                 <input id="companyId"    type="hidden" name="companyId"    value="<?php echo $this->companyId; ?>">
             </div>
-            <div class="col-md-6">
+            <div class="col-md-7">
                 <div style="position:fixed;">
                     <!-- PREVIEW IMAGE -->
                     <div id="previewImage" class="row">
+                        <h2>GIF version - select elements to change:</h2>
                         <img src="<?php echo $this->gif;?>" alt="" usemap="#template_selection">
                     </div>
-                    <!-- END PREVIEW IMAGE -->
-                    <!-- BUTTONS SAVE / CLONE -->
-                    <div class="row" id="save_button">
-                        <!-- On click render template, show the change and save data to database-->
-                        <button id="save" type="submit" class="btn btn-danger" title="Save template">
-                            <span class="glyphicon glyphicon-export"></span>
-                        </button>
+                    <div id="previewSwf" class="row" class="preview">
+                        <h2>Flash version - preview:</h2>
+                        <object type="application/x-shockwave-flash"
+                                data="<?php echo $this->swf; ?>"
+                                width="750" height="300">
+                                <param name="movie" value="<?php echo $this->swf; ?>" />
+                                <param name="quality" value="high"/>
+                        </object>
                     </div>
-                    <!-- END BUTTONS SAVE / CLONE -->
                 </div>
+            </div>
+            <div class="col-md-1" style="background:#c7c7c7;margin-bottom: 66px; margin-top: 56px; min-height: 300px; width: 80px;text-align: center;">
+                        <!-- On click render template, show the change and save data to database-->
+                        <button id="live" type="submit" class="btn btn-warning" title="show live preview" style="margin-top: 20px;">
+                            <span class="fa-play-circle fa-lg"></span>
+                        </button>
+<br />
+                        <!-- On click render template, show the change and save data to database-->
+                        <button id="flash" type="submit" class="btn btn-normal" title="show flash preview" style="margin-top: 20px;">
+                            <span class="fa-bolt fa-lg"></span>
+                        </button>
+<br />
+                        <!-- On click render template, show the change and save data to database-->
+                        <button id="cancel" type="submit" class="btn btn-danger" title="cancel changes" style="margin-top: 20px;">
+                            <span class="fa-undo fa-lg"></span>
+                        </button>
+<br />
+                        <!-- On click render template, show the change and save data to database-->
+                        <button id="save" type="submit" class="btn btn-danger" title="save template" style="margin-top: 100px;">
+                            <span class="fa-floppy-o fa-lg"></span>
+                        </button>
+                        <br />
+                        <br />
+                        <br />
+                    </div>
             </div>
         </div>
     </form>

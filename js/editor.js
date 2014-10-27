@@ -17,6 +17,10 @@ $(document).ready(function() {
         if(btn ==='clone' || btn ==='save' || btn === 'preview')
         {
             $("."+btn+"alert").removeClass("in").show().delay(1000).addClass("in").fadeOut(2000);
+        } else if(btn === 'flash') {
+            $('#previewSwf').toggle();
+        } else if(btn === 'live') {
+            console.log('HEY! WE ARE LIVE!');
         }
     });
 
@@ -183,10 +187,9 @@ $(document).ready(function() {
                 $("#previewImage img").attr('src', gifsrc);
                 $("[name='movie']").attr('value', swfsrc);
                 $("[name='movie']").prop('value', swfsrc);
-                $("#previewImage object").prop('data', swfsrc);
+                $("#previewSwf object").prop('data', swfsrc);
             }
         }
-
 
         var formData = new FormData();
 
