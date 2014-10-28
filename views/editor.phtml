@@ -43,17 +43,17 @@
                 <input id="companyId"    type="hidden" name="companyId"    value="<?php echo $this->companyId; ?>">
             </div>
             <div class="col-md-7">
-                <div style="position:fixed;">
+                <div class="preview-container">
                     <!-- PREVIEW IMAGE -->
                     <div id="previewImage" class="row">
-                        <h2>GIF version - select elements to change:</h2>
+                        <h2>GIF version<br /><span>select elements to edit</span></h2>
                         <img src="<?php echo $this->gif;?>" alt="" usemap="#template_selection">
                     </div>
-                    <div id="previewSwf" class="row" class="preview">
-                        <h2>Flash version - preview:</h2>
+                    <div id="previewSwf" class="row">
+                        <h2>Flash version<br /><span>preview</span></h2>
                         <object type="application/x-shockwave-flash"
                                 data="<?php echo $this->swf; ?>"
-                                width="750" height="300">
+                                width="<?php echo $this->width; ?>" height="<?php echo $this->height; ?>">
                                 <param name="movie" value="<?php echo $this->swf; ?>" />
                                 <param name="quality" value="high"/>
                         </object>
@@ -103,9 +103,9 @@
 <!-- Modal -->
 
 
-<div class="alert alert-success alert-dismissible savealert" role="alert">
-                        Template changes saved!
-                    </div>
+<div class="feedback alert alert-success alert-dismissible savealert" role="alert">
+    Template changes saved!
+</div>
 
 
 <script type="text/JavaScript" src="js/editor.js"></script>

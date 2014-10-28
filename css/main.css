@@ -80,6 +80,8 @@ h3.panel-title
 {
     color: #000000;
     opacity: .75;
+    padding-top: 3px;
+    font-size:1.2em;
 }
 
 select, select > option
@@ -98,20 +100,34 @@ input:disabled
 div#previewImage > h2, div#previewSwf > h2 {
     font-size: 1.2em;
     font-weight: bold;
+    line-height: 1.5em;
     padding-bottom: 8px;
 }
 
-#previewSwf {
-    margin-top: 10px;
-    padding: 20px 60px 35px 60px;
-    background: #b2b2b2;
-    /* display: none; */
+h2 > span
+{
+    font-size:.8em;
+    font-weight: normal;
+    line-height:1.4em
 }
 
-#previewImage, .alert
+.preview-container
 {
-    padding: 20px 60px 35px 60px;
+    float:left;
+}
+
+#previewImage
+{
+    padding: 15px 60px 35px 60px;
     background: #b2b2b2;
+    float:left;
+}
+
+#previewSwf {
+    padding: 15px 60px 35px 60px;
+    background: #b2b2b2;
+    display: none;
+    float:left;
 }
 
 .alert
@@ -121,7 +137,7 @@ div#previewImage > h2, div#previewSwf > h2 {
     top: 50%;
     left: 50%;
     margin-left: -100px;
-    box-shadow: 5px 5px 5px #888888;
+    box-shadow: 5px 5px 5px #000000;
 }
 
 #save_button
@@ -129,5 +145,46 @@ div#previewImage > h2, div#previewSwf > h2 {
     position: absolute;
     bottom: -50px;
     right: 60px;
+}
+
+.fa-btn
+{
+    width: 40px;
+    height: 30px;
+    border: none;
+}
+
+.fa-btn.green
+{
+    background: #2C5D90;
+    color: #ffffff;
+}
+
+.fa-btn.red
+{
+    background: #902E2C;
+    color: #ffffff;
+}
+
+.feedback
+{
+    width: 300px;
+    height: 50px;
+    color: #000000;
+    background: #2C9060;
+    text-align: center;
+    -moz-box-shadow: 10px 10px 5px #888;
+    -webkit-box-shadow: 10px 10px 5px #888;
+    box-shadow: 10px 10px 5px #888;
+}
+
+input
+{
+    width: 350px;
+}
+
+.small
+{
+    width:105px !important;
 }
 

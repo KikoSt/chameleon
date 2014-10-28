@@ -37,7 +37,7 @@ a:hover
 input,
 select
 {
-    width:150px !important;
+    width:185px !important;
 }
 
 #overview select{
@@ -46,7 +46,7 @@ select
 
 .picker
 {
-    width:118px !important;
+    width:152px !important;
     cursor: pointer;
 }
 
