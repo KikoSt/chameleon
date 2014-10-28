@@ -1,4 +1,4 @@
-<div class="panel panel-default globalBox" style="min-height: 350px;">
+<div class="panel panel-default globalBox" style="min-height: 150px;">
     <div class="panel-heading globalsTitle">
         <h3 class="panel-title">
                 info and settings for this template:
@@ -21,7 +21,8 @@
                 include('editorComponents/globalFont.inc.php');
             ?>
             <div id="global_categories" class="row">
-                <label class="col-md-4" style="height: <?php echo count($this->activeCategories) * 22?>px;">
+                <?php // TODO: this is a dirty, dirty hack! ?>
+                <label class="col-md-4" style="height: <?php echo count($this->activeCategories) * 18?>px;">
                     Categories:
                     <button id="editCategoriesEditor" type="button" class="btn btn-xs" data-toggle="modal" data-target="#categorySelect"
                             style="background-color: #7f7f7f; color: #FFFFFF;">
