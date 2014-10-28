@@ -1,19 +1,26 @@
 <div class="thumbnail thumbnail-half col-md-4">
     <div class="overviewTitle">
         Assigned categories
-        <button id="editCategoriesEditor" type="button" class="btn btn-xs" data-toggle="modal" data-target="#categorySelect-<?php echo $preview->templateId; ?>">
-            <span class="glyphicon glyphicon-pencil"></span>
-        </button>
+        <span id="editAssignedCategory"
+              class="fa fa-pencil-square-o cursor-pointer color-black"
+              data-toggle="modal"
+              data-target="#categorySelect-<?php echo $preview->templateId; ?>">
+        </span>
     </div>
+    <div id="categoryContainerOverview-<?php echo $preview->templateId; ?>" style="overflow-y: auto; max-height: 350px;">
         <?php
             foreach($preview->templateSubscription as $templateSubscription):
                 if($templateSubscription->userStatus === 'ACTIVE'):
         ?>
-                <div class="row">
-                    <p class="text-left" style="word-wrap: break-word;"><?php echo $templateSubscription->categoryName;?></p>
-                </div>
+                    <div id="assigned-<?php echo $templateSubscription->idCategory;?>" class="row">
+                        <p class="text-left categoryItem">
+                            <a class="fa fa-trash categoryItem cursor-pointer" title="Remove category"></a>
+                            <?php echo $templateSubscription->categoryName;?>
+                        </p>
+                    </div>
         <?php
                 endif;
             endforeach;
         ?>
+    </div>
 </div>

@@ -3,7 +3,7 @@
     <div>
         <input id="bgcolor"
                type="text"
-               class="form-control picker"
+               class="form-control picker cursor-pointer"
                name="<?php echo $element->getId();?>#bgcolor"
                value="<?php echo (!empty($element->getBackgroundcolor()) ? $element->getBackgroundcolor()->getHex() : '#000000');?>"
                placeholder="color"

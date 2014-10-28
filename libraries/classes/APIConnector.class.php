@@ -480,6 +480,10 @@ class APIConnector
         $baseAuthUserPwd = (REST_API_USERNAME . ':' . REST_API_PASSWORD);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_USERPWD, $baseAuthUserPwd);
+
+        //todo remove after testing
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
         if($method === 'GET')
         {
             curl_setopt($curl, CURLOPT_HTTPGET, true);

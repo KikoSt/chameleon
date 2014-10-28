@@ -35,7 +35,7 @@ class Overview extends Controller
         $container->setCategoryId(0);
         $container->setPreviewMode(true);
 
-        $this->view = $this->setLayout('views/overview_proto.phtml')->getView();
+        $this->view = $this->setLayout('views/overview.phtml')->getView();
         $this->view->advertiserId = $this->getAdvertiserId();
 
         // get all templates for company / advertiser
@@ -86,10 +86,6 @@ class Overview extends Controller
 
                     $preview = new StdClass();
                     $preview->filePath = $file;
-                    $preview->bannerWidth = $container->getCanvasWidth();
-                    $preview->bannerHeight = $container->getCanvasHeight();
-                    $preview->width = $container->getCanvasWidth() / 2 > 300 ? 300 : $container->getCanvasWidth() / 2;
-                    $preview->height = $container->getCanvasHeight();
                     $preview->templateName = $filename;
                     $preview->templateId = $template->getBannerTemplateId();
                     $preview->advertiserId = $this->getAdvertiserId();
@@ -103,6 +99,22 @@ class Overview extends Controller
                     $preview->description = $template->getName();
                     $preview->templateSubscription = $template->getCategorySubscriptions();
                     $preview->availableCategories = $this->getPrunedAvailableCategories($categories, $preview->templateSubscription);
+                    $preview->bannerDimension = $this->getBannerDimension($container);
+
+
+                    if((int)$container->getCanvasWidth() > (int)$container->getCanvasHeight())
+                    {
+                        if($container->getCanvasHeight() > 210)
+                        {
+                            $preview->margin = ($container->getCanvasHeight() - 210)/2;
+                        }
+                        else
+                        {
+                            $preview->margin = (210 - $container->getCanvasHeight())/2;
+                        }
+
+                    }
+
 
                     $previews[] = $preview;
                 }
@@ -125,15 +137,41 @@ class Overview extends Controller
         $this->companyId = $companyId;
     }
 
+    private function getBannerDimension(GfxContainer $container)
+    {
+        $connector = new APIConnector();
+        $allowedBannerDimensions = $connector->getAllowedBannerDimensions();
+
+        $width = $container->getCanvasWidth();
+        $height = $container->getCanvasHeight();
+
+        foreach($allowedBannerDimensions as $allowedDimension)
+        {
+            if($width == $allowedDimension->width && $height == $allowedDimension->height)
+            {
+                return $allowedDimension;
+            }
+            else
+            {
+                $nonDefault = new stdClass();
+                $nonDefault->width = $width;
+                $nonDefault->height = $height;
+                $nonDefault->name = 'Non-standard format';
+
+                return $nonDefault;
+            }
+        }
+    }
+
     private function getShortenedDescription($description)
     {
         if(str_word_count($description, 0) == 1)
         {
             $description = substr($description, 0, 20) . '...';
         }
-        else if(strlen($description) > 60)
+        else if(strlen($description) > 70)
         {
-            $description = substr($description, 0, 60) . '...';
+            $description = substr($description, 0, 70) . '...';
         }
 
         return $description;

@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-10">
-            <select id="category" multiple="multiple" style="color:#000000">
+            <select id="category" multiple="multiple" class="color-black">
                 <?php
                 foreach($this->categories as $category):
                     ?>
@@ -13,7 +13,7 @@
                 ?>
             </select>
         </div>
-        <button id="addCategory" type="button" style="color:#000000;" class="btn btn-success addCategoryEditor">
+        <button id="addCategory" type="button" class="btn btn-success addCategoryEditor color-black">
             <span class="glyphicon glyphicon-plus"></span>
         </button>
     </div>
@@ -30,7 +30,7 @@
                 <div class="col-md-10">
                     <input type="text" disabled="disabled" value="<?php echo $activeCategory['name']; ?>"/>
                 </div>
-                <button id="<?php echo $activeCategory['id']; ?>" class="btn btn-danger removeCategoryEditor" type="button" style="color:#000000">
+                <button id="<?php echo $activeCategory['id']; ?>" class="btn btn-danger removeCategoryEditor color-black" type="button">
                     <span class="glyphicon glyphicon-minus"></span>
                 </button>
             </div>

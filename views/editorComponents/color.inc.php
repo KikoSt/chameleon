@@ -3,7 +3,7 @@
     <div>
         <input id="fill"
                type="text"
-               class="form-control picker"
+               class="form-control picker cursor-pointer"
                name="<?php echo $element->getId();?>#fill"
                value="<?php echo (!empty($element->getFill()) ? $element->getFill()->getHex() : '#000000');?>"
                placeholder="color"

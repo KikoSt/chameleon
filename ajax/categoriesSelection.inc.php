@@ -32,7 +32,7 @@ foreach($subscriptions as $curCategory):
     <div class="col-md-10">
         <?php echo $value;?>
     </div>
-    <button id="<?php echo $id;?>" class="removeCategory" type="button" style="color:#000000">
+    <button id="<?php echo $id;?>" class="removeCategory color-black" type="button">
         <span class="glyphicon glyphicon-minus"></span>
     </button>
 </div>

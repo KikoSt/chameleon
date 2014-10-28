@@ -1,4 +1,4 @@
-<div class="panel panel-default" style="min-height: 350px;">
+<div class="panel panel-default globalBox" style="min-height: 350px;">
     <div class="panel-heading globalsTitle">
         <h3 class="panel-title">
                 info and settings for this template:

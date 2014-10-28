@@ -118,3 +118,62 @@ input:disabled
     pointer:default;
 }
 
+.color-black
+{
+    color:#000000;
+}
+
+.globalBox{
+    min-height: 350px;
+}
+
+#preview_div{
+    display: none;
+    position: absolute;
+    z-index: 110;
+    left: 400px;
+    top: 100px;
+    width: 15px;
+    height: 15px;
+}
+
+.container{
+    width: 100%;
+}
+
+.navbar-header{
+    height: 60px;
+}
+
+#userInformation {
+    color: #ffffff;
+    text-align: right;
+    padding-top: 15px;
+    line-height: 15px;
+    height: 60px;
+}
+
+#logo{
+    height: 60px;
+}
+
+#leftbox{
+    position:fixed;
+}
+
+.mainContainer{
+    margin-left: 150px;
+}
+
+.templatePreviewRow{
+    height: 220px;
+}
+
+.margin-left-150{
+    margin-left: 180px;
+}
+
+.carouselChevron{
+    padding-bottom: 6px;
+}
+

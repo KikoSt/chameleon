@@ -1,71 +1,50 @@
-@import url("bootstrap.min.css");
-@import url("fileinput.css");
-@import url("reset.min.css");
+@import url(bootstrap.min.css);
+@import url(fileinput.css);
+@import url(reset.min.css);
+@import url(mouseover.css);
 
-/* Overwrite all bootstrap css rules with a rounded corner to create a flat design */
-/* TODO integrate where possible into Chameleon own bootstrap css */
-
-div,
-li,
-.btn
-{
-    border-radius: 0 !important;
-    overflow: visible;
+div,li,.btn {
+    border-radius:0!important;
+    overflow:visible;
 }
 
-a,
-a:hover
-{
-    text-decoration: none !important;
+a,a:hover {
+    text-decoration:none!important;
 }
 
-.row
-{
-    margin-bottom: 2px !important;
-    margin-right: 1px !important;
-    margin-left: 1px !important;
-    font-size: 12px;
+.row {
+    margin-bottom:2px!important;
+    margin-right:1px!important;
+    margin-left:1px!important;
+    font-size:12px;
 }
 
-.form-control
-{
-    padding: 1px !important;
-    height: 20px !important;
-    border-radius: 0 !important;
+.form-control {
+    height:20px!important;
+    border-radius:0!important;
+    padding:1px!important;
 }
 
-input,
-select
-{
-    width:150px !important;
+input,select {
+    width:150px!important;
 }
 
-#overview select{
-    width:100% !important;
+.picker {
+    width:118px!important;
 }
 
-.picker
-{
-    width:118px !important;
-    cursor: pointer;
+.cursor-pointer {
+    cursor:pointer;
 }
 
-.col-md-1,
-.col-md-2,
-.col-md-3,
-.col-md-4,
-.col-md-5,
-.col-md-6,
-.col-md-7,
-.col-md-8,
-.col-md-9,
-.col-md-10,
-.col-md-11,
-.col-md-12
-{
-    padding: 3px !important;
+.col-md-1,.col-md-2,.col-md-3,.col-md-4,.col-md-5,.col-md-6,.col-md-7,.col-md-8,.col-md-9,.col-md-10,.col-md-11,.col-md-12 {
+    padding:3px!important;
 }
 
+.globalsTitle {
+    background-color:#f8bf42!important;
+    color:#fff!important;
+}
 
 .globalsTitle
 {
@@ -78,9 +57,8 @@ select
     background-color: #c54644 !important;
 }
 
-.imageTitle
-{
-    background-color: #4583c6 !important;
+.imageTitle {
+    background-color:#4583c6!important;
 }
 
 .rectangleTitle
@@ -93,21 +71,27 @@ select
     background-color: #44c587 !important;
 }
 
-.overviewTitle
-{
-    background-color: #4583c6 !important;
-    color: #ffffff !important;
-    font-size: 1.4em;
-    margin-bottom: 3px;
+.overviewTitle {
+    background-color:#4583c6;
+    color:#fff;
+    font-size:1.4em;
+    margin-bottom:3px;
 }
 
-.list-group-item
-{
-    color: #555 !important;
-    background-color: transparent;
-    border-color: transparent;
-    padding: 0 !important;
-    font-size: 1.3em;
+.categoryItem {
+    background-color:#e8e8e8;
+    color:#000;
+    font-size:1em;
+    padding-left:3px;
+    margin:0 3px;
+}
+
+.list-group-item {
+    color:#555!important;
+    background-color:transparent;
+    font-size:1.3em;
+    border-color:transparent;
+    padding:0!important;
 }
 
 .panel
@@ -141,104 +125,90 @@ input, select, option, .file-caption-name
     margin: 1px;
 }
 
-.panel-heading
-{
-    color: #ffffff !important;
+.panel-heading {
+    color:#fff!important;
 }
 
-.component
-{
-    display: none;
+.component {
+    display:none;
 }
 
-.global
-{
-    min-height: 350px;
+.global {
+    min-height:350px;
 }
 
 form {
-    margin: 0;
+    margin:0;
 }
 
-.form-control[disabled]
-{
-    background-color: #d9d9d9 !important;
+.form-control[disabled] {
+    background-color:#d9d9d9!important;
 }
 
 .editor form {
-    font-size: .8em !important;
+    font-size:.8em!important;
 }
 
 label {
-    margin-top: 2px !important;
+    margin-top:2px!important;
 }
 
 .thumbnail {
-    text-align:center !important;
-    border-radius: 0 !important;
-    overflow: hidden;
-    vertical-align: middle !important;
-    padding: 1px !important;
-    position: relative;
-    width: 540px;
-    height: 380px;
-    margin-left: 30px;
-    margin-top: 10px;
+    text-align:center!important;
+    border-radius:0!important;
+    overflow:hidden;
+    vertical-align:middle!important;
+    position:relative;
+    width:540px;
+    height:380px;
+    margin-left:30px;
+    margin-top:10px;
+    padding:1px!important;
 }
 
-.thumbnail-half{
-    width: 270px;
+.thumbnail-half {
+    width:270px;
 }
 
-.thumbnail-quarter{
-    width: 135px;
+.thumbnail-quarter {
+    width:135px;
 }
 
 .thumbnail > li {
-    display: inline-block !important;
-    display: inline !important; /* ie7 fix */
-    float: none !important; /* this is the part that makes it work */
+    display:inline!important;
+    float:none!important;
 }
 
-.thumbnail > div > a > img
-{
-    padding: 8px 5px;
-    max-width: 260px !important;
-    max-height: 215px !important;
+.thumbnail-preview {
+    max-width:260px!important;
+    max-height:200px!important;
+    padding:10px 5px;
 }
 
-#leftbox{
-    position: fixed;
-    margin: 0px;
-    right: auto;
-    z-index: 0;
-    left: 0px;
-    display: block;
-    visibility: visible;
-    width: 161px;
-    top: 60px;
-    bottom: 50px;
-    background-color: #ffffff;
-    border-right: 1px solid #c3c3c3;
+#leftbox {
+    position:fixed;
+    right:auto;
+    z-index:0;
+    left:0;
+    display:block;
+    visibility:visible;
+    width:161px;
+    top:60px;
+    bottom:50px;
+    background-color:#fff;
+    border-right:1px solid #c3c3c3;
+    margin:0;
 }
 
-#leftbox .nav
-{
-    width: 161px;
+#leftbox .nav {
+    width:161px;
 }
 
-.subnav
-{
-    position: relative;
-    display: block;
-    padding: 0 0 0 22px !important;
-    font-size: 12px;
-}
-
-.modal input,
-.modal select
-{
-    width: 100% !important;
+.subnav {
+    position:relative;
+    display:block;
+    font-size:12px;
+    padding:0 0 0 22px !important;
 }
 
 input[type="text"]:disabled
@@ -306,38 +276,43 @@ input[type=checkbox]:checked + label:after
     border: 1px solid #aaaaaa;
 }
 
-.presetfont
-{
-    height: 20px !important;
-    width: 67px !important;
+.presetfont {
+    height:20px!important;
+    width:67px!important;
 }
 
-.editor-modal-body button
-{
-    height: 20px;
-    width: 32px;
-    color: #000000;
-    margin-top: 3px;
+.editor-modal-body button {
+    height:20px;
+    width:32px;
+    color:#000;
+    margin-top:3px;
 }
 
-.editor-modal-content
-{
-    color: #FFFFFF !important;
-    background-color: #333333 !important;
-    border-color: #333333 !important;
+.editor-modal-content {
+    color:#FFF!important;
+    background-color:#333!important;
+    border-color:#333!important;
 }
 
-.editor-modal-content .btn .glyphicon
-{
-    top: -4px !important;
-    left: -3px !important;
+.editor-modal-content .btn .glyphicon {
+    top:-4px!important;
+    left:-3px!important;
 }
 
-.template{
-    margin-bottom: 30px !important;
+.template {
+    margin-bottom:30px!important;
+    background-color:#F2F2F2;
+    max-width:1370px;
 }
 
-.fa-5_3x
-{
-    font-size: 5.3em;
+.fa-5_3x {
+    font-size:5.3em;
+}
+
+#overview select,.modal input,.modal select {
+    width:100%!important;
+}
+
+#overviewView{
+    margin-top: 75px;
 }
