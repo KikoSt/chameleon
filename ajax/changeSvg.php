@@ -115,8 +115,8 @@ if($action === 'clone' || $action === 'save' || $action === 'saveCategory')
 
     $bannerTemplateModel->setSvgContent($svgContent);
     $bannerTemplateModel->setGroupId(0);
-    $bannerTemplateModel->setDimX($container->getCanvasHeight());
-    $bannerTemplateModel->setDimY($container->getCanvasWidth());
+    $bannerTemplateModel->setDimY($container->getCanvasHeight());
+    $bannerTemplateModel->setDimX($container->getCanvasWidth());
     $bannerTemplateModel->setBannerTemplateId($templateId);
     $bannerTemplateModel->setAuditUserId($auditUserId);
     $bannerTemplateModel->setAdvertiserId($advertiserId);

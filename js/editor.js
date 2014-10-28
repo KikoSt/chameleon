@@ -211,12 +211,13 @@ $(document).ready(function() {
             var targetId = myId.replace('_input', '');
             var fileSelect = $("#" + myId);
 
-            var files = fileSelect.prop("files");
-
-            if(files.length > 0)
-            {
-                var file = files[0];
-                formData.append(targetId, file);
+            if("undefined" !== typeof fileSelect.prop("files")) {
+                var files = fileSelect.prop("files");
+                if("undefined" !== typeof files && files.length > 0)
+                {
+                    var file = files[0];
+                    formData.append(targetId, file);
+                }
             }
         }
         /* ******************************************************************** */
