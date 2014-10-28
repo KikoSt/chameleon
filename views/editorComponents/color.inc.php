@@ -1,5 +1,5 @@
 <div class="row">
-    <label class="col-md-3">Color:</label>
+    <label class="col-md-4">Color:</label>
     <div>
         <input id="fill"
                type="text"

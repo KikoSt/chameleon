@@ -1,9 +1,9 @@
 <div class="row">
-    <label class="col-md-3">Bg color:</label>
+    <label class="col-md-4">Bg color:</label>
     <div>
         <input id="bgcolor"
                type="text"
-               class="form-control picker cursor-pointer"
+               class="form-control picker small cursor-pointer"
                name="<?php echo $element->getId();?>#bgcolor"
                value="<?php echo (!empty($element->getBackgroundcolor()) ? $element->getBackgroundcolor()->getHex() : '#000000');?>"
                placeholder="color"

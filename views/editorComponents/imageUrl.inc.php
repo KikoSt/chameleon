@@ -1,5 +1,5 @@
 <div class="row">
-    <label class="col-md-3">Image:</label>
+    <label class="col-md-4">Image:</label>
     <input id="<?php echo $element->getId();?>_input"
            type="file"
            class="file"
