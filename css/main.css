@@ -84,6 +84,11 @@ h3.panel-title
     font-size:1.2em;
 }
 
+.panel-body
+{
+    padding-top: 20px;
+}
+
 select, select > option
 {
     -webkit-appearance: none;
