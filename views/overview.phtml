@@ -181,6 +181,33 @@
         });
 
         $(".cloneTemplate").click(function(){
+            var id = $(this).attr('id').split('-');
+            var templateId = id[1];
+            var advertiserId = id[2];
+            var companyId = id[3];
+            var data = {};
+
+            if(confirm("Are you sure you want to CLONE this template? You will be redirected to the cloned template after confirming."))
+            {
+                data.advertiserId = advertiserId;
+                data.templateId = templateId;
+
+                $.ajax({
+                    type: 'POST',
+                    data: data,
+                    dataType: "json",
+                    url: '/chameleon/ajax/cloneTemplate.php',
+                    success: function (response)
+                    {
+                        var url = window.location.origin + '/chameleon/index.php?page=editor&templateId=' + response.idBannerTemplate +
+                            '&companyId=' + companyId + '&advertiserId=' + advertiserId;
+                        window.location.replace(url);
+                    }
+                });
+            }
+        });
+
+        $(".deleteTemplate").click(function(){
 
             var id = $(this).attr('id').split('-');
             var templateId = id[1];
@@ -188,20 +215,26 @@
             var companyId = id[3];
             var data = {};
 
-            data.advertiserId = advertiserId;
-            data.templateId   = templateId;
+            if(confirm("Are you sure you want to DELETE this template?"))
+            {
+                data.advertiserId = advertiserId;
+                data.templateId   = templateId;
 
-            $.ajax({
-                type: 'POST',
-                data: data,
-                dataType: "json",
-                url:  '/chameleon/ajax/cloneTemplate.php',
-                success: function(response){
-                    var url = window.location.origin + '/chameleon/index.php?page=editor&templateId=' + response.idBannerTemplate +
-                        '&companyId=' + companyId + '&advertiserId=' + advertiserId;
-                    window.location.replace(url);
-                }
-            });
-        })
+                $.ajax({
+                    type: 'POST',
+                    data: data,
+                    dataType: "html",
+                    url:  '/chameleon/ajax/deleteTemplate.php',
+                    success: function(response){
+                        if(response.length === 0)
+                        {
+                            $('#template_'+templateId).fadeOut("slow", function(){
+                                $(this).empty();
+                            });
+                        }
+                    }
+                });
+            }
+        });
     });
 </script>

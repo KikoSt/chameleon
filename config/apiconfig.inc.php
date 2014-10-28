@@ -8,4 +8,3 @@ define('REST_API_SERVICE_URL', 'https://login.mediadecision.com/chameleon-0.2/re
 
 define('REST_API_USERNAME', 'chameleon-api');
 define('REST_API_PASSWORD', 'BwHwEpJnIqUgWkOv9YDg');
-
