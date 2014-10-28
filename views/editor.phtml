@@ -2,16 +2,18 @@
 
 <div class="container-fluid" style="margin-left: 150px;">
     <form enctype="multipart/form-data" id="editor" method="POST" class="form-horizontal">
-        <div id="nodes" class="navbar navbar-default navbar-fixed-top navbar-inverse" role="navigation" style="margin-top:61px;
-    margin-left:161px;background-color: #888888; border-color: #888888;">
+        <div id="nodes"
+             class="navbar navbar-default navbar-fixed-top navbar-inverse"
+             role="navigation"
+             style="margin-top:61px; margin-left:161px;background-color: #888888; border-color: #888888;">
             <ul class="nav navbar-nav navbar-left">
                 <li style="padding: 14px;">
-                    Template: <?php echo $this->templateId;?>
+                    <h1 style="color:#ffffff; font-size:1.3em; padding-top:1px;">Edit template:</h1>
                 </li>
             </ul>
         </div>
         <div id="awesomeEditor" class="row" style="margin-top: 115px;margin-left: 50px;">
-            <div class="col-md-6" style="border-right: 1px solid #c3c3c3;">
+            <div class="col-md-6">
                 <div class="row">
                     <?php
                         $element = $this->container;
@@ -48,24 +50,13 @@
                     </div>
                     <!-- END PREVIEW IMAGE -->
                     <!-- BUTTONS SAVE / CLONE -->
-                    <div class="row" style="padding-top: 5px;">
+                    <div class="row" id="save_button">
                         <!-- On click render template, show the change and save data to database-->
                         <button id="save" type="submit" class="btn btn-danger" title="Save template">
                             <span class="glyphicon glyphicon-export"></span>
                         </button>
-                        <button id="clone" type="submit" class="btn btn-warning" title="Clone template">
-                            <span class="glyphicon glyphicon-tags"></span>
-                        </button>
                     </div>
                     <!-- END BUTTONS SAVE / CLONE -->
-                    <div class="alert alert-success alert-dismissible savealert" role="alert">
-                        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                        Tamplate changes saved!
-                    </div>
-                    <div class="alert alert-danger alert-dismissible clonealert" role="alert">
-                        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                        Clone created, you're now working on the creative!
-                    </div>
                 </div>
             </div>
         </div>
@@ -92,5 +83,10 @@
 </div>
 <!-- Modal -->
 
-<script type="text/JavaScript" src="js/editor.js"></script>
 
+<div class="alert alert-success alert-dismissible savealert" role="alert">
+                        Template changes saved!
+                    </div>
+
+
+<script type="text/JavaScript" src="js/editor.js"></script>

@@ -1,6 +1,5 @@
 <div class="row">
-    <label for="shadowCheckBox" class="col-md-3">Shadow:</label>
-    <input id="shadowCheckBox"
+    <input id="<?php echo $element->getId();?>_shadowCheckBox"
            class="myCheckbox"
            type="checkbox"
            name="<?php echo $element->getId();?>#shadow"
@@ -8,6 +7,7 @@
         <?php echo ($element->hasShadow()) ? 'checked' : '';?>
 
         >
+    <label for="<?php echo $element->getId();?>_shadowCheckBox" class="col-md-3">Shadow:</label>
 </div>
 <?php if($this->premiumUser):?>
 <div class="row">

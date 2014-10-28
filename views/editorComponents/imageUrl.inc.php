@@ -4,16 +4,16 @@
            type="file"
            class="file"
            name="<?php echo $element->getId();?>#imageUrl"
-           value="test.try"
-           data-show-upload="true"
-           data-show-preview="false"
-           placeholder="<?php echo $element->getImageUrl();?>"
+           value="<?php echo $element->getImageUrl(); ?>"
+           placeholder="<?php echo $element->getImageUrl(); ?>"
         />
-    <input type="hidden"
-           class="form-control"
-           name="<?php echo $element->getId();?>#imageUrl"
-           value="<?php echo str_replace(ROOT_DIR, '', $element->getImageUrl());?>"
-           placeholder="<?php echo $element->getImageUrl();?>"
-        />
-
+    <!-- initialize the plugin here for individual default name entries -->
+    <script>
+    $('#<?php echo $element->getId(); ?>_input').fileinput({
+        'showUpload': false,
+        'showPreview': false,
+        'showCaption': true,
+        'initialCaption': '<?php echo array_pop(explode('/', $element->getImageUrl())); ?>'
+    });
+    </script>
 </div>

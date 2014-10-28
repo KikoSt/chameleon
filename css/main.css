@@ -9,8 +9,7 @@ body {
     cursor: pointer !important;
 }
 
-#primary-color,
-#secondary-color
+#primary-color, #secondary-color
 {
     width: 150px;
 }
@@ -24,6 +23,99 @@ a.subnav
 {
     max-width: 346px;
     max-height: 362px;
+}
+
+
+#awesomeEditor > div
+{
+    margin-top:50px;
+}
+
+.panel
+{
+    margin-left: 75px !important;
+}
+
+#previewImage, .alert
+{
+    margin-left: 50px !important;
+    margin-right: 60px !important;
+}
+
+.alert
+{
+    position: absolute;
+    width: 200px;
+    top: 50%;
+    left: 50%;
+    margin-left: -100px;
+    box-shadow: 5px 5px 5px #888888;
+}
+
+#save_button
+{
+    position: absolute;
+    bottom: -50px;
+    right: 60px;
+}
+
+ul.nav-list
+{
+    color: #000000 !important;
+    margin-right: 10px;
+}
+
+li.sidebar
+{
+    color: #000000 !important;
+    width: 99.5%;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+li.sidebar.active, li.sidebar.active:hover
+{
+    background: #ffcc00 !important;
+    font-weight: bold;
+    color: #ffffff !important;
+}
+
+li.sidebar > a
+{
+    color: #000000;
+}
+
+.presetfont
+{
+    line-height: 10px;
+    color: #000000;
+    font-size: .9em;
+    background-color: #7f7f7f;
+    border: 1px solid white;
+}
+
+.presetfont:before
+{
+    font-family: FontAwesome;
+}
+
+h3.panel-title
+{
+    color: #000000;
+    opacity: .75;
+}
+
+select, select > option
+{
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -appearance: none;
+    float: left;
+}
+
+input:disabled
+{
+    pointer:default;
 }
 
 .color-black
@@ -84,7 +176,4 @@ a.subnav
 .carouselChevron{
     padding-bottom: 6px;
 }
-
-
-
 

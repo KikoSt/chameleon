@@ -52,8 +52,8 @@
             </div>
             <!-- Modal -->
             <input type="hidden" name="templateId" value="<?php echo $preview->templateId; ?>">
-            <input type="hidden" name="advertiserId" value="<?php echo $preview->advertiserId; ?>">
-            <input type="hidden" name="companyId" value="<?php echo $preview->companyId; ?>">
+            <input id="advertiserId" type="hidden" name="advertiserId" value="<?php echo $preview->advertiserId; ?>">
+            <input id="companyId"  type="hidden" name="companyId" value="<?php echo $preview->companyId; ?>">
             <input type="hidden" name="templateName" value="<?php echo $preview->templateName; ?>">
 
     <?php
@@ -127,8 +127,9 @@
             }).done(function(){
             }).fail(function(){
                 category.forEach(function(singleCategory){
-                    var item = '<div id="'+singleCategory.id+'" class="row"><p class="text-left overviewTitle categoryItem">' + singleCategory.name +
-                        '</p></div>';
+                    var item = '<div id="'+singleCategory.id+'" class="row"><p class="text-left overviewTitle categoryItem">'+
+                               '<a class="fa fa-trash categoryItem cursor-pointer" title="Remove category"></a>' +
+                               singleCategory.name + '</p></div>';
                     $('#categoryContainerOverview-'+templateId).append(item);
 
                     var node = '<option value="' + singleCategory.id + '">' + singleCategory.name + '</option>';
@@ -137,6 +138,19 @@
                 });
                 $(".modal-body form").unblock();
             });
+        });
+
+        $('.removeCategoryShortcut').click(function(){
+            var id = $(this).closest('div').attr('id').split('-');
+
+            data.category = category;
+            data.advertiserId = $('#advertiserId').attr('value');
+            data.templateId   = id[1];
+            data.companyId    = $('#companyId').attr('value');
+
+
+
+            console.log(id);
         });
 
         $('.removeCategoryOverview').click(function(e) {

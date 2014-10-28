@@ -15,7 +15,7 @@
             include('editorComponents/backgroundcolor.inc.php');
             include('editorComponents/text.inc.php');
             include('editorComponents/fontFamily.inc.php');
-            include('editorComponents/groupSource.inc.php');
+            // include('editorComponents/groupSource.inc.php');
             include('editorComponents/groupLink.inc.php');
         ?>
         </div>

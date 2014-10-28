@@ -34,6 +34,7 @@ class APIConnector
         $this->serviceCalls['getCategories']         = 'company/{companyId}/categories';
         $this->serviceCalls['getSubscribedCategories'] = 'bannerTemplate/{idBannerTemplate}/subscribedCategories';
         $this->serviceCalls['postTemplateQuery']     = 'query/bannerTemplates';
+        $this->serviceCalls['getProductDataSamples'] = 'query/products';
     }
 
     /**
@@ -445,6 +446,28 @@ class APIConnector
         curl_close($curl);
         return $curlResponse;
     }
+
+
+    public function getProductDataSamples($categoryIds, $numSamples)
+    {
+        $productQueryData = new StdClass();
+        if(is_array($categoryIds))
+        {
+            $productQueryData->categoryIds = $categoryIds;
+        }
+        $productQueryData->productsPerCategory = (int)$numSamples;
+        $productQueryData = json_encode($productQueryData);
+        $resource = REST_API_SERVICE_URL . '/' . $this->serviceCalls['getProductDataSamples'];
+        $curl = $this->getCurl($resource, 'POST');
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $productQueryData);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+
+        $curlResponse = curl_exec($curl);
+        curl_close($curl);
+        return $curlResponse;
+    }
+
+
 
     /**
      * @param $serviceUrl

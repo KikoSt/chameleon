@@ -51,14 +51,30 @@ class Editor extends Controller
         $container->setPreviewMode(true);
 
         $gif = 'http://' . $_SERVER['SERVER_NAME'] . '/chameleon/output/' . $container->getOutputDir() . '/' . $baseFilename . '.gif';
+        $swf = 'http://' . $_SERVER['SERVER_NAME'] . '/chameleon/output/' . $container->getOutputDir() . '/' . $baseFilename . '.swf';
+
+        // $this->view->premiumUser = false;
+
+        if(isset($_REQUEST['advanced']))
+        {
+            if($_REQUEST['advanced'] == 'true') {
+            $premiumUser = true;
+            } else {
+                $premiumUser = false;
+            }
+        }
+
+        $premiumUser = false;
 
         // view parameters
-        $this->view->imageMap        = getImageMap($container);
+        $this->view->premiumUser     = $premiumUser;
+        $this->view->imageMap        = getImageMap($container, $premiumUser);
         $this->view->templateId      = $container->getId();
         $this->view->auditUserId     = $auditUserId;
         $this->view->advertiserId    = $container->getAdvertiserId();
         $this->view->companyId       = $container->getCompanyId();
         $this->view->gif             = $gif;
+        $this->view->swf             = $swf;
         $this->view->container       = $container;
         $this->view->elements        = $container->getElements();
         $this->view->fontlist        = $text->getFontListForOverview();
@@ -84,10 +100,16 @@ class Editor extends Controller
         $this->addSubscribedCategoriesToSession($this->view->combinedCategories);
 
         //TODO for development, replace after implementing into Bidder
-        $this->view->premiumUser = false;
-        $this->view->premiumUser = true;
 
         $container->setTarget('GIF');
+
+        if(!empty($_REQUEST['action']))
+        {
+            $container->render();
+        }
+
+        $container->setTarget('SWF');
+        $container->render();
 
         if(!empty($_REQUEST['action']))
         {

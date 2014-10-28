@@ -1,7 +1,7 @@
 <div class="panel panel-default globalBox" style="min-height: 350px;">
     <div class="panel-heading globalsTitle">
         <h3 class="panel-title">
-                Global settings for template:
+                info and settings for this template:
         </h3>
     </div>
     <div id="globalsBody" class="panel-body">
@@ -24,7 +24,7 @@
                 <label class="col-md-4" style="height: <?php echo count($this->activeCategories) * 22?>px;">
                     Categories:
                     <button id="editCategoriesEditor" type="button" class="btn btn-xs" data-toggle="modal" data-target="#categorySelect"
-                            style="background-color: #333333; color: #FFFFFF;">
+                            style="background-color: #7f7f7f; color: #FFFFFF;">
                         <span class="glyphicon glyphicon-pencil"></span>
                     </button>
                 </label>

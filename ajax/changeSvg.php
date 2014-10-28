@@ -93,8 +93,11 @@ if(null !== $_FILES && count($_FILES) > 0)
 }
 
 $svgContent = $container->createSvg();
-$container->setTarget('GIF');
 $container->setOutputName(getPreviewFileName($template));
+$container->setTarget('SWF');
+$container->render();
+
+$container->setTarget('GIF');
 
 if(!empty($action))
 {
@@ -143,7 +146,7 @@ $response = array();
 
 // TODO: improve this path handling, too
 $container->setOutputName(getPreviewFileName($template));
-$imgsrc = 'output/' . $basePath . '/' . $container->getOutputName() . '.gif';
+$imgsrc = 'output/' . $basePath . '/' . $container->getOutputName();
 $response['imgsrc'] = $imgsrc;
 
 echo json_encode($response);

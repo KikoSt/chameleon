@@ -97,14 +97,14 @@ function getPreviewFileName($template)
 }
 
 
-function getImageMap($container)
+function getImageMap($container, $displayComponentLinks)
 {
     $textfieldpadding = 3;
     $imageMap = '<map name="template_selection">';
     $elements = $container->getElements();
     $elements = array_reverse($elements);
 
-    if($displayGroupLinks)
+    if(!$displayComponentLinks)
     {
         foreach($container->getGroups() AS $curGroup)
         {
@@ -120,42 +120,52 @@ function getImageMap($container)
             $imageMap .= ' title="group_' . $curGroup->getId() . '"';
             $imageMap .= ' id="group_' .$curGroup->getId() . '"';
             $imageMap .= ' class="subnav"';
+            $imageMap .= ' data-key="' . $curGroup->getId() . '_group"';
             $imageMap .= ' />';
         }
     }
 
     foreach($elements AS $curElement)
     {
-        $imageMap .= "\n";
-        $imageMap .= '<area shape="rect" coords="';
-        if($curElement instanceof GfxText)
-        {
-            $imageMap .= (int) ($curElement->getX() - $textfieldpadding) . ',';
-            $imageMap .= (int) ($curElement->getY() - $curElement->getHeight() - $textfieldpadding) . ',';
-        }
-        else
-        {
-            $imageMap .= (int) $curElement->getX() . ',';
-            $imageMap .= (int) $curElement->getY() . ',';
-        }
+         if($displayComponentLinks || $curElement->getEditGroup() == 0)
+         {
+            $imageMap .= "\n";
+            $imageMap .= '<area shape="rect" coords="';
+            if($curElement instanceof GfxText)
+            {
+                $imageMap .= (int) ($curElement->getX() - $textfieldpadding) . ',';
+                $imageMap .= (int) ($curElement->getY() - $curElement->getHeight() - $textfieldpadding) . ',';
+            }
+            else
+            {
+                $imageMap .= (int) $curElement->getX() . ',';
+                $imageMap .= (int) $curElement->getY() . ',';
+            }
 
-        if($curElement instanceof GfxText)
-        {
-            $imageMap .= (int) ($curElement->getX() + $curElement->getWidth() + $textfieldpadding) . ',';
-            $imageMap .= (int) ($curElement->getY() + $textfieldpadding);
+            if($curElement instanceof GfxText)
+            {
+                $imageMap .= (int) ($curElement->getX() + $curElement->getWidth() + $textfieldpadding) . ',';
+                $imageMap .= (int) ($curElement->getY() + $textfieldpadding);
+            }
+            else
+            {
+                $imageMap .= (int) $curElement->getX() + $curElement->getWidth() . ',';
+                $imageMap .= (int) $curElement->getY() + $curElement->getHeight();
+            }
+            $imageMap .= '"';
+            $imageMap .= ' href="#"';
+            $imageMap .= ' alt="' . $curElement->getId() . '"';
+            $imageMap .= ' title="' . $curElement->getId() . '"';
+            $imageMap .= ' id="' .$curElement->getId() . '"';
+            $imageMap .= ' class="subnav"';
+            $imageMap .= ' data-key="';
+            $imageMap .= $curElement->getId();
+            if($curElement instanceof GfxText) $imageMap .= '_text';
+            if($curElement instanceof GfxImage) $imageMap .= '_image';
+            if($curElement instanceof GfxRectangle) $imageMap .= '_rectangle';
+            $imageMap .= '"';
+            $imageMap .= ' />';
         }
-        else
-        {
-            $imageMap .= (int) $curElement->getX() + $curElement->getWidth() . ',';
-            $imageMap .= (int) $curElement->getY() + $curElement->getHeight();
-        }
-        $imageMap .= '"';
-        $imageMap .= ' href="#"';
-        $imageMap .= ' alt="' . $curElement->getId() . '"';
-        $imageMap .= ' title="' . $curElement->getId() . '"';
-        $imageMap .= ' id="' .$curElement->getId() . '"';
-        $imageMap .= ' class="subnav"';
-        $imageMap .= ' />';
     }
     $imageMap .= "\n";
     $imageMap .= '</map>';

@@ -22,11 +22,27 @@ $(document).ready(function() {
 
     $('.subnav').on('click', function(e) {
         var id = $(this).attr('id');
-        $('.component').hide();
-        $('#panel_' + id).show();
-        $('#grouppanel_' + $('#panel_' + id).attr('data-groupid')).show();
-        $('#' + id + '--primary').css("background-color", $('#primary-color').val());
-        $('#' + id + '--secondary').css("background-color", $('#secondary-color').val());
+        if(id.substr(0, 5) != 'group') {
+            $('.component').hide();
+            $('#panel_' + id).show();
+            $('#grouppanel_' + $('#panel_' + id).attr('data-groupid')).show();
+            $('#' + id + '--primary').css("background-color", $('#primary-color').val());
+            $('#' + id + '--secondary').css("background-color", $('#secondary-color').val());
+            $('#' + $('#panel_' + id).attr('data-groupid') + '--fgprimary').css("background-color", $('#primary-color').val());
+            $('#' + $('#panel_' + id).attr('data-groupid') + '--fgsecondary').css("background-color", $('#secondary-color').val());
+            $('#' + $('#panel_' + id).attr('data-groupid') + '--bgprimary').css("background-color", $('#primary-color').val());
+            $('#' + $('#panel_' + id).attr('data-groupid') + '--bgsecondary').css("background-color", $('#secondary-color').val());
+        } else {
+            $('.component').hide();
+            id = id.substr(6, 10);
+            $('#grouppanel_' + id).show();
+            $('#' + id + '--primary').css("background-color", $('#primary-color').val());
+            $('#' + id + '--secondary').css("background-color", $('#secondary-color').val());
+            $('#' + id + '--fgprimary').css("background-color", $('#primary-color').val());
+            $('#' + id + '--fgsecondary').css("background-color", $('#secondary-color').val());
+            $('#' + id + '--bgprimary').css("background-color", $('#primary-color').val());
+            $('#' + id + '--bgsecondary').css("background-color", $('#secondary-color').val());
+        }
     });
 
     $('.glyphicon-remove-circle').on('click', function(e) {
@@ -107,15 +123,41 @@ $(document).ready(function() {
         }
     });
 
+    function componentToHex(c) {
+        var hex = Number(c).toString(16);
+        return hex.length == 1 ? "0" + hex : hex;
+    }
+
+    function colorToHex(rgb) {
+        var rgb = rgb.substring(4, rgb.length-1).replace(/ /g, '').split(',');
+        return "#" + componentToHex(rgb[0]) + componentToHex(rgb[1]) + componentToHex(rgb[2]);
+    }
+
+    // prepare image map
+    var highlightColor = {};
+    highlightColor['text']      = colorToHex($('.textTitle').css('background-color')).replace('#', '');
+    highlightColor['image']     = colorToHex($('.imageTitle').css('background-color')).replace('#', '');
+    highlightColor['rectangle'] = colorToHex($('.textTitle').css('background-color')).replace('#', '');
+    highlightColor['group']     = colorToHex($('.groupTitle').css('background-color')).replace('#', '');
+
+    var areas = [];
+    var areaList = $('[name="template_selection"]').find('area');
+    $.each(areaList, function(index, value) {
+        value = $(value).attr("data-key").replace('area#', '');
+        var type = value.split('_').pop();
+        areas.push({ key: value, strokeColor: highlightColor[type]});
+    });
 
     $("#previewImage img").mapster({
         fillColor: 'ff005',
-        fillOpacity: 0.1,
-        strokeWidth: 3,
+        fillOpacity: 0,
+        strokeWidth: 2,
         stroke: true,
         strokeColor: 'ff0000',
         singleSelect: true,
-        clickNavigate: false
+        clickNavigate: false,
+        mapKey: 'data-key',
+        areas: areas
     });
 
 
@@ -136,7 +178,12 @@ $(document).ready(function() {
                 response = $.parseJSON(xhr.response);
                 imgsrc = response.imgsrc;
                 $("#previewImage img").unbind('mapster');
-                $("#previewImage img").attr('src', imgsrc + '?ts=' + new Date().getTime());
+                var gifsrc = imgsrc + '.gif' + '?ts=' + new Date().getTime();
+                var swfsrc = imgsrc + '.swf' + '?ts=' + new Date().getTime();
+                $("#previewImage img").attr('src', gifsrc);
+                $("[name='movie']").attr('value', swfsrc);
+                $("[name='movie']").prop('value', swfsrc);
+                $("#previewImage object").prop('data', swfsrc);
             }
         }
 
@@ -215,13 +262,48 @@ $(document).ready(function() {
         $('#' + id + '--preview').css("background-color", color);
     });
 
-
-    $("#fileUpload").fileinput();
+    $('[id$="_input"]').fileinput({
+        'showUpload': false,
+        'showPreview': false,
+        'showCaption': true,
+    });
 
     $('#awesomeEditor input, #awesomeEditor select').change(function() {
         var groupId = 0;
         var groupEdit = false;
         var attributeName = '';
+
+        // shadow / stroke
+
+        if($(this).attr('id').indexOf('shadowCheckBox'))
+        {
+            if($(this).is(":checked"))
+            {
+                $(this).attr("checked", true);
+            //    $(this).attr('disabled', false).addClass('picker');
+            //    $(this).attr('disabled', false);
+            }
+            else
+            {
+                $(this).attr("checked", false);
+            //    $("#" + id + "_shadowColor").attr('disabled', true).removeClass('picker');
+            //    $("#" + id + "_shadowDist").attr('disabled', true);
+            }
+        } else if($(this).attr('id').indexOf('shadowCheckBox')) {
+
+            if($(this).is(":checked"))
+            {
+                $(this).attr("checked", true);
+            //    $("#" + id + "_strokeColor").attr('disabled', false).addClass('picker');
+            //    $("#" + id + "_strokeWidth").attr('disabled', false);
+            }
+            else
+            {
+                $(this).attr("checked", false);
+            //    $("#" + id + "_strokeColor").attr('disabled', true).removeClass('picker');
+            //    $("#" + id + "_strokeWidth").attr('disabled', true);
+            }
+        }
 
         // TODO: recalculate groups
 
@@ -236,14 +318,9 @@ $(document).ready(function() {
                 // console.log($(this).attr('value'));
                 //
                 // find the name of the edited attribute
-                // console.log(this);
                 attributeName = $(this).attr('name').replace(/.*\#/i, '');
 
-                // console.log(attributeName);
-
                 updateField = $(document).find('[name="' + groupId + '#' + attributeName + '"]');
-
-                // console.log('UpdateField: %o', updateField);
 
                 var oldValue = $(this).attr('value');
                 var newValue = $(this).prop('value');
@@ -261,8 +338,6 @@ $(document).ready(function() {
                     case 'x':
                     case 'y':
                         var delta = newValue - oldValue;
-
-                        console.log(newValue + ' - ' + oldValue + ' = ' + delta);
 
                         elements.each(function (i, member) {
                             var inElem = $(member).find('[name$="#' + attributeName + '"]');
@@ -290,7 +365,6 @@ $(document).ready(function() {
                             }
 
                             coords = coords.join(',');
-                            // console.log(coords);
 
                             $(imapElement).attr('coords', coords);
                             $(imapElement).prop('coords', coords);
@@ -306,22 +380,18 @@ $(document).ready(function() {
                             });
 
                             var coords = $(imapElement).attr('coords').split(',');
-                            console.log(coords);
                         });
                         // TODO: calculate new image map coordinates
                         //
                         break;
                     case 'text':
-                        console.log('text');
                         elements.each(function (i, member) {
                             inElem = $(member).find('[name$="' + attributeName + '"]');
-                            // console.log('s% ==? %s', inElem.attr('value'), Number(inElem.attr('value')));
                             $(inElem).prop('value', newValue);
                             $(inElem).attr('value', newValue);
                         });
                         break;
                     case 'fontFamily':
-                        console.log('fontFamily');
                         elements.each(function (i, member) {
                             inElem = $(member).find('[name$="' + attributeName + '"]');
                             if($(inElem).find('option[value="' + newValue + '"]').length) {
@@ -330,7 +400,6 @@ $(document).ready(function() {
                         });
                         break;
                     case 'cmeoLink':
-                        console.log('cmeoLink');
                         elements.each(function (i, member) {
                             inElem = $(member).find('[name$="' + attributeName + '"]');
                             if($(inElem).find('option[value="' + newValue + '"]').length) {
@@ -339,7 +408,6 @@ $(document).ready(function() {
                         });
                         break;
                     case 'fgcolor':
-                        console.log('fgcolor');
                         elements.each(function (i, member) {
                             if($(member).attr('data-type') == "text") {
                                 inElem = $(member).find('[name$="fill"]');
@@ -349,7 +417,6 @@ $(document).ready(function() {
                         });
                         break;
                     case 'bgcolor':
-                        console.log('bgcolor');
                         elements.each(function (i, member) {
                             if($(member).attr('data-type') == "rectangle") {
                                 inElem = $(member).find('[name$="fill"]');
@@ -359,13 +426,11 @@ $(document).ready(function() {
                         });
                         break;
                     default:
-                        console.log('Attribute %s not known ... ', attributeName);
                         break;
                 }
             }
         } else {
             var elementName = $(this).attr('name').replace(/\#.*/i, '');
-            console.log(elementName);
 
             // if individual element is edited:
 //            groupId = Number($(this).parents('[data-groupid]').attr('data-groupid'));
@@ -385,8 +450,8 @@ $(document).ready(function() {
 //                }
 //            }
         }
-        $('#editor').trigger('submit');
         somethingChanged = true;
+        $('#editor').trigger('submit');
     });
 
     function updateGroupFromElements(groupId) {
@@ -397,7 +462,6 @@ $(document).ready(function() {
 
     function getElementsByGroupId(groupId) {
         var elements = $(document).find("[data-groupid=" + groupId + "]");
-        console.log(elements);
         return elements;
     }
 
@@ -469,19 +533,23 @@ $(document).ready(function() {
         });
     });
 
-    $('.preset').click(function(){
-        var identifier = $(this).attr('id').split('#');
+    $('.preset').on('click', function(){
+        var identifier = $(this).attr('id').split('--');
 
         switch(identifier[1])
         {
             case "primary":
             {
-                $('#panel_'+identifier[0]+' #fill').val($('#primary-color').val());
+                var primaryColor = $('#primary-color').val();
+                $('#panel_'+identifier[0]+' #fill').val(primaryColor);
+                $('[name="'+identifier[0]+'#fill"]').colorpicker('setValue', primaryColor);
                 break;
             }
             case "secondary":
             {
-                $('#panel_'+identifier[0]+' #fill').val($('#secondary-color').val());
+                var secondaryColor = $('#secondary-color').val();
+                $('#panel_'+identifier[0]+' #fill').val(secondaryColor);
+                $('[name="'+identifier[0]+'#fill"]').colorpicker('setValue', secondaryColor);
                 break;
             }
             case "presetFont":
@@ -494,42 +562,7 @@ $(document).ready(function() {
                 break;
             }
         }
-    });
-
-    //handles the enabling/disabling of the shadow form elements
-    $('#shadowCheckBox.myCheckbox').click(function(e) {
-        var id = $(this).attr('value');
-
-        if($(this).is(":checked"))
-        {
-            $(this).attr("checked", true);
-            $("#" + id + "_shadowColor").attr('disabled', false).addClass('picker');
-            $("#" + id + "_shadowDist").attr('disabled', false);
-        }
-        else
-        {
-            $(this).attr("checked", false);
-            $("#" + id + "_shadowColor").attr('disabled', true).removeClass('picker');
-            $("#" + id + "_shadowDist").attr('disabled', true);
-        }
-    });
-
-    //handles the enabling/disabling of the stroke form elements
-    $('#strokeCheckBox.myCheckBox').click(function(e) {
-        var id = $(this).attr('value');
-
-        if($(this).is(":checked"))
-        {
-            $(this).attr("checked", true);
-            $("#" + id + "_strokeColor").attr('disabled', false).addClass('picker');
-            $("#" + id + "_strokeWidth").attr('disabled', false);
-        }
-        else
-        {
-            $(this).attr("checked", false);
-            $("#" + id + "_strokeColor").attr('disabled', true).removeClass('picker');
-            $("#" + id + "_strokeWidth").attr('disabled', true);
-        }
+        $('#editor').trigger('submit');
     });
 
     // TODO: add a "initial" element to ALL templates?!

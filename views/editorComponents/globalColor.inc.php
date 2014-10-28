@@ -1,5 +1,5 @@
 <div class="row">
-    <label class="col-md-4">1st color:</label>
+    <label class="col-md-4">CD color 1:</label>
     <input id="primary-color"
            type="text"
            class="form-control picker globalColor cursor-pointer"
@@ -13,7 +13,7 @@
     </div>
 </div>
 <div class="row">
-    <label class="col-md-4">2nd color:</label>
+    <label class="col-md-4">CD color 2:</label>
     <input id="secondary-color"
            type="text"
            class="form-control picker globalColor cursor-pointer"
