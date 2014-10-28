@@ -67,6 +67,8 @@ class Editor extends Controller
         $premiumUser = false;
 
         // view parameters
+        $this->view->width           = $container->getCanvasWidth();
+        $this->view->height          = $container->getCanvasHeight();
         $this->view->premiumUser     = $premiumUser;
         $this->view->imageMap        = getImageMap($container, $premiumUser);
         $this->view->templateId      = $container->getId();
