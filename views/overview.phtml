@@ -52,14 +52,15 @@
             </div>
             <!-- Modal -->
             <input type="hidden" name="templateId" value="<?php echo $preview->templateId; ?>">
-            <input id="advertiserId" type="hidden" name="advertiserId" value="<?php echo $preview->advertiserId; ?>">
-            <input id="companyId"  type="hidden" name="companyId" value="<?php echo $preview->companyId; ?>">
             <input type="hidden" name="templateName" value="<?php echo $preview->templateName; ?>">
 
     <?php
         endforeach;
         endif;
     ?>
+
+    <input id="advertiserId" type="hidden" name="advertiserId" value="<?php echo $preview->advertiserId; ?>">
+    <input id="companyId"  type="hidden" name="companyId" value="<?php echo $preview->companyId; ?>">
 
     </div>
 </div>
@@ -142,15 +143,34 @@
 
         $('.removeCategoryShortcut').click(function(){
             var id = $(this).closest('div').attr('id').split('-');
+            var categoryId = id[1];
+            var templateId = id[2];
+            var subscription = {};
+            var data = {};
+            var category = [];
 
-            data.category = category;
-            data.advertiserId = $('#advertiserId').attr('value');
-            data.templateId   = id[1];
-            data.companyId    = $('#companyId').attr('value');
+            if(confirm("Are you sure you want to DELETE this category subscription?"))
+            {
+                subscription.id = categoryId;
+                subscription.name = $('#' + categoryId).attr('value');
 
+                category.push(subscription);
 
+                data.category = category;
+                data.advertiserId = $('#advertiserId').attr('value');
+                data.templateId = templateId;
+                data.companyId = $('#companyId').attr('value');
 
-            console.log(id);
+                $.ajax({
+                    type: 'POST',
+                    data: data,
+                    dataType: "json",
+                    url: '/chameleon/ajax/removeCategory.php'
+                }).fail(function ()
+                {
+                    $('#assigned-' + categoryId + '-' + templateId).empty().remove();
+                });
+            }
         });
 
         $('.removeCategoryOverview').click(function(e) {
@@ -188,7 +208,6 @@
                     var node = '<option value="' + singleCategory.id + '">'+singleCategory.name+'</option>';
                     $('#availableCategory-'+templateId).append(node);
                     $('#assigned-'+singleCategory.id).empty().remove();
-
                 });
                 $(".modal-body form").unblock();
             });

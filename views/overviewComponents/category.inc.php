@@ -12,12 +12,15 @@
             foreach($preview->templateSubscription as $templateSubscription):
                 if($templateSubscription->userStatus === 'ACTIVE'):
         ?>
-                    <div id="assigned-<?php echo $templateSubscription->idCategory;?>" class="row">
+                    <div id="assigned-<?php echo $templateSubscription->idCategory;?>-<?php echo $preview->templateId; ?>" class="row">
                         <p class="text-left categoryItem">
                             <a class="fa fa-trash categoryItem cursor-pointer removeCategoryShortcut" title="Remove category"></a>
                             <?php echo $templateSubscription->categoryName;?>
                         </p>
                     </div>
+                    <input id="<?php echo $templateSubscription->idCategory;?>"
+                           type="hidden"
+                           value="<?php echo $templateSubscription->categoryName;?>" >
         <?php
                 endif;
             endforeach;
