@@ -143,7 +143,9 @@ $(document).ready(function() {
     highlightColor['text']      = colorToHex($('.textTitle').css('background-color')).replace('#', '');
     highlightColor['image']     = colorToHex($('.imageTitle').css('background-color')).replace('#', '');
     highlightColor['rectangle'] = colorToHex($('.textTitle').css('background-color')).replace('#', '');
-    highlightColor['group']     = colorToHex($('.groupTitle').css('background-color')).replace('#', '');
+    if('undefined' !== $('.groupTitle')) {
+        highlightColor['group']     = colorToHex($('.groupTitle').css('background-color')).replace('#', '');
+    }
 
     var areas = [];
     var areaList = $('[name="template_selection"]').find('area');
