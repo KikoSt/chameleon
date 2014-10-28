@@ -1,7 +1,7 @@
 <div id="panel_<?php echo $element->getId();?>" data-type="image" data-groupid="<?php echo $element->getEditGroup(); ?>" class="panel panel-default component">
     <div class="panel-heading imageTitle">
         <h3 class="panel-title">
-            Image: <?php echo str_replace('_', ' ', $element->getId());?>
+            image: <?php echo str_replace('_', ' ', $element->getId());?>
             <span id="<?php echo $element->getId();?>" class="glyphicon glyphicon-remove-circle"></span>
         </h3>
     </div>

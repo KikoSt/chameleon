@@ -1,7 +1,7 @@
 <div id="grouppanel_<?php echo $element->getId();?>" class="panel panel-default component">
     <div class="panel-heading groupTitle">
         <h3 class="panel-title">
-            Group: <?php echo str_replace('_', ' ', $element->getId());?>
+            group: <?php echo str_replace('_', ' ', $element->getId());?>
             <span id="<?php echo $element->getId();?>" class="glyphicon glyphicon-remove-circle"></span>
         </h3>
     </div>
