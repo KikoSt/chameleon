@@ -40,6 +40,11 @@ select
     width:185px !important;
 }
 
+select.font-select
+{
+    width: 113px !important;
+}
+
 #overview select{
     width:100% !important;
 }
@@ -300,7 +305,11 @@ input[type=checkbox]:checked + label:after
 
 .presetcolor
 {
+    display: inline;
+    float: left;
     margin-top:1px;
+    margin-left: 2px;
+    margin-right: -1px;
     height: 20px !important;
     width: 32px !important;
     border: 1px solid #aaaaaa;
@@ -340,4 +349,9 @@ input[type=checkbox]:checked + label:after
 .fa-5_3x
 {
     font-size: 5.3em;
+}
+
+.form-control
+{
+    width: 20px;
 }
