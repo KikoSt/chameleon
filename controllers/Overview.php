@@ -115,7 +115,6 @@ class Overview extends Controller
 
                     }
 
-
                     $previews[] = $preview;
                 }
             }
@@ -151,16 +150,14 @@ class Overview extends Controller
             {
                 return $allowedDimension;
             }
-            else
-            {
-                $nonDefault = new stdClass();
-                $nonDefault->width = $width;
-                $nonDefault->height = $height;
-                $nonDefault->name = 'Non-standard format';
-
-                return $nonDefault;
-            }
         }
+
+        $nonDefault = new stdClass();
+        $nonDefault->width = $width;
+        $nonDefault->height = $height;
+        $nonDefault->name = 'Non-standard format';
+
+        return $nonDefault;
     }
 
     private function getShortenedDescription($description)

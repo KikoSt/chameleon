@@ -21,6 +21,7 @@
         </button>
         <button id="deleteTemplate-<?php echo $preview->templateId; ?>-<?php echo $preview->advertiserId; ?>-<?php echo
         $preview->companyId; ?>"
+                class="deleteTemplate"
                 title="Delete this template">
             <i class="fa fa-trash fa-2x"></i>
         </button>
