@@ -13,7 +13,7 @@
             </ul>
         </div>
         <div id="awesomeEditor" class="row" style="margin-top: 115px;margin-left: 50px;">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="row">
                     <?php
                         $element = $this->container;
@@ -42,22 +42,42 @@
                 <input id="advertiserId" type="hidden" name="advertiserId" value="<?php echo $this->advertiserId; ?>">
                 <input id="companyId"    type="hidden" name="companyId"    value="<?php echo $this->companyId; ?>">
             </div>
-            <div class="col-md-6">
-                <div style="position:fixed;">
+            <div class="col-md-7">
+                <div class="preview-container">
                     <!-- PREVIEW IMAGE -->
                     <div id="previewImage" class="row">
+                        <h2>GIF version<br /><span>select elements to edit</span></h2>
                         <img src="<?php echo $this->gif;?>" alt="" usemap="#template_selection">
                     </div>
-                    <!-- END PREVIEW IMAGE -->
-                    <!-- BUTTONS SAVE / CLONE -->
-                    <div class="row" id="save_button">
+                    <div id="previewSwf" class="row">
+                        <h2>Flash version<br /><span>preview</span></h2>
+                        <object type="application/x-shockwave-flash"
+                                data="<?php echo $this->swf; ?>"
+                                width="<?php echo $this->width; ?>" height="<?php echo $this->height; ?>">
+                                <param name="movie" value="<?php echo $this->swf; ?>" />
+                                <param name="quality" value="high"/>
+                        </object>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-1" style="background:#c7c7c7;margin-bottom: 66px; margin-top: 56px; min-height: 300px; width: 80px;text-align: center;">
                         <!-- On click render template, show the change and save data to database-->
-                        <button id="save" type="submit" class="btn btn-danger" title="Save template">
-                            <span class="glyphicon glyphicon-export"></span>
+                        <button id="live" type="submit" class="fa-btn green" title="show live preview" style="margin-top: 20px;">
+                            <span class="fa fa-play-circle fa-lg"></span>
+                        </button>
+                        <!-- On click render template, show the change and save data to database-->
+                        <button id="flash" type="submit" class="fa-btn green" title="show flash preview" style="margin-top: 10px;">
+                            <span class="fa fa-bolt fa-lg"></span>
+                        </button>
+                        <!-- On click render template, show the change and save data to database-->
+                        <button id="cancel" type="submit" class="fa-btn red" title="cancel changes" style="margin-top: 115px;">
+                            <span class="fa fa-undo fa-lg"></span>
+                        </button>
+                        <!-- On click render template, show the change and save data to database-->
+                        <button id="save" type="submit" class="fa-btn red" title="save template" style="margin-top: 10px;">
+                            <span class="fa fa-floppy-o fa-lg"></span>
                         </button>
                     </div>
-                    <!-- END BUTTONS SAVE / CLONE -->
-                </div>
             </div>
         </div>
     </form>
@@ -84,9 +104,9 @@
 <!-- Modal -->
 
 
-<div class="alert alert-success alert-dismissible savealert" role="alert">
-                        Template changes saved!
-                    </div>
+<div class="feedback alert alert-success alert-dismissible savealert" role="alert">
+    Template changes saved!
+</div>
 
 
 <script type="text/JavaScript" src="js/editor.js"></script>

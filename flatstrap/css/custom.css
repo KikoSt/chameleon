@@ -25,20 +25,41 @@ a,a:hover {
     padding:1px!important;
 }
 
-input,select {
-    width:150px!important;
+input,
+select
+{
+    width:185px !important;
 }
 
-.picker {
-    width:118px!important;
+select.font-select
+{
+    width: 113px !important;
 }
 
 .cursor-pointer {
     cursor:pointer;
 }
 
-.col-md-1,.col-md-2,.col-md-3,.col-md-4,.col-md-5,.col-md-6,.col-md-7,.col-md-8,.col-md-9,.col-md-10,.col-md-11,.col-md-12 {
-    padding:3px!important;
+.picker
+{
+    width:152px !important;
+    cursor: pointer;
+}
+
+.col-md-1,
+.col-md-2,
+.col-md-3,
+.col-md-4,
+.col-md-5,
+.col-md-6,
+.col-md-7,
+.col-md-8,
+.col-md-9,
+.col-md-10,
+.col-md-11,
+.col-md-12
+{
+    padding: 3px !important;
 }
 
 .globalsTitle {
@@ -270,7 +291,11 @@ input[type=checkbox]:checked + label:after
 
 .presetcolor
 {
+    display: inline;
+    float: left;
     margin-top:1px;
+    margin-left: 2px;
+    margin-right: -1px;
     height: 20px !important;
     width: 32px !important;
     border: 1px solid #aaaaaa;
@@ -315,4 +340,9 @@ input[type=checkbox]:checked + label:after
 
 #overviewView{
     margin-top: 75px;
+}
+
+.form-control
+{
+    width: 20px;
 }

@@ -12,8 +12,13 @@ $(document).ready(function() {
         }
     });
 
-    $('.btn').on('click', function(e) {
+    $('.fa-btn').on('click', function(e) {
         btn = $(this).attr('id');
+        if(btn === 'flash') {
+            $('#previewSwf').toggle();
+        } else if(btn === 'live') {
+            console.log('HEY! WE ARE LIVE!');
+        }
         if(btn ==='clone' || btn ==='save' || btn === 'preview')
         {
             $("."+btn+"alert").removeClass("in").show().delay(1000).addClass("in").fadeOut(2000);
@@ -138,7 +143,9 @@ $(document).ready(function() {
     highlightColor['text']      = colorToHex($('.textTitle').css('background-color')).replace('#', '');
     highlightColor['image']     = colorToHex($('.imageTitle').css('background-color')).replace('#', '');
     highlightColor['rectangle'] = colorToHex($('.textTitle').css('background-color')).replace('#', '');
-    highlightColor['group']     = colorToHex($('.groupTitle').css('background-color')).replace('#', '');
+    if('undefined' !== $('.groupTitle')) {
+        highlightColor['group']     = colorToHex($('.groupTitle').css('background-color')).replace('#', '');
+    }
 
     var areas = [];
     var areaList = $('[name="template_selection"]').find('area');
@@ -183,10 +190,9 @@ $(document).ready(function() {
                 $("#previewImage img").attr('src', gifsrc);
                 $("[name='movie']").attr('value', swfsrc);
                 $("[name='movie']").prop('value', swfsrc);
-                $("#previewImage object").prop('data', swfsrc);
+                $("#previewSwf object").prop('data', swfsrc);
             }
         }
-
 
         var formData = new FormData();
 

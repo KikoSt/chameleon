@@ -1,7 +1,7 @@
 <div class="row">
     <label class="col-md-3">Font:</label>
     <div>
-        <select class="form-control"
+        <select class="form-control font-select"
                 id="<?php echo $element->getId();?>_fontFamily"
                 name="<?php echo $element->getId();?>#fontFamily">
             <?php
@@ -12,6 +12,6 @@
             <?php endforeach; ?>
         </select>
         <button id="<?php echo $element->getId();?>#presetFont" type="button" class="btn btn-xs btn-info preset presetfont"
-                style="margin-left:3px;">use CD font</button>
+                style="margin-left:3px;">CD font</button>
     </div>
 </div>
