@@ -140,10 +140,16 @@ $(document).ready(function() {
 
     // prepare image map
     var highlightColor = {};
-    highlightColor['text']      = colorToHex($('.textTitle').css('background-color')).replace('#', '');
-    highlightColor['image']     = colorToHex($('.imageTitle').css('background-color')).replace('#', '');
-    highlightColor['rectangle'] = colorToHex($('.textTitle').css('background-color')).replace('#', '');
-    if('undefined' !== $('.groupTitle')) {
+    if($('.textTitle').length > 0) {
+        highlightColor['text']      = colorToHex($('.textTitle').css('background-color')).replace('#', '');
+    }
+    if($('.imageTitle').length > 0) {
+        highlightColor['image']     = colorToHex($('.imageTitle').css('background-color')).replace('#', '');
+    }
+    if($('.rectangleTitle').length > 0) {
+        highlightColor['rectangle'] = colorToHex($('.rectangleTitle').css('background-color')).replace('#', '');
+    }
+    if($('.groupTitle').length > 0) {
         highlightColor['group']     = colorToHex($('.groupTitle').css('background-color')).replace('#', '');
     }
 
