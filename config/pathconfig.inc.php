@@ -33,5 +33,9 @@ if(isset($_SERVER['SERVER_NAME']))
 {
     define('BASE_DIR', 'http://' . $_SERVER['SERVER_NAME'] . '/chameleon');
 }
+else
+{
+    define('BASE_DIR', '/var/www/chameleon/');
+}
 
 define('PREVIEW_NAME', 'preview_<templateId>_<width>x<height>');
