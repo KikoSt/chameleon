@@ -196,11 +196,13 @@ class GfxImage extends GfXComponent
      */
     public function resizeImage($file, $crop=false)
     {
-        if(false === file_get_contents(BASE_DIR . $file, 0, null, 0, 1))
+        $filepath = $this->getFilepath($file);
+        if(false === file_get_contents($filepath, 0, null, 0, 1))
         {
-            $file = '/assets/image_not_found.jpg';
+            $file = 'assets/image_not_found.jpg';
         }
-        list($originalWidth, $originalHeight) = getimagesize(BASE_DIR . $file);
+
+        list($originalWidth, $originalHeight) = getimagesize($filepath);
 
         if($originalWidth <= 0 || $originalHeight <=0)
         {
@@ -273,22 +275,24 @@ class GfxImage extends GfXComponent
         $image = null;
         $extension = strtolower($extension);
 
+        $filepath = $this->getFilepath($file);
+
         switch($extension)
         {
             case "jpg":
             case "jpeg":
             {
-                $image = imagecreatefromjpeg(BASE_DIR . $file);
+                $image = imagecreatefromjpeg($filepath);
                 break;
             }
             case "png":
             {
-                $image = imagecreatefrompng(BASE_DIR . $file);
+                $image = imagecreatefrompng($filepath);
                 break;
             }
             case "gif":
             {
-                $image = imagecreatefromgif(BASE_DIR . $file);
+                $image = imagecreatefromgif($filepath);
                 break;
             }
             default:

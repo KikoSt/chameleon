@@ -159,6 +159,17 @@ class GfXComponent implements Linkable, Resizeable
         $this->shadowEnabled = true;
     }
 
+    public function getFilepath($filename)
+    {
+        $filename = ltrim($filename, '/');
+        $filepath = $filename;
+        if(substr($filepath, 0, 4) !== 'http')
+        {
+            $filepath = BASE_DIR . '/' . $filepath;
+        }
+        return $filepath;
+    }
+
     protected function addClickableLink($canvas)
     {
         if(!empty($this->getLinkUrl()))
