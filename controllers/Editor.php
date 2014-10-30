@@ -236,7 +236,10 @@ class Editor extends Controller
         {
             while(false !== ($file = readdir($dirhandle)))
             {
-                $filePaths[] = 'output/' . $this->companyId . '/' . $this->advertiserId . '/preview/' . $this->templateId . '/' . $file;
+                if($file !== '.' && $file !== '..')
+                {
+                    $filePaths[] = 'output/' . $this->companyId . '/' . $this->advertiserId . '/preview/' . $this->templateId . '/' . $file;
+                }
             }
         }
         return $filePaths;
