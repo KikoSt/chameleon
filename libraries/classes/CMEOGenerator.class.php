@@ -220,8 +220,18 @@ class CMEOGenerator
      * @access private
      * @return void
      */
-    public function render($product)
+    public function render($product, $format='ALL')
     {
+        $formats = array('GIF', 'SWF');
+        if(!in_array($format, $formats))
+        {
+            $format === 'ALL';
+        }
+
+        if($format !== 'ALL')
+        {
+            $formats = array($format);
+        }
         $this->container->setProductData($product);
         // foreach($this->iniSettings['formats'] AS $format)
         foreach(array('GIF', 'SWF') AS $format)
