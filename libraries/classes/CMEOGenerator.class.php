@@ -146,7 +146,7 @@ class CMEOGenerator
         $this->logHandle = fopen(LOG_DIR . '/' . $logfileName, 'a');
         if(!$this->logHandle)
         {
-            throw new Exception('Could not open log file ' . LOG_DIR . '/' . $logfileName . '. Exiting');
+            // throw new Exception('Could not open log file ' . LOG_DIR . '/' . $logfileName . '. Exiting');
         }
     }
 
