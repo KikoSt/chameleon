@@ -188,6 +188,9 @@ $(document).ready(function() {
             var data = {};
             var nodeList = $(document).find($('[type="file"]'));
 
+            overlayOn();
+            $('#preparepreviewalert').show();
+
             formData.append('templateId', $('#templateId').attr('value'));
             formData.append('advertiserId', $('#advertiserId').attr('value'));
             formData.append('companyId', $('#companyId').attr('value'));
@@ -864,8 +867,9 @@ $(document).ready(function() {
 
 
         $('a[data-imagelightbox="preview"]').imageLightbox({
-            onStart:    function() { console.log('!'); overlayOn(); },
-            onEnd:      function() { overlayOff(); }
+            onLoadStart:    function() {  },
+            onStart:        function() { $('#preparepreviewalert').hide() },
+            onEnd:          function() { overlayOff(); }
         });
 
 
