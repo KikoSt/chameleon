@@ -12,15 +12,14 @@ require_once(__ROOT__ . 'libraries/functions.inc.php');
 $container = new GfxContainer();
 $connector = new APIConnector();
 
-// $auditUserId    = getRequestVar('auditUserId');;
-// $companyId      = getRequestVar('companyId');
-// $advertiserId   = getRequestVar('advertiserId');
-// $templateId     = getRequestVar('templateId');
+$numPreviewPics = 10;
 
-$auditUserId    = 333;
-$companyId      = 170;
-$advertiserId   = 120;
-$templateId     = 96;
+// $auditUserId    = getRequestVar('auditUserId');;
+$companyId      = getRequestVar('companyId');
+$advertiserId   = getRequestVar('advertiserId');
+$templateId     = getRequestVar('templateId');
+
+$auditUserId    = 1; // system
 
 if(!isset($auditUserId) || empty($auditUserId))
 {
@@ -49,11 +48,28 @@ if(!file_exists($dir))
     // reset umask
     umask($old);
 }
-
+else
+{
+//    $files = glob($dir . '/*');
+//    foreach($files as $file)
+//    {
+//        if(is_file($file))
+//        {
+//            unlink($file);
+//        }
+//    }
+}
 $template = $connector->getTemplateById($templateId);
 
-$categoryIds = array(167463, 167187, 167715, 167811);
-$numSamples = 5;
+foreach($template->getCategorySubscriptions() AS $subscription)
+{
+    if($subscription->userStatus === 'ACTIVE')
+    {
+        $categoryIds[] = $subscription->idCategory;
+    }
+}
+
+$numSamples = ceil($numPreviewPics / count($categoryIds));
 
 $products = $connector->getProductDataSamples($categoryIds, $numSamples);
 
@@ -64,6 +80,8 @@ $generator->setTemplates(array($templateId));
 $generator->setCategories($categoryIds);
 
 $count = 0;
+
+$files = array();
 
 foreach($products AS $product)
 {
@@ -84,13 +102,21 @@ foreach($products AS $product)
         $generator->logMessage('An error occured: ' . $e->getMessage() . "\n");
         continue;
     }
-    $generator->render($product);
+    $generator->render($product, 'GIF');
 
     // move file ...
     $sourceName = '../output/' . $sourcePath . '/' . $generator->getContainer()->getOutputFilename() . '.gif';
     $targetName = '../output/' . $targetPath . '/' . $generator->getContainer()->getOutputFilename() . '.gif';
-    rename($sourceName, $targetName);
-    echo $targetName . "\n";
+    $fileName = 'output/' . $targetPath . '/' . $generator->getContainer()->getOutputFilename() . '.gif';
 
+    rename($sourceName, $targetName);
+
+    if(file_exists($targetName))
+    {
+        $files[] = $fileName;
+    }
 }
+
+echo json_encode($files);
+
 ?>
