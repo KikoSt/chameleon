@@ -4,86 +4,6 @@ $(document).ready(function() {
     var category = {};
 
     $('.alert').hide();
-    $('a[data-imagelightbox="preview"]').imageLightbox({
-//        selector:       'id="#imagelightbox"',
-//        allowedTypes:   'gif',
-//        animationSpeed: 250,
-//        preloadNext:    true,
-//        enableKeyboard: true,
-//        quitOnEnd:      false,
-        quitOnImgClic:  false,
-        quitOnDocClick: true,
-        onStart:        function() { overlayOn();  navigationOn( instanceE, selectorE ); },
-        onEnd:          function() { overlayOff(); navigationOff(); activityIndicatorOff(); },
-        onLoadStart:    function() { activityIndicatorOn(); },      // bool or function
-        onLoadEnd:      function() { activityIndicatorOn(); }       // bool or function
-    });
-
-
-    /*** LIGHTBOX FUNCTIONS ***/
-
-    function activityIndicatorOn(){}
-    function activityIndicatorOff(){ }
-
-    navigationOn = function(instance, selector)
-    {
-        var images = $( selector );
-        if( images.length )
-        {
-            var nav = $( '<div id="imagelightbox-nav"></div>' );
-            for( var i = 0; i < images.length; i++ )
-                nav.append( '<button type="button"></button>' );
-
-            nav.appendTo( 'body' );
-            nav.on( 'click touchend', function(){ return false; });
-
-            var navItems = nav.find( 'button' );
-            navItems.on( 'click touchend', function()
-            {
-                var $this = $( this );
-                if( images.eq( $this.index() ).attr( 'href' ) != $( '#imagelightbox' ).attr( 'src' ) )
-                    instance.switchImageLightbox( $this.index() );
-
-                navItems.removeClass( 'active' );
-                navItems.eq( $this.index() ).addClass( 'active' );
-
-                return false;
-            })
-            .on( 'touchend', function(){ return false; });
-        }
-    },
-    navigationUpdate = function( selector )
-    {
-        var items = $( '#imagelightbox-nav button' );
-        items.removeClass( 'active' );
-        items.eq( $( selector ).filter( '[href="' + $( '#imagelightbox' ).attr( 'src' ) + '"]' ).index( selector ) ).addClass( 'active' );
-    },
-    navigationOff = function()
-    {
-        console.log('off');
-        $( '#imagelightbox-nav' ).remove();
-    },
-    overlayOn = function()
-    {
-        $( '<div id="imagelightbox-overlay"></div>' ).appendTo( 'body' );
-    },
-    overlayOff = function()
-    {
-        $( '#imagelightbox-overlay' ).remove();
-    }
-
-
-    var selectorE = 'a[data-imagelightbox="preview"]';
-    var instanceE = $( selectorE ).imageLightbox(
-    {
-        onStart:     function() { navigationOn( instanceE, selectorE ); },
-        onEnd:       function() { navigationOff(); activityIndicatorOff(); },
-        onLoadStart: function() { activityIndicatorOn(); },
-        onLoadEnd:   function() { navigationUpdate( selectorE ); activityIndicatorOff(); }
-    });
-
-    /*** LIGHTBOX FUNCTIONS END! ***/
-
 
     $(window).keydown(function(e){
         if(e.keyCode == 13) {
@@ -264,8 +184,38 @@ $(document).ready(function() {
             // ****
             //  **
             //
+            var formData = new FormData();
+            var data = {};
+            var nodeList = $(document).find($('[type="file"]'));
 
-            $('a[data-imagelightbox="preview"]').trigger("click");
+            formData.append('templateId', $('#templateId').attr('value'));
+            formData.append('advertiserId', $('#advertiserId').attr('value'));
+            formData.append('companyId', $('#companyId').attr('value'));
+            formData.append('action', 'upload');
+
+            var xhr =  new XMLHttpRequest();
+            xhr.onreadystatechange = function(e) {
+                if(xhr.readyState == 4) {
+                    response = $.parseJSON(xhr.response);
+                    var newNode = '';
+                    for(var preview in response) {
+                        newNode += '<li><a data-imagelightbox="preview" href="' + response[preview] + '"></a></li>\n';
+                    }
+                    $('#imagelightbox-list > li').remove();
+
+                    console.log($('#imagelightbox-overlay'));
+
+                    $(newNode).appendTo('#imagelightbox-list');
+
+                    console.log($('a[data-imagelightbox="preview"]'));
+
+                    $('a[data-imagelightbox="preview"]').trigger("click");
+                }
+            };
+            xhr.open('POST', '/chameleon/ajax/getLivePreview.php', true);
+            xhr.send(formData);
+            return false;
+
         } else if(btn ==='save')
         {
             $("."+btn+"alert").removeClass("in").show().delay(1000).addClass("in").fadeOut(2000);
@@ -674,4 +624,254 @@ $(document).ready(function() {
 
     // TODO: add a "initial" element to ALL templates?!
     $('area#head_large').trigger('click');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ACTIVITY INDICATOR
+
+        var activityIndicatorOn = function()
+            {
+                $( '<div id="imagelightbox-loading"><div></div></div>' ).appendTo( 'body' );
+            },
+            activityIndicatorOff = function()
+            {
+                $( '#imagelightbox-loading' ).remove();
+            },
+
+
+            // OVERLAY
+
+            overlayOn = function()
+            {
+                $( '<div id="imagelightbox-overlay"></div>' ).appendTo( 'body' );
+            },
+            overlayOff = function()
+            {
+                $( '#imagelightbox-overlay' ).remove();
+            },
+
+
+            // CLOSE BUTTON
+
+            closeButtonOn = function( instance )
+            {
+                $( '<button type="button" id="imagelightbox-close" title="Close"></button>' ).appendTo( 'body' ).on( 'click touchend', function(){ $( this ).remove(); instance.quitImageLightbox(); return false; });
+            },
+            closeButtonOff = function()
+            {
+                $( '#imagelightbox-close' ).remove();
+            },
+
+
+            // CAPTION
+
+            captionOn = function()
+            {
+                var description = $( 'a[href="' + $( '#imagelightbox' ).attr( 'src' ) + '"] img' ).attr( 'alt' );
+                if( description.length > 0 )
+                    $( '<div id="imagelightbox-caption">' + description + '</div>' ).appendTo( 'body' );
+            },
+            captionOff = function()
+            {
+                $( '#imagelightbox-caption' ).remove();
+            },
+
+
+            // NAVIGATION
+
+            navigationOn = function( instance, selector )
+            {
+                var images = $( selector );
+                if( images.length )
+                {
+                    var nav = $( '<div id="imagelightbox-nav"></div>' );
+                    for( var i = 0; i < images.length; i++ )
+                        nav.append( '<button type="button"></button>' );
+
+                    nav.appendTo( 'body' );
+                    nav.on( 'click touchend', function(){ return false; });
+
+                    var navItems = nav.find( 'button' );
+                    navItems.on( 'click touchend', function()
+                    {
+                        var $this = $( this );
+                        if( images.eq( $this.index() ).attr( 'href' ) != $( '#imagelightbox' ).attr( 'src' ) )
+                            instance.switchImageLightbox( $this.index() );
+
+                        navItems.removeClass( 'active' );
+                        navItems.eq( $this.index() ).addClass( 'active' );
+
+                        return false;
+                    })
+                    .on( 'touchend', function(){ return false; });
+                }
+            },
+            navigationUpdate = function( selector )
+            {
+                var items = $( '#imagelightbox-nav button' );
+                items.removeClass( 'active' );
+                items.eq( $( selector ).filter( '[href="' + $( '#imagelightbox' ).attr( 'src' ) + '"]' ).index( selector ) ).addClass( 'active' );
+            },
+            navigationOff = function()
+            {
+                $( '#imagelightbox-nav' ).remove();
+            },
+
+
+            // ARROWS
+
+            arrowsOn = function( instance, selector )
+            {
+                var $arrows = $( '<button type="button" class="imagelightbox-arrow imagelightbox-arrow-left"></button><button type="button" class="imagelightbox-arrow imagelightbox-arrow-right"></button>' );
+
+                $arrows.appendTo( 'body' );
+
+                $arrows.on( 'click touchend', function( e )
+                {
+                    e.preventDefault();
+
+                    var $this   = $( this ),
+                        $target = $( selector + '[href="' + $( '#imagelightbox' ).attr( 'src' ) + '"]' ),
+                        index   = $target.index( selector );
+
+                    if( $this.hasClass( 'imagelightbox-arrow-left' ) )
+                    {
+                        index = index - 1;
+                        if( !$( selector ).eq( index ).length )
+                            index = $( selector ).length;
+                    }
+                    else
+                    {
+                        index = index + 1;
+                        if( !$( selector ).eq( index ).length )
+                            index = 0;
+                    }
+
+                    instance.switchImageLightbox( index );
+                    return false;
+                });
+            },
+            arrowsOff = function()
+            {
+                $( '.imagelightbox-arrow' ).remove();
+            };
+
+
+        //  WITH ACTIVITY INDICATION
+
+        $( 'a[data-imagelightbox="a"]' ).imageLightbox(
+        {
+            onLoadStart:    function() { activityIndicatorOn(); },
+            onLoadEnd:      function() { activityIndicatorOff(); },
+            onEnd:          function() { activityIndicatorOff(); }
+        });
+
+
+        //  WITH OVERLAY & ACTIVITY INDICATION
+
+        $( 'a[data-imagelightbox="b"]' ).imageLightbox(
+        {
+            onStart:     function() { overlayOn(); },
+            onEnd:       function() { overlayOff(); activityIndicatorOff(); },
+            onLoadStart: function() { activityIndicatorOn(); },
+            onLoadEnd:   function() { activityIndicatorOff(); }
+        });
+
+
+        //  WITH "CLOSE" BUTTON & ACTIVITY INDICATION
+
+        var instanceC = $( 'a[data-imagelightbox="c"]' ).imageLightbox(
+        {
+            quitOnDocClick: false,
+            onStart:        function() { closeButtonOn( instanceC ); },
+            onEnd:          function() { closeButtonOff(); activityIndicatorOff(); },
+            onLoadStart:    function() { activityIndicatorOn(); },
+            onLoadEnd:      function() { activityIndicatorOff(); }
+        });
+
+
+        //  WITH CAPTION & ACTIVITY INDICATION
+
+        $( 'a[data-imagelightbox="d"]' ).imageLightbox(
+        {
+            onLoadStart: function() { captionOff(); activityIndicatorOn(); },
+            onLoadEnd:   function() { captionOn(); activityIndicatorOff(); },
+            onEnd:       function() { captionOff(); activityIndicatorOff(); }
+        });
+
+
+        //  WITH ARROWS & ACTIVITY INDICATION
+
+        var selectorG = 'a[data-imagelightbox="g"]';
+        var instanceG = $( selectorG ).imageLightbox(
+        {
+            onStart:        function(){ arrowsOn( instanceG, selectorG ); },
+            onEnd:          function(){ arrowsOff(); activityIndicatorOff(); },
+            onLoadStart:    function(){ activityIndicatorOn(); },
+            onLoadEnd:      function(){ $( '.imagelightbox-arrow' ).css( 'display', 'block' ); activityIndicatorOff(); }
+        });
+
+
+        //  WITH NAVIGATION & ACTIVITY INDICATION
+
+        var selectorE = 'a[data-imagelightbox="e"]';
+        var instanceE = $( selectorE ).imageLightbox(
+        {
+            onStart:     function() { navigationOn( instanceE, selectorE ); },
+            onEnd:       function() { navigationOff(); activityIndicatorOff(); },
+            onLoadStart: function() { activityIndicatorOn(); },
+            onLoadEnd:   function() { navigationUpdate( selectorE ); activityIndicatorOff(); }
+        });
+
+
+        //  ALL COMBINED
+
+        var selectorF = 'a[data-imagelightbox="f"]';
+        var instanceF = $( selectorF ).imageLightbox(
+        {
+            onStart:        function() { overlayOn(); closeButtonOn( instanceF ); arrowsOn( instanceF, selectorF ); },
+            onEnd:          function() { overlayOff(); captionOff(); closeButtonOff(); arrowsOff(); activityIndicatorOff(); },
+            onLoadStart:    function() { captionOff(); activityIndicatorOn(); },
+            onLoadEnd:      function() { captionOn(); activityIndicatorOff(); $( '.imagelightbox-arrow' ).css( 'display', 'block' ); }
+        });
+
+
+
+
+
+
+
+        $('a[data-imagelightbox="preview"]').imageLightbox({
+            onStart:    function() { console.log('!'); overlayOn(); },
+            onEnd:      function() { overlayOff(); }
+        });
+
+
+
+
+
+
+
 });
