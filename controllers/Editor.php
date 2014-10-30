@@ -12,6 +12,7 @@ class Editor extends Controller
     private $advertiserId;
     private $view;
     private $connector;
+    private $templateId;
 
     public function create()
     {
@@ -34,6 +35,10 @@ class Editor extends Controller
             return false;
         }
 
+        $this->templateId = $templateId;
+        $this->companyId = $companyId;
+        $this->advertiserId = $advertiserId;
+
         $container->setId($templateId);
         $container->setcompanyId($companyId);
         $container->setAdvertiserId($advertiserId);
@@ -52,6 +57,8 @@ class Editor extends Controller
 
         $gif = 'http://' . $_SERVER['SERVER_NAME'] . '/chameleon/output/' . $container->getOutputDir() . '/' . $baseFilename . '.gif';
         $swf = 'http://' . $_SERVER['SERVER_NAME'] . '/chameleon/output/' . $container->getOutputDir() . '/' . $baseFilename . '.swf';
+
+        $this->view->previewPaths = $this->getPreviewPaths();
 
         // $this->view->premiumUser = false;
 
@@ -219,5 +226,19 @@ class Editor extends Controller
         }
 
         return $subscribedCategories;
+    }
+
+
+    private function getPreviewPaths()
+    {
+        $filePaths = array();
+        if($dirhandle = opendir('output/' . $this->companyId . '/' . $this->advertiserId . '/preview/' . $this->templateId))
+        {
+            while(false !== ($file = readdir($dirhandle)))
+            {
+                $filePaths[] = 'output/' . $this->companyId . '/' . $this->advertiserId . '/preview/' . $this->templateId . '/' . $file;
+            }
+        }
+        return $filePaths;
     }
 }
