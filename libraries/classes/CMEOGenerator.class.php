@@ -270,7 +270,6 @@ class CMEOGenerator
      */
     public function setCategories($categoryList)
     {
-        var_dump($categoryList);
         if($categoryList === 'ALL')
         {
             $this->categoryList[] = 'ALL';
