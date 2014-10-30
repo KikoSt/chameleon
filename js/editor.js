@@ -4,24 +4,91 @@ $(document).ready(function() {
     var category = {};
 
     $('.alert').hide();
+    $('a[data-imagelightbox="preview"]').imageLightbox({
+//        selector:       'id="#imagelightbox"',
+//        allowedTypes:   'gif',
+//        animationSpeed: 250,
+//        preloadNext:    true,
+//        enableKeyboard: true,
+//        quitOnEnd:      false,
+        quitOnImgClic:  false,
+        quitOnDocClick: true,
+        onStart:        function() { overlayOn();  navigationOn( instanceE, selectorE ); },
+        onEnd:          function() { overlayOff(); navigationOff(); activityIndicatorOff(); },
+        onLoadStart:    function() { activityIndicatorOn(); },      // bool or function
+        onLoadEnd:      function() { activityIndicatorOn(); }       // bool or function
+    });
+
+
+    /*** LIGHTBOX FUNCTIONS ***/
+
+    function activityIndicatorOn(){}
+    function activityIndicatorOff(){ }
+
+    navigationOn = function(instance, selector)
+    {
+        var images = $( selector );
+        if( images.length )
+        {
+            var nav = $( '<div id="imagelightbox-nav"></div>' );
+            for( var i = 0; i < images.length; i++ )
+                nav.append( '<button type="button"></button>' );
+
+            nav.appendTo( 'body' );
+            nav.on( 'click touchend', function(){ return false; });
+
+            var navItems = nav.find( 'button' );
+            navItems.on( 'click touchend', function()
+            {
+                var $this = $( this );
+                if( images.eq( $this.index() ).attr( 'href' ) != $( '#imagelightbox' ).attr( 'src' ) )
+                    instance.switchImageLightbox( $this.index() );
+
+                navItems.removeClass( 'active' );
+                navItems.eq( $this.index() ).addClass( 'active' );
+
+                return false;
+            })
+            .on( 'touchend', function(){ return false; });
+        }
+    },
+    navigationUpdate = function( selector )
+    {
+        var items = $( '#imagelightbox-nav button' );
+        items.removeClass( 'active' );
+        items.eq( $( selector ).filter( '[href="' + $( '#imagelightbox' ).attr( 'src' ) + '"]' ).index( selector ) ).addClass( 'active' );
+    },
+    navigationOff = function()
+    {
+        console.log('off');
+        $( '#imagelightbox-nav' ).remove();
+    },
+    overlayOn = function()
+    {
+        $( '<div id="imagelightbox-overlay"></div>' ).appendTo( 'body' );
+    },
+    overlayOff = function()
+    {
+        $( '#imagelightbox-overlay' ).remove();
+    }
+
+
+    var selectorE = 'a[data-imagelightbox="preview"]';
+    var instanceE = $( selectorE ).imageLightbox(
+    {
+        onStart:     function() { navigationOn( instanceE, selectorE ); },
+        onEnd:       function() { navigationOff(); activityIndicatorOff(); },
+        onLoadStart: function() { activityIndicatorOn(); },
+        onLoadEnd:   function() { navigationUpdate( selectorE ); activityIndicatorOff(); }
+    });
+
+    /*** LIGHTBOX FUNCTIONS END! ***/
+
 
     $(window).keydown(function(e){
         if(e.keyCode == 13) {
             e.preventDefault();
             return false;
-        }
-    });
-
-    $('.fa-btn').on('click', function(e) {
-        btn = $(this).attr('id');
-        if(btn === 'flash') {
-            $('#previewSwf').toggle();
-        } else if(btn === 'live') {
-            console.log('HEY! WE ARE LIVE!');
-        }
-        if(btn ==='clone' || btn ==='save' || btn === 'preview')
-        {
-            $("."+btn+"alert").removeClass("in").show().delay(1000).addClass("in").fadeOut(2000);
         }
     });
 
@@ -67,7 +134,6 @@ $(document).ready(function() {
     function updateEditGroup(groupId, param, value) {
         console.log('Updating group ' + groupId + ', param ' + param + ' = ' + value);
     }
-
 
 
     /* ***********************************
@@ -174,12 +240,48 @@ $(document).ready(function() {
     });
 
 
-    /* ***********************************
-     * PREVIEW BUTTON
-     *********************************** */
+
+    /**
+     *   Toolbar buttons
+     *
+     **/
+    $('.fa-btn').on('click', function(e) {
+        btn = $(this).attr('id');
+        if(btn === 'flash') {
+            $('#previewSwf').toggle();
+        } else if(btn === 'live') {
+            //generate preview images
+            // *****
+            // *****
+            // *****
+            // *****
+            // ***
+            // **
+            // *
+            //
+            //  **
+            // ****
+            // ****
+            //  **
+            //
+
+            $('a[data-imagelightbox="preview"]').trigger("click");
+        } else if(btn ==='save')
+        {
+            $("."+btn+"alert").removeClass("in").show().delay(1000).addClass("in").fadeOut(2000);
+        }
+    });
+
+
     $('#editor').on('submit', function(e){
         e.preventDefault();
         var action = btn;
+
+        if(action !== 'save' && action !== 'preview')
+        {
+            return true;
+        }
+
         var xhr = new XMLHttpRequest();
         $("#previewImage img").unbind('mapster');
 
@@ -293,28 +395,20 @@ $(document).ready(function() {
             if($(this).is(":checked"))
             {
                 $(this).attr("checked", true);
-            //    $(this).attr('disabled', false).addClass('picker');
-            //    $(this).attr('disabled', false);
             }
             else
             {
                 $(this).attr("checked", false);
-            //    $("#" + id + "_shadowColor").attr('disabled', true).removeClass('picker');
-            //    $("#" + id + "_shadowDist").attr('disabled', true);
             }
         } else if($(this).attr('id').indexOf('shadowCheckBox')) {
 
             if($(this).is(":checked"))
             {
                 $(this).attr("checked", true);
-            //    $("#" + id + "_strokeColor").attr('disabled', false).addClass('picker');
-            //    $("#" + id + "_strokeWidth").attr('disabled', false);
             }
             else
             {
                 $(this).attr("checked", false);
-            //    $("#" + id + "_strokeColor").attr('disabled', true).removeClass('picker');
-            //    $("#" + id + "_strokeWidth").attr('disabled', true);
             }
         }
 
