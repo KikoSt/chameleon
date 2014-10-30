@@ -25,7 +25,6 @@ $userId       = 14;
 $templateId   = 96;
 $auditUserId  = 1;
 
-
 // get all categories
 try
 {

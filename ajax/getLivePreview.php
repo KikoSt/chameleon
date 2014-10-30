@@ -52,8 +52,6 @@ if(!file_exists($dir))
 
 $template = $connector->getTemplateById($templateId);
 
-
-
 $categoryIds = array(167463, 167187, 167715, 167811);
 $numSamples = 5;
 
@@ -69,7 +67,6 @@ $count = 0;
 
 foreach($products AS $product)
 {
-    echo "\n" . ++$count . "\n";
     $categoryId = $product->getCategoryId();
     $generator->prepareLogfile($categoryId);
     $generator->getContainer()->setCategoryId($categoryId);
@@ -77,9 +74,6 @@ foreach($products AS $product)
 
     $generator->getContainer()->setSource($template->getSvgContent());
     $generator->getContainer()->setId($template->getBannerTemplateId());
-
-    // $generator->getContainer()->setOutputDir('0');
-    // $generator->getContainer()->setOutputName(getPreviewFileName($template));
 
     try
     {
@@ -90,14 +84,13 @@ foreach($products AS $product)
         $generator->logMessage('An error occured: ' . $e->getMessage() . "\n");
         continue;
     }
+    $generator->render($product);
 
     // move file ...
     $sourceName = '../output/' . $sourcePath . '/' . $generator->getContainer()->getOutputFilename() . '.gif';
     $targetName = '../output/' . $targetPath . '/' . $generator->getContainer()->getOutputFilename() . '.gif';
     rename($sourceName, $targetName);
-    $imgsrc = 'output/' . $basePath . '/' . $generator->getContainer()->getOutputFilename();
-    echo $imgsrc . "\n";
+    echo $targetName . "\n";
 
-    $generator->render($product);
 }
 ?>
