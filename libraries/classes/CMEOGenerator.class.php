@@ -232,9 +232,10 @@ class CMEOGenerator
         {
             $formats = array($format);
         }
+
         $this->container->setProductData($product);
         // foreach($this->iniSettings['formats'] AS $format)
-        foreach(array('GIF', 'SWF') AS $format)
+        foreach($formats AS $format)
         {
             $this->container->setTarget($format);
             try
