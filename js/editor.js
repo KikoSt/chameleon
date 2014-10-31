@@ -101,7 +101,6 @@ $(document).ready(function() {
         return false;
 
         function onloadHandler(e, args) {
-            // $('#previewalert').show();
             response = $.parseJSON(xhr.response);
             imgsrc = response.imgsrc;
             $("#previewImage img").attr('src', imgsrc + new Date().getTime());
@@ -205,13 +204,7 @@ $(document).ready(function() {
                         newNode += '<li><a data-imagelightbox="preview" href="' + response[preview] + '"></a></li>\n';
                     }
                     $('#imagelightbox-list > li').remove();
-
-                    console.log($('#imagelightbox-overlay'));
-
                     $(newNode).appendTo('#imagelightbox-list');
-
-                    console.log($('a[data-imagelightbox="preview"]'));
-
                     $('a[data-imagelightbox="preview"]').trigger("click");
                 }
             };
