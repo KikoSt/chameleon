@@ -79,6 +79,8 @@
 
 			isTargetValid = function( element )
 			{
+                // hotfix: disable check for allowed filetypes in order to allow '?ts=3428754293857298' preventing browser caching of images
+                return true;
 				return $( element ).prop( 'tagName' ).toLowerCase() == 'a' && ( new RegExp( '\.(' + options.allowedTypes + ')$', 'i' ) ).test( $( element ).attr( 'href' ) );
 			},
 

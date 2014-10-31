@@ -201,7 +201,7 @@ $(document).ready(function() {
                     response = $.parseJSON(xhr.response);
                     var newNode = '';
                     for(var preview in response) {
-                        newNode += '<li><a data-imagelightbox="preview" href="' + response[preview] + '"></a></li>\n';
+                        newNode += '<li><a data-imagelightbox="preview" href="' + response[preview] + '?ts=' + new Date().getTime()  + '"></a></li>\n';
                     }
                     $('#imagelightbox-list > li').remove();
                     $(newNode).appendTo('#imagelightbox-list');
