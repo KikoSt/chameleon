@@ -5,6 +5,8 @@
  * Date: 17.07.14
  * Time: 11:33
  */
+use gdenhancer\GDEnhancer;
+
 require_once(ROOT_DIR . 'config/fontconfig.inc.php');
 define('FLASH_FONT_SCALE_FACTOR', 1.32);
 
@@ -19,6 +21,8 @@ class GfxText extends GfxComponent
     private $fontSize;
     private $fontFamily;
     private $textAnchor;
+
+    private $rotation;
 
     public function __construct(GfxContainer $container)
     {
@@ -198,12 +202,95 @@ class GfxText extends GfxComponent
                      $this->getY(),
                      $textColor,
                      $this->getGIFFont(),
-//                     str_replace('€', ' Euro', $this->getText())
-                    $this->getText()  //TODO € works actually, we have to keep an eye on it
+                     $this->getText()
         );
 
+        //create a imagick object from the image handler
+        $image = $this->convertGDToImagick($canvas);
+
+        //set color
+//        $color = new ImagickPixel("rgba(".$this->getFill()->getR().",".$this->getFill()->getG().",".$this->getFill()->getB().",1)");
+        $color = new ImagickPixel("rgba(255,255,255,1)");
+
+        //set string with font
+        $string = $this->getText();
+
+        $draw = new ImagickDraw();
+        $draw->setFont($this->getGIFFont());
+        $draw->setGravity(Imagick::GRAVITY_CENTER);
+
+        $this->rotation = -22.5;
+        //rotate up
+        $this->rotate($image, $draw, $color, $string);
+        //rotate down
+//        $this->rotate($image, $draw, $color, $string, false);
+
+        $image->drawImage($draw);
+
+        $path = "/var/www/chameleon/assets/gifProto/ani.gif";
+        $image->writeImages($path, true);
 
         return $canvas;
+    }
+
+    private function rotate(Imagick $image, ImagickDraw $draw, $color, $text, $up = true)
+    {
+        for ($i = 0; $i <=75; $i++)
+        {
+            //create a new layer
+            $image->newImage(70, 50, $color);
+
+            if($up)
+            {
+                $this->rotation += 5;
+            }
+            else
+            {
+                $this->rotation -= 5;
+            }
+            //add the layer to the given canvas
+            $image->annotateImage($draw, 10, 10, $this->rotation, $text);
+
+            $image->setImageDelay(1);
+        }
+    }
+
+    private function convertGDToImagick($canvas)
+    {
+        ob_start();
+        imagepng($canvas);
+        $blob = ob_get_clean();
+        $image = new Imagick();
+        $image->readImageBlob($blob);
+
+        return $image;
+    }
+
+    private function generatePartialGif($frames)
+    {
+        for($i=1; $i <= $frames; $i++)
+        {
+            $imageLayer = new GDEnhancer(GIFPROTO . '/price.png');
+            $imageLayer->layerImage(GIFPROTO . '/gifAnimationTestlogo.png');
+            $imageLayer->layerMove(0, 'bottomleft', 0, 0);
+            $imageLayer->layerImageResize(0, 1, 1, 'fill');
+
+            if($i > 1 && $i !== $frames)
+            {
+                $width = ($this->getWidth() / $frames) * $i;
+                $height = ($this->getHeight() / $frames) * $i;
+
+                $imageLayer->layerImageResize(0, $width, $height, 'fill');
+            }
+
+            if($i === $frames)
+            {
+                $imageLayer->layerImageResize(0, $width, $height, 'fill');
+            }
+
+            $saveLayer = $imageLayer->save();
+            file_put_contents(GIFPROTO . '/gtLayer'.$i.'.'.$saveLayer['extension'], $saveLayer['contents']);
+        }
     }
 
     public function renderShadow($canvas)

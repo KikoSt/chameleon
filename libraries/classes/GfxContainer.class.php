@@ -25,7 +25,6 @@ class GfxContainer
     private $editorOptions;
     private $allowedTargets;
 
-    private $fontFamily;
     private $globalPrimaryColor;
     private $globalSecondaryColor;
 
