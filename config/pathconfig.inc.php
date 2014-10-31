@@ -23,7 +23,19 @@ define('CLASS_DIR', ROOT_DIR . 'libraries/classes');
 define('INTERFACE_DIR', ROOT_DIR . 'libraries/interfaces');
 define('EXCEPTION_DIR', ROOT_DIR . 'libraries/exception');
 define('SVG_DIR', ROOT_DIR . 'svg');
+define('LOG_DIR', ROOT_DIR . 'logs');
 
 define('GIFPROTO', ROOT_DIR . 'assets/gifProto');
 
+define('IMGCACHE_DIR', ROOT_DIR . 'imgcache');
 
+if(isset($_SERVER['SERVER_NAME']))
+{
+    define('BASE_DIR', 'http://' . $_SERVER['SERVER_NAME'] . '/chameleon');
+}
+else
+{
+    define('BASE_DIR', '/var/www/chameleon/');
+}
+
+define('PREVIEW_NAME', 'preview_<templateId>_<width>x<height>');

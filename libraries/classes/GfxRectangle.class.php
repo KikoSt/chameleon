@@ -30,11 +30,20 @@ class GfxRectangle extends GfxShape
 
 
 
+    /**
+     * renderSWF
+     *
+     * renders itself inside of the swf canvas and passes the modified canvas back;
+     *
+     * @param mixed $canvas
+     * @access public
+     * @return void
+     */
     public function renderSWF($canvas)
     {
         $rect = new SWFShape();
 
-        if($this->getStroke() !== null)
+        if($this->strokeEnabled() && $this->getStroke() instanceof GfxColor)
         {
             $strokeWidth = $this->getStroke()->getWidth();
             $stroke = new GfxRectangle($this->getContainer());
@@ -47,14 +56,14 @@ class GfxRectangle extends GfxShape
 
         }
 
-        if($this->getShadowColor() !== null)
+        if($this->shadowEnabled() && $this->getShadow()->getColor() instanceof GfxColor)
         {
             $shadow = new GfxRectangle($this->getContainer());
             $shadow->setWidth($this->getWidth());
             $shadow->setHeight($this->getHeight());
-            $shadow->setX($this->getX() + (int) $this->getShadowDist());
-            $shadow->setY($this->getY() + (int) $this->getShadowDist());
-            $shadowColor = $this->getShadowColor();
+            $shadow->setX($this->getX() + (int) $this->getShadow()->getDist());
+            $shadow->setY($this->getY() + (int) $this->getShadow()->getDist());
+            $shadowColor = $this->getShadow()->getColor();
             $shadowColor->setAlpha(128);
             $shadow->setFill($shadowColor);
             $canvas = $shadow->renderSWF($canvas);
@@ -87,12 +96,12 @@ class GfxRectangle extends GfxShape
 
     public function renderGIF($canvas)
     {
-        if($this->hasShadow())
+        if($this->shadowEnabled() && $this->hasShadow())
         {
             $this->createShadow($canvas);
         }
 
-        if($this->hasStroke())
+        if($this->strokeEnabled() && $this->hasStroke())
         {
             $this->createStroke($canvas);
         }
@@ -115,17 +124,19 @@ class GfxRectangle extends GfxShape
         return $canvas;
     }
 
+    // TODO: rename those functions in order to reflect the fact that they will only work for GIF!!
     public function createShadow($canvas)
     {
         $color = imagecolorallocatealpha($canvas,
-            $this->getShadowColor()->getR(),
-            $this->getShadowColor()->getG(),
-            $this->getShadowColor()->getB(),
+            $this->getShadow()->getColor()->getR(),
+            $this->getShadow()->getColor()->getG(),
+            $this->getShadow()->getColor()->getB(),
             50
         );
 
-        $x1 = $this->getX() + $this->getShadowDist();
-        $y1 = $this->getY() + $this->getShadowDist();
+        $x1 = $this->getX() + $this->getShadow()->getDist();
+        $y1 = $this->getY() + $this->getShadow()->getDist();
+
         $x2 = $x1 + $this->getWidth();
         $y2 = $y1 + $this->getHeight();
 
@@ -135,9 +146,9 @@ class GfxRectangle extends GfxShape
     public function createStroke($canvas)
     {
         $color = imagecolorallocate($canvas,
-            $this->getShadowColor()->getR(),
-            $this->getShadowColor()->getG(),
-            $this->getShadowColor()->getB()
+            $this->getStroke()->getColor()->getR(),
+            $this->getStroke()->getColor()->getG(),
+            $this->getStroke()->getColor()->getB()
         );
 
         $x1 = $this->getX() - $this->getStroke()->getWidth();
@@ -151,12 +162,13 @@ class GfxRectangle extends GfxShape
     public function getSvg()
     {
         $stroke = $this->getStroke();
-        $shadow = $this->getShadowColor();
+        $shadow = $this->getShadow();
 
         $svg = '';
 
         $svg .= "\r\n" . '<rect';
         $svg .= "\r\n" . ' cmeo:link="' . $this->getCmeoLink() . '"';
+        $svg .= "\r\n" . ' cmeo:editGroup="' . $this->getEditGroup(). '"';
         $svg .= "\r\n" . ' fill="' . $this->getFill()->getHex() . '"';
 
         if(isset($stroke))
@@ -167,7 +179,7 @@ class GfxRectangle extends GfxShape
 
         if(isset($shadow))
         {
-            $svg .= "\r\n" . ' style="shadow:' . $shadow->getHex() . ';shadow-dist:' . $this->getShadowDist() . 'px;"';
+            $svg .= "\r\n" . ' style="shadow:' . $shadow->getColor()->getHex() . ';shadow-dist:' . $shadow->getDist() . 'px;"';
         }
 
         $svg .= "\r\n" . ' x="' . $this->getX() . '"';

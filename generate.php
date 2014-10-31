@@ -11,50 +11,33 @@ if(!defined('__ROOT__'))
     define('__ROOT__', './');
 }
 
-$companyId    = (int) $argv[1];
-$advertiserId = (int) $argv[2];
-$categoryId   = (int) $argv[3];
-$auditUserId  = (int) $argv[4];
-
-echo $companyId . ' ' . $advertiserId . ' ' . $categoryId . "\n";
-
-$connector = new APIConnector();
-$container = new GfxContainer();
-
-$connector->setAdvertiserId($advertiserId);
-$connector->setCompanyId($companyId);
-$connector->setAuditUserId($auditUserId);
-
-// fetch all templates for given advertiser
-$templates = $connector->getTemplates();
-
-$container->setAdvertiserId($advertiserId);
-$container->setCompanyId($companyId);
-
-$container->setCategoryId($categoryId);
-$products    = $connector->getProductsByCategory($categoryId);
-$productList = $products;
-
-$count = 0;
-foreach($templates AS $template)
+// get ini settings
+try
 {
-    $container = new GfxContainer();
-    $container->setAdvertiserId($advertiserId);
-    $container->setCompanyId($companyId);
-    $container->setCategoryId($categoryId);
-    $container->setSource($template->getSvgContent());
-    $container->setId($template->getBannerTemplateId());
-    $container->parse();
-
-    foreach($productList AS $product)
-    {
-        $container->setProductData($product);
-        $container->setTarget('SWF');
-        $container->render();
-        $container->setTarget('GIF');
-        $container->render();
-        // $container->cleanup();
-        echo ++$count . "\n\n";
-    }
+    $iniSettings = parse_ini_file('generate.ini');
 }
+catch(Exception $e)
+{
+    echo 'Ini file not found, exiting';
+    exit(1);
+}
+
+// set adequat error level
+try
+{
+    error_reporting($iniSettings['reporting_level']);
+}
+catch(Exception $e)
+{
+    echo $e->getMessage();
+    error_reporting(E_ALL);
+}
+
+$categoryId = (int) $argv[3];
+
+error_reporting(E_ALL);
+$generator = new CMEOGenerator($argv);
+$generator->setTemplates(array(5, 96));
+$generator->setCategories($categoryId);
+$generator->generate();
 

@@ -13,9 +13,12 @@ class GfXComponent implements Linkable, Resizeable
     private $id;
     private $fill;
     private $stroke;
+    private $shadow;
+    private $shadowEnabled, $strokeEnabled;
     private $linkUrl;
     private $shadowColor;
     private $shadowDist;
+    private $editGroup;
 
     private $cmeoRef;
     private $cmeoLink;
@@ -66,6 +69,7 @@ class GfXComponent implements Linkable, Resizeable
                 $stroke->setColor($strokeColor);
                 $stroke->setWidth($strokeWidth);
                 $this->setStroke($stroke);
+                $this->enableStroke();
             }
             else if($attr->stroke !== null && (int) $attr->{'stroke-width'} !== 0)
             {
@@ -75,19 +79,22 @@ class GfXComponent implements Linkable, Resizeable
                 $stroke->setColor($strokeColor);
                 $stroke->setWidth($strokeWidth);
                 $this->setStroke($stroke);
+                $this->enableStroke();
             }
 
             if(array_key_exists('shadow', $styles))
             {
                 $shadowColor = new GfxColor($styles['shadow']);
                 $shadowDist = (int) $styles['shadow-dist'];
-                $this->setShadowColor($shadowColor);
-                $this->setShadowDist($shadowDist);
+                $shadow = new GfxShadow($shadowColor, $shadowDist);
+                $this->setShadow($shadow);
+                $this->enableShadow();
             }
         }
 
-        $ref = (string) $svgRootNode->attributes('cmeo', true)->ref;
-        $link = (string) $svgRootNode->attributes('cmeo', true)->link;
+        $ref       = (string) $svgRootNode->attributes('cmeo', true)->ref;
+        $link      = (string) $svgRootNode->attributes('cmeo', true)->link;
+        $editGroup = (int) $svgRootNode->attributes('cmeo', true)->editGroup;
         if(!empty($ref))
         {
             $this->getContainer()->registerDataUpdate($ref, $this);
@@ -100,14 +107,17 @@ class GfXComponent implements Linkable, Resizeable
             $this->setCmeoLink($link);
             $this->setLink($link);
         }
+        if(!empty($editGroup))
+        {
+            $this->setEditGroup($editGroup);
+        }
     }
 
     public function hasShadow()
     {
-        $shadowColor = $this->getShadowColor();
-        $shadowDist = $this->getShadowDist();
+        $shadow = $this->getShadow();
 
-        if(isset($shadowColor, $shadowDist))
+        if(!empty($shadow))
         {
             return true;
         }
@@ -129,24 +139,35 @@ class GfXComponent implements Linkable, Resizeable
         return false;
     }
 
-    public function getShadowColor()
+    public function disableStroke()
     {
-        return $this->shadowColor;
+        $this->strokeEnabled = false;
     }
 
-    public function getShadowDist()
+    public function enableStroke()
     {
-        return $this->shadowDist;
+        $this->strokeEnabled = true;
     }
 
-    public function setShadowColor(GfxColor $shadowColor)
+    public function disableShadow()
     {
-        $this->shadowColor = $shadowColor;
+        $this->shadowEnabled = false;
     }
 
-    public function setShadowDist($shadowDist)
+    public function enableShadow()
     {
-        $this->shadowDist = $shadowDist;
+        $this->shadowEnabled = true;
+    }
+
+    public function getFilepath($filename)
+    {
+        $filename = ltrim($filename, '/');
+        $filepath = $filename;
+        if(substr($filepath, 0, 4) !== 'http')
+        {
+            $filepath = BASE_DIR . '/' . $filepath;
+        }
+        return $filepath;
     }
 
     protected function addClickableLink($canvas)
@@ -171,14 +192,24 @@ class GfXComponent implements Linkable, Resizeable
         return $canvas;
     }
 
+    public function getShadow()
+    {
+        return $this->shadow;
+    }
+
+    public function setShadow(GfxShadow $shadow)
+    {
+        $this->shadow = $shadow;
+    }
+
     public function getStroke()
     {
         return $this->stroke;
     }
 
-    public function setStroke(GfxStroke $oColor)
+    public function setStroke(GfxStroke $stroke)
     {
-        $this->stroke = $oColor;
+        $this->stroke = $stroke;
     }
 
     public function setLinkUrl($linkUrl)
@@ -341,5 +372,23 @@ class GfXComponent implements Linkable, Resizeable
         $this->cmeoRef = $cmeoRef;
     }
 
+    public function shadowEnabled()
+    {
+        return $this->shadowEnabled;
+    }
 
+    public function strokeEnabled()
+    {
+        return $this->strokeEnabled;
+    }
+
+    public function setEditGroup($editGroup)
+    {
+        $this->editGroup = $editGroup;
+    }
+
+    public function getEditGroup()
+    {
+        return $this->editGroup;
+    }
 }

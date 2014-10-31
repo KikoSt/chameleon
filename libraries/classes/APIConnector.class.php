@@ -1,5 +1,17 @@
 <?php
+require_once(__ROOT__ . 'config/apiconfig.inc.php');
 
+/**
+ * Handles the API connections to the bidder
+ *
+ * PHP Version 5.5
+ *
+ * @category    Chameleon
+ * @author      Christoph Starkmann <christoph.starkmann@mediadecision.com>
+ * @author      Thomas Hummel <thomas.hummel@mediadecision.com
+ * @license     Proprietary/Closed Source
+ * @copyright   2014 Media Decision GmbH
+ */
 class APIConnector
 {
     private $serviceCalls;
@@ -20,6 +32,9 @@ class APIConnector
         $this->serviceCalls['sendCreative']          = 'creativeImage';
         $this->serviceCalls['getEnums']              = 'enums';
         $this->serviceCalls['getCategories']         = 'company/{companyId}/categories';
+        $this->serviceCalls['getSubscribedCategories'] = 'bannerTemplate/{idBannerTemplate}/subscribedCategories';
+        $this->serviceCalls['postTemplateQuery']     = 'query/bannerTemplates';
+        $this->serviceCalls['getProductDataSamples'] = 'query/products';
     }
 
     /**
@@ -53,7 +68,7 @@ class APIConnector
      * getUserStatusValues
      *
      * get all possible user status values via REST API
-     * (crrently: ACTIVE, PAUSED, DELETED)
+     * (currently: ACTIVE, PAUSED, DELETED)
      *
      * @access public
      * @return $userStatusValues a list containing all defined user status values
@@ -63,6 +78,21 @@ class APIConnector
         $enums = $this->getEnums();
         $userStatusValues = $enums->userStatusValues;
         return $userStatusValues;
+    }
+
+    /**
+     * getAllowedBannerDimensions
+     *
+     * get the allowed banner dimensions via REST API
+     *
+     * @access public
+     * @return $userStatusValues a list containing all defined user status values
+     */
+    public function getAllowedBannerDimensions()
+    {
+        $enums = $this->getEnums();
+        $allowedDimensions = $enums->imageDimensions;
+        return $allowedDimensions;
     }
 
 
@@ -81,11 +111,13 @@ class APIConnector
         $curl = $this->getCurl($resource, 'GET');
         $curlResponse = curl_exec($curl);
 
-        if(curl_getinfo($curl)['http_code'] != 204)
+        $info = curl_getinfo($curl);
+
+        if($info['http_code'] != 204 && $info['http_code'] != 200)
         {
-            $logfile = fopen('log.txt', 'w');
-            fwrite($logfile, $curlResponse . "\n");
-            fclose($logfile);
+//            $logfile = fopen('log.txt', 'w');
+//            fwrite($logfile, $curlResponse . "\n");
+//            fclose($logfile);
         }
         curl_close($curl);
         $enums = json_decode($curlResponse);
@@ -125,7 +157,9 @@ class APIConnector
         // $curl_response = curl_exec($curl);
         $curlResponse = curl_exec($curl);
 
-        if(curl_getinfo($curl)['http_code'] != 204)
+        $info = curl_getinfo($curl);
+
+        if($info['http_code'] != 204)
         {
             $logfile = fopen('log.txt', 'w');
             fwrite($logfile, $curlResponse . "\n" . json_encode($param));
@@ -186,6 +220,27 @@ class APIConnector
     }
 
 
+    private function validateResponse($response)
+    {
+        if(!is_array($response) && !is_object($response))
+        {
+            if(strpos($response, 'Error'))
+            {
+                $response = ltrim(preg_replace ('/<[^>]*>/', ' ', $response));
+                return array('valid' => false, 'message' => $response);
+           }
+        }
+        return array('valid' => true, 'message' => '');
+    }
+
+    /**
+     * Returns the categories depending on the company id
+     *
+     * TODO Currently the categories are delivered sorted by name ASC
+     *
+     * @return array
+     * @throws Exception
+     */
     public function getCategories()
     {
         $resource = REST_API_SERVICE_URL . '/' . str_replace('{companyId}', $this->companyId, $this->serviceCalls['getCategories']);
@@ -193,6 +248,12 @@ class APIConnector
 
         $curlResponse = curl_exec($curl);
         curl_close($curl);
+
+        $result = $this->validateResponse($curlResponse);
+        if(!$result['valid'])
+        {
+            throw new Exception('An error occured: ' . $result['message']);
+        }
 
         $categories = json_decode($curlResponse)->categories;
         $categoriesProcessed = array();
@@ -209,7 +270,25 @@ class APIConnector
         }
 
         return $categoriesProcessed;
+    }
 
+    public function getSubscribedCategoriesByTemplateId($templateId)
+    {
+        $resource = REST_API_SERVICE_URL . '/' . 'bannerTemplate/'.$templateId.'/subscribedCategories';
+        $curl = $this->getCurl($resource, 'GET');
+
+        $curlResponse = curl_exec($curl);
+        curl_close($curl);
+
+        $result = $this->validateResponse($curlResponse);
+        if(!$result['valid'])
+        {
+            throw new Exception('An error occured: ' . $result['message']);
+        }
+
+        $subscribedCategories = json_decode($curlResponse)->categories;
+
+        return $subscribedCategories;
     }
 
 
@@ -268,6 +347,11 @@ class APIConnector
         $curl = $this->getCurl($resource, 'GET');
 
         $curlResponse = curl_exec($curl);
+        $result = $this->validateResponse($curlResponse);
+        if(!$result['valid'])
+        {
+            throw new Exception('Error trying to get templates');
+        }
 
         curl_close($curl);
 
@@ -317,6 +401,36 @@ class APIConnector
         return $curlResponse;
     }
 
+    public function sendBannerTemplateQuery(BannerTemplateQuery $bannerTemplateQuery)
+    {
+        $bannerTemplateQuery = json_encode($bannerTemplateQuery->jsonSerialize());
+        $resource = REST_API_SERVICE_URL . '/' . $this->serviceCalls['postTemplateQuery'];
+        $curl = $this->getCurl($resource, 'POST');
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $bannerTemplateQuery);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+
+        $curlResponse = curl_exec($curl);
+        curl_close($curl);
+        return $curlResponse;
+    }
+
+    /**
+     * Clones the given template
+     *
+     * For cloning the parent template id is set to the former template id and the template id is set to NULL
+     *
+     * @param BannerTemplateModel $template
+     * @return mixed
+     */
+    public function cloneBannerTemplate(BannerTemplateModel $template)
+    {
+        $template->setParentBannerTemplateId($template->getBannerTemplateId());
+        $template->setBannerTemplateId(NULL);
+        $response = $this->sendBannerTemplate($template);
+
+        return $response;
+    }
+
     /**
      * @param $templateId
      * @return mixed
@@ -331,6 +445,37 @@ class APIConnector
         return $curlResponse;
     }
 
+
+    public function getProductDataSamples($categoryIds, $numSamples)
+    {
+        $productQueryData = new StdClass();
+        if(is_array($categoryIds))
+        {
+            $productQueryData->categoryIds = $categoryIds;
+        }
+        $productQueryData->productsPerCategory = (int)$numSamples;
+        $productQueryData = json_encode($productQueryData);
+        $resource = REST_API_SERVICE_URL . '/' . $this->serviceCalls['getProductDataSamples'];
+        $curl = $this->getCurl($resource, 'POST');
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $productQueryData);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+
+        $curlResponse = curl_exec($curl);
+        curl_close($curl);
+
+        $productList = json_decode($curlResponse)->products;
+        $products = array();
+
+        foreach($productList AS $product)
+        {
+            $products[] = $this->populateProduct($product);
+        }
+
+        return $products;
+    }
+
+
+
     /**
      * @param $serviceUrl
      * @param $method
@@ -342,6 +487,10 @@ class APIConnector
         $baseAuthUserPwd = (REST_API_USERNAME . ':' . REST_API_PASSWORD);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_USERPWD, $baseAuthUserPwd);
+
+        //todo remove after testing
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
         if($method === 'GET')
         {
             curl_setopt($curl, CURLOPT_HTTPGET, true);
@@ -384,6 +533,9 @@ class APIConnector
         $bannerTemplateModel->setDimX((int) $template->dimX);
         $bannerTemplateModel->setDimY((int) $template->dimY);
         $bannerTemplateModel->setGroupId((int) $template->idGroup);
+        $bannerTemplateModel->setDateCreate($template->dateCreate);
+        $bannerTemplateModel->setDateModified($template->dateModified);
+        $bannerTemplateModel->setCategorySubscriptions($template->categorySubscriptions);
 
         return $bannerTemplateModel;
     }

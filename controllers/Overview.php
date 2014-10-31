@@ -18,10 +18,14 @@ class Overview extends Controller
      */
     public function create()
     {
+        $_SESSION['categories'] = array();
+
         // create required objects
         $container = new GfxContainer();
         $connector = new APIConnector();
-        $previews = array();
+        $templates = array();
+        $previews  = array();
+        $loadError = false;
 
         $connector->setAdvertiserId($this->getAdvertiserId());
         $connector->setCompanyId($this->getCompanyId());
@@ -32,37 +36,99 @@ class Overview extends Controller
         $container->setPreviewMode(true);
 
         $this->view = $this->setLayout('views/overview.phtml')->getView();
+        $this->view->advertiserId = $this->getAdvertiserId();
 
         // get all templates for company / advertiser
-        $templates = $connector->getTemplates();
-
-        foreach($templates as $template)
+        try
         {
-            $baseFilename = 'rtest_' . $template->getBannerTemplateId();
-            $filename = $baseFilename . '.svg';
-            $container->setOutputName($baseFilename);
-
-            $container->setSource($template->getSvgContent());
-            $container->setId($template->getBannerTemplateId());
-            $container->saveSvg();
-
-            $container->setTarget('GIF');
-            $container->render();
-
-            $preview = new StdClass();
-            $preview->filepath = str_replace($_SERVER['DOCUMENT_ROOT'], '', OUTPUT_DIR . '/' . $container->getOutputDir()) . '/' . $baseFilename . '.gif';
-            $preview->width = $container->getCanvasWidth() / 2 > 300 ? 300 : $container->getCanvasWidth() / 2;
-            $preview->height = $container->getCanvasHeight();
-            $preview->id = $template->getBannerTemplateId();
-            $preview->templateName = $filename;
-            $preview->templateId = $template->getBannerTemplateId();
-            $preview->advertiserId = $this->getAdvertiserId();
-            $preview->companyId = $this->getCompanyId();
-            $previews[] = $preview;
-
-            // unlink(SVG_DIR . $filename);
+            $templates = $connector->getTemplates();
         }
+        catch(Exception $e)
+        {
+            $this->view->message = 'An error occured: ' . $e->getMessage();
+            $loadError = true;
+        }
+
+        if(!$loadError)
+        {
+            if(count($templates) == 0)
+            {
+                $this->view->message = 'No templates found!';
+            }
+            else
+            {
+                $categories = $connector->getCategories();
+
+                foreach($templates as $template)
+                {
+                    $baseFilename = getPreviewFileName($template);
+                    $filename = $baseFilename . '.svg';
+                    $container->setOutputName($baseFilename);
+
+                    $container->setSource($template->getSvgContent());
+                    $container->setId($template->getBannerTemplateId());
+
+                    try
+                    {
+                        $container->parse();
+                    }
+                    catch(Exception $e)
+                    {
+                        continue;
+                    }
+
+                    $container->saveSvg();
+
+                    $container->setTarget('GIF');
+                    try
+                    {
+                        $container->render();
+                    }
+                    catch(Exception $e)
+                    {
+                        continue;
+                    }
+
+                    $file = BASE_DIR . "/output/" . $container->getOutputDir() . '/' . $baseFilename . '.gif';
+
+                    $preview = new StdClass();
+                    $preview->filePath = $file;
+                    $preview->templateName = $filename;
+                    $preview->templateId = $template->getBannerTemplateId();
+                    $preview->advertiserId = $this->getAdvertiserId();
+                    $preview->companyId = $this->getCompanyId();
+                    $preview->fileSize = getRemoteFileSize($file);
+                    $preview->dateCreate = date("Y-m-d H:i:s", parseJavaTimestamp($template->getDateCreate()));
+                    $preview->dateModified = date("Y-m-d H:i:s", parseJavaTimestamp($template->getDateModified()));
+                    $preview->templateId = $template->getBannerTemplateId();
+                    $preview->parentTemplateId = $template->getParentBannerTemplateId();
+                    $preview->shortDescription = $this->getShortenedDescription($template->getName());
+                    $preview->description = $template->getName();
+                    $preview->templateSubscription = $template->getCategorySubscriptions();
+                    $preview->availableCategories = $this->getPrunedAvailableCategories($categories, $preview->templateSubscription);
+                    $preview->bannerDimension = $this->getBannerDimension($container);
+
+
+                    if((int)$container->getCanvasWidth() > (int)$container->getCanvasHeight())
+                    {
+                        if($container->getCanvasHeight() > 210)
+                        {
+                            $preview->margin = ($container->getCanvasHeight() - 210)/2;
+                        }
+                        else
+                        {
+                            $preview->margin = (210 - $container->getCanvasHeight())/2;
+                        }
+
+                    }
+
+                    $previews[] = $preview;
+                }
+            }
+        }
+
         $this->view->previews = $previews;
+        $this->view->page = 'overview';
 
         return $this->view;
     }
@@ -72,56 +138,90 @@ class Overview extends Controller
         echo $this->view;
     }
 
-//    private function clearOutputDirectory($path)
-//    {
-//        $files = glob($path . '*.*');
-//
-//        foreach ($files as $file)
-//        {
-//            if (is_file($file))
-//            {
-//                unlink($file);
-//            }
-//        }
-//    }
-
-    /**
-     * Get companyId.
-     *
-     * @return companyId.
-     */
-    public function getCompanyId()
-    {
-        return $this->companyId;
-    }
-
-    /**
-     * Set companyId.
-     *
-     * @param companyId the value to set.
-     */
     public function setCompanyId($companyId)
     {
         $this->companyId = $companyId;
     }
 
-    /**
-     * Get advertiserId.
-     *
-     * @return advertiserId.
-     */
+    private function getBannerDimension(GfxContainer $container)
+    {
+        $connector = new APIConnector();
+        $allowedBannerDimensions = $connector->getAllowedBannerDimensions();
+
+        $width = $container->getCanvasWidth();
+        $height = $container->getCanvasHeight();
+
+        foreach($allowedBannerDimensions as $allowedDimension)
+        {
+            if($width == $allowedDimension->width && $height == $allowedDimension->height)
+            {
+                return $allowedDimension;
+            }
+        }
+
+        $nonDefault = new stdClass();
+        $nonDefault->width = $width;
+        $nonDefault->height = $height;
+        $nonDefault->name = 'Non-standard format';
+
+        return $nonDefault;
+    }
+
+    private function getShortenedDescription($description)
+    {
+        if(str_word_count($description, 0) == 1)
+        {
+            $description = substr($description, 0, 20) . '...';
+        }
+        else if(strlen($description) > 70)
+        {
+            $description = substr($description, 0, 70) . '...';
+        }
+
+        return $description;
+    }
+
+    private function getPrunedAvailableCategories($categories, $templateSubscriptions)
+    {
+        $prunedCategories = array();
+
+        foreach($categories as $category)
+        {
+            $prunedCategories[$category->id] = $category->name;
+        }
+
+        foreach($templateSubscriptions as $subscription)
+        {
+            if($subscription->userStatus === "ACTIVE")
+            {
+                unset($prunedCategories[$subscription->idCategory]);
+            }
+        }
+        return $prunedCategories;
+    }
+
+    public function getCompanyId()
+    {
+        return $this->companyId;
+    }
+
+    public function setAdvertiserId($advertiserId)
+    {
+        $this->advertiserId = $advertiserId;
+    }
+
     public function getAdvertiserId()
     {
         return $this->advertiserId;
     }
 
-    /**
-     * Set advertiserId.
-     *
-     * @param advertiserId the value to set.
-     */
-    public function setAdvertiserId($advertiserId)
+    public function setAuditUserId($auditUserId)
     {
-        $this->advertiserId = $advertiserId;
+        $this->auditUserId = $auditUserId;
+    }
+
+    public function getAuditUserId()
+    {
+        return $this->auditUserId;
     }
 }

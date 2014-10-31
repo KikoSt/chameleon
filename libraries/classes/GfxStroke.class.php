@@ -3,6 +3,8 @@
 /**
  * Stroke
  *
+ * container class for strokes used by GfxComponents
+ *
  * @package
  * @version $id$
  * @copyright 2014 Mediadecision GmbH

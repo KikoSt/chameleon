@@ -25,6 +25,12 @@ class GfxContainer
     private $editorOptions;
     private $allowedTargets;
 
+    private $fontFamily;
+    private $globalPrimaryColor;
+    private $globalSecondaryColor;
+
+    private $groups;
+
     // Path information:
     // the baseDir is either SVG_DIR or OUTPUT_DIR for now, depending on whether
     //   SVG operations or rendering is required -> NOT stored here
@@ -56,6 +62,7 @@ class GfxContainer
         $this->dataRegistry = array();
         $this->animationRegistry = array();
         $this->previewMode = false;
+        $this->groups = array();
     }
 
     public function __destruct()
@@ -102,7 +109,6 @@ class GfxContainer
      * createSvg
      *
      * @access public
-     * @return void
      */
     public function createSvg()
     {
@@ -114,11 +120,13 @@ class GfxContainer
         $string .= ' xmlns:cmeo="http://www.mediadecision.com/chameleon_namespace" ';
         $string .= ' xmlns:svg="http://www.w3.org/2000/svg" ';
         $string .= ' xmlns:xlink="http://www.w3.org/1999/xlink"';
+        $string .= ' cmeo:font-family="' . $this->getFontFamily() . '"';
+        $string .= ' cmeo:primary-color="' . $this->getPrimaryColor()->getHex() . '"';
+        $string .= ' cmeo:secondary-color="' . $this->getSecondaryColor()->getHex() . '"';
         $string .= '>';
         $string .= "\n" . '<g>' . $this->getSvg() . '</g></svg>';
         return $string;
     }
-
 
     public function setOutputName($outputName)
     {
@@ -141,7 +149,7 @@ class GfxContainer
         {
             $this->source = simplexml_load_string($source);
         }
-        else if(is_a($source, 'SimpleXMLElement'))
+        else if($source instanceof SimpleXMLElement)
         {
             $this->source = $source;
         }
@@ -149,14 +157,24 @@ class GfxContainer
         {
             throw new FileNotFoundException('File ' . $source . ' not found!');
         }
-        $this->parse();
     }
 
+    /**
+     * parse
+     *
+     * Parse the xml tree, store settings and create all required elements. The create function of each element is
+     * called with the relevant svg sub tree as an argument, and the element will process the data as required
+     *
+     * @access public
+     * @return void
+     */
     public function parse()
     {
+        // delete all elements to avoid duplicates when "parse" is called accidentially more than once
+        unset($this->elements);
         libxml_use_internal_errors(true);
 
-        if(!is_a($this->source, 'SimpleXMLElement'))
+        if(!($this->source instanceof SimpleXMLElement))
         {
             throw new Exception('No valid simplexml source element provided: ' . $this->source);
         }
@@ -164,6 +182,9 @@ class GfxContainer
 
         $this->setCanvasWidth((float) $svg->attributes()->width);
         $this->setCanvasHeight((float) $svg->attributes()->height);
+        $this->setPrimaryColor(new GfxColor($svg->attributes('cmeo', true)->{"primary-color"}));
+        $this->setSecondaryColor(new GfxColor($svg->attributes('cmeo', true)->{"secondary-color"}));
+        $this->setFontFamily((string) $svg->attributes('cmeo', true)->{"font-family"});
 
         $children = $svg->children();
 
@@ -176,8 +197,24 @@ class GfxContainer
             {
                 $gfxInstance->create($child);
                 $this->addElement($gfxInstance);
+
+                if(!empty($gfxInstance->getEditGroup()))
+                {
+                    if(!array_key_exists($gfxInstance->getEditGroup(), $this->groups))
+                    {
+                        $dummy = new GfxGroup($gfxInstance->getEditGroup(), $this);
+                        $this->groups[$gfxInstance->getEditGroup()] = $dummy;
+                    }
+                }
             }
             unset($gfxInstance);
+        }
+
+        ksort($this->groups);
+
+        foreach($this->groups AS $group)
+        {
+            $group->create();
         }
     }
 
@@ -212,7 +249,7 @@ class GfxContainer
 
     public function addElement($element)
     {
-        if(is_a($element, 'GfxComponent'))
+        if($element instanceof GfxComponent)
         {
             $this->elements[] = $element;
 
@@ -230,7 +267,7 @@ class GfxContainer
      * @access private
      * @return string
      */
-    private function getOutputFilename()
+    public function getOutputFilename()
     {
         if($this->getOutputName() != '')
         {
@@ -238,18 +275,18 @@ class GfxContainer
         }
         else
         {
-//             if('' === $this->getCompanyId() || '' === $this->getAdvertiserId())
-//             {
-//                 throw new Exception('Company or advertiser id not set');
-//             }
             if('' == $this->getId())
             {
                 throw new Exception('Template id not set');
             }
 
             $filename  = $this->getId();
-            $filename .= '_' . preg_replace("/[^a-zA-Z0-9]/", "", $this->getProductData()->getName());
-            $filename .= '_' . $this->getProductData()->getProductId();
+
+            if($this->getProductData())
+            {
+                $filename .= '_' . preg_replace("/[^a-zA-Z0-9]/", "", $this->getProductData()->getName());
+                $filename .= '_' . $this->getProductData()->getProductId();
+            }
             $filename .= '_' . $this->getCanvasHeight();
             $filename .= 'x' . $this->getCanvasWidth();
         }
@@ -369,7 +406,7 @@ class GfxContainer
     {
         foreach($this->elements AS $element)
         {
-            if(is_a($element, 'GfxComponent'))
+            if($element instanceof GfxComponent)
             {
                 $element->updateData();
             }
@@ -411,7 +448,7 @@ class GfxContainer
 
         foreach($this->elements AS $element)
         {
-            if(is_a($element, 'GfxComponent'))
+            if($element instanceof GfxComponent)
             {
                 $element->renderSWF($swf);
             }
@@ -440,7 +477,7 @@ class GfxContainer
 
         imageDestroy($updatedCanvas);
 
-        chmod(OUTPUT_DIR . '/' . $this->getOutputDir() . '/' . $this->getOutputFilename() . '.gif', 0777);
+//        chmod(OUTPUT_DIR . '/' . $this->getOutputDir() . '/' . $this->getOutputFilename() . '.gif', 0777);
     }
 
 
@@ -475,15 +512,40 @@ class GfxContainer
     {
         $valueList = array();
 
+        // process all form data and store the information referenced by their element id in a dictionary
         foreach($formData AS $key => $value)
         {
-            list($id, $parameter) = explode('#', $key);
+            // svg values consist of element id and parameter name:
+            // background#width
+            // values without # are ignored (for example the action parameter)
+            if(strpos($key, '#'))
+            {
+                list($id, $parameter) = explode('#', $key);
 
-            if(!array_key_exists($id, $valueList)) {
-                $valueList[$id] = array();
+                if(!array_key_exists($id, $valueList))
+                {
+                    $valueList[$id] = array();
+                }
+                $valueList[$id][$parameter] = $value;
             }
-            $valueList[$id][$parameter] = $value;
         }
+
+        // global parameters are identified by the template id instead of the element id
+        $globalSettings = $valueList[$this->getId()];
+
+        $dimensions = $this->getGlobalWidthAndHeight($globalSettings['globalDimensions']);
+
+        $fontFamily     = $globalSettings['fontFamily'];
+        $primaryColor   = new GfxColor($globalSettings['primary-color']);
+        $secondaryColor = new GfxColor($globalSettings['secondary-color']);
+
+        $this->setCanvasWidth($dimensions->width);
+        $this->setCanvasHeight($dimensions->height);
+
+        $this->setPrimaryColor($primaryColor);
+        $this->setSecondaryColor($secondaryColor);
+
+        $this->setFontFamily($fontFamily);
 
         // now we've got a dictionary like that:
         // valueList['price_ribbon_1']['x'] = 50;
@@ -492,23 +554,67 @@ class GfxContainer
             // now get the id of one element after another and read the values from
             // the prepared dictionary
             $id = $element->getId();
+            $element->disableShadow();
+            $element->disableStroke();
             foreach($valueList[$id] AS $param => $value)
             {
                 $func="set" . ucwords($param);
 
-                if($param === "fill" || $param === "shadowColor")
+                if(substr($param, 0, 6) === 'shadow')
+                {
+                    // what ever comes first, could be shadow, shadowColor or shadowDist
+                    if(empty($element->getShadow()))
+                    {
+                        $shadowColor = new GfxColor('#000000');
+                        $shadowDist = 2;
+                        $shadow = new GfxShadow($shadowColor, $shadowDist);
+                        $element->setShadow($shadow);
+                    }
+                }
+
+                if(substr($param, 0, 6) === 'stroke')
+                {
+                    // what ever comes first, could be shadow, shadowColor or shadowDist
+                    if(empty($element->getStroke()))
+                    {
+                        $strokeColor = new GfxColor('#000000');
+                        $strokeWidth = 1;
+                        $stroke = new GfxStroke($strokeColor, $strokeWidth);
+                        $element->setStroke($stroke);
+                    }
+                }
+
+                if($param === "fill")
                 {
                     $color = new GfxColor($value);
                     $element->$func($color);
                 }
-                elseif($param === "stroke")
+                elseif($param === 'shadow')
                 {
-                    $stroke = new GfxStroke(new GfxColor($value), 1);
-                    $element->$func($stroke);
+                    $element->enableShadow();
+                }
+                elseif($param === 'stroke')
+                {
+                    $element->enableStroke();
+                }
+                elseif($param === "shadowColor")
+                {
+                    // $element->enableShadow();
+                    $element->getShadow()->setColor(new GfxColor($value));
+                }
+                elseif($param === "shadowDist")
+                {
+                    // empty. currently prevent errors TO BE FIXED
+                    // $element->enableShadow();
+                    $element->getShadow()->setDist($value);
                 }
                 elseif($param === "strokeWidth")
                 {
                     $element->getStroke()->setWidth($value);
+                }
+                elseif($param === "strokeColor")
+                {
+                    $element->getStroke()->setColor(new GfxColor($value));
                 }
                 else
                 {
@@ -637,6 +743,11 @@ class GfxContainer
         return $this->productData;
     }
 
+    public function getGroups()
+    {
+        return $this->groups;
+    }
+
     /**
      * Set productData.
      *
@@ -704,4 +815,77 @@ class GfxContainer
     {
         $this->previewMode = $previewMode;
     }
+
+    /**
+     * Get globalFontFamily.
+     *
+     * @return globalFontFamily.
+     */
+    public function getFontFamily()
+    {
+        return $this->globalFontFamily;
+    }
+
+    /**
+     * Set globalFontFamily.
+     *
+     * @param globalFontFamily the value to set.
+     */
+    public function setFontFamily($globalFontFamily)
+    {
+        $this->globalFontFamily = $globalFontFamily;
+    }
+
+    /**
+     * Get globalPrimaryColor.
+     *
+     * @return globalPrimaryColor.
+     */
+    public function getPrimaryColor()
+    {
+        return $this->globalPrimaryColor;
+    }
+
+    /**
+     * Set globalPrimaryColor.
+     *
+     * @param globalPrimaryColor the value to set.
+     */
+    public function setPrimaryColor(GfxColor $globalPrimaryColor)
+    {
+        $this->globalPrimaryColor = $globalPrimaryColor;
+    }
+
+    /**
+     * Get globalSecondaryColor.
+     *
+     * @return globalSecondaryColor.
+     */
+    public function getSecondaryColor()
+    {
+        return $this->globalSecondaryColor;
+    }
+
+    /**
+     * Set globalSecondaryColor.
+     *
+     * @param globalSecondaryColor the value to set.
+     */
+    public function setSecondaryColor(GfxColor $globalSecondaryColor)
+    {
+        $this->globalSecondaryColor = $globalSecondaryColor;
+    }
+
+    private function getGlobalWidthAndHeight($globalDimensions)
+    {
+        $dimensions = new stdClass();
+
+        $explode = explode('x', $globalDimensions);
+        $dimensions->width = $explode[0];
+        $dimensions->height = $explode[1];
+
+        return $dimensions;
+    }
+
+
 }

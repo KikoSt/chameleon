@@ -1,4 +1,5 @@
 <?php
+session_start();
 /**
  * Created by IntelliJ IDEA.
  * User: thomas
@@ -17,19 +18,37 @@ if(!defined('__ROOT__'))
 require_once(__ROOT__ . 'libraries/functions.inc.php');
 
 $container = new GfxContainer();
+$connector = new APIConnector();
 $svgHandler = new SvgFileHandler();
 
-// for now ...
-$auditUserId = 14;
+$auditUserId    = getRequestVar('auditUserId');;
+$companyId      = getRequestVar('companyId');
+$advertiserId   = getRequestVar('advertiserId');
+$templateId     = getRequestVar('templateId');
 
-$companyId    = getRequestVar('companyId');
-$advertiserId = getRequestVar('advertiserId');
-$templateId   = getRequestVar('templateId');
+if(!isset($auditUserId) || empty($auditUserId))
+{
+    return false;
+}
 
 $container->setCompanyId($companyId);
 $container->setAdvertiserId($advertiserId);
 
+$connector->setCompanyId($companyId);
+$connector->setAdvertiserId($advertiserId);
+
+// TODO: get rid of this, container should handle the path and it's advised
+// to the the path from the container!
 $basePath = (string) $companyId . '/' . (string) $advertiserId . '/0';
+
+if(array_key_exists('action', $_REQUEST))
+{
+    $action = $_REQUEST['action'];
+}
+else
+{
+    return false;
+}
 
 if(!empty($_FILES))
 {
@@ -40,21 +59,19 @@ if(!empty($_FILES))
     }
 }
 
-//set file name
-$baseFilename = 'rtest_' . $templateId;
-$filename = $baseFilename . '.svg';
-$container->setOutputName($baseFilename);
+$template = $connector->getTemplateById($templateId);
 
 //parse the svg
-$container->setSource($filename);
+$container->setSource($template->getSvgContent());
+$container->setId($templateId);
 $container->parse();
 
 // TODO
-// FOR NOW, it is of huge importance that this next portion is located before
+// FOR NOW, it is of huge importance that this is executed before
 // the files change section since the changeElementValue method will update
 // the imgSources with the old values, being changed (corrected) again below
 
-if(array_key_exists('action', $_REQUEST) && 'upload' !== $_REQUEST['action'])
+if($action !==  'upload')
 {
     $container->changeElementValue($_POST);
 }
@@ -76,10 +93,18 @@ if(null !== $_FILES && count($_FILES) > 0)
 }
 
 $svgContent = $container->createSvg();
-$container->setTarget('GIF');
+$container->setOutputName(getPreviewFileName($template));
+$container->setTarget('SWF');
 $container->render();
 
-if(array_key_exists('action', $_REQUEST) && 'save' === $_REQUEST['action'])
+$container->setTarget('GIF');
+
+if(!empty($action))
+{
+    $container->render();
+}
+
+if($action === 'clone' || $action === 'save' || $action === 'saveCategory')
 {
     $connector = new APIConnector();
     $connector->setCompanyId(getRequestVar('companyId'));
@@ -87,24 +112,41 @@ if(array_key_exists('action', $_REQUEST) && 'save' === $_REQUEST['action'])
 
     //update template in the data base
     $bannerTemplateModel = new BannerTemplateModel();
+
     $bannerTemplateModel->setSvgContent($svgContent);
     $bannerTemplateModel->setGroupId(0);
-    $bannerTemplateModel->setDimX($container->getCanvasHeight());
-    $bannerTemplateModel->setDimY($container->getCanvasWidth());
+    $bannerTemplateModel->setDimY($container->getCanvasHeight());
+    $bannerTemplateModel->setDimX($container->getCanvasWidth());
     $bannerTemplateModel->setBannerTemplateId($templateId);
     $bannerTemplateModel->setAuditUserId($auditUserId);
     $bannerTemplateModel->setAdvertiserId($advertiserId);
     $bannerTemplateModel->setDescription('testing');
-    $bannerTemplateModel->setName('mumblebee testing');
 
-    $response = $connector->sendBannerTemplate($bannerTemplateModel);
+    //TODO while uploading an image, there's no template name present
+    //TODO option 1: set a hidden field with the template name
+    //TODO option 2: fetch the templateName using the given template id
+    //have to figure it out
+    if(isset($_REQUEST['templateName']))
+    {
+        $bannerTemplateModel->setName($_REQUEST['templateName']);
+    }
+
+    if($action === 'clone' )
+    {
+        $response = $connector->cloneBannerTemplate($bannerTemplateModel);
+    }
+
+    if($action === 'save')
+    {
+        $response = $connector->sendBannerTemplate($bannerTemplateModel);
+    }
 }
 
 $response = array();
 
-// $imgsrc = $container->getOutputDir() . '/' . $container->getOutputName() . '.gif';
 // TODO: improve this path handling, too
-$imgsrc = 'output/' . $basePath . '/' . $container->getOutputName() . '.gif';
+$container->setOutputName(getPreviewFileName($template));
+$imgsrc = 'output/' . $basePath . '/' . $container->getOutputName();
 $response['imgsrc'] = $imgsrc;
 
 echo json_encode($response);

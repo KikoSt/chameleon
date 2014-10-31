@@ -1,39 +1,35 @@
-<div class="col-md-2">
-    <label for="strokeCheckBox" class="col-md-11">Enable shadow:</label>
-    <div class="checkbox col-md-1">
-        <input id="shadowCheckBox"
-               class="myCheckbox"
-               type="checkbox"
-               value="<?php echo $element->getId();?>"
-               <?php echo (!empty($element->getShadowColor())) ? 'checked' : '';?>>
-    </div>
+<div class="row">
+    <input id="<?php echo $element->getId();?>_shadowCheckBox"
+           class="myCheckbox"
+           type="checkbox"
+           name="<?php echo $element->getId();?>#shadow"
+           value="<?php echo $element->getId();?>"
+        <?php echo ($element->hasShadow()) ? 'checked' : '';?>
+
+        >
+    <label for="<?php echo $element->getId();?>_shadowCheckBox" class="col-md-3">Shadow:</label>
 </div>
-<div class="col-md-5">
-    <label class="control-label col-md-3" for="<?php echo $element->getId();?>_shadowColor">Color:</label>
-    <div class="col-md-9">
-        <input id="<?php echo $element->getId();?>_shadowColor"
-               type="text"
-               class="form-control picker"
-               name="<?php echo $element->getId();?>#shadowColor"
-               value="<?php echo (null !== $element->getShadowColor()) ? $element->getShadowColor()->getHex() : '';?>"
-               placeholder="<?php echo (null !== $element->getShadowColor()) ? $element->getShadowColor()->getHex() : '';?>"
-               <?php echo (empty($element->getShadowColor())) ? 'disabled' : '';?>
-            />
-    </div>
+<?php if($this->premiumUser):?>
+<div class="row">
+    <label class="col-md-3 text-center" for="<?php echo $element->getId();?>_shadowColor">Color:</label>
+    <input id="<?php echo $element->getId();?>_shadowColor"
+           type="text"
+           class="form-control picker cursor-pointer"
+           name="<?php echo $element->getId();?>#shadowColor"
+           value="<?php echo (null !== $element->getShadow()) ? $element->getShadow()->getColor()->getHex() : '#000000';?>"
+           placeholder="<?php echo (null !== $element->getShadow()) ? $element->getShadow()->getColor()->getHex() : '#000000';?>"
+           <?php echo (empty($element->getShadow())) ? 'disabled' : '#000000';?>
+        />
 </div>
-<div class="col-md-5">
-    <label class="control-label col-md-3" for="<?php echo $element->getId();?>_shadowDist">Dist:</label>
-    <div class="col-md-9">
+<div class="row">
+    <label class="col-md-3 text-center" for="<?php echo $element->getId();?>_shadowDist">Dist:</label>
     <input id="<?php echo $element->getId();?>_shadowDist"
            type="text"
            class="form-control"
            name="<?php echo $element->getId();?>#shadowDist"
-           value="<?php echo $element->getShadowDist();?>"
-           placeholder="<?php echo $element->getShadowDist();?>"
-           <?php echo (empty($element->getShadowColor())) ? 'disabled' : '';?>
+           value="<?php echo(null !== $element->getShadow() ?  $element->getShadow()->getDist() : '');?>"
+           placeholder="<?php echo(null !== $element->getShadow() ?  $element->getShadow()->getDist() : '');?>"
+           <?php echo (empty($element->getShadow())) ? 'disabled' : '';?>
         />
-    </div>
 </div>
-
-
-
+<?php endif;?>

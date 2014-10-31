@@ -1,33 +1,49 @@
-@import url("bootstrap.min.css");
-@import url("fileinput.min.css");
-@import url("reset.min.css");
+@import url(bootstrap.min.css);
+@import url(fileinput.css);
+@import url(reset.min.css);
+@import url(mouseover.css);
 
-/* Overwrite all bootstrap css rules with a rounded corner to create a flat design */
-/* TODO integrate where possible into Chameleon own bootstrap css */
-.btn,
-div,
+div,li,.btn {
+    border-radius:0!important;
+    overflow:visible;
+}
+
+a,a:hover {
+    text-decoration:none!important;
+}
+
+.row {
+    margin-bottom:2px!important;
+    margin-right:1px!important;
+    margin-left:1px!important;
+    font-size:12px;
+}
+
+.form-control {
+    height:20px!important;
+    border-radius:0!important;
+    padding:1px!important;
+}
+
 input,
-li
+select
 {
-    border-radius: 0px !important;
+    width:185px !important;
 }
 
-a,
-a:hover
+select.font-select
 {
-    text-decoration: none !important;
+    width: 113px !important;
 }
 
-.panel-heading
-{
-    color: #ffffff !important;
+.cursor-pointer {
+    cursor:pointer;
 }
 
-.row
+.picker
 {
-    margin-bottom: 2px !important;
-    margin-right: 1px !important;
-    margin-left: 1px !important;
+    width:152px !important;
+    cursor: pointer;
 }
 
 .col-md-1,
@@ -46,67 +62,287 @@ a:hover
     padding: 3px !important;
 }
 
-.imageTitle
-{
-    background-color: #4583c6 !important;
+.globalsTitle {
+    background-color:#f8bf42!important;
+    color:#fff!important;
+}
 
+.globalsTitle
+{
+    background-color: #c3c544 !important;
+    color: #ffffff !important;
+}
+
+.groupTitle
+{
+    background-color: #c54644 !important;
+}
+
+.imageTitle {
+    background-color:#4583c6!important;
 }
 
 .rectangleTitle
 {
-    background-color: #7b1fa2 !important;
+    background-color: #c54482 !important;
 }
 
 .textTitle
 {
-    background-color: #45b686 !important;
+    background-color: #44c587 !important;
 }
 
-.list-group-item,
+.overviewTitle {
+    background-color:#4583c6;
+    color:#fff;
+    font-size:1.4em;
+    margin-bottom:3px;
+}
+
+.categoryItem {
+    background-color:#e8e8e8;
+    color:#000;
+    font-size:1em;
+    padding-left:3px;
+    margin:0 3px;
+}
+
+.list-group-item {
+    color:#555!important;
+    background-color:transparent;
+    font-size:1.3em;
+    border-color:transparent;
+    padding:0!important;
+}
+
 .panel
 {
-    color: #ffffff !important;
-    background-color: #333333 !important;
-    border-color: #333333 !important;
+    color: #FFFFFF !important;
+    background-color: #7f7f7f  !important;
+    border: none;
+    border-color: none;
+    padding: 0px !important;
+    width:360px;
+    margin-right:15px;
+    float:left;
+    font-weight: bold;
 }
 
-form
-
-.form-control[disabled]
+input, select, option, .file-caption-name
 {
-    background-color: #d9d9d9 !important;
+    font-weight: normal;
+    outline: 0;
+    border: none;
+    margin: 1px 1px 2px 1px;
 }
 
-.checkbox input[type=checkbox]
+#global_categories
 {
-    /*margin-left: 0px !important;*/
+    margin: 20px;
+}
+
+#global_categories > div > input
+{
+    margin: 1px;
+}
+
+.panel-heading {
+    color:#fff!important;
+}
+
+.component {
+    display:none;
+}
+
+.global {
+    min-height:350px;
 }
 
 form {
-    font-size: .8em !important;
+    margin:0;
 }
 
-#editor input, select {
-    padding: 0px 0px 0px 0px !important;
-    margin: 0px 0px 0px 0px !important;
-    line-height: 1px !important;
-    height: 20px !important;
-    border-radius: 0px !important;
+.form-control[disabled] {
+    background-color:#d9d9d9!important;
+}
+
+.editor form {
+    font-size:.8em!important;
 }
 
 label {
-    margin-top: 2px !important;
-    baseline: middle !important;
+    margin-top:2px!important;
 }
 
 .thumbnail {
-    text-align:center !important;
+    text-align:center!important;
+    border-radius:0!important;
+    overflow:hidden;
+    vertical-align:middle!important;
+    position:relative;
+    width:540px;
+    height:380px;
+    margin-left:30px;
+    margin-top:10px;
+    padding:1px!important;
+}
+
+.thumbnail-half {
+    width:270px;
+}
+
+.thumbnail-quarter {
+    width:135px;
 }
 
 .thumbnail > li {
-    display: inline-block !important;
-    *display:inline !important; /* ie7 fix */
-    float: none !important; /* this is the part that makes it work */
+    display:inline!important;
+    float:none!important;
 }
 
+.thumbnail-preview {
+    max-width:260px!important;
+    max-height:200px!important;
+    padding:10px 5px;
+}
 
+#leftbox {
+    position:fixed;
+    right:auto;
+    z-index:0;
+    left:0;
+    display:block;
+    visibility:visible;
+    width:161px;
+    top:60px;
+    bottom:50px;
+    background-color:#fff;
+    border-right:1px solid #c3c3c3;
+    margin:0;
+}
+
+#leftbox .nav {
+    width:161px;
+}
+
+.subnav {
+    position:relative;
+    display:block;
+    font-size:12px;
+    padding:0 0 0 22px !important;
+}
+
+input[type="text"]:disabled
+{
+    color: #555555;
+    cursor: not-allowed;
+    font-size: 14px;
+    border-radius: 0 !important;
+    background: #bbbbbb;
+}
+
+input[type="checkbox"]
+{
+    display: none;
+}
+
+.myCheckbox label:after
+{
+    border-radius: 3px;
+}
+
+label:afterr
+{
+    content: "";
+    display: inline-block;
+
+    width: 16px;
+    height: 16px;
+
+    margin-right: 10px;
+    position: absolute;
+    left: 0;
+    bottombottom: 1px;
+    background-color: #aaa;
+    box-shadow: inset 0px 2px 3px 0px rgba(0, 0, 0, .3), 0px 1px 0px 0px rgba(255, 255, 255, .8);
+}
+
+input[type=checkbox] + label:after
+{
+    content: "";
+    margin-left: 72px;
+    margin-top: -15px;
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);
+    font-size: 15px;
+    background: #f3f3f3;
+    color: #666666;
+    text-align: center;
+    line-height: 16px;
+}
+
+input[type=checkbox]:checked + label:after
+{
+    margin-top: -17px;
+    content: "\2713";
+}
+
+.presetcolor
+{
+    display: inline;
+    float: left;
+    margin-top:1px;
+    margin-left: 2px;
+    margin-right: -1px;
+    height: 20px !important;
+    width: 32px !important;
+    border: 1px solid #aaaaaa;
+}
+
+.presetfont {
+    height:20px!important;
+    width:67px!important;
+}
+
+.editor-modal-body button {
+    height:20px;
+    width:32px;
+    color:#000;
+    margin-top:3px;
+}
+
+.editor-modal-content {
+    color:#FFF!important;
+    background-color:#333!important;
+    border-color:#333!important;
+}
+
+.editor-modal-content .btn .glyphicon {
+    top:-4px!important;
+    left:-3px!important;
+}
+
+.template {
+    margin-bottom:30px!important;
+    background-color:#F2F2F2;
+    max-width:1370px;
+}
+
+.fa-5_3x {
+    font-size:5.3em;
+}
+
+#overview select,.modal input,.modal select {
+    width:100%!important;
+}
+
+#overviewView{
+    margin-top: 75px;
+}
+
+.form-control
+{
+    width: 20px;
+}

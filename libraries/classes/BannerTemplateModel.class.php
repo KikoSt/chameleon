@@ -1,12 +1,13 @@
 <?php
 
 /**
- * BannerTemplateModel
+ * BannerTemplateModel  TODO add description
  *
  * @package
  * @version $id$
  * @copyright 2014 Media Decision GmbH
  * @author Christoph 'Kiko' Starkmann <christoph.starkmann@mediadecision.com>
+ * @author Thomas Hummel <thomas.hummel@mediadecision.com>
  * @license Proprietary/Closed Source
  */
 class BannerTemplateModel implements JsonSerializable
@@ -21,6 +22,9 @@ class BannerTemplateModel implements JsonSerializable
     private $dimY;
     private $idGroup;
     private $svgContent;
+    private $dateCreate;
+    private $dateModified;
+    private $categorySubscriptions;
 
     public function __construct($source=null)
     {
@@ -69,7 +73,7 @@ class BannerTemplateModel implements JsonSerializable
 
     public function jsonSerialize()
     {
-        return [
+        return array(
                 'description' => $this->getDescription(),
                 'idAdvertiser' => $this->getAdvertiserId(),
                 'idBannerTemplate' => $this->getBannerTemplateId(),
@@ -79,8 +83,9 @@ class BannerTemplateModel implements JsonSerializable
                 'dimX' => $this->getDimX(),
                 'dimY' => $this->getDimY(),
                 'idGroup' => $this->getGroupId(),
-                'svgContent' => (string) $this->svgContent
-                ];
+                'svgContent' => (string) $this->svgContent,
+                'categorySubscriptions' => $this->getCategorySubscriptions()
+               );
     }
 
     // ??
@@ -160,63 +165,64 @@ class BannerTemplateModel implements JsonSerializable
         $this->svgContent = $svgContent;
     }
 
-    /**
-     * Get dimY.
-     *
-     * @return dimY.
-     */
     public function getDimY()
     {
         return $this->dimY;
     }
 
-    /**
-     * Set dimY.
-     *
-     * @param dimY the value to set.
-     */
     public function setDimY($dimY)
     {
         $this->dimY = (int) $dimY;
     }
 
-    /**
-     * Get dimX.
-     *
-     * @return dimX.
-     */
     public function getDimX()
     {
         return $this->dimX;
     }
 
-    /**
-     * Set dimX.
-     *
-     * @param dimX the value to set.
-     */
     public function setDimX($dimX)
     {
         $this->dimX = (int) $dimX;
     }
 
-    /**
-     * Get groupId.
-     *
-     * @return groupId.
-     */
     public function getGroupId()
     {
         return $this->idGroup;
     }
 
-    /**
-     * Set groupId.
-     *
-     * @param groupId the value to set.
-     */
     public function setGroupId($groupId)
     {
         $this->idGroup = $groupId;
     }
+
+    public function getDateCreate()
+    {
+        return $this->dateCreate;
+    }
+
+    public function setDateCreate($dateCreate)
+    {
+        $this->dateCreate = $dateCreate;
+    }
+
+    public function getDateModified()
+    {
+        return $this->dateModified;
+    }
+
+    public function setDateModified($dateModified)
+    {
+        $this->dateModified = $dateModified;
+    }
+
+    public function getCategorySubscriptions()
+    {
+        return $this->categorySubscriptions;
+    }
+
+    public function setCategorySubscriptions($categorySubscriptions)
+    {
+        $this->categorySubscriptions = $categorySubscriptions;
+    }
 }
+

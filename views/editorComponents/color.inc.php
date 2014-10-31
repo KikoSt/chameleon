@@ -1,12 +1,16 @@
-<div class="col-md-12">
-    <label class="col-md-1 control-label">Color:</label>
-    <div class="col-md-11">
+<div class="row">
+    <label class="col-md-4">Color:</label>
+    <div>
         <input id="fill"
                type="text"
-               class="form-control picker"
+               class="form-control picker small"
                name="<?php echo $element->getId();?>#fill"
-               value="<?php echo $element->getFill()->getHex();?>"
+               value="<?php echo (!empty($element->getFill()) ? $element->getFill()->getHex() : '#000000');?>"
                placeholder="color"
+               style="float:left;"
             />
+        <div id="<?php echo $element->getId();?>--preview" class="presetcolor" style="background-color: <?php echo $element->getFill()->getHex();?>;"></div>
+        <button id="<?php echo $element->getId();?>--primary" type="button" class="btn btn-xs preset presetcolor primary"></button>
+        <button id="<?php echo $element->getId();?>--secondary" type="button" class="btn btn-xs preset presetcolor secondary"></button>
     </div>
 </div>

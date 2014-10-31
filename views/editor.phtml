@@ -1,239 +1,126 @@
-<div id="awesomeEditor" class="row" style="margin-top: 70px; padding-left: 10px; padding-right: 10px;">
+<?php include('navigation.inc.php');?>
+
+<div class="container-fluid" style="margin-left: 150px;">
+    <ul id="imagelightbox-list">
+        <?php foreach($this->previewPaths AS $previewPath): ?>
+    <li>
+            <a data-imagelightbox="preview" href="<?php echo $previewPath; ?>"></a>
+            </li>
+        <?php endforeach; ?>
+    </ul>
     <form enctype="multipart/form-data" id="editor" method="POST" class="form-horizontal">
-    <div class="col-md-4">
-        <div class="panel-group" id="accordion">
-                <?php
-                    foreach($this->elements as $element):
-                        $type = get_class($element);
-                            include($type . '.inc.php');
-                    endforeach;
-                ?>
-            <input id="templateId"   type="hidden" name="templateId"   value="<?php echo $this->templateId; ?>">
-            <input id="advertiserId" type="hidden" name="advertiserId" value="<?php echo $this->advertiserId; ?>">
-            <input id="companyId"    type="hidden" name="companyId"    value="<?php echo $this->companyId; ?>">
+        <div id="nodes"
+             class="navbar navbar-default navbar-fixed-top navbar-inverse"
+             role="navigation"
+             style="margin-top:61px; margin-left:161px;background-color: #888888; border-color: #888888;">
+            <ul class="nav navbar-nav navbar-left">
+                <li style="padding: 14px;">
+                    <h1 style="color:#ffffff; font-size:1.3em; padding-top:1px;">Edit template:</h1>
+                </li>
+            </ul>
         </div>
-    </div>
-    </form>
-    <div class="col-md-8">
-        <div style="position: fixed; margin-left: 50px;">
-            <div id="previewImage" class="row" style="margin-left: 5px;">
-                <img src="<?php echo $this->gif;?>" alt="">
+        <div id="awesomeEditor" class="row" style="margin-top: 115px;margin-left: 50px;">
+            <div class="col-md-4">
+                <div class="row">
+                    <?php
+                        $element = $this->container;
+                        include('globals.inc.php');
+                    ?>
+                </div>
+                    <!-- RENDER GROUP EDITOR COMPONENTS -->
+                        <?php
+                        foreach($this->container->getGroups() AS $element)
+                        {
+                            include('GfxGroup.inc.php');
+                        }
+                        ?>
+                    <!-- END RENDER GROUP EDITOR COMPONENTS -->
+                    <!-- RENDER COMPONENT EDITOR COMPONENTS -->
+                    <?php
+                        foreach($this->elements as $element):
+                            $type = get_class($element);
+                            include($type . '.inc.php');
+                        endforeach;
+                    ?>
+                    <!-- END RENDER COMPONENT EDITOR COMPONENTS -->
+
+                <input id="templateId"   type="hidden" name="templateId"   value="<?php echo $this->templateId; ?>">
+                <input id="auditUserId"  type="hidden" name="auditUserId"  value="<?php echo $this->auditUserId; ?>">
+                <input id="advertiserId" type="hidden" name="advertiserId" value="<?php echo $this->advertiserId; ?>">
+                <input id="companyId"    type="hidden" name="companyId"    value="<?php echo $this->companyId; ?>">
             </div>
-            <div class="row" style="padding-top: 5px; margin-left: 5px;">
-                <!--        On click render template and show the change-->
-                <button id="preview" type="submit" class="btn btn-info" form="editor" data-loading-text="Loading...">Preview</button>
-                <!--        On click render template, show the change and save data to database-->
-                <button id="save" type="submit" class="btn btn-danger" form="editor">Save</button>
+            <div class="col-md-7">
+                <div class="preview-container">
+                    <!-- PREVIEW IMAGE -->
+                    <div id="previewImage" class="row">
+                        <h2>GIF version<br /><span>select elements to edit</span></h2>
+                        <img src="<?php echo $this->gif;?>" alt="" usemap="#template_selection">
+                    </div>
+                    <div id="previewSwf" class="row">
+                        <h2>Flash version<br /><span>preview</span></h2>
+                        <object type="application/x-shockwave-flash"
+                                data="<?php echo $this->swf; ?>"
+                                width="<?php echo $this->width; ?>" height="<?php echo $this->height; ?>">
+                                <param name="movie" value="<?php echo $this->swf; ?>" />
+                                <param name="quality" value="high"/>
+                        </object>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-1" style="background:#c7c7c7;margin-bottom: 66px; margin-top: 56px; min-height: 300px; width: 80px;text-align: center;">
+                        <!-- On click render template, show the change and save data to database-->
+                        <button id="live" type="submit" class="fa-btn green" title="show live preview" style="margin-top: 20px;">
+                            <span id="livepreview" class="fa fa-play-circle fa-lg"></span>
+                        </button>
+                        <!-- On click render template, show the change and save data to database-->
+                        <button id="flash" type="submit" class="fa-btn green" title="show flash preview" style="margin-top: 10px;">
+                            <span class="fa fa-bolt fa-lg"></span>
+                        </button>
+                        <!-- On click render template, show the change and save data to database-->
+                        <button id="cancel" type="submit" class="fa-btn red" title="cancel changes" style="margin-top: 115px;">
+                            <span class="fa fa-undo fa-lg"></span>
+                        </button>
+                        <!-- On click render template, show the change and save data to database-->
+                        <button id="save" type="submit" class="fa-btn red" title="save template" style="margin-top: 10px;">
+                            <span class="fa fa-floppy-o fa-lg"></span>
+                        </button>
+                    </div>
+            </div>
+        </div>
+    </form>
+</div>
+<?php echo $this->imageMap; ?>
+<!-- Modal -->
+<div class="modal fade" id="categorySelect" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content editor-modal-content">
+            <div class="modal-header globalsTitle">
+                <button type="button" class="close" data-dismiss="modal"><span class="glyphicon glyphicon-remove-circle
+                cursor-pointer"></span></button>
+                <h4 class="modal-title" id="myModalLabel">Select categories:</h4>
+            </div>
+            <div class="modal-body editor-modal-body">
+                <?php include('categories.inc.php'); ?>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
-
-<script type="text/javascript">
-    $(document).ready(function() {
-        var btn;
-        var somethingChanged = false;
-        var xcoord = '<?php echo $element->getId();?>#x';
-
-        $('.btn').on('click', function(){
-            btn = $(this).attr('id');
-        });
-
-        $('#previewalert').hide();
-
-        $(window).keydown(function(e){
-            if(e.keyCode == 13) {
-                e.preventDefault();
-                return false;
-            }
-        });
-
-        $('.checkbox #shadowCheckBox').change(function() {
-            var id = $(this).attr('value');
-
-            if($(this).is(":checked"))
-            {
-                $(this).attr("checked", true);
-                $("#" + id + "_shadowColor").attr('disabled', false).addClass('picker');
-                $("#" + id + "_shadowDist").attr('disabled', false);
-            }
-            else
-            {
-                $(this).attr("checked", false);
-                $("#" + id + "_shadowColor").attr('disabled', true).removeClass('picker').val('');
-                $("#" + id + "_shadowDist").attr('disabled', true).val('');
-            }
-        });
-
-        $('.checkbox #strokeCheckBox').change(function() {
-            var id = $(this).attr('value');
-
-            if($(this).is(":checked"))
-            {
-                $(this).attr("checked", true);
-                $("#" + id + "_strokeColor").attr('disabled', false).addClass('picker');
-                $("#" + id + "_strokeWidth").attr('disabled', false);
-            }
-            else
-            {
-                $(this).attr("checked", false);
-                $("#" + id + "_strokeColor").attr('disabled', true).removeClass('picker').val('');
-                $("#" + id + "_strokeWidth").attr('disabled', true).val('');
-            }
-        });
+<!-- Modal -->
 
 
-        /* ***********************************
-         * FILE UPLOAD
-         * *********************************** */
-        $('.kv-fileinput-upload').on('click', function(e){
-            e.preventDefault();
+<div class="feedback alert alert-success alert-dismissible savealert" role="alert">
+    Template changes saved!
+</div>
 
-            var imgsrc = '<?php echo $this->gif;?>';
-            var formData = new FormData();
-            var data = {};
-            var nodeList = $(document).find($('[type="file"]'));
-
-            formData.append('templateId', $('#templateId').attr('value'));
-            formData.append('advertiserId', $('#advertiserId').attr('value'));
-            formData.append('companyId', $('#companyId').attr('value'));
-            formData.append('action', 'upload');
-
-            for (var i = 0; i < nodeList.length; i++)
-            {
-                var myId = nodeList[i].getAttribute('id');
-                var targetId = myId.replace('_input', '');
-                var fileSelect = $("#" + myId);
-
-                var files = fileSelect.prop("files");
-
-                if(files.length > 0)
-                {
-                    var file = files[0];
-                    formData.append(targetId, file);
-                }
-            }
-
-            var xhr =  new XMLHttpRequest();
-            xhr.upload.addEventListener('load', onloadHandler, false);
-            xhr.onreadystatechange = function(e) {
-                if(xhr.readyState == 4) {
-                    response = $.parseJSON(xhr.response);
-                    imgsrc = response.imgsrc;
-                    $("#previewImage img").attr('src', imgsrc + '?' + new Date().getTime())
-                }
-            };
-            xhr.open('POST', '/chameleon/ajax/changeSvg.php', true);
-            xhr.send(formData);
-            return false;
-
-            function onloadHandler(e, args) {
-                // $('#previewalert').show();
-                $("#previewImage img").attr('src', imgsrc); // + new Date().getTime())
-            }
-
-            function onloadstartHandler() {
-            }
-
-            function onprogressHandler() {
-            }
-        });
+<div class="" id="preparepreviewalert">
+    Preparing Live preview!
+    <br />
+    <br />
+    <img src="img/loading.gif" />
+</div>
 
 
-
-        /* ***********************************
-         * PREVIEW BUTTON
-         *********************************** */
-        $('#editor').on('submit', function(e){
-            e.preventDefault();
-
-            var action = btn; // preview or save
-
-            var xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function(e) {
-                if(xhr.readyState == 4) {
-                    if(action === 'save') {
-                        somethingChanged = false;
-                    }
-                    $('#previewalert').show();
-                    response = $.parseJSON(xhr.response);
-                    imgsrc = response.imgsrc;
-                    $("#previewImage img").attr('src', imgsrc + '?' + new Date().getTime());
-                }
-            }
-
-            var formData = new FormData();
-
-            /* ******************************************************************** */
-            var nodeList = $(document).find($('[type="file"]'));
-
-            // formData.append('templateId', $('#templateId').attr('value'));
-            // formData.append('advertiserId', $('#advertiserId').attr('value'));
-            // formData.append('companyId', $('#companyId').attr('value'));
-
-            for (var i = 0; i < nodeList.length; i++)
-            {
-                var myId = nodeList[i].getAttribute('id');
-                var targetId = myId.replace('_input', '');
-                var fileSelect = $("#" + myId);
-
-                var files = fileSelect.prop("files");
-
-                if(files.length > 0)
-                {
-                    var file = files[0];
-                    formData.append(targetId, file);
-                }
-            }
-            /* ******************************************************************** */
-
-            var data = $('#editor').serializeArray(); // + "&action=" + btn;
-
-            formData.append('action', action);
-
-            $.each(data, function(key, inputfield) {
-                formData.append(inputfield.name, inputfield.value);
-            });
-
-            xhr.open('POST', '/chameleon/ajax/changeSvg.php', true);
-            xhr.send(formData);
-        });
-
-        $('.picker').colorpicker();
-
-        $("#fileUpload").fileinput();
-
-        $('#awesomeEditor input').change(function() {
-            somethingChanged = true;
-        });
-
-        $('#overview').click(function() {
-            if(somethingChanged === true) {
-                var leaveConfirm = confirm('Unsaved changes detected! Continue?');
-                if(true === leaveConfirm){
-                    window.location.href = "index.php?page=overview";
-                }
-            }
-            else
-            {
-                window.location.href = "index.php?page=overview";
-            }
-            return false;
-        });
-
-        $('#awesomeEditor #editor').bootstrapValidator({
-            testtext: {
-                validators: {
-                    notEmpty: {
-                        message: 'The price is required'
-                    },
-                    numeric: {
-                        message: 'The price must be a number'
-                    }
-                }
-            }
-
-        });
-    });
-</script>
-
+<script type="text/JavaScript" src="js/editor.js"></script>

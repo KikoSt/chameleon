@@ -29,7 +29,6 @@ class GfxText extends GfxComponent
     {
         parent::create($svgRootNode);
 
-        //$this->setText(utf8_decode((string) $svgRootNode));
         $this->setText(((string) $svgRootNode));
 
         $attr = $svgRootNode->attributes();
@@ -67,6 +66,21 @@ class GfxText extends GfxComponent
         return($width);
     }
 
+    public function getWidth()
+    {
+        return $this->getTextWidth();
+    }
+
+    public function getTextHeight()
+    {
+        return $this->getFontSize();
+    }
+
+    public function getHeight()
+    {
+        return $this->getTextHeight();
+    }
+
     public function updateData()
     {
         parent::updateData();
@@ -75,9 +89,6 @@ class GfxText extends GfxComponent
         {
             if(!empty($this->getRef()))
             {
-//                 echo 'Product information found; ';
-//                 echo '[' . $this->getRef() . ']';
-//                 echo "\n";
                 $productData = $this->getContainer()->getProductData();
 
                 $newValue = $productData->{'get' . $this->getRef()}();
@@ -105,11 +116,6 @@ class GfxText extends GfxComponent
                 }
                 $this->setText($newValue);
             }
-
-//             if(!empty($this->getLink()))
-//             {
-//                 echo "\n[" . $this->getLink() . "]\n";
-//             }
         }
     }
 
@@ -117,13 +123,13 @@ class GfxText extends GfxComponent
     {
         $text = new SWFText();
 
-        if($this->getShadowColor() !== null)
+        if($this->hasShadow())
         {
             $shadow = new GfxText($this->getContainer());
             $shadow->setWidth($this->getWidth());
             $shadow->setHeight($this->getHeight());
-            $shadow->setX($this->getX() + (int) $this->getShadowDist());
-            $shadow->setY($this->getY() + (int) $this->getShadowDist());
+            $shadow->setX($this->getX() + (int) $this->getShadow()->getDist());
+            $shadow->setY($this->getY() + (int) $this->getShadow()->getDist());
 
             if(null !== $this->getSWFFont()) {
                 $shadow->setFontFamily($this->getFontFamily());
@@ -131,7 +137,7 @@ class GfxText extends GfxComponent
                 throw new Exception('No font set!');
             }
 
-            $shadowColor = $this->getShadowColor();
+            $shadowColor = $this->getShadow()->getColor();
             $shadowColor->setAlpha(128); // currently not working, most likely due to the text type!
             $shadow->setFill($shadowColor);
             $shadow->setFontSize($this->getFontSize());
@@ -140,7 +146,14 @@ class GfxText extends GfxComponent
         }
 
         if(null !== $this->getSWFFont()) {
-            $text->setFont($this->getSWFFont());
+            try
+            {
+                $text->setFont($this->getSWFFont());
+            }
+            catch(Exception $e)
+            {
+                echo 'Error trying to open font ' . $this->getSWFFont();
+            }
         } else {
             throw new Exception('No font set!');
         }
@@ -185,27 +198,28 @@ class GfxText extends GfxComponent
                      $this->getY(),
                      $textColor,
                      $this->getGIFFont(),
-                     str_replace('€', ' Euro', $this->getText())
+//                     str_replace('€', ' Euro', $this->getText())
+                    $this->getText()  //TODO € works actually, we have to keep an eye on it
         );
 
-                     // utf8_decode(str_replace('€', ' Euro', $this->getText()))
+
         return $canvas;
     }
 
     public function renderShadow($canvas)
     {
         $color = imagecolorallocatealpha($canvas,
-                                         $this->getShadowColor()->getR(),
-                                         $this->getShadowColor()->getG(),
-                                         $this->getShadowColor()->getB(),
+                                         $this->getShadow()->getColor()->getR(),
+                                         $this->getShadow()->getColor()->getG(),
+                                         $this->getShadow()->getColor()->getB(),
                                          50
                  );
 
         imagettftext($canvas,
             $this->getFontSize(),
             0,
-            $this->getX() + $this->getShadowDist(),
-            $this->getY() + $this->getShadowDist(),
+            $this->getX() + $this->getShadow()->getDist(),
+            $this->getY() + $this->getShadow()->getDist(),
             $color,
             $this->getGIFFont(),
             utf8_decode(str_replace('€', ' Euro', $this->getText()))
@@ -221,6 +235,7 @@ class GfxText extends GfxComponent
         foreach($fontlist as $key => $font)
         {
             $fontFile = str_replace(FONT_TTF_DIR, '', $font);
+            $fontFile = trim($fontFile, '/');
             $withoutExt = preg_replace('/\\.[^.\\s]{3,4}$/', '', $fontFile);
             $cleansedFontList[$key] = $withoutExt;
         }
@@ -230,12 +245,13 @@ class GfxText extends GfxComponent
     public function getSvg()
     {
         $stroke = $this->getStroke();
-        $shadow = $this->getShadowColor();
+        $shadow = $this->getShadow();
 
         $svg = '';
         $svg .= "\r\n" . '<text xml:space="preserve"';
         $svg .= "\r\n" . ' cmeo:ref="' . $this->getCmeoRef(). '"';
         $svg .= "\r\n" . ' cmeo:link="' . $this->getCmeoLink(). '"';
+        $svg .= "\r\n" . ' cmeo:editGroup="' . $this->getEditGroup(). '"';
         $svg .= "\r\n" . ' text-anchor="' . $this->getTextAnchor() . '"';
         $svg .= "\r\n" . ' font-family="' . $this->getFontFamily() . '"';
         $svg .= "\r\n" . ' font-size="' . $this->getFontSize() . '"';
@@ -247,9 +263,9 @@ class GfxText extends GfxComponent
             $svg .= "\r\n" . ' stroke-width="' . $stroke->getWidth() . '"';
         }
 
-        if(isset($shadow))
+        if(isset($shadow) && $this->shadowEnabled())
         {
-            $svg .= "\r\n" . ' style="shadow:' . $shadow->getHex() . ';shadow-dist:' . $this->getShadowDist() . 'px;"';
+            $svg .= "\r\n" . ' style="shadow:' . $shadow->getColor()->getHex() . ';shadow-dist:' . $shadow->getDist() . 'px;"';
         }
 
         $svg .= "\r\n" . ' x="' . $this->getX() . '"';
@@ -262,17 +278,11 @@ class GfxText extends GfxComponent
     }
 
 
-    /**
-     * @return mixed
-     */
     public function getTextAnchor()
     {
         return $this->textAnchor;
     }
 
-    /**
-     * @param mixed $textAnchor
-     */
     public function setTextAnchor($textAnchor)
     {
         $this->textAnchor = $textAnchor;
@@ -281,17 +291,11 @@ class GfxText extends GfxComponent
 
 
 
-    /**
-     * @return mixed
-     */
     public function getText()
     {
         return $this->text;
     }
 
-    /**
-     * @param mixed $text
-     */
     public function setText($text)
     {
         $text = str_replace('â‚¬', '€', $text);
@@ -302,14 +306,6 @@ class GfxText extends GfxComponent
 
 
 
-    /**
-     * getFont
-     *
-     * returns an MEH!
-     *
-     * @access public
-     * @return void
-     */
     public function getSWFFont()
     {
         $font = new SWFFont($GLOBALS['fontlist']['SWF'][$this->getFontFamily()]);
@@ -321,56 +317,39 @@ class GfxText extends GfxComponent
         return $GLOBALS['fontlist']['GIF'][$this->getFontFamily()];
     }
 
-    /**
-     * @param $fontWeight
-     * @throws InvalidArgumentException
-     */
     public function setFontWeight($fontWeight)
     {
-        $aAllowedValues = array('normal', 'bold', 'bolder', 'lighter', '100', '200', '300', '400', '500', '600', '700', '800', '900');
+        $allowedValues = array('normal', 'bold', 'bolder', 'lighter', '100', '200', '300', '400', '500', '600', '700', '800', '900');
 
-        if(in_array(strtolower($fontWeight), $aAllowedValues, true)) {
+        if(in_array(strtolower($fontWeight), $allowedValues, true)) {
             $this->fontWeight = $fontWeight;
         } else {
             $this->throwException($fontWeight);
         }
     }
 
-    /**
-     * @return mixed
-     */
     public function getFontWeight()
     {
         return $this->fontWeight;
     }
 
-    /**
-     * @param $fontVariant
-     * @throws InvalidArgumentException
-     */
     public function setFontVariant($fontVariant)
     {
-        $aAllowedValues = array("normal", "small-caps");
+        $allowedValues = array("normal", "small-caps");
 
-        if(in_array(strtolower($fontVariant), $aAllowedValues, true)) {
+        if(in_array(strtolower($fontVariant), $allowedValues, true)) {
             $this->fontVariant = $fontVariant;
         } else {
             $this->throwException($fontVariant);
         }
     }
 
-    /**
-     * @return mixed
-     */
     public function getFontVariant()
     {
         return $this->fontVariant;
     }
 
 
-    /**
-     * @return mixed
-     */
     public function getFontStyle()
     {
         return $this->fontStyle;

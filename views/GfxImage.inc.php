@@ -1,40 +1,26 @@
-<div class="panel panel-default">
-    <a data-toggle="collapse" data-target=""
-       href="#<?php echo $element->getId();?>">
+<div id="panel_<?php echo $element->getId();?>" data-type="image" data-groupid="<?php echo $element->getEditGroup(); ?>" class="panel panel-default component">
     <div class="panel-heading imageTitle">
         <h3 class="panel-title">
-                Image: <?php echo str_replace('_', ' ', $element->getId());?>
+            image: <?php echo str_replace('_', ' ', $element->getId());?>
+            <span id="<?php echo $element->getId();?>" class="glyphicon glyphicon-remove-circle"></span>
         </h3>
     </div>
-    </a>
-    <div id="<?php echo $element->getId();?>" class="panel-collapse collapse"
     <div class="panel-body">
-        <div class="row">
-            <?php include('editorComponents/imageUrl.inc.php'); ?>
-        </div>
-        <div class="row">
+        <div class="container-fluid">
             <?php
-                include('editorComponents/coords.inc.php');
-            ?>
-        </div>
-        <div class="row">
-            <?php
-            include('editorComponents/dimensions.inc.php');
-            ?>
-        </div>
-        <div class="row">
-            <?php
+                include('editorComponents/imageUrl.inc.php');
+
+                if($this->premiumUser):
+                    include('editorComponents/coords.inc.php');
+                    include('editorComponents/dimensions.inc.php');
+                endif;
+
                 include('editorComponents/cmeo.inc.php');
-            ?>
-        </div>
-        <div class="row">
-            <?php
-            include('editorComponents/shadow.inc.php');
-            ?>
-        </div>
-        <div class="row">
-            <?php
-            include('editorComponents/stroke.inc.php');
+                include('editorComponents/shadow.inc.php');
+                include('editorComponents/stroke.inc.php');
+                if($this->premiumUser):
+                    include('editorComponents/editGroup.inc.php');
+                endif;
             ?>
         </div>
     </div>

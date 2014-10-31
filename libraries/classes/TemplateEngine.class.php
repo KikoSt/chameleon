@@ -37,4 +37,26 @@ class TemplateEngine
 
         return ob_get_clean();
     }
-} 
+
+    // TODO: hard coding for now, since general rework of the editor might make general changes necessary, so
+    // avoiding to spend too much time on it for now
+    public function getId()
+    {
+        return $this->variables['id'];
+    }
+
+    public function getWidth()
+    {
+        return $this->variables['width'];
+    }
+
+    public function getHeight()
+    {
+        return $this->variables['height'];
+    }
+
+//    public function getGroups()
+//    {
+//        return $this->variables['groups'];
+//    }
+}

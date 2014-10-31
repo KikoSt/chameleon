@@ -43,7 +43,6 @@ class GfxImage extends GfXComponent
         }
     }
 
-
     /**
      * create
      *
@@ -54,12 +53,14 @@ class GfxImage extends GfXComponent
     public function create($svgRootNode)
     {
         parent::create($svgRootNode);
-        $attr = $svgRootNode->attributes();
         $imageUrl = (string) $svgRootNode->attributes('xlink', true)->href;
         if((string) $svgRootNode->attributes()->linkurl !== '')
         {
             $this->setLinkUrl((string) $svgRootNode->attributes()->linkurl);
         }
+
+        $imageUrl = str_replace("//assets", "/assets", $imageUrl);
+
         $this->setImageUrl($imageUrl);
     }
 
@@ -85,24 +86,24 @@ class GfxImage extends GfXComponent
 
         }
 
-        if($this->getShadowColor() !== null)
+        if($this->hasShadow())
         {
             $shadow = new GfxRectangle($this->getContainer());
             $shadow->setWidth($this->getWidth());
             $shadow->setHeight($this->getHeight());
-            $shadow->setX($this->getX() + (int) $this->getShadowDist());
-            $shadow->setY($this->getY() + (int) $this->getShadowDist());
-            $shadowColor = $this->getShadowColor();
+            $shadow->setX($this->getX() + (int) $this->getShadow()->getDist());
+            $shadow->setY($this->getY() + (int) $this->getShadow()->getDist());
+            $shadowColor = $this->getShadow()->getColor();
             $shadowColor->setAlpha(128);
             $shadow->setFill($shadowColor);
             $shadow->renderSWF($canvas);
 
         }
-        $imgPath = 'tmp/file' . time() . rand() . '.jpg';
+        $imgPath = '/tmp/file' . time() . rand() . '.jpg';
 
         $output = $this->resizeImage($this->getImageUrl(), $this->getWidth(), $this->getHeight(), false);
 
-        imagejpeg($output, $imgPath, 100);
+        $result = imagejpeg($output, $imgPath, 100);
         imagedestroy($output);
         $output = null;
         unset($output);
@@ -126,15 +127,28 @@ class GfxImage extends GfXComponent
      */
     public function renderGIF($canvas)
     {
-        if($this->hasShadow())
+        if($this->hasShadow() && $this->shadowEnabled())
         {
             $this->createShadow($canvas);
         }
 
+        if($this->hasStroke() && $this->strokeEnabled())
+        {
+            $this->createStroke($canvas);
+        }
+
         $dst = $this->resizeImage($this->getImageUrl());
 
-        imagecopyresampled($canvas, $dst, $this->getX(), $this->getY(), 0, 0, $this->getWidth(), $this->getHeight(), $this->getWidth(),
-            $this->getHeight());
+        if($this->getContainer()->getPreviewMode() !== true)
+        {
+            imagecopyresized($canvas, $dst, $this->getX(), $this->getY(), 0, 0, $this->getWidth(), $this->getHeight(), $this->getWidth(),
+                        $this->getHeight());
+        }
+        else
+        {
+            imagecopyresampled($canvas, $dst, $this->getX(), $this->getY(), 0, 0, $this->getWidth(), $this->getHeight(), $this->getWidth(),
+                        $this->getHeight());
+        }
 
         return $canvas;
     }
@@ -142,14 +156,14 @@ class GfxImage extends GfXComponent
     public function createShadow($canvas)
     {
         $color = imagecolorallocatealpha($canvas,
-                                         $this->getShadowColor()->getR(),
-                                         $this->getShadowColor()->getG(),
-                                         $this->getShadowColor()->getB(),
+                                         $this->getShadow()->getColor()->getR(),
+                                         $this->getShadow()->getColor()->getG(),
+                                         $this->getShadow()->getColor()->getB(),
                                          50
                  );
 
-        $x1 = $this->getX() + $this->getShadowDist();
-        $y1 = $this->getY() + $this->getShadowDist();
+        $x1 = $this->getX() + $this->getShadow()->getDist();
+        $y1 = $this->getY() + $this->getShadow()->getDist();
         $x2 = $x1 + $this->getWidth();
         $y2 = $y1 + $this->getHeight();
 
@@ -158,10 +172,11 @@ class GfxImage extends GfXComponent
 
     public function createStroke($canvas)
     {
+        // $this->getStroke()->setWidth(1);
         $color = imagecolorallocate($canvas,
-            $this->getShadowColor()->getR(),
-            $this->getShadowColor()->getG(),
-            $this->getShadowColor()->getB()
+            $this->getStroke()->getColor()->getR(),
+            $this->getStroke()->getColor()->getG(),
+            $this->getStroke()->getColor()->getB()
         );
 
         $x1 = $this->getX() - $this->getStroke()->getWidth();
@@ -181,16 +196,32 @@ class GfxImage extends GfXComponent
      */
     public function resizeImage($file, $crop=false)
     {
-        list($originalWidth, $originalHeight) = getimagesize($file);
+        $filepath = $this->getFilepath($file);
+        if(false === file_get_contents($filepath, 0, null, 0, 1))
+        {
+            $file = 'assets/image_not_found.jpg';
+        }
+
+        list($originalWidth, $originalHeight) = getimagesize($filepath);
+
+        if($originalWidth <= 0 || $originalHeight <=0)
+        {
+            throw new Exception('Getting file ' . $file . ' failed; Dimensions <= zero found');
+        }
         $aspectRatio = $originalWidth / $originalHeight;
 
         $newWidth  = $this->getWidth();
         $newHeight = $this->getHeight();
 
+        $cachedFile = IMGCACHE_DIR . '/' . $this->getContainer()->getOutputDir() . '/' . urlencode($file);
+        if(file_exists($cachedFile))
+        {
+            $file = $cachedFile;
+        }
+
         if($aspectRatio < 1 )
         {
             $newWidth = $newHeight * $aspectRatio;
-
         }
         else
         {
@@ -199,7 +230,6 @@ class GfxImage extends GfXComponent
 
         $resizedWidth = $newWidth;
         $resizedHeight = $newHeight;
-
         $newX = ($this->getWidth() - $newWidth) / 2;
         $newY = ($this->getHeight() - $newHeight) / 2;
 
@@ -245,22 +275,24 @@ class GfxImage extends GfXComponent
         $image = null;
         $extension = strtolower($extension);
 
+        $filepath = $this->getFilepath($file);
+
         switch($extension)
         {
             case "jpg":
             case "jpeg":
             {
-                $image = imagecreatefromjpeg($file);
+                $image = imagecreatefromjpeg($filepath);
                 break;
             }
             case "png":
             {
-                $image = imagecreatefrompng($file);
+                $image = imagecreatefrompng($filepath);
                 break;
             }
             case "gif":
             {
-                $image = imagecreatefromgif($file);
+                $image = imagecreatefromgif($filepath);
                 break;
             }
             default:
@@ -278,26 +310,27 @@ class GfxImage extends GfXComponent
     public function getSvg()
     {
         $stroke = $this->getStroke();
-        $shadow = $this->getShadowColor();
+        $shadow = $this->getShadow();
 
         $svg = '';
         $svg .= "\r\n" . '<image';
         $svg .= "\r\n" . ' cmeo:ref="' . $this->getCmeoRef(). '"';
         $svg .= "\r\n" . ' cmeo:link="' . $this->getCmeoLink(). '"';
-        $svg .= "\r\n" . ' xlink:href="' . str_replace('/var/www/chameleon', '', $this->getImageUrl()) . '"';
+        $svg .= "\r\n" . ' cmeo:editGroup="' . $this->getEditGroup(). '"';
+        $svg .= "\r\n" . ' xlink:href="' . $this->getImageUrl() . '"';
         $svg .= "\r\n" . ' linkurl="' . $this->getLinkUrl() . '"';
 
-        if(isset($stroke) || isset($shadow))
+        if(isset($stroke) || isset($shadow) && !empty($shadow))
         {
             $svg .= "\r\n" . ' style="';
-            if(isset($stroke))
+            if(isset($stroke) && $this->strokeEnabled())
             {
                 $svg .= 'stroke:' . $stroke->getColor()->getHex() . ';stroke-width:' . $stroke->getWidth() . ';';
             }
 
-            if(isset($shadow))
+            if(isset($shadow) && $this->shadowEnabled())
             {
-                $svg .= 'shadow:' . $shadow->getHex() . ';shadow-dist:' . $this->getShadowDist() . 'px;';
+                $svg .= 'shadow:' . $this->getShadow()->getColor()->getHex() . ';shadow-dist:' . $this->getShadow()->getDist() . 'px;';
             }
             $svg .= '"';
         }
@@ -315,23 +348,12 @@ class GfxImage extends GfXComponent
      * check if file exists and set image url
      *
      * @param $imageUrl
-     * @throws FileNotFoundException
      */
     public function setImageUrl($imageUrl)
     {
         $imageUrl = preg_replace('/^\/+/', '/', $imageUrl);
-        if(substr($imageUrl, 0, 4) !== 'http' )
-        {
-            $imageUrl = ROOT_DIR . $imageUrl;
-        }
-        if(fopen($imageUrl, "r"))
-        {
-            $this->imageUrl = $imageUrl;
-        }
-        else
-        {
-            $this->imageUrl = ASSET_DIR . 'image_not_found.jpg';
-        }
+
+        $this->imageUrl = $imageUrl;
     }
 
     /**
