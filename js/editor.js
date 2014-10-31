@@ -223,10 +223,10 @@ $(document).ready(function() {
         e.preventDefault();
         var action = btn;
 
-        if(action !== 'save' && action !== 'preview')
-        {
-            return true;
-        }
+        // if(action !== 'save' && action !== 'preview')
+        // {
+        //     return true;
+        // }
 
         var xhr = new XMLHttpRequest();
         $("#previewImage img").unbind('mapster');
