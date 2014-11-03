@@ -73,32 +73,35 @@ class GfxImage extends GfXComponent
      */
     public function renderSWF($canvas)
     {
-        if($this->getStroke() !== null)
-        {
-            $strokeWidth = $this->getStroke()->getWidth();
-            $stroke = new GfxRectangle($this->getContainer());
-            $stroke->setWidth($this->getWidth() + ($strokeWidth * 2));
-            $stroke->setHeight($this->getHeight() + ($strokeWidth * 2));
-            $stroke->setX($this->getX() - $strokeWidth);
-            $stroke->setY($this->getY() - $strokeWidth);
-            $stroke->setFill($this->getStroke()->getColor());
-            $stroke->renderSWF($canvas);
+        $sprite = new SWFSprite();
+        $sprite->setFrames($this->getContainer()->getFramerate());
 
-        }
-
-        if($this->hasShadow())
-        {
-            $shadow = new GfxRectangle($this->getContainer());
-            $shadow->setWidth($this->getWidth());
-            $shadow->setHeight($this->getHeight());
-            $shadow->setX($this->getX() + (int) $this->getShadow()->getDist());
-            $shadow->setY($this->getY() + (int) $this->getShadow()->getDist());
-            $shadowColor = $this->getShadow()->getColor();
-            $shadowColor->setAlpha(128);
-            $shadow->setFill($shadowColor);
-            $shadow->renderSWF($canvas);
-
-        }
+//        if($this->getStroke() !== null)
+//        {
+//            $strokeWidth = $this->getStroke()->getWidth();
+//            $stroke = new GfxRectangle($this->getContainer());
+//            $stroke->setWidth($this->getWidth() + ($strokeWidth * 2));
+//            $stroke->setHeight($this->getHeight() + ($strokeWidth * 2));
+//            $stroke->setX($this->getX() - $strokeWidth);
+//            $stroke->setY($this->getY() - $strokeWidth);
+//            $stroke->setFill($this->getStroke()->getColor());
+//            $stroke->renderSWF($canvas);
+//
+//        }
+//
+//        if($this->hasShadow())
+//        {
+//            $shadow = new GfxRectangle($this->getContainer());
+//            $shadow->setWidth($this->getWidth());
+//            $shadow->setHeight($this->getHeight());
+//            $shadow->setX($this->getX() + (int) $this->getShadow()->getDist());
+//            $shadow->setY($this->getY() + (int) $this->getShadow()->getDist());
+//            $shadowColor = $this->getShadow()->getColor();
+//            $shadowColor->setAlpha(128);
+//            $shadow->setFill($shadowColor);
+//            $shadow->renderSWF($canvas);
+//
+//        }
         $imgPath = '/tmp/file' . time() . rand() . '.jpg';
 
         $output = $this->resizeImage($this->getImageUrl(), $this->getWidth(), $this->getHeight(), false);
@@ -111,8 +114,95 @@ class GfxImage extends GfXComponent
         $bastardImage = fopen($imgPath, "rb");
 
         $image  = new SWFBitmap($bastardImage);
-        $handle = $canvas->add($image);
-        $handle->moveTo($this->getX(), $this->getY());
+        $handle = $sprite->add($image);
+        $handle->moveTo(-($this->getWidth() / 2), -($this->getHeight() / 2));
+        $sprite->nextFrame();
+
+        if(count($this->getAnimations()) != 0)
+        {
+            foreach($this->getAnimations() AS $animation)
+            {
+                $duration = $animation->getDuration();
+                $targets = $animation->getTargets();
+                for($i=0; $i<$duration; $i++)
+                {
+                    foreach($targets AS $target)
+                    {
+                        $targetAttribute = $target->getAttribute();
+                        $stepsize        = $target->getStepsize();
+                        if($shandle)
+                        {
+                            switch($targetAttribute)
+                            {
+                                case 'x':
+                                    $shandle->move($stepsize, 0);
+                                    break;
+                                case 'y':
+                                    $shandle->move(0, $stepsize);
+                                    break;
+                                case 'w':
+                                    $shandle->scale($stepsize, 1);
+                                    break;
+                                case 'h':
+                                    $shandle->scale(1, $stepsize);
+                                    break;
+                                case 'r':
+                                    $shandle->rotate($stepsize);
+                                    break;
+                            }
+                        }
+                        switch($targetAttribute)
+                        {
+                            case 'x':
+                                $handle->move($stepsize, 0);
+                                break;
+                            case 'y':
+                                $handle->move(0, $stepsize);
+                                break;
+                            case 'w':
+                                $handle->scale($stepsize, 1);
+                                break;
+                            case 'h':
+                                $handle->scale(1, $stepsize);
+                                break;
+                            case 'r':
+                                $handle->rotate($stepsize);
+                                break;
+                        }
+                        $sprite->nextFrame();
+                    }
+                }
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        $handle = $canvas->add($sprite);
+        $handle->moveTo($this->getX() + ($this->getWidth() / 2), $this->getY() + ($this->getHeight() / 2));
+
+        // $handle->rotate(45);
+
+
+
+
+
+
+
         $this->getContainer()->register($bastardImage);
         $canvas = $this->addClickableLink($canvas);
         unset($image);
