@@ -24,8 +24,10 @@ class GfxContainer
     private $categoryId;
     private $editorOptions;
     private $allowedTargets;
+    private $frames; // number of overall frames for animation
+    private $framerate;
 
-    private $fontFamily;
+    // private $fontFamily;
     private $globalPrimaryColor;
     private $globalSecondaryColor;
 
@@ -63,6 +65,10 @@ class GfxContainer
         $this->animationRegistry = array();
         $this->previewMode = false;
         $this->groups = array();
+
+        // TODO: for now ...
+        $this->framerate = 30;
+        $this->frames = 60;
     }
 
     public function __destruct()
@@ -217,30 +223,6 @@ class GfxContainer
             $group->create();
         }
     }
-
-    /*
-    public function handleGfxAnimation($defs)
-    {
-        if(!empty($defs))
-        {
-            $animationObject = array();
-
-            foreach($defs->children() as $child)
-            {
-
-                $animation = new GfxAnimation();
-
-                $animation->setAttributeName($child['attributeName']);
-                $animation->setTarget($child['target']);
-                $animation->setAttributeType($child['attributeType']);
-                $animation->setDuration($child['duration']);
-
-                $values = explode(";", $child['values']);
-            }
-        }
-        return $animationObject;
-    }
-    */
 
     public function getElements()
     {
@@ -436,14 +418,12 @@ class GfxContainer
 
 
 
-
-
     private function renderSWF()
     {
         $swf = new SWFMovie();
         $swf->setDimension($this->getCanvasWidth(), $this->getCanvasHeight());
-        $swf->setFrames(30);
-        $swf->setRate(10);
+        $swf->setFrames($this->frames);
+        $swf->setRate($this->framerate);
         $swf->setBackground(0, 0, 0);
 
         foreach($this->elements AS $element)
@@ -476,8 +456,6 @@ class GfxContainer
         unset($success);
 
         imageDestroy($updatedCanvas);
-
-//        chmod(OUTPUT_DIR . '/' . $this->getOutputDir() . '/' . $this->getOutputFilename() . '.gif', 0777);
     }
 
 
@@ -887,5 +865,17 @@ class GfxContainer
         return $dimensions;
     }
 
+    public function getFramerate()
+    {
+        return $this->framerate;
+    }
+
+    public function setFramerate($framerate)
+    {
+        if(is_numeric($framerate))
+        {
+            $this->framerate = $framerate;
+        }
+    }
 
 }
