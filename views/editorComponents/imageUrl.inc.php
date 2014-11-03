@@ -13,7 +13,7 @@
         'showUpload': false,
         'showPreview': false,
         'showCaption': true,
-        'initialCaption': '<?php echo array_pop(explode('/', $element->getImageUrl())); ?>'
+        'initialCaption': '<?php $arr = explode('/', $element->getImageUrl()); array_pop($arr); ?>'
     });
     </script>
 </div>
