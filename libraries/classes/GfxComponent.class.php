@@ -16,9 +16,9 @@ class GfXComponent implements Linkable, Resizeable
     private $shadow;
     private $shadowEnabled, $strokeEnabled;
     private $linkUrl;
-    private $shadowColor;
-    private $shadowDist;
     private $editGroup;
+
+    private $animationList;
 
     private $cmeoRef;
     private $cmeoLink;
@@ -32,6 +32,40 @@ class GfXComponent implements Linkable, Resizeable
         $this->width  = 0;
         $this->height = 0;
         $this->container = $container;
+
+        $this->animationList = array();
+    }
+
+    public function addAnimation($animationDefinition)
+    {
+        $animationDefinition = str_replace('[', '', $animationDefinition);
+        $aniDefs = explode(']', $animationDefinition);
+        foreach($aniDefs AS $aniDef)
+        {
+            if(!empty($aniDef))
+            {
+                $ani = new GfxAnimation();
+                $defs = explode(':', $aniDef);
+                $ani->setDuration($defs[0]);
+
+                $targets = explode('|', $defs[1]);
+
+                foreach($targets AS $target)
+                {
+                    $aniComponent = explode('/', $target);
+                    if(!empty($aniComponent[0]) && !empty($aniComponent[1]))
+                    {
+                        $ani->addTarget($aniComponent[0], $aniComponent[1]);
+                    }
+                }
+                $this->animationList[] = $ani;
+            }
+        }
+    }
+
+    public function getAnimations()
+    {
+        return $this->animationList;
     }
 
     public function updateData()
@@ -159,6 +193,8 @@ class GfXComponent implements Linkable, Resizeable
         $this->shadowEnabled = true;
     }
 
+
+
     public function getFilepath($filename)
     {
         $filename = ltrim($filename, '/');
@@ -168,6 +204,64 @@ class GfXComponent implements Linkable, Resizeable
             $filepath = BASE_DIR . '/' . $filepath;
         }
         return $filepath;
+    }
+
+
+    /***
+     *   function swfAnimate
+     *
+     * Animate the swf components. For each swf component, we got a specific handle stored in the handleList;
+     * Handles can be of:
+     * - the component itself
+     * - it's shadow
+     * - it's outline (image, for this will actually be another rectangle placed behind the bitmap)
+     *
+     * Cycling through all target attributes (x, y, width, height, rotation for now) for each object,
+     * modifying the respective attribute by the stored stepsize
+     *
+     *
+     ***/
+    protected function swfAnimate($handleList, $sprite)
+    {
+        foreach($this->getAnimations() AS $animation)
+        {
+            $duration = $animation->getDuration();
+            $targets  = $animation->getTargets();
+            // step through all steps of the animation
+            for($i=0; $i<$duration; $i++)
+            {
+                // target each required target (attribute)
+                foreach($targets AS $target)
+                {
+                    $targetAttribute = $target->getAttribute();
+                    $stepsize        = $target->getStepsize();
+                    // and all objects
+                    foreach($handleList AS $handle)
+                    {
+                        switch($targetAttribute)
+                        {
+                            case 'x':
+                                $handle->move($stepsize, 0);
+                                break;
+                            case 'y':
+                                $handle->move(0, $stepsize);
+                                break;
+                            case 'w':
+                                $handle->scale($stepsize, 1);
+                                break;
+                            case 'h':
+                                $handle->scale(1, $stepsize);
+                                break;
+                            case 'r':
+                                $handle->rotate($stepsize);
+                                break;
+                        }
+                    }
+                }
+                $sprite->nextFrame();
+            }
+        }
+        return $sprite;
     }
 
     protected function addClickableLink($canvas)
