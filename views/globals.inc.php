@@ -22,7 +22,7 @@
             ?>
             <div id="global_categories" class="row">
                 <?php // TODO: this is a dirty, dirty hack! ?>
-                <label class="col-md-4" style="height: <?php echo count($this->activeCategories) * 18?>px;">
+                <label class="col-md-4" style="height: <?php echo count($this->activeCategories) * 19?>px;">
                     Categories:
                     <button id="editCategoriesEditor" type="button" class="btn btn-xs" data-toggle="modal" data-target="#categorySelect"
                             style="background-color: #7f7f7f; color: #FFFFFF;">
