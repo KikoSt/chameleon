@@ -76,32 +76,54 @@ class GfxImage extends GfXComponent
         $sprite = new SWFSprite();
         $sprite->setFrames($this->getContainer()->getFramerate());
 
-//        if($this->getStroke() !== null)
-//        {
-//            $strokeWidth = $this->getStroke()->getWidth();
-//            $stroke = new GfxRectangle($this->getContainer());
-//            $stroke->setWidth($this->getWidth() + ($strokeWidth * 2));
-//            $stroke->setHeight($this->getHeight() + ($strokeWidth * 2));
-//            $stroke->setX($this->getX() - $strokeWidth);
-//            $stroke->setY($this->getY() - $strokeWidth);
-//            $stroke->setFill($this->getStroke()->getColor());
-//            $stroke->renderSWF($canvas);
-//
-//        }
-//
-//        if($this->hasShadow())
-//        {
-//            $shadow = new GfxRectangle($this->getContainer());
-//            $shadow->setWidth($this->getWidth());
-//            $shadow->setHeight($this->getHeight());
-//            $shadow->setX($this->getX() + (int) $this->getShadow()->getDist());
-//            $shadow->setY($this->getY() + (int) $this->getShadow()->getDist());
-//            $shadowColor = $this->getShadow()->getColor();
-//            $shadowColor->setAlpha(128);
-//            $shadow->setFill($shadowColor);
-//            $shadow->renderSWF($canvas);
-//
-//        }
+        if($this->getStroke() !== null)
+        {
+            $stroke = new SWFShape();
+            $this->getStroke()->setWidth(2);
+            $strokeX1 = -($this->getWidth()  / 2) - $this->getStroke()->getWidth();
+            $strokeY1 = -($this->getHeight() / 2) - $this->getStroke()->getWidth();
+            $strokeX2 = ($this->getWidth()   / 2) + $this->getStroke()->getWidth();
+            $strokeY2 = ($this->getHeight()  / 2) + $this->getStroke()->getWidth();
+
+            $strokeColor = $this->getstroke()->getColor();
+            $strokeFill = $stroke->addFill($strokeColor->getR(), $strokeColor->getG(), $strokeColor->getB(), 128);
+            $stroke->setRightFill($strokeFill);
+
+            $stroke->movePenTo($strokeX1, $strokeY1);
+            $stroke->drawLineTo($strokeX1, $strokeY2);
+            $stroke->drawLineTo($strokeX2, $strokeY2);
+            $stroke->drawLineTo($strokeX2, $strokeY1);
+            $stroke->drawLineTo($strokeX1, $strokeY1);
+
+            $shandle = $sprite->add($stroke);
+        }
+
+        if($this->shadowEnabled() && $this->getShadow()->getColor() instanceof GfxColor)
+        {
+            $shadow = new SWFShape();
+            $shadowX1 = $this->getX() + $this->getShadow()->getDist();
+            $shadowY1 = $this->getY() + $this->getShadow()->getDist();
+            $shadowX2 = $shadowX1 + $this->getWidth();
+            $shadowY2 = $shadowY1 + $this->getHeight();
+
+            $shadowX1 = -($this->getWidth()  / 2) + $this->getShadow()->getDist();
+            $shadowY1 = -($this->getHeight() / 2) + $this->getShadow()->getDist();
+            $shadowX2 = ($this->getWidth()   / 2) + $this->getShadow()->getDist();
+            $shadowY2 = ($this->getHeight()  / 2) + $this->getShadow()->getDist();
+
+            $shadowColor = $this->getShadow()->getColor();
+            $shadowFill = $shadow->addFill($shadowColor->getR(), $shadowColor->getG(), $shadowColor->getB(), 128);
+            $shadow->setRightFill($shadowFill);
+
+            $shadow->movePenTo($shadowX1, $shadowY1);
+            $shadow->drawLineTo($shadowX1, $shadowY2);
+            $shadow->drawLineTo($shadowX2, $shadowY2);
+            $shadow->drawLineTo($shadowX2, $shadowY1);
+            $shadow->drawLineTo($shadowX1, $shadowY1);
+
+            $shandle = $sprite->add($shadow);
+        }
+
         $imgPath = '/tmp/file' . time() . rand() . '.jpg';
 
         $output = $this->resizeImage($this->getImageUrl(), $this->getWidth(), $this->getHeight(), false);
