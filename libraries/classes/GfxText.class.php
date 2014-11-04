@@ -310,6 +310,14 @@ class GfxText extends GfxComponent
         $svg .= "\r\n" . ' cmeo:ref="' . $this->getCmeoRef(). '"';
         $svg .= "\r\n" . ' cmeo:link="' . $this->getCmeoLink(). '"';
         $svg .= "\r\n" . ' cmeo:editGroup="' . $this->getEditGroup(). '"';
+        if(count($this->getAnimations()) > 0)
+        {
+            $aniString  = ' cmeo:animation="';
+            $aniString .= $this->serializeAnimations();
+            $aniString .= '"';
+            $svg .= $aniString;
+        }
+
         $svg .= "\r\n" . ' text-anchor="' . $this->getTextAnchor() . '"';
         $svg .= "\r\n" . ' font-family="' . $this->getFontFamily() . '"';
         $svg .= "\r\n" . ' font-size="' . $this->getFontSize() . '"';

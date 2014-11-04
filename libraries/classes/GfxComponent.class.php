@@ -66,6 +66,25 @@ class GfXComponent implements Linkable, Resizeable
         }
     }
 
+    public function serializeAnimations()
+    {
+        $aniString = '';
+        foreach($this->getAnimations() AS $animation)
+        {
+            $aniString .= '[';
+
+            $aniString .= $animation->getDuration() . ':';
+
+            foreach($animation->getTargets() AS $target)
+            {
+                $aniString .= $target->getAttribute() . '/' . $target->getStepsize() . '|';
+            }
+            $aniString = rtrim($aniString, '|');
+            $aniString .= ']';
+        }
+        return $aniString;
+    }
+
     public function getAnimations()
     {
         return $this->animationList;
@@ -129,9 +148,11 @@ class GfXComponent implements Linkable, Resizeable
             }
         }
 
-        $ref       = (string) $svgRootNode->attributes('cmeo', true)->ref;
-        $link      = (string) $svgRootNode->attributes('cmeo', true)->link;
-        $editGroup = (int) $svgRootNode->attributes('cmeo', true)->editGroup;
+        $ref        = (string) $svgRootNode->attributes('cmeo', true)->ref;
+        $link       = (string) $svgRootNode->attributes('cmeo', true)->link;
+        $editGroup  = (int)    $svgRootNode->attributes('cmeo', true)->editGroup;
+        $animations = (string) $svgRootNode->attributes('cmeo', true)->animation;
+
         if(!empty($ref))
         {
             $this->getContainer()->registerDataUpdate($ref, $this);
@@ -148,7 +169,16 @@ class GfXComponent implements Linkable, Resizeable
         {
             $this->setEditGroup($editGroup);
         }
+        if(!empty($animations))
+        {
+            $this->addAnimation($animations);
+        }
     }
+
+//    public function clearAnimations()
+//    {
+//        $this->animationList = array();
+//    }
 
     public function hasShadow()
     {

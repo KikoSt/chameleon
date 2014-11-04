@@ -232,6 +232,14 @@ class GfxRectangle extends GfxShape
             $svg .= "\r\n" . ' style="shadow:' . $shadow->getColor()->getHex() . ';shadow-dist:' . $shadow->getDist() . 'px;"';
         }
 
+        if(count($this->getAnimations()) > 0)
+        {
+            $aniString  = ' cmeo:animation="';
+            $aniString .= $this->serializeAnimations();
+            $aniString .= '"';
+            $svg .= $aniString;
+        }
+
         $svg .= "\r\n" . ' x="' . $this->getX() . '"';
         $svg .= "\r\n" . ' y="' . $this->getY() . '"';
         $svg .= "\r\n" . ' width="' . $this->getWidth() . '"';

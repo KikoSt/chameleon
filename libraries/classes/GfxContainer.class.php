@@ -203,15 +203,16 @@ class GfxContainer
             {
                 $gfxInstance->create($child);
 
-                if($gfxInstance->getId() === 'price') // || $gfxInstance->getId() === 'product_image_1')
-                {
-                    $gfxInstance->addAnimation('[7:r/2][16:r/-2][7:r/2]');
-                }
-                if($gfxInstance->getId() === 'price_ribbon_1')
-                {
-                    $gfxInstance->addAnimation('[7:w/.98|r/2][16:w/1.02|r/-2][7:w/.98|r/2]');
-                    // $gfxInstance->addAnimation('[7:r/2][16:r/-2][7:r/2]');
-                }
+//                if($gfxInstance->getId() === 'price') // || $gfxInstance->getId() === 'product_image_1')
+//                {
+//                    $gfxInstance->clearAnimations();
+//                    $gfxInstance->addAnimation('[7:r/2][16:r/-2][7:r/2]');
+//                }
+//                if($gfxInstance->getId() === 'price_ribbon_1')
+//                {
+//                    $gfxInstance->clearAnimations();
+//                    $gfxInstance->addAnimation('[7:w/.98|r/2][16:w/1.02|r/-2][7:w/.98|r/2]');
+//                }
 
                 $this->addElement($gfxInstance);
 
