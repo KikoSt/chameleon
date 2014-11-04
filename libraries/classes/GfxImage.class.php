@@ -116,95 +116,34 @@ class GfxImage extends GfXComponent
         $image  = new SWFBitmap($bastardImage);
         $handle = $sprite->add($image);
         $handle->moveTo(-($this->getWidth() / 2), -($this->getHeight() / 2));
-        $sprite->nextFrame();
 
+        /**
+         *  Prepare actual animation
+        **/
         if(count($this->getAnimations()) != 0)
         {
-            foreach($this->getAnimations() AS $animation)
+            $handleList = array();
+            if(isset($shandle))
             {
-                $duration = $animation->getDuration();
-                $targets = $animation->getTargets();
-                for($i=0; $i<$duration; $i++)
-                {
-                    foreach($targets AS $target)
-                    {
-                        $targetAttribute = $target->getAttribute();
-                        $stepsize        = $target->getStepsize();
-                        if($shandle)
-                        {
-                            switch($targetAttribute)
-                            {
-                                case 'x':
-                                    $shandle->move($stepsize, 0);
-                                    break;
-                                case 'y':
-                                    $shandle->move(0, $stepsize);
-                                    break;
-                                case 'w':
-                                    $shandle->scale($stepsize, 1);
-                                    break;
-                                case 'h':
-                                    $shandle->scale(1, $stepsize);
-                                    break;
-                                case 'r':
-                                    $shandle->rotate($stepsize);
-                                    break;
-                            }
-                        }
-                        switch($targetAttribute)
-                        {
-                            case 'x':
-                                $handle->move($stepsize, 0);
-                                break;
-                            case 'y':
-                                $handle->move(0, $stepsize);
-                                break;
-                            case 'w':
-                                $handle->scale($stepsize, 1);
-                                break;
-                            case 'h':
-                                $handle->scale(1, $stepsize);
-                                break;
-                            case 'r':
-                                $handle->rotate($stepsize);
-                                break;
-                        }
-                        $sprite->nextFrame();
-                    }
-                }
+                $handleList['shadowHandle'] = $shandle;
             }
+            $handleList['handle'] = $handle;
+            $sprite = $this->swfAnimate($handleList, $sprite);
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        $handle = $canvas->add($sprite);
-        $handle->moveTo($this->getX() + ($this->getWidth() / 2), $this->getY() + ($this->getHeight() / 2));
-
-        // $handle->rotate(45);
-
-
-
-
-
-
+        /**
+         *  Animation done!
+        **/
 
         $this->getContainer()->register($bastardImage);
-        $canvas = $this->addClickableLink($canvas);
+
+        if(false !== ($lsprite = $this->addClickableLink($sprite)))
+        {
+            // $handle = $canvas->add($lsprite);
+        }
+        $handle = $canvas->add($sprite);
+        $handle->moveTo($this->getX() + ($this->getWidth() / 2), $this->getY() + ($this->getHeight() / 2));
+        $sprite->nextFrame();
+
         unset($image);
         return $canvas;
     }

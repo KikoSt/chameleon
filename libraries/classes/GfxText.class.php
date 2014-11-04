@@ -195,14 +195,13 @@ class GfxText extends GfxComponent
         $text->addString(utf8_decode(str_replace('€', ' Euro', $this->getText())));
 
         $handle = $sprite->add($text);
-        $handle->moveTo($this->getX() + ($this->getTextWidth()/2), $this->getY());
 
-        if($drawCenter)
+        if($this->drawCenter)
         {
             $chandle = $this->drawCenter($sprite);
         }
 
-        $sprite->nextFrame();
+        $lhandle = $this->addClickableLink($sprite);
 
         /**
          *  Prepare actual animation
@@ -210,6 +209,14 @@ class GfxText extends GfxComponent
         if(count($this->getAnimations()) > 0)
         {
             $handleList = array();
+            if(isset($chandle) && false !== $chandle)
+            {
+                $handleList['centerHandle'] = $chandle;
+            }
+            if(isset($lhandle) && false !== $lhandle)
+            {
+                $handleList['linkHandle'] = $lhandle;
+            }
             if(isset($shandle))
             {
                 $handleList['shadowHandle'] = $shandle;
@@ -221,8 +228,10 @@ class GfxText extends GfxComponent
          *  Animation done!
         **/
 
-
         $handle = $canvas->add($sprite);
+        $handle->moveTo($this->getX() + ($this->getTextWidth()/2), $this->getY());
+        $sprite->nextFrame();
+
         unset($handle);
 
         return $canvas;

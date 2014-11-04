@@ -285,23 +285,39 @@ class GfXComponent implements Linkable, Resizeable
     }
 
 
+    protected function addClickableLink($sprite)
+    {
+        if(!empty($this->getLinkUrl()))
         {
             $hit = new SWFShape();
             $hit->setRightFill($hit->addFill(255,0,0));
-            $hit->movePenTo(0, 0);
-            $hit->drawLineTo($this->getWidth(), 0);
-            $hit->drawLineTo($this->getWidth(), $this->getHeight());
-            $hit->drawLineTo(0, $this->getHeight());
-            $hit->drawLineTo(0, 0);
+
+            $x1 = -($this->getWidth() / 2);
+            $y1 = -($this->getHeight() / 2);
+            $x2 = $this->getWidth() / 2;
+            $y2 = $this->getHeight() / 2;
+
+            if($this instanceof GfxText)
+            {
+                $y1 = -$this->getHeight();
+                $y2 = $this->getHeight();
+
+            }
+
+            $hit->movePenTo($x1, $y1);
+            $hit->drawLineTo($x2, $y1);
+            $hit->drawLineTo($x2, $y2);
+            $hit->drawLineTo($x1, $y2);
+            $hit->drawLineTo($x1, $y1);
 
             $button = new SWFButton();
             $button->addShape($hit, SWFBUTTON_HIT);
             $linkUrl = $this->getLinkUrl();
             $button->addAction(new SWFAction("getURL('$linkUrl','_blank');"), SWFBUTTON_MOUSEUP);
-            $handle = $canvas->add($button);
-            $handle->moveTo($this->getX(), $this->getY());
+            $lhandle = $sprite->add($button);
+            return $lhandle;
         }
-        return $canvas;
+        return(false);
     }
 
     public function getShadow()
