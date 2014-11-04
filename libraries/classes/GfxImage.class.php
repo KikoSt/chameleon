@@ -158,12 +158,10 @@ class GfxImage extends GfXComponent
 
         $this->getContainer()->register($bastardImage);
 
-        if(false !== ($lsprite = $this->addClickableLink($sprite)))
-        {
-            // $handle = $canvas->add($lsprite);
-        }
         $handle = $canvas->add($sprite);
         $handle->moveTo($this->getX() + ($this->getWidth() / 2), $this->getY() + ($this->getHeight() / 2));
+
+        // $handle->moveTo($this->getX() - ($this->getWidth() / 2), $this->getY() - ($this->getHeight() / 2));
         $sprite->nextFrame();
 
         unset($image);

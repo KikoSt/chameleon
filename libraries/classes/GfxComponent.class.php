@@ -301,7 +301,6 @@ class GfXComponent implements Linkable, Resizeable
             {
                 $y1 = -$this->getHeight();
                 $y2 = $this->getHeight();
-
             }
 
             $hit->movePenTo($x1, $y1);
@@ -312,6 +311,7 @@ class GfXComponent implements Linkable, Resizeable
 
             $button = new SWFButton();
             $button->addShape($hit, SWFBUTTON_HIT);
+            // $button->addShape($hit, SWFBUTTON_UP);
             $linkUrl = $this->getLinkUrl();
             $button->addAction(new SWFAction("getURL('$linkUrl','_blank');"), SWFBUTTON_MOUSEUP);
             $lhandle = $sprite->add($button);
