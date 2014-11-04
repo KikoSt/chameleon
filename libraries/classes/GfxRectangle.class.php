@@ -105,17 +105,12 @@ class GfxRectangle extends GfxShape
 
         $handle = $sprite->add($rect);
 
-        if($drawCenter)
+        if($this->drawCenter)
         {
             $chandle = $this->drawCenter($sprite);
         }
 
         $handle->moveTo($this->getX() + $this->getWidth() / 2, $this->getY() + $this->getHeight() / 2);
-
-        // absolutely required, otherwise nothing will be displayed
-        $sprite->nextFrame();
-
-
 
 
         /**
@@ -139,9 +134,10 @@ class GfxRectangle extends GfxShape
          *  Animation done!
         **/
 
-
-
         $handle = $canvas->add($sprite);
+
+        // absolutely required, otherwise nothing will be displayed
+        $sprite->nextFrame();
 
         return $canvas;
     }

@@ -147,6 +147,7 @@ class GfxText extends GfxComponent
                 echo 'Error trying to get color';
                 return false;
             }
+            $shadowDist = $this->getShadow()->getDist();
             try {
                 $shadow->setColor($shadowFill->getR(), $shadowFill->getG(), $shadowFill->getB(), 128);
             } catch(Exception $e) {
@@ -156,12 +157,10 @@ class GfxText extends GfxComponent
             $shadow->setHeight($this->getFontSize() * FLASH_FONT_SCALE_FACTOR);
             // position: CENTERED!
 
-            $shadow->moveTo(- ($this->getTextWidth()/2), 0);
+            // $shadow->moveTo(- ($this->getTextWidth()/2), 0);
+            $shadow->moveTo(-$this->getTextWidth() / 2 + $shadowDist, $shadowDist);
             $shadow->addString(utf8_decode(str_replace('€', ' Euro', $this->getText())));
             $shandle = $sprite->add($shadow);
-
-            $shandle->moveTo($this->getX() + ($this->getTextWidth()/2) + 1, $this->getY() + 1);
-
         }
 
         if(null !== $this->getSWFFont()) {
