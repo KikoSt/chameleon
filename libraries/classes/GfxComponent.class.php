@@ -33,6 +33,9 @@ class GfXComponent implements Linkable, Resizeable
         $this->height = 0;
         $this->container = $container;
 
+        // DEBUG for swf
+        $this->drawCenter = false;
+
         $this->animationList = array();
     }
 
