@@ -195,14 +195,12 @@ class GfxText extends GfxComponent
         $text->addString(utf8_decode(str_replace('€', ' Euro', $this->getText())));
 
         $handle = $sprite->add($text);
-
-        if(count($this->getAnimations()) != 0)
-        {
-            $handle->rotate(30);
-            $shandle->rotate(30);
-        }
-
         $handle->moveTo($this->getX() + ($this->getTextWidth()/2), $this->getY());
+
+        if($drawCenter)
+        {
+            $chandle = $this->drawCenter($sprite);
+        }
 
         $sprite->nextFrame();
 
@@ -229,6 +227,9 @@ class GfxText extends GfxComponent
 
         return $canvas;
     }
+
+
+
 
     public function renderGif($canvas)
     {

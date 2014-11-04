@@ -264,9 +264,24 @@ class GfXComponent implements Linkable, Resizeable
         return $sprite;
     }
 
-    protected function addClickableLink($canvas)
+
+
+    protected function drawCenter($sprite)
     {
-        if(!empty($this->getLinkUrl()))
+        $center = new SWFShape();
+        $center->setLine(1, 0, 0, 0);
+        $center->movePenTo(-5, -5);
+        $center->drawLineTo(5, 5);
+        $center->movePenTo(-5, 5);
+        $center->drawLineTo(5, -5);
+
+        $chandle = $sprite->add($center);
+        $chandle->moveTo($this->getX() + $this->getWidth() / 2, $this->getY());
+
+        return $chandle;
+    }
+
+
         {
             $hit = new SWFShape();
             $hit->setRightFill($hit->addFill(255,0,0));

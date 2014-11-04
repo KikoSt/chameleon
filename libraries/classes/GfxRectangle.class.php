@@ -60,9 +60,7 @@ class GfxRectangle extends GfxShape
             $shadowY2 = ($this->getHeight() /  2) + $this->getShadow()->getDist();
 
             $shadowColor = $this->getShadow()->getColor();
-
             $shadowFill = $shadow->addFill($shadowColor->getR(), $shadowColor->getG(), $shadowColor->getB(), 128);
-
             $shadow->setRightFill($shadowFill);
 
             $shadow->movePenTo($shadowX1, $shadowY1);
@@ -107,10 +105,9 @@ class GfxRectangle extends GfxShape
 
         $handle = $sprite->add($rect);
 
-        if(count($this->getAnimations()) != 0)
+        if($drawCenter)
         {
-            $handle->rotate(30);
-            $shandle->rotate(30);
+            $chandle = $this->drawCenter($sprite);
         }
 
         $handle->moveTo($this->getX() + $this->getWidth() / 2, $this->getY() + $this->getHeight() / 2);
@@ -127,6 +124,10 @@ class GfxRectangle extends GfxShape
         if(count($this->getAnimations()) > 0)
         {
             $handleList = array();
+            if(isset($chandle))
+            {
+                $handleList['centerHandle'] = $chandle;
+            }
             if(isset($shandle))
             {
                 $handleList['shadowHandle'] = $shandle;
