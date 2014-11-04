@@ -139,6 +139,15 @@ class GfxImage extends GfXComponent
         $handle = $sprite->add($image);
         $handle->moveTo(-($this->getWidth() / 2), -($this->getHeight() / 2));
 
+        if(false !== ($lsprite = $this->addClickableLink($sprite)))
+        {
+            // $handle = $canvas->add($lsprite);
+        }
+        if($this->drawCenter)
+        {
+            $chandle = $this->drawCenter($sprite);
+        }
+
         /**
          *  Prepare actual animation
         **/
