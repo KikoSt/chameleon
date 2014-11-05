@@ -68,7 +68,7 @@ class GfxContainer
 
         // TODO: for now ...
         $this->framerate = 30;
-        $this->frames = 60;
+        $this->frames = 0;
     }
 
     public function __destruct()
