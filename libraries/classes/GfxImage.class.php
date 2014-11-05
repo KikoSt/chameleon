@@ -98,18 +98,24 @@ class GfxImage extends GfXComponent
             $shandle = $sprite->add($stroke);
         }
 
+        $localX1 = -($this->getWidth() / 2);
+        $localY1 = -($this->getHeight() / 2);
+        $localX2 = $localX1 + $this->getWidth();
+        $localY2 = $localY1 + $this->getHeight();
+
+        $globalX1 = $this->getX() - $localX1;
+        $globalY1 = $this->getY() - $localY1;
+        $globalX2 = $globalX1 + $this->getWidth();
+        $globalY2 = $globalY1 + $this->getHeight();
+
+
         if($this->shadowEnabled() && $this->getShadow()->getColor() instanceof GfxColor)
         {
             $shadow = new SWFShape();
-            $shadowX1 = $this->getX() + $this->getShadow()->getDist();
-            $shadowY1 = $this->getY() + $this->getShadow()->getDist();
-            $shadowX2 = $shadowX1 + $this->getWidth();
-            $shadowY2 = $shadowY1 + $this->getHeight();
-
-            $shadowX1 = -($this->getWidth()  / 2) + $this->getShadow()->getDist();
-            $shadowY1 = -($this->getHeight() / 2) + $this->getShadow()->getDist();
-            $shadowX2 = ($this->getWidth()   / 2) + $this->getShadow()->getDist();
-            $shadowY2 = ($this->getHeight()  / 2) + $this->getShadow()->getDist();
+            $shadowX1 = $localX1 + $this->getShadow()->getDist();
+            $shadowY1 = $localY1 + $this->getShadow()->getDist();
+            $shadowX2 = $localX2 + $this->getShadow()->getDist();
+            $shadowY2 = $localY2 + $this->getShadow()->getDist();
 
             $shadowColor = $this->getShadow()->getColor();
             $shadowFill = $shadow->addFill($shadowColor->getR(), $shadowColor->getG(), $shadowColor->getB(), 128);
@@ -136,10 +142,14 @@ class GfxImage extends GfXComponent
         $bastardImage = fopen($imgPath, "rb");
 
         $image  = new SWFBitmap($bastardImage);
-        $handle = $sprite->add($image);
-        $handle->moveTo(-($this->getWidth() / 2), -($this->getHeight() / 2));
+        $isprite = new SWFSprite();
+        $ihandle = $isprite->add($image);
+        $ihandle->moveTo($localX1, $localY1);
+        $handle = $sprite->add($isprite);
+        $isprite->nextFrame();
+        $handle->moveTo(0, 0);
 
-        if(false !== ($lsprite = $this->addClickableLink($sprite)))
+        if(false !== ($lhandle = $this->addClickableLink($sprite)))
         {
             // $handle = $canvas->add($lsprite);
         }
@@ -154,6 +164,10 @@ class GfxImage extends GfXComponent
         if(count($this->getAnimations()) != 0)
         {
             $handleList = array();
+            if(isset($lhandle))
+            {
+                $handleList['linkHandle'] = $lhandle;
+            }
             if(isset($shandle))
             {
                 $handleList['shadowHandle'] = $shandle;
@@ -169,8 +183,7 @@ class GfxImage extends GfXComponent
 
         $handle = $canvas->add($sprite);
         $handle->moveTo($this->getX() + ($this->getWidth() / 2), $this->getY() + ($this->getHeight() / 2));
-
-        // $handle->moveTo($this->getX() - ($this->getWidth() / 2), $this->getY() - ($this->getHeight() / 2));
+        $handle->moveTo($globalX1, $globalY1);
         $sprite->nextFrame();
 
         unset($image);
