@@ -606,6 +606,10 @@ class GfxContainer
                 {
                     $element->getStroke()->setColor(new GfxColor($value));
                 }
+                elseif($param === 'animation')
+                {
+                    $element->setAnimation($value);
+                }
                 else
                 {
                     $element->$func($value);
