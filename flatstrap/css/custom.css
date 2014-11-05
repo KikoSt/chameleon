@@ -270,7 +270,7 @@ label:afterr
 input[type=checkbox] + label:after
 {
     content: "";
-    margin-left: 72px;
+    margin-left: 97px;
     margin-top: -15px;
     display: inline-block;
     width: 15px;
