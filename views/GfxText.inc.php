@@ -1,6 +1,6 @@
 <div id="panel_<?php echo $element->getId();?>" data-type="text" data-groupid="<?php echo $element->getEditGroup(); ?>" class="panel panel-default component">
-    <div class="panel-heading texttitle">
-        <h3 class="panel-title ">
+    <div class="panel-heading textTitle">
+        <h3 class="panel-title">
                 text: <?php echo str_replace('_', ' ', $element->getId());?>
             <span id="<?php echo $element->getId();?>" class="glyphicon glyphicon-remove-circle" style="float:right;cursor:hand;"></span>
         </h3>
