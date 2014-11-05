@@ -103,6 +103,7 @@ class GfXComponent implements Linkable, Resizeable
             $aniString = rtrim($aniString, '|');
             $aniString .= ']';
         }
+
         return $aniString;
     }
 
