@@ -16,8 +16,11 @@
             endif;
             include('editorComponents/cmeo.inc.php');
             include('editorComponents/shadow.inc.php');
-            include('editorComponents/editGroup.inc.php');
             // include('editorComponents/stroke.inc.php');
+            if($this->premiumUser):
+                include('editorComponents/editGroup.inc.php');
+                include('editorComponents/animation.inc.php');
+            endif;
         ?>
         </div>
     </div>

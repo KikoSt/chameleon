@@ -18,6 +18,7 @@
                 include('editorComponents/stroke.inc.php');
                 if($this->premiumUser):
                     include('editorComponents/editGroup.inc.php');
+                    include('editorComponents/animation.inc.php');
                 endif;
             ?>
         </div>
