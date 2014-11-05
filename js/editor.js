@@ -183,6 +183,8 @@ $(document).ready(function() {
             // ****
             //  **
             //
+            // hiding flash preview when opening live preview since flash will hide at least some portions of the live preview banners
+            $('#previewSwf').hide();
             var formData = new FormData();
             var data = {};
             var nodeList = $(document).find($('[type="file"]'));
