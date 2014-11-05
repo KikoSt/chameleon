@@ -56,7 +56,7 @@ class GfXComponent implements Linkable, Resizeable
                 foreach($targets AS $target)
                 {
                     $aniComponent = explode('/', $target);
-                    if(!empty($aniComponent[0]) && !empty($aniComponent[1]))
+                    if(!empty($aniComponent[0]))
                     {
                         $ani->addTarget($aniComponent[0], $aniComponent[1]);
                     }
