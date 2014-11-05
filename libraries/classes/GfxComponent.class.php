@@ -309,6 +309,9 @@ class GfXComponent implements Linkable, Resizeable
                             case 'r':
                                 $handle->rotate($stepsize);
                                 break;
+                            case 'p':
+                                // pause
+                                break;
                         }
                     }
                 }
