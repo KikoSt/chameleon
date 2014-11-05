@@ -66,6 +66,27 @@ class GfXComponent implements Linkable, Resizeable
         }
     }
 
+    public function setAnimation($animationDefinition)
+    {
+        $this->clearAnimations();
+        $this->addAnimation($animationDefinition);
+    }
+
+    public function getFrameDuration()
+    {
+        $frameDuration = 0;
+        foreach($this->animationList AS $animation)
+        {
+            $frameDuration += $animation->getDuration();
+        }
+        return $frameDuration;
+    }
+
+    public function clearAnimations()
+    {
+        $this->animationList = array();
+    }
+
     public function serializeAnimations()
     {
         $aniString = '';
