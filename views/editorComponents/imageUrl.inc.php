@@ -1,5 +1,5 @@
 <div class="row">
-    <label class="col-md-3">Image:</label>
+    <label class="col-md-4">Image:</label>
     <input id="<?php echo $element->getId();?>_input"
            type="file"
            class="file"
@@ -13,7 +13,7 @@
         'showUpload': false,
         'showPreview': false,
         'showCaption': true,
-        'initialCaption': '<?php echo array_pop(explode('/', $element->getImageUrl())); ?>'
+        'initialCaption': '<?php $arr = explode('/', $element->getImageUrl()); array_pop($arr); ?>'
     });
     </script>
 </div>

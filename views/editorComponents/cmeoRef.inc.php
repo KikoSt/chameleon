@@ -1,5 +1,5 @@
 <div class="row">
-    <label class="col-md-3" for="<?php echo $element->getId();?>#cmeoRef">Source:</label>
+    <label class="col-md-4" for="<?php echo $element->getId();?>#cmeoRef">Source:</label>
     <select name="<?php echo $element->getId();?>#cmeoRef"
             class="form-control"
         <?php echo (is_a($element, 'GfxImage') || is_a($element, 'GfxText')) ? '': 'disabled'; ?>

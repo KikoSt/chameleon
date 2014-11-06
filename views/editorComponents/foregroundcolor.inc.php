@@ -1,9 +1,9 @@
 <div class="row">
-    <label class="col-md-3">Fg color:</label>
+    <label class="col-md-4">Fg color:</label>
     <div>
         <input id="fgcolor"
                type="text"
-               class="form-control picker cursor-pointer"
+               class="form-control picker small cursor-pointer"
                name="<?php echo $element->getId();?>#fgcolor"
                value="<?php echo (!empty($element->getForegroundcolor()) ? $element->getForegroundcolor()->getHex() : '#000000');?>"
                placeholder="color"

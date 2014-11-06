@@ -1,5 +1,5 @@
 <div class="row">
-    <label class="col-md-3">X:</label>
+    <label class="col-md-4">X:</label>
     <div>
         <input type="text"
                class="form-control"
@@ -10,7 +10,7 @@
     </div>
 </div>
 <div class="row">
-    <label class="col-md-3">Y:</label>
+    <label class="col-md-4">Y:</label>
     <div>
         <input type="text"
                class="form-control"

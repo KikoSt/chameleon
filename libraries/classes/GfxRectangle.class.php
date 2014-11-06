@@ -43,30 +43,35 @@ class GfxRectangle extends GfxShape
     {
         $rect = new SWFShape();
 
-        if($this->strokeEnabled() && $this->getStroke() instanceof GfxColor)
-        {
-            $strokeWidth = $this->getStroke()->getWidth();
-            $stroke = new GfxRectangle($this->getContainer());
-            $stroke->setWidth($this->getWidth() + ($strokeWidth * 2));
-            $stroke->setHeight($this->getHeight() + ($strokeWidth * 2));
-            $stroke->setX($this->getX() - $strokeWidth);
-            $stroke->setY($this->getY() - $strokeWidth);
-            $stroke->setFill($this->getStroke()->getColor());
-            $stroke->renderSWF($canvas);
-
-        }
+        $sprite = new SWFSprite();
+        $sprite->setFrames($this->getContainer()->getFramerate());
 
         if($this->shadowEnabled() && $this->getShadow()->getColor() instanceof GfxColor)
         {
-            $shadow = new GfxRectangle($this->getContainer());
-            $shadow->setWidth($this->getWidth());
-            $shadow->setHeight($this->getHeight());
-            $shadow->setX($this->getX() + (int) $this->getShadow()->getDist());
-            $shadow->setY($this->getY() + (int) $this->getShadow()->getDist());
+            $shadow = new SWFShape();
+            $shadowX1 = $this->getX() + $this->getShadow()->getDist();
+            $shadowY1 = $this->getY() + $this->getShadow()->getDist();
+            $shadowX2 = $shadowX1 + $this->getWidth();
+            $shadowY2 = $shadowY1 + $this->getHeight();
+
+            $shadowX1 = -($this->getWidth() /  2) + $this->getShadow()->getDist();
+            $shadowY1 = -($this->getHeight() / 2) + $this->getShadow()->getDist();
+            $shadowX2 = ($this->getWidth() /   2) + $this->getShadow()->getDist();
+            $shadowY2 = ($this->getHeight() /  2) + $this->getShadow()->getDist();
+
             $shadowColor = $this->getShadow()->getColor();
-            $shadowColor->setAlpha(128);
-            $shadow->setFill($shadowColor);
-            $canvas = $shadow->renderSWF($canvas);
+            $shadowFill = $shadow->addFill($shadowColor->getR(), $shadowColor->getG(), $shadowColor->getB(), 128);
+            $shadow->setRightFill($shadowFill);
+
+            $shadow->movePenTo($shadowX1, $shadowY1);
+            $shadow->drawLineTo($shadowX1, $shadowY2);
+            $shadow->drawLineTo($shadowX2, $shadowY2);
+            $shadow->drawLineTo($shadowX2, $shadowY1);
+            $shadow->drawLineTo($shadowX1, $shadowY1);
+
+            $shandle = $sprite->add($shadow);
+
+            $shandle->moveTo($this->getX() + $this->getWidth() / 2, $this->getY() + $this->getHeight() / 2);
         }
 
         $r = $this->getFill()->getR();
@@ -82,17 +87,62 @@ class GfxRectangle extends GfxShape
         $x2 = $this->getX() + $this->getWidth();
         $y2 = $this->getY() + $this->getHeight();
 
+        $x1 = -($this->getWidth() / 2);
+        $y1 = -($this->getHeight() / 2);
+        $x2 = ($this->getWidth() / 2);
+        $y2 = ($this->getHeight() / 2);
+
+        if($this->strokeEnabled() && $this->getStroke() instanceof GfxStroke)
+        {
+            $rect->setLine(1, 0, 0, 0);
+        }
+
         $rect->movePenTo($x1, $y1);
         $rect->drawLineTo($x1, $y2);
         $rect->drawLineTo($x2, $y2);
         $rect->drawLineTo($x2, $y1);
         $rect->drawLineTo($x1, $y1);
 
-        $handle = $canvas->add($rect);
-        $handle->moveTo(0, 0);
+        $handle = $sprite->add($rect);
+
+        if($this->drawCenter)
+        {
+            $chandle = $this->drawCenter($sprite);
+        }
+
+        $handle->moveTo($this->getX() + $this->getWidth() / 2, $this->getY() + $this->getHeight() / 2);
+
+
+        /**
+         *  Prepare actual animation
+        **/
+        if(count($this->getAnimations()) > 0)
+        {
+            $handleList = array();
+            if(isset($chandle))
+            {
+                $handleList['centerHandle'] = $chandle;
+            }
+            if(isset($shandle))
+            {
+                $handleList['shadowHandle'] = $shandle;
+            }
+            $handleList['handle'] = $handle;
+            $sprite = $this->swfAnimate($handleList, $sprite);
+        }
+        /**
+         *  Animation done!
+        **/
+
+        $handle = $canvas->add($sprite);
+
+        // absolutely required, otherwise nothing will be displayed
+        $sprite->nextFrame();
 
         return $canvas;
     }
+
+
 
     public function renderGIF($canvas)
     {
@@ -180,6 +230,14 @@ class GfxRectangle extends GfxShape
         if(isset($shadow))
         {
             $svg .= "\r\n" . ' style="shadow:' . $shadow->getColor()->getHex() . ';shadow-dist:' . $shadow->getDist() . 'px;"';
+        }
+
+        if(count($this->getAnimations()) > 0)
+        {
+            $aniString  = ' cmeo:animation="';
+            $aniString .= $this->serializeAnimations();
+            $aniString .= '"';
+            $svg .= $aniString;
         }
 
         $svg .= "\r\n" . ' x="' . $this->getX() . '"';

@@ -126,27 +126,45 @@ class GfxText extends GfxComponent
     public function renderSWF($canvas)
     {
         $text = new SWFText();
+        $sprite = new SWFSprite();
+        $sprite->setFrames($this->getContainer()->getFramerate());
 
         if($this->hasShadow())
         {
-            $shadow = new GfxText($this->getContainer());
-            $shadow->setWidth($this->getWidth());
-            $shadow->setHeight($this->getHeight());
-            $shadow->setX($this->getX() + (int) $this->getShadow()->getDist());
-            $shadow->setY($this->getY() + (int) $this->getShadow()->getDist());
+            $shadow = new SWFText();
 
             if(null !== $this->getSWFFont()) {
-                $shadow->setFontFamily($this->getFontFamily());
+                try
+                {
+                    $shadow->setFont($this->getSWFFont());
+                }
+                catch(Exception $e)
+                {
+                    echo 'Error trying to open font ' . $this->getSWFFont();
+                }
             } else {
                 throw new Exception('No font set!');
             }
+            try {
+                $shadowFill = $this->getShadow()->getColor();
+            } catch(Exception $e) {
+                echo 'Error trying to get color';
+                return false;
+            }
+            $shadowDist = $this->getShadow()->getDist();
+            try {
+                $shadow->setColor($shadowFill->getR(), $shadowFill->getG(), $shadowFill->getB(), 128);
+            } catch(Exception $e) {
+                echo 'Error trying to set color!';
+                return false;
+            }
+            $shadow->setHeight($this->getFontSize() * FLASH_FONT_SCALE_FACTOR);
+            // position: CENTERED!
 
-            $shadowColor = $this->getShadow()->getColor();
-            $shadowColor->setAlpha(128); // currently not working, most likely due to the text type!
-            $shadow->setFill($shadowColor);
-            $shadow->setFontSize($this->getFontSize());
-            $shadow->setText($this->getText());
-            $canvas = $shadow->renderSWF($canvas);
+            // $shadow->moveTo(- ($this->getTextWidth()/2), 0);
+            $shadow->moveTo(-$this->getTextWidth() / 2 + $shadowDist, $shadowDist);
+            $shadow->addString(utf8_decode(str_replace('€', ' Euro', $this->getText())));
+            $shandle = $sprite->add($shadow);
         }
 
         if(null !== $this->getSWFFont()) {
@@ -175,16 +193,55 @@ class GfxText extends GfxComponent
         }
         $text->setHeight($this->getFontSize() * FLASH_FONT_SCALE_FACTOR);
         // position: CENTERED!
-        $text->moveTo($this->getX() - ($this->getTextWidth()/2), $this->getY());
-        $text->moveTo($this->getX(), $this->getY());
-        // $text->addString(utf8_decode(str_replace('€', ' Euro', $this->getText())));
+
+        $text->moveTo(- ($this->getTextWidth()/2), 0);
         $text->addString(utf8_decode(str_replace('€', ' Euro', $this->getText())));
 
-        $handle = $canvas->add($text);
+        $handle = $sprite->add($text);
+
+        if($this->drawCenter)
+        {
+            $chandle = $this->drawCenter($sprite);
+        }
+
+        $lhandle = $this->addClickableLink($sprite);
+
+        /**
+         *  Prepare actual animation
+        **/
+        if(count($this->getAnimations()) > 0)
+        {
+            $handleList = array();
+            if(isset($chandle) && false !== $chandle)
+            {
+                $handleList['centerHandle'] = $chandle;
+            }
+            if(isset($lhandle) && false !== $lhandle)
+            {
+                $handleList['linkHandle'] = $lhandle;
+            }
+            if(isset($shandle))
+            {
+                $handleList['shadowHandle'] = $shandle;
+            }
+            $handleList['handle'] = $handle;
+            $sprite = $this->swfAnimate($handleList, $sprite);
+        }
+        /**
+         *  Animation done!
+        **/
+
+        $handle = $canvas->add($sprite);
+        $handle->moveTo($this->getX() + ($this->getTextWidth()/2), $this->getY());
+        $sprite->nextFrame();
+
         unset($handle);
 
         return $canvas;
     }
+
+
+
 
     public function renderGif($canvas)
     {
@@ -298,7 +355,8 @@ class GfxText extends GfxComponent
             $this->getY() + $this->getShadow()->getDist(),
             $color,
             $this->getGIFFont(),
-            utf8_decode(str_replace('€', ' Euro', $this->getText()))
+//            utf8_decode(str_replace('€', ' Euro', $this->getText()))
+            $this->getText()
         );
     }
 
@@ -328,6 +386,14 @@ class GfxText extends GfxComponent
         $svg .= "\r\n" . ' cmeo:ref="' . $this->getCmeoRef(). '"';
         $svg .= "\r\n" . ' cmeo:link="' . $this->getCmeoLink(). '"';
         $svg .= "\r\n" . ' cmeo:editGroup="' . $this->getEditGroup(). '"';
+        if(count($this->getAnimations()) > 0)
+        {
+            $aniString  = ' cmeo:animation="';
+            $aniString .= $this->serializeAnimations();
+            $aniString .= '"';
+            $svg .= $aniString;
+        }
+
         $svg .= "\r\n" . ' text-anchor="' . $this->getTextAnchor() . '"';
         $svg .= "\r\n" . ' font-family="' . $this->getFontFamily() . '"';
         $svg .= "\r\n" . ' font-size="' . $this->getFontSize() . '"';
