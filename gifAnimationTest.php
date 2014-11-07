@@ -37,11 +37,11 @@ $save = $image->save();
 file_put_contents(GIFPROTO . '/gtBackground'.'.'.$save['extension'], $save['contents']);
 
 // create a transparent canvas
-//$layer = imagecreate($width, $height);
-//$color = imagecolorallocatealpha($layer, 0, 0, 0, 127);
-//imagefill($layer, 0, 0, $color);
-//imagesavealpha($layer, TRUE);
-//imagepng($layer, GIFPROTO . '/layer.png');
+$layer = imagecreate($width, $height);
+$color = imagecolorallocatealpha($layer, 0, 0, 0, 127);
+imagefill($layer, 0, 0, $color);
+imagesavealpha($layer, TRUE);
+imagepng($layer, GIFPROTO . '/layer.png');
 
 //create a gif with n layers
 $n = 10;
@@ -80,44 +80,44 @@ $framed[]=40;
 ob_end_clean();
 
 
-//for($i=1; $i > $n; $i++)
-//{
-//    ob_start();
-//    $png = imagecreatefrompng(GIFPROTO . '/gtLayer'.$i.'.png');
+for($i=1; $i > $n; $i++)
+{
+    ob_start();
+    $png = imagecreatefrompng(GIFPROTO . '/gtLayer'.$i.'.png');
+
+    if($i === 1)
+    {
+        imagealphablending( $png, false );
+        imagesavealpha( $png, true );
+        imagegif($png);
+    }
+    $frames[]=ob_get_contents();
+    $framed[]=40;
+    ob_end_clean();
+}
+
+
+
+//ob_start();
+//$png = imagecreatefrompng(GIFPROTO . '/gtLayer1.png');
+//imagealphablending( $png, false );
+//imagesavealpha( $png, true );
+//imagegif($png);
+//$frames[]=ob_get_contents();
+//$framed[]=40;
+//ob_end_clean();
 //
-//    if($i === 1)
-//    {
-//        imagealphablending( $png, false );
-//        imagesavealpha( $png, true );
-//        imagegif($png);
-//    }
-//    $frames[]=ob_get_contents();
-//    $framed[]=40;
-//    ob_end_clean();
-//}
-
-
-
-ob_start();
-$png = imagecreatefrompng(GIFPROTO . '/gtLayer1.png');
-imagealphablending( $png, false );
-imagesavealpha( $png, true );
-imagegif($png);
-$frames[]=ob_get_contents();
-$framed[]=40;
-ob_end_clean();
-
-ob_start();
-imagegif(imagecreatefrompng(GIFPROTO . '/gtLayer2.png'));
-$frames[]=ob_get_contents();
-$framed[]=40;
-ob_end_clean();
-
-ob_start();
-imagegif(imagecreatefrompng(GIFPROTO . '/gtLayer3.png'));
-$frames[]=ob_get_contents();
-$framed[]=40;
-ob_end_clean();
+//ob_start();
+//imagegif(imagecreatefrompng(GIFPROTO . '/gtLayer2.png'));
+//$frames[]=ob_get_contents();
+//$framed[]=40;
+//ob_end_clean();
+//
+//ob_start();
+//imagegif(imagecreatefrompng(GIFPROTO . '/gtLayer3.png'));
+//$frames[]=ob_get_contents();
+//$framed[]=40;
+//ob_end_clean();
 
 
 $gif = new GIFEncoder($frames,$framed,0,2,0,0,0,'bin');

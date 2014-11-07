@@ -261,6 +261,11 @@ class GfXComponent implements Linkable, Resizeable
         return $filepath;
     }
 
+    protected function gifAnimate()
+    {
+
+    }
+
 
     /***
      *   function swfAnimate

@@ -1,70 +1,59 @@
 <?php
-/**
- * To find out, how gif animations work
- */
 
-$ani = new Imagick();
-$ani->setFormat('gif');
-$ani->newImage(200, 100, new ImagickPixel('yellow'));
+$gif = new Imagick();
+$gif->setFormat('gif');
 
-$color = new ImagickPixel('white');
-$color->setColor('white');
-// $color->setColor('none');
+$bg = new Imagick('8bit.png');
+$gif->setGravity(imagick::GRAVITY_CENTER);
+$gif->addImage($bg);
 
-$string = 'mal sehen';
-$draw = new ImagickDraw();
-$draw->setFont('Helvetica');
-
-$draw->setGravity(Imagick::GRAVITY_CENTER);
-// $ani->setImageDispose(2);
-
-$draw->setFillColor('wheat');
-$draw->setStrokeColor(new ImagickPixel('green'));
-$draw->rectangle(20, 20, 90, 40);
-
-// reset stroke color to BLACK
-$draw->setStrokeColor(new ImagickPixel('black'));
-
-$rotation = -22.5;
-
-for ($i = 0; $i <=9; $i++)
+for($i=0; $i<40; $i++)
 {
-    /*** create a new gif frame ***/
-    $ani->newImage(200, 100, $color);
-    $draw->rotate(25);
-
-    $rotation += 5;
-
-    /*** add the character to the image ***/
-    $ani->annotateImage($draw, 10, 10, $rotation, $string);
-
-    /*** set the frame delay to 30 ***/
-    $ani->setImageDelay(5);
-}
-$ani->drawImage($draw);
-
-for ($i = 0; $i<=9 ; $i++ )
-{
-    /*** create a new gif frame ***/
-    $ani->newImage(100, 50, $color);
-    $draw->rotate(-25);
-    $ani->drawImage($draw);
-
-    $rotation -= 5;
-
-    /*** add the character to the image ***/
-    $ani->annotateImage($draw, 10, 10, $rotation, $string);
-
-    /*** set the frame delay to 30 ***/
-    $ani->setImageDelay(5);
+$frame = new Imagick('image.png');
+$frame->rotateImage(new ImagickPixel('none'), (360/40)*$i);
+$frame->extentImage(300, 300, -100, -70);
+$frame->setImageDelay(1);
+// IMPORTANT! Clean up animation mess!
+$frame->setImageDispose(3);
+$gif->addImage($frame);
 }
 
 
-/*** write the file ***/
-$out = true;
+for($i=0; $i<40; $i++)
+{
+$frame = new Imagick('image.png');
+$frame->rotateImage(new ImagickPixel('none'), -(360/40)*$i);
+$frame->extentImage(300, 300, -100, -70);
+$frame->setImageDelay(100);
+// IMPORTANT! Clean up animation mess!
+$frame->setImageDispose(3);
+$gif->addImage($frame);
+}
 
-$path = "/var/www/chameleon/assets/gifProto/ani.gif";
 
-$ani->writeImages($path, $out);
+header('Content-type: image/gif');
+echo $gif->getImagesBlob();
+// header('Content-type: image/gif');
 
-echo('<image src="http://localhost/chameleon/assets/gifProto/ani.gif"></image>');
+exit();
+
+
+
+echo 'Writing file';
+try
+{
+$result = $gif->writeImages('assets/animation.gif', true);
+}
+catch(Exception $e)
+{
+var_dump($e);
+}
+// echo $gif->getImagesBlob();
+
+var_dump($result);
+
+?>
+<img src="assets/animation.gif" />
+<?php
+
+exit(0);

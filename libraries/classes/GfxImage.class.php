@@ -196,67 +196,58 @@ class GfxImage extends GfXComponent
      * @param $canvas
      * @return mixed
      */
-    public function renderGIF($canvas)
+    public function renderGIF($frame)
     {
+        $fileHandle = fopen(ROOT_DIR . $this->getImageUrl(), 'r');
+
+        $image = new Imagick();
+        $image->readimagefile($fileHandle);
+
+
+
+        $image->resizeimage($this->getWidth(), $this->getHeight(), imagick::FILTER_LANCZOS, 1, true);
+
+
         if($this->hasShadow() && $this->shadowEnabled())
         {
-            $this->createShadow($canvas);
+            $shadow = $this->createShadow();
+            $frame->compositeImage($shadow, Imagick::COMPOSITE_DEFAULT, $this->getX(), $this->getY());
         }
 
         if($this->hasStroke() && $this->strokeEnabled())
         {
-            $this->createStroke($canvas);
+            $this->createStroke($image);
         }
 
-        $dst = $this->resizeImage($this->getImageUrl());
+        $frame->compositeImage($image, Imagick::COMPOSITE_DEFAULT, $this->getX(), $this->getY());
 
-        if($this->getContainer()->getPreviewMode() !== true)
-        {
-            imagecopyresized($canvas, $dst, $this->getX(), $this->getY(), 0, 0, $this->getWidth(), $this->getHeight(), $this->getWidth(),
-                        $this->getHeight());
-        }
-        else
-        {
-            imagecopyresampled($canvas, $dst, $this->getX(), $this->getY(), 0, 0, $this->getWidth(), $this->getHeight(), $this->getWidth(),
-                        $this->getHeight());
-        }
-
-        return $canvas;
+        return $frame;
     }
 
-    public function createShadow($canvas)
+    public function createShadow()
     {
-        $color = imagecolorallocatealpha($canvas,
-                                         $this->getShadow()->getColor()->getR(),
-                                         $this->getShadow()->getColor()->getG(),
-                                         $this->getShadow()->getColor()->getB(),
-                                         50
-                 );
+        $color = new ImagickPixel($this->getShadow()->getColor()->getHex());
 
         $x1 = $this->getX() + $this->getShadow()->getDist();
         $y1 = $this->getY() + $this->getShadow()->getDist();
         $x2 = $x1 + $this->getWidth();
         $y2 = $y1 + $this->getHeight();
 
-        imagefilledrectangle($canvas, $x1, $y1, $x2, $y2, $color);
+        $shadow = new ImagickDraw();
+        $shadow->setFillColor($color);
+        $shadow->setfillopacity(0.5);
+        $shadow->rectangle($x1, $y1, $x2, $y2);
+
+        return $shadow;
     }
 
-    public function createStroke($canvas)
+    public function createStroke($image)
     {
-        // $this->getStroke()->setWidth(1);
-        $color = imagecolorallocate($canvas,
-            $this->getStroke()->getColor()->getR(),
-            $this->getStroke()->getColor()->getG(),
-            $this->getStroke()->getColor()->getB()
-        );
-
-        $x1 = $this->getX() - $this->getStroke()->getWidth();
-        $y1 = $this->getY() - $this->getStroke()->getWidth();
-        $x2 = $this->getX() + $this->getStroke()->getWidth() + $this->getWidth();
-        $y2 = $this->getY() + $this->getStroke()->getWidth() + $this->getHeight();
-
-        imagefilledrectangle($canvas, $x1, $y1, $x2, $y2, $color);
+        $width = $this->getWidth() + ($this->getStroke()->getWidth() * 2);
+        $height = $this->getHeight() + ($this->getStroke()->getHeight() * 2);
+        $image->borderimage($this->getStroke()->getColor()->getHex(), $width, $height);
     }
+
 
     /**
      * resize image

@@ -144,69 +144,64 @@ class GfxRectangle extends GfxShape
 
 
 
-    public function renderGIF($canvas)
+    public function renderGIF($frame)
     {
+        $rectangle = new ImagickDraw();
+
+        if($this->getFill()->getR() !== null)
+        {
+            $color = new ImagickPixel($this->getFill()->getHex());
+            $rectangle->setFillColor($color);
+        }
+        else
+        {
+            $color = new ImagickPixel($this->getStroke()->getColor()->getHex());
+            $rectangle->setFillcolor($color);
+        }
+
         if($this->shadowEnabled() && $this->hasShadow())
         {
-            $this->createShadow($canvas);
+            $shadow = $this->createShadow();
+            $frame->drawimage($shadow);
         }
 
         if($this->strokeEnabled() && $this->hasStroke())
         {
-            $this->createStroke($canvas);
+            $this->createStroke($rectangle);
         }
 
         $x2 = $this->getX() + $this->getWidth();
         $y2 = $this->getY() + $this->getHeight();
+        $rectangle->rectangle($this->getX(), $this->getY(), $x2, $y2);
 
-        if($this->getFill()->getR() !== null)
-        {
-            $textColour = imagecolorallocatealpha($canvas, $this->getFill()->getR(), $this->getFill()->getG(), $this->getFill()->getB(), 0);
-            imagefilledrectangle($canvas, $this->getX(), $this->getY(), $x2, $y2, $textColour);
-        }
-        else
-        {
-            $textColour = imagecolorallocatealpha($canvas, $this->getStroke()->getR(), $this->getStroke()->getB(),
-                $this->getStroke()->getG(),
-                0);
-            imagerectangle($canvas, $this->getX(), $this->getY(), $x2, $y2, $textColour);
-        }
-        return $canvas;
+        $frame->drawImage($rectangle);
+
+        return $frame;
     }
 
     // TODO: rename those functions in order to reflect the fact that they will only work for GIF!!
-    public function createShadow($canvas)
+    public function createShadow()
     {
-        $color = imagecolorallocatealpha($canvas,
-            $this->getShadow()->getColor()->getR(),
-            $this->getShadow()->getColor()->getG(),
-            $this->getShadow()->getColor()->getB(),
-            50
-        );
+        $color = new ImagickPixel($this->getShadow()->getColor()->getHex());
 
         $x1 = $this->getX() + $this->getShadow()->getDist();
         $y1 = $this->getY() + $this->getShadow()->getDist();
-
         $x2 = $x1 + $this->getWidth();
         $y2 = $y1 + $this->getHeight();
 
-        imagefilledrectangle($canvas, $x1, $y1, $x2, $y2, $color);
+        $shadow = new ImagickDraw();
+        $shadow->setFillColor($color);
+        $shadow->setfillopacity(0.5);
+        $shadow->rectangle($x1, $y1, $x2, $y2);
+
+        return $shadow;
     }
 
-    public function createStroke($canvas)
+    public function createStroke($rectangle)
     {
-        $color = imagecolorallocate($canvas,
-            $this->getStroke()->getColor()->getR(),
-            $this->getStroke()->getColor()->getG(),
-            $this->getStroke()->getColor()->getB()
-        );
-
-        $x1 = $this->getX() - $this->getStroke()->getWidth();
-        $y1 = $this->getY() - $this->getStroke()->getWidth();
-        $x2 = $this->getX() + $this->getStroke()->getWidth() + $this->getWidth();
-        $y2 = $this->getY() + $this->getStroke()->getWidth() + $this->getHeight();
-
-        imagefilledrectangle($canvas, $x1, $y1, $x2, $y2, $color);
+        $color = new ImagickPixel($this->getStroke()->getColor()->getHex());
+        $rectangle->setStrokeWidth($this->getStroke()->getWidth());
+        $rectangle->setStrokeColor($color);
     }
 
     public function getSvg()
