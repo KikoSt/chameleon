@@ -1,6 +1,6 @@
 <div class="thumbnail col-md-4">
     <div class="overviewTitle">Preview of existing creatives</div>
-    <div id="creativesCarousel" class="carousel slide" data-ride="carousel" style="margin-top: 10px;">
+    <div id="creativesCarousel_<?php echo $preview->templateId; ?>" class="carousel slide" data-ride="carousel" style="margin-top: 10px;">
         <div class="carousel-buttons">
             <div class="col-xs-6 text-center carouselChevron">
                 <a data-target="#creativesCarousel" data-slide="prev" href="#">
@@ -9,7 +9,7 @@
             </div>
             <div class="col-xs-6 text-center carouselChevron">
                 <a data-target="#creativesCarousel" data-slide="next" href="#">
-                    <span class="glyphicon glyphicon-chevron-right">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
                 </a>
             </div>
         </div>

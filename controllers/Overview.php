@@ -37,6 +37,7 @@ class Overview extends Controller
 
         $this->view = $this->setLayout('views/overview.phtml')->getView();
         $this->view->advertiserId = $this->getAdvertiserId();
+        $this->view->companyId = $this->getCompanyId();
 
         // get all templates for company / advertiser
         try
@@ -74,6 +75,8 @@ class Overview extends Controller
                     }
                     catch(Exception $e)
                     {
+                        echo 'Skipping ' . $template->getBannerTemplateId() . "\n";
+                        var_dump($e);
                         continue;
                     }
 
@@ -82,6 +85,7 @@ class Overview extends Controller
                     $container->setTarget('GIF');
                     try
                     {
+                        echo 'Rendering!';
                         $container->render();
                     }
                     catch(Exception $e)
@@ -94,13 +98,13 @@ class Overview extends Controller
                     $preview = new StdClass();
                     $preview->filePath = $file;
                     $preview->templateName = $filename;
-                    $preview->templateId = $template->getBannerTemplateId();
+                    $preview->templateId   = $template->getBannerTemplateId();
                     $preview->advertiserId = $this->getAdvertiserId();
-                    $preview->companyId = $this->getCompanyId();
-                    $preview->fileSize = getRemoteFileSize($file);
-                    $preview->dateCreate = date("Y-m-d H:i:s", parseJavaTimestamp($template->getDateCreate()));
+                    $preview->companyId    = $this->getCompanyId();
+                    $preview->fileSize     = getRemoteFileSize($file);
+                    $preview->dateCreate   = date("Y-m-d H:i:s", parseJavaTimestamp($template->getDateCreate()));
                     $preview->dateModified = date("Y-m-d H:i:s", parseJavaTimestamp($template->getDateModified()));
-                    $preview->templateId = $template->getBannerTemplateId();
+                    $preview->templateId   = $template->getBannerTemplateId();
                     $preview->parentTemplateId = $template->getParentBannerTemplateId();
                     $preview->shortDescription = $this->getShortenedDescription($template->getName());
                     $preview->description = $template->getName();

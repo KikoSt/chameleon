@@ -1,7 +1,7 @@
 <div class="thumbnail thumbnail-half col-md-4">
     <div class="overviewTitle">
         Assigned categories
-        <span id="editAssignedCategory"
+        <span id="editAssignedCategory-<?php echo $preview->templateId; ?>"
               class="fa fa-pencil-square-o cursor-pointer color-black"
               data-toggle="modal"
               data-target="#categorySelect-<?php echo $preview->templateId; ?>">
@@ -12,7 +12,7 @@
             foreach($preview->templateSubscription as $templateSubscription):
                 if($templateSubscription->userStatus === 'ACTIVE'):
         ?>
-                    <div id="assigned-<?php echo $templateSubscription->idCategory;?>" class="row">
+                    <div id="assigned-<?php echo $templateSubscription->idCategory;?>-<?php echo $preview->templateId; ?>" class="row">
                         <p class="text-left categoryItem">
                             <a class="fa fa-trash categoryItem cursor-pointer removeCategoryShortcut" title="Remove category"></a>
                             <?php echo $templateSubscription->categoryName;?>
