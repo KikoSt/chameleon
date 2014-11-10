@@ -90,6 +90,8 @@
                     $this->fontFamily = $element->getFontFamily();
                 }
 
+                $this->setLink($element->getCmeoLink());
+
                 // calculate own properties based on those elements' properties
                 // $this->elements[] = $element;
             }
@@ -182,7 +184,7 @@
     // cmeoRel
     public function setLink($link)
     {
-        $this->link = $source;
+        $this->link = $link;
     }
 
     public function getLink()
