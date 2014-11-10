@@ -38,7 +38,7 @@ $(document).ready(function() {
     });
 
     $('.glyphicon-remove-circle').on('click', function(e) {
-        var id = $(this).attr('id');
+        var id = $(this).attr('id').replace('_close', '');
         $('#panel_' + id).hide();
     });
 
@@ -331,6 +331,143 @@ $(document).ready(function() {
         'showCaption': true,
     });
 
+    $('[id$="_source"]').change(function() {
+        console.log('source changed!');
+    });
+
+    $('[id$="_link"]').change(function() {
+        console.log('link changed!');
+    });
+
+
+
+    function updateGroup(baseElement) {
+        // if group is edited:
+        groupId = $(baseElement).parents('[id^=grouppanel]').attr('id').replace('grouppanel_', '');
+        if(groupId > 0) {
+            // NOTE: the value attribute specifies the initial value of an input,
+            // but the value property specifies the current value - baseElement comes in
+            // VERY handy here :)
+            // console.log($(baseElement).prop('value'));
+            // console.log($(baseElement).attr('value'));
+            //
+            // find the name of the edited attribute
+            attributeName = $(baseElement).attr('name').replace(/.*\#/i, '');
+
+            updateField = $(document).find('[name="' + groupId + '#' + attributeName + '"]');
+
+            var oldValue = $(baseElement).attr('value');
+            var newValue = $(baseElement).prop('value');
+
+            var elements = $("[data-groupid=" + groupId + "]");
+
+            // TODO: Update imageMap
+            //       implement colorpicker updates
+
+            // Note: even if the single component editor panes aren't displayed
+            // we need to update them in order to have the data up to date for generating
+            // previews and saving!
+
+            switch(attributeName) {
+                case 'x':
+                case 'y':
+                    var delta = newValue - oldValue;
+
+                    elements.each(function (i, member) {
+                        var inElem = $(member).find('[name$="#' + attributeName + '"]');
+                        elementName = inElem.attr('name').replace(/\#.*/i, '')
+                        $(inElem).prop('value', (Number(inElem.prop('value')) + Number(delta)));
+                        $(inElem).attr('value', (Number(inElem.attr('value')) + Number(delta)));
+
+                        // find image map area element
+
+                        $("#previewImage img").unbind('mapster');
+
+                        var imapElement = $('area#' + elementName);
+                        var coords = $(imapElement).attr('coords').split(',');
+
+                        if(attributeName === 'x') {
+                            coords[0] = Number(coords[0]) + Number(delta);
+                            coords[1] = Number(coords[1]);
+                            coords[2] = Number(coords[2]) + Number(delta);
+                            coords[3] = Number(coords[3]);
+                        } else if(attributeName === 'y') {
+                            coords[0] = Number(coords[0]);
+                            coords[1] = Number(coords[1]) + Number(delta);
+                            coords[2] = Number(coords[2]);
+                            coords[3] = Number(coords[3]) + Number(delta);
+                        }
+
+                        coords = coords.join(',');
+
+                        $(imapElement).attr('coords', coords);
+                        $(imapElement).prop('coords', coords);
+
+                        $("#previewImage img").mapster({
+                            fillColor: 'ff005',
+                            fillOpacity: 0.1,
+                            strokeWidth: 3,
+                            stroke: true,
+                            strokeColor: 'ff0000',
+                            singleSelect: true,
+                            clickNavigate: false
+                        });
+
+                        var coords = $(imapElement).attr('coords').split(',');
+                    });
+                    // TODO: calculate new image map coordinates
+                    //
+                    break;
+                case 'text':
+                    elements.each(function (i, member) {
+                        inElem = $(member).find('[name$="' + attributeName + '"]');
+                        $(inElem).prop('value', newValue);
+                        $(inElem).attr('value', newValue);
+                    });
+                    break;
+                case 'fontFamily':
+                    elements.each(function (i, member) {
+                        inElem = $(member).find('[name$="' + attributeName + '"]');
+                        if($(inElem).find('option[value="' + newValue + '"]').length) {
+                            $(inElem).find('option[value="' + newValue + '"]').prop('selected', true);
+                        }
+                    });
+                    break;
+                case 'cmeoLink':
+                    elements.each(function (i, member) {
+                        inElem = $(member).find('[name$="' + attributeName + '"]');
+                        if($(inElem).find('option[value="' + newValue + '"]').length) {
+                            $(inElem).find('option[value="' + newValue + '"]').prop('selected', true);
+                            $(inElem).find('option[value="' + newValue + '"]').attr('selected', true);
+                        }
+                    });
+                    break;
+                case 'fgcolor':
+                    elements.each(function (i, member) {
+                        if($(member).attr('data-type') == "text") {
+                            inElem = $(member).find('[name$="fill"]');
+                            $(inElem).prop('value', newValue);
+                            $(inElem).attr('value', newValue);
+                        }
+                    });
+                    break;
+                case 'bgcolor':
+                    elements.each(function (i, member) {
+                        if($(member).attr('data-type') == "rectangle") {
+                            inElem = $(member).find('[name$="fill"]');
+                            $(inElem).prop('value', newValue);
+                            $(inElem).attr('value', newValue);
+                        }
+                    });
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+
+
     $('#awesomeEditor input, #awesomeEditor select').change(function() {
         var groupId = 0;
         var groupEdit = false;
@@ -363,127 +500,7 @@ $(document).ready(function() {
         // TODO: recalculate groups
 
         if($(this).parents('[id^=grouppanel]').length) {
-            // if group is edited:
-            groupId = $(this).parents('[id^=grouppanel]').attr('id').replace('grouppanel_', '');
-            if(groupId > 0) {
-                // NOTE: the value attribute specifies the initial value of an input,
-                // but the value property specifies the current value - this comes in
-                // VERY handy here :)
-                // console.log($(this).prop('value'));
-                // console.log($(this).attr('value'));
-                //
-                // find the name of the edited attribute
-                attributeName = $(this).attr('name').replace(/.*\#/i, '');
-
-                updateField = $(document).find('[name="' + groupId + '#' + attributeName + '"]');
-
-                var oldValue = $(this).attr('value');
-                var newValue = $(this).prop('value');
-
-                var elements = $("[data-groupid=" + groupId + "]");
-
-                // TODO: Update imageMap
-                //       implement colorpicker updates
-
-                // Note: even if the single component editor panes aren't displayed
-                // we need to update them in order to have the data up to date for generating
-                // previews and saving!
-
-                switch(attributeName) {
-                    case 'x':
-                    case 'y':
-                        var delta = newValue - oldValue;
-
-                        elements.each(function (i, member) {
-                            var inElem = $(member).find('[name$="#' + attributeName + '"]');
-                            elementName = inElem.attr('name').replace(/\#.*/i, '')
-                            $(inElem).prop('value', (Number(inElem.prop('value')) + Number(delta)));
-                            $(inElem).attr('value', (Number(inElem.attr('value')) + Number(delta)));
-
-                            // find image map area element
-
-                            $("#previewImage img").unbind('mapster');
-
-                            var imapElement = $('area#' + elementName);
-                            var coords = $(imapElement).attr('coords').split(',');
-
-                            if(attributeName === 'x') {
-                                coords[0] = Number(coords[0]) + Number(delta);
-                                coords[1] = Number(coords[1]);
-                                coords[2] = Number(coords[2]) + Number(delta);
-                                coords[3] = Number(coords[3]);
-                            } else if(attributeName === 'y') {
-                                coords[0] = Number(coords[0]);
-                                coords[1] = Number(coords[1]) + Number(delta);
-                                coords[2] = Number(coords[2]);
-                                coords[3] = Number(coords[3]) + Number(delta);
-                            }
-
-                            coords = coords.join(',');
-
-                            $(imapElement).attr('coords', coords);
-                            $(imapElement).prop('coords', coords);
-
-                            $("#previewImage img").mapster({
-                                fillColor: 'ff005',
-                                fillOpacity: 0.1,
-                                strokeWidth: 3,
-                                stroke: true,
-                                strokeColor: 'ff0000',
-                                singleSelect: true,
-                                clickNavigate: false
-                            });
-
-                            var coords = $(imapElement).attr('coords').split(',');
-                        });
-                        // TODO: calculate new image map coordinates
-                        //
-                        break;
-                    case 'text':
-                        elements.each(function (i, member) {
-                            inElem = $(member).find('[name$="' + attributeName + '"]');
-                            $(inElem).prop('value', newValue);
-                            $(inElem).attr('value', newValue);
-                        });
-                        break;
-                    case 'fontFamily':
-                        elements.each(function (i, member) {
-                            inElem = $(member).find('[name$="' + attributeName + '"]');
-                            if($(inElem).find('option[value="' + newValue + '"]').length) {
-                                $(inElem).find('option[value="' + newValue + '"]').prop('selected', true);
-                            }
-                        });
-                        break;
-                    case 'cmeoLink':
-                        elements.each(function (i, member) {
-                            inElem = $(member).find('[name$="' + attributeName + '"]');
-                            if($(inElem).find('option[value="' + newValue + '"]').length) {
-                                $(inElem).find('option[value="' + newValue + '"]').prop('selected', true);
-                            }
-                        });
-                        break;
-                    case 'fgcolor':
-                        elements.each(function (i, member) {
-                            if($(member).attr('data-type') == "text") {
-                                inElem = $(member).find('[name$="fill"]');
-                                $(inElem).prop('value', newValue);
-                                $(inElem).attr('value', newValue);
-                            }
-                        });
-                        break;
-                    case 'bgcolor':
-                        elements.each(function (i, member) {
-                            if($(member).attr('data-type') == "rectangle") {
-                                inElem = $(member).find('[name$="fill"]');
-                                $(inElem).prop('value', newValue);
-                                $(inElem).attr('value', newValue);
-                            }
-                        });
-                        break;
-                    default:
-                        break;
-                }
-            }
+            updateGroup(this);
         } else {
             var elementName = $(this).attr('name').replace(/\#.*/i, '');
 

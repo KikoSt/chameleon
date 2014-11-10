@@ -2,7 +2,7 @@
     <div class="panel-heading textTitle">
         <h3 class="panel-title">
                 text: <?php echo str_replace('_', ' ', $element->getId());?>
-            <span id="<?php echo $element->getId();?>" class="glyphicon glyphicon-remove-circle" style="float:right;cursor:hand;"></span>
+            <span id="<?php echo $element->getId();?>_close" class="glyphicon glyphicon-remove-circle" style="float:right;cursor:hand;"></span>
         </h3>
     </div>
     <div class="panel-body">

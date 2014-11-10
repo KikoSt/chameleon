@@ -235,6 +235,12 @@ h2 > span
 
 .fa-btn.green
 {
+    background: #2c905f;
+    color: #ffffff;
+}
+
+.fa-btn.blue
+{
     background: #2C5D90;
     color: #ffffff;
 }
