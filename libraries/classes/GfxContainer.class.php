@@ -456,16 +456,43 @@ class GfxContainer
         //set the color for the layer
         $color = new ImagickPixel("rgba(127,127,127, 0)");
 
-        $frame = new Imagick();
-        $frame->newimage($this->getCanvasWidth(), $this->getCanvasHeight(), $color);
+        //create the stage (container for the single frames)
+        $stage = new Imagick();
+        $stage->newimage($this->getCanvasWidth(), $this->getCanvasHeight(), $color);
 
-        foreach ($this->elements as $element)
+        //create frames
+        for($animationStep = 0; $animationStep <= 100; $animationStep++)
         {
-            $frame = $element->renderGif($frame);
+            //create container for the single frame
+            $frame = new Imagick();
+            $frame->newimage($this->getCanvasWidth(), $this->getCanvasHeight(), $color);
+
+            $elementHandler = array();
+
+            //loop through all elements
+            foreach ($this->elements as $element)
+            {
+                //todo just for now
+                if(is_a($element, 'GfxText'))
+                {
+                    //add the elements to an array
+                    $elementHandler[] = $element->renderGif();
+                }
+            }
+
+            //composite the single images
+            foreach($elementHandler as $singleImage)
+            {
+                $frame->compositeimage($singleImage, Imagick::COMPOSITE_DEFAULT, 0, 0);
+            }
+
+            //add the complete frame to the stage
+            $stage->addimage($frame);
         }
 
+        //complete the banner
         $path = OUTPUT_DIR . '/' . $this->getOutputDir() . '/' . $this->getOutputFilename() . '.gif';
-        $success = $frame->writeImages($path, true);
+        $success = $stage->writeImages($path, true);
 
         unset($success);
     }
