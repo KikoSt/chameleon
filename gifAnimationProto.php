@@ -58,4 +58,4 @@ $container->render();
 $file = BASE_DIR . "/output/" . $container->getOutputDir() . '/'.$baseFilename.'.gif';
 $text = BASE_DIR . "/assets/gifProto/ani.gif";
 
-echo ('<image src="'.$file.'"></image><image src="'.$text.'"></image>');
+echo ('<image src="'.$file.'"></image>');

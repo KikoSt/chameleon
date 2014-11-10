@@ -240,127 +240,75 @@ class GfxText extends GfxComponent
         return $canvas;
     }
 
-
-
-
     public function renderGif($frame)
     {
-        //todo wrong comparison, change after finalizing development (<=)
-//        if(count($this->getAnimations()) <= 0)
-//        {
+        if(count($this->getAnimations()) > 0)
+        {
             if($this->hasShadow())
             {
-//                $this->renderShadow($canvas);
+                $this->renderShadow($frame);
             }
 
             $text = new ImagickDraw();
             $text->setFont($this->getGIFFont());
             $text->setfontsize($this->getFontSize());
+            $text->setfillcolor(new ImagickPixel($this->getFill()->getHex()));
 
             $frame->annotateImage($text, $this->getX(), $this->getY(), 0, $this->getText());
-//        }
-//        else
-//        {
-//            $gif = new Imagick();
-//            $gif->setformat('gif');
-//
-//            //create the background from the existing canvas
-//            $bg = $this->convertGDToImagick($canvas);
-//
-//            $gif->addimage($bg);
-//
-//            //set the color for the layer
-//            $color = new ImagickPixel("rgba(127,127,127,0)");
-//
-//            //set the start rotation
-//            $rotation = 0;
+        }
+        else
+        {
+            //set the color for the layer
+            $color = new ImagickPixel("rgba(127,127,127,0)");
+
+            //set the start rotation
+            $rotation = 0;
 
 //            for($i=0; $i<40; $i++)
 //            {
-//                $frame = new ImagickDraw();
-//                $frame->setFont($this->getGIFFont());
-//                $frame->setfontsize($this->getFontSize());
-//                $frame->setGravity(Imagick::GRAVITY_CENTER);
-//
-//                //create a new layer
-//                $temp = new Imagick();
-//                $temp->newImage($this->getContainer()->getCanvasWidth(), $this->getContainer()->getCanvasHeight(),
-//                    $color);
-//
-//                $x = $this->getContainer()->getCanvasWidth() - $this->getX();
-//                $y = $this->getContainer()->getCanvasHeight() - $this->getY();
-//
-//                //add the layer to the given canvas
-//                $temp->annotateImage($frame, $x, $y, $rotation+$i, 'test');
-//                $temp->setImageDelay(5);
-//
-//                // IMPORTANT! Clean up animation mess!
-//                $temp->setImageDispose(3);
-//                $gif->addImage($temp);
+                $text = new ImagickDraw();
+                $text->setFont($this->getGIFFont());
+                $text->setfontsize($this->getFontSize());
+                $text->setGravity(Imagick::GRAVITY_CENTER);
+
+                //create a new layer
+                $temp = new Imagick();
+                $temp->newImage($this->getContainer()->getCanvasWidth(), $this->getContainer()->getCanvasHeight(),
+                    $color);
+
+                $x = $this->getContainer()->getCanvasWidth() - $this->getX();
+                $y = $this->getContainer()->getCanvasHeight() - $this->getY();
+
+                if($this->hasShadow())
+                {
+                    $this->renderShadow($frame);
+                }
+
+                //add the layer to the given canvas
+                $temp->annotateImage($text, $x, $y, $rotation, $this->getText());
+                $temp->setImageDelay(40);
+
+                // IMPORTANT! Clean up animation mess!
+                $temp->setImageDispose(3);
+                $frame->addImage($temp);
 //            }
-//
-//            //todo convert the Imagick object back into a GD object
-//            $path = "/var/www/chameleon/assets/gifProto/ani.gif";
-//            $gif->writeImages($path, true);
-//
-//        }
+
+            //todo convert the Imagick object back into a GD object
+            $path = "/var/www/chameleon/assets/gifProto/ani.gif";
+            $frame->writeImages($path, true);
+        }
 
         return $frame;
     }
 
-    private function rotate(Imagick $image, ImagickDraw $draw, $color, $text, $up = true)
+    public function renderShadow($frame)
     {
-        for ($i = 0; $i <=10; $i++)
-        {
-            //create a new layer
-            $image->newImage($this->getWidth()+10, $this->getHeight()+10, $color);
+        $text = new ImagickDraw();
+        $text->setFont($this->getGIFFont());
+        $text->setfontsize($this->getFontSize());
+        $text->setfillcolor(new ImagickPixel($this->getShadow()->getColor()->getHex()));
 
-            if($up)
-            {
-                $this->rotation += 5;
-            }
-            else
-            {
-                $this->rotation -= 5;
-            }
-
-            //add the layer to the given canvas
-            $image->annotateImage($draw, 0, 0, $this->rotation, $text);
-            $image->setImageDelay(1);
-        }
-
-    }
-
-    private function convertGDToImagick($canvas)
-    {
-        ob_start();
-        imagepng($canvas);
-        $blob = ob_get_clean();
-        $image = new Imagick();
-        $image->readImageBlob($blob);
-
-        return $image;
-    }
-
-    public function renderShadow($canvas)
-    {
-        $color = imagecolorallocatealpha($canvas,
-                                         $this->getShadow()->getColor()->getR(),
-                                         $this->getShadow()->getColor()->getG(),
-                                         $this->getShadow()->getColor()->getB(),
-                                         50
-                 );
-
-        imagettftext($canvas,
-            $this->getFontSize(),
-            0,
-            $this->getX() + $this->getShadow()->getDist(),
-            $this->getY() + $this->getShadow()->getDist(),
-            $color,
-            $this->getGIFFont(),
-//            utf8_decode(str_replace('€', ' Euro', $this->getText()))
-            $this->getText()
-        );
+        $frame->annotateImage($text, $this->getX()+$this->getShadow()->getDist(), $this->getY()+$this->getShadow()->getDist(), 0, $this->getText());
     }
 
     public function getFontListForOverview()

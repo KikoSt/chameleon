@@ -453,24 +453,19 @@ class GfxContainer
 
     private function renderGIF()
     {
-        $this->setCanvas(imagecreatetruecolor($this->getCanvasWidth(), $this->getCanvasHeight()));
-
         //set the color for the layer
         $color = new ImagickPixel("rgba(127,127,127, 0)");
 
-        for($i=0; $i <= 0; $i++)
+        $frame = new Imagick();
+        $frame->newimage($this->getCanvasWidth(), $this->getCanvasHeight(), $color);
+
+        foreach ($this->elements as $element)
         {
-            $frame = new Imagick();
-            $frame->newimage($this->getCanvasWidth(), $this->getCanvasHeight(), $color);
-
-            foreach ($this->elements as $element)
-            {
-                $frame = $element->renderGif($frame);
-            }
-
-            $path = OUTPUT_DIR . '/' . $this->getOutputDir() . '/' . $this->getOutputFilename() . '.gif';
-            $success = $frame->writeImages($path, true);
+            $frame = $element->renderGif($frame);
         }
+
+        $path = OUTPUT_DIR . '/' . $this->getOutputDir() . '/' . $this->getOutputFilename() . '.gif';
+        $success = $frame->writeImages($path, true);
 
         unset($success);
     }
