@@ -1,7 +1,7 @@
 <div class="row">
     <label class="col-md-4">Color:</label>
     <div>
-        <input id="fill"
+        <input id="<?php echo $element->getId();?>_fill"
                type="text"
                class="form-control picker small"
                name="<?php echo $element->getId();?>#fill"

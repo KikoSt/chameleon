@@ -5,6 +5,7 @@
         >
         <option value="">Select option...</option>
         <?php foreach($this->cmeoLinkOptions as $option): ?>
+            <?php echo $option . ' - ' . $element->getCmeoLink() . "\n"; ?>
             <option value="<?php echo $option;?>" <?php echo ($option === $element->getCmeoLink()) ? 'selected' : '';?>><?php echo $option;
                 ?></option>
         <?php endforeach;?>

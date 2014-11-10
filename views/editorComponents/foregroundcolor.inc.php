@@ -9,7 +9,7 @@
                placeholder="color"
                style="float:left;"
             />
-        <div id="<?php echo $element->getId();?>--preview" class="presetcolor" style="display: inline; float: left; background-color: <?php echo $element->getForegroundColor()->getHex();?>;"></div>
+        <div id="<?php echo $element->getId();?>--fgpreview" class="presetcolor" style="display: inline; float: left; background-color: <?php echo $element->getForegroundColor()->getHex();?>;"></div>
         <button id="<?php echo $element->getId();?>--fgprimary" style="margin-left: 3px;" type="button" class="btn btn-xs preset presetcolor primary"></button>
         <button id="<?php echo $element->getId();?>--fgsecondary" type="button" class="btn btn-xs preset presetcolor secondary"></button>
     </div>
