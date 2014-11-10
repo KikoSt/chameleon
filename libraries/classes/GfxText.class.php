@@ -242,6 +242,7 @@ class GfxText extends GfxComponent
 
     public function renderGif()
     {
+        var_dump($this->getFrameDuration());
         //set the color for the layer
         $transparent = new ImagickPixel("rgba(127,127,127,0)");
 
@@ -269,6 +270,9 @@ class GfxText extends GfxComponent
         }
         else
         {
+
+
+
             //set the start rotation
             $rotation = 0;
 

@@ -450,7 +450,6 @@ class GfxContainer
         gc_collect_cycles();
     }
 
-
     private function renderGIF()
     {
         //set the color for the layer
@@ -460,8 +459,10 @@ class GfxContainer
         $stage = new Imagick();
         $stage->newimage($this->getCanvasWidth(), $this->getCanvasHeight(), $color);
 
+//        $frameCount = $this->getFrames();
+
         //create frames
-        for($animationStep = 0; $animationStep <= 100; $animationStep++)
+        for($animationStep = 0; $animationStep <= 0; $animationStep++)
         {
             //create container for the single frame
             $frame = new Imagick();

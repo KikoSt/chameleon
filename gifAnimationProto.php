@@ -21,7 +21,7 @@ $container = new GfxContainer();
 $connector->setAdvertiserId(122);
 $connector->setCompanyId(170);
 
-$template = $connector->getTemplateById(220);
+$template = $connector->getTemplateById(223);
 
 $container->setAdvertiserId(122);
 $container->setCompanyId(170);
