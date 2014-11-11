@@ -211,6 +211,7 @@ class APIConnector
         $curl = $this->getCurl($resource, 'GET');
 
         $curlResponse = curl_exec($curl);
+        throw new Exception($resource . ' - ' . $curlResponse);
         curl_close($curl);
 
         $result = $this->validateResponse($curlResponse);

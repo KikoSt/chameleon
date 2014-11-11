@@ -115,6 +115,18 @@ class BannerTemplateModel implements JsonSerializable
         $this->idAdvertiser = $idAdvertiser;
     }
 
+    // wrapper for getBannerTemplateId
+    public function getId()
+    {
+        return $this->idBannerTemplate;
+    }
+
+    // wrapper for setBannerTemplateId
+    public function setId($bannerTemplateId)
+    {
+        $this->idBannerTemplate = $bannerTemplateId;
+    }
+
     public function getBannerTemplateId()
     {
         return $this->idBannerTemplate;

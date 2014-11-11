@@ -102,7 +102,14 @@ class CMEOGenerator
 
     public function logMessage($message)
     {
-        fwrite($this->logHandle, $message . "\n");
+        try
+        {
+            fwrite($this->logHandle, $message . "\n");
+        }
+        catch(Exception $e)
+        {
+            // for now
+        }
     }
 
 
@@ -125,7 +132,10 @@ class CMEOGenerator
                 $logfileName = 'generate_logfile_<date>.log';
             }
         }
-
+        else
+        {
+            throw new Exception ('ini settings not found');
+        }
 
         $datetime    = new Datetime();
         $dateStr     = $datetime->format($this->dateformat);
@@ -160,11 +170,13 @@ class CMEOGenerator
 
         foreach($this->templateList AS $curTemplateId)
         {
+            echo '> ' . $curTemplateId . ' <';
             $templates[] = $this->connector->getTemplateById($curTemplateId);
         }
 
         foreach($templates AS $template)
         {
+            echo "\nGenerating template " . $template->getBannerTemplateId() . "\n";
             $categorySubscriptions = $template->getCategorySubscriptions();
             $subscriptionList = array();
             foreach($categorySubscriptions AS $categorySubscription)
@@ -172,6 +184,7 @@ class CMEOGenerator
                 $subscriptionList[] = (int) $categorySubscription->idCategory;
             }
             $categories = array_intersect($this->categoryList, $subscriptionList);
+            $categories = $subscriptionList;
 
             foreach($categories AS $categoryId)
             {
@@ -186,7 +199,7 @@ class CMEOGenerator
                 $logMessage .= 'companyId = ' . $this->companyId . ', ';
                 $logMessage .= 'advertiserId = ' . $this->advertiserId . ', ';
                 $logMessage .= 'categoryId = ' . $categoryId;
-                $this->logMessage($logMessage);
+//                 $this->logMessage($logMessage);
 
                 $this->container->setSource($template->getSvgContent());
                 $this->container->setId($template->getBannerTemplateId());
@@ -196,7 +209,7 @@ class CMEOGenerator
                 }
                 catch(Exception $e)
                 {
-                    $this->logMessage('An error occured: ' . $e->getMessage() . "\n");
+//                    $this->logMessage('An error occured: ' . $e->getMessage() . "\n");
                     continue;
                 }
 

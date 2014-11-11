@@ -6,6 +6,7 @@
                 <button title="Edit this template">
                     <i class="fa fa-pencil-square-o fa-5_3x"></i>
                 </button>
+                <?php // most likely, those are unused: ?>
                 <input type="hidden" name="templateId" value="<?php echo $preview->templateId; ?>">
                 <input type="hidden" name="advertiserId" value="<?php echo $preview->advertiserId; ?>">
                 <input type="hidden" name="companyId" value="<?php echo $preview->companyId; ?>">
@@ -23,6 +24,14 @@
                 class="deleteTemplate"
                 title="Delete this template">
             <i class="fa fa-trash fa-2x"></i>
+        </button>
+    </div>
+    <div class="row">
+        <button id="createCreatives-<?php echo $preview->templateId; ?>-<?php echo $preview->advertiserId; ?>-<?php echo
+        $preview->companyId; ?>"
+                class="createCreatives"
+                title="create banners based on this template">
+            <i class="fa fa-caret-square-o-down fa-5_3x"></i>
         </button>
     </div>
 </div>
