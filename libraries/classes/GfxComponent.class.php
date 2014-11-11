@@ -16,9 +16,9 @@ class GfXComponent implements Linkable, Resizeable
     private $shadow;
     private $shadowEnabled, $strokeEnabled;
     private $linkUrl;
-    private $shadowColor;
-    private $shadowDist;
     private $editGroup;
+
+    private $animationList;
 
     private $cmeoRef;
     private $cmeoLink;
@@ -32,6 +32,84 @@ class GfXComponent implements Linkable, Resizeable
         $this->width  = 0;
         $this->height = 0;
         $this->container = $container;
+
+        // DEBUG for swf
+        $this->drawCenter = false;
+
+        $this->animationList = array();
+    }
+
+    public function addAnimation($animationDefinition)
+    {
+        $animationDefinition = str_replace('[', '', $animationDefinition);
+        $aniDefs = explode(']', $animationDefinition);
+        foreach($aniDefs AS $aniDef)
+        {
+            if(!empty($aniDef))
+            {
+                $ani = new GfxAnimation();
+                $defs = explode(':', $aniDef);
+                $ani->setDuration($defs[0]);
+
+                $targets = explode('|', $defs[1]);
+
+                foreach($targets AS $target)
+                {
+                    $aniComponent = explode('/', $target);
+                    if(!empty($aniComponent[0]))
+                    {
+                        $ani->addTarget($aniComponent[0], $aniComponent[1]);
+                    }
+                }
+                $this->animationList[] = $ani;
+            }
+        }
+    }
+
+    public function setAnimation($animationDefinition)
+    {
+        $this->clearAnimations();
+        $this->addAnimation($animationDefinition);
+    }
+
+    public function getFrameDuration()
+    {
+        $frameDuration = 0;
+        foreach($this->animationList AS $animation)
+        {
+            $frameDuration += $animation->getDuration();
+        }
+        return $frameDuration;
+    }
+
+    public function clearAnimations()
+    {
+        $this->animationList = array();
+    }
+
+    public function serializeAnimations()
+    {
+        $aniString = '';
+        foreach($this->getAnimations() AS $animation)
+        {
+            $aniString .= '[';
+
+            $aniString .= $animation->getDuration() . ':';
+
+            foreach($animation->getTargets() AS $target)
+            {
+                $aniString .= $target->getAttribute() . '/' . $target->getStepsize() . '|';
+            }
+            $aniString = rtrim($aniString, '|');
+            $aniString .= ']';
+        }
+
+        return $aniString;
+    }
+
+    public function getAnimations()
+    {
+        return $this->animationList;
     }
 
     public function updateData()
@@ -92,9 +170,11 @@ class GfXComponent implements Linkable, Resizeable
             }
         }
 
-        $ref       = (string) $svgRootNode->attributes('cmeo', true)->ref;
-        $link      = (string) $svgRootNode->attributes('cmeo', true)->link;
-        $editGroup = (int) $svgRootNode->attributes('cmeo', true)->editGroup;
+        $ref        = (string) $svgRootNode->attributes('cmeo', true)->ref;
+        $link       = (string) $svgRootNode->attributes('cmeo', true)->link;
+        $editGroup  = (int)    $svgRootNode->attributes('cmeo', true)->editGroup;
+        $animations = (string) $svgRootNode->attributes('cmeo', true)->animation;
+
         if(!empty($ref))
         {
             $this->getContainer()->registerDataUpdate($ref, $this);
@@ -111,7 +191,16 @@ class GfXComponent implements Linkable, Resizeable
         {
             $this->setEditGroup($editGroup);
         }
+        if(!empty($animations))
+        {
+            $this->addAnimation($animations);
+        }
     }
+
+//    public function clearAnimations()
+//    {
+//        $this->animationList = array();
+//    }
 
     public function hasShadow()
     {
@@ -159,26 +248,131 @@ class GfXComponent implements Linkable, Resizeable
         $this->shadowEnabled = true;
     }
 
-    protected function addClickableLink($canvas)
+
+
+    public function getFilepath($filename)
+    {
+        $filename = ltrim($filename, '/');
+        $filepath = $filename;
+        if(substr($filepath, 0, 4) !== 'http')
+        {
+            $filepath = BASE_DIR . '/' . $filepath;
+        }
+        return $filepath;
+    }
+
+
+    /***
+     *   function swfAnimate
+     *
+     * Animate the swf components. For each swf component, we got a specific handle stored in the handleList;
+     * Handles can be of:
+     * - the component itself
+     * - it's shadow
+     * - it's outline (image, for this will actually be another rectangle placed behind the bitmap)
+     *
+     * Cycling through all target attributes (x, y, width, height, rotation for now) for each object,
+     * modifying the respective attribute by the stored stepsize
+     *
+     *
+     ***/
+    protected function swfAnimate($handleList, $sprite)
+    {
+        foreach($this->getAnimations() AS $animation)
+        {
+            $duration = $animation->getDuration();
+            $targets  = $animation->getTargets();
+            // step through all steps of the animation
+            for($i=0; $i<$duration; $i++)
+            {
+                // target each required target (attribute)
+                foreach($targets AS $target)
+                {
+                    $targetAttribute = $target->getAttribute();
+                    $stepsize        = $target->getStepsize();
+                    // and all objects
+                    foreach($handleList AS $handle)
+                    {
+                        switch($targetAttribute)
+                        {
+                            case 'x':
+                                $handle->move($stepsize, 0);
+                                break;
+                            case 'y':
+                                $handle->move(0, $stepsize);
+                                break;
+                            case 'w':
+                                $handle->scale($stepsize, 1);
+                                break;
+                            case 'h':
+                                $handle->scale(1, $stepsize);
+                                break;
+                            case 'r':
+                                $handle->rotate($stepsize);
+                                break;
+                            case 'p':
+                                // pause
+                                break;
+                        }
+                    }
+                }
+                $sprite->nextFrame();
+            }
+        }
+        return $sprite;
+    }
+
+
+
+    protected function drawCenter($sprite)
+    {
+        $center = new SWFShape();
+        $center->setLine(1, 0, 0, 0);
+        $center->movePenTo(-5, -5);
+        $center->drawLineTo(5, 5);
+        $center->movePenTo(-5, 5);
+        $center->drawLineTo(5, -5);
+
+        $chandle = $sprite->add($center);
+        $chandle->moveTo($this->getX() + $this->getWidth() / 2, $this->getY());
+
+        return $chandle;
+    }
+
+
+    protected function addClickableLink($sprite)
     {
         if(!empty($this->getLinkUrl()))
         {
             $hit = new SWFShape();
             $hit->setRightFill($hit->addFill(255,0,0));
-            $hit->movePenTo(0, 0);
-            $hit->drawLineTo($this->getWidth(), 0);
-            $hit->drawLineTo($this->getWidth(), $this->getHeight());
-            $hit->drawLineTo(0, $this->getHeight());
-            $hit->drawLineTo(0, 0);
+
+            $x1 = -($this->getWidth() / 2);
+            $y1 = -($this->getHeight() / 2);
+            $x2 = $this->getWidth() / 2;
+            $y2 = $this->getHeight() / 2;
+
+            if($this instanceof GfxText)
+            {
+                $y1 = -$this->getHeight();
+                $y2 = $this->getHeight();
+            }
+
+            $hit->movePenTo($x1, $y1);
+            $hit->drawLineTo($x2, $y1);
+            $hit->drawLineTo($x2, $y2);
+            $hit->drawLineTo($x1, $y2);
+            $hit->drawLineTo($x1, $y1);
 
             $button = new SWFButton();
             $button->addShape($hit, SWFBUTTON_HIT);
+            // $button->addShape($hit, SWFBUTTON_UP);
             $linkUrl = $this->getLinkUrl();
             $button->addAction(new SWFAction("getURL('$linkUrl','_blank');"), SWFBUTTON_MOUSEUP);
-            $handle = $canvas->add($button);
-            $handle->moveTo($this->getX(), $this->getY());
+            $lhandle = $sprite->add($button);
+            return $lhandle;
         }
-        return $canvas;
+        return(false);
     }
 
     public function getShadow()

@@ -6,7 +6,7 @@
             <?php
                 $selected = false;
                 foreach($this->allowedDimensions as $dimension):
-                    $selected = ($dimension->width === $template->getDimY() && $dimension->height === $template->getDimX() ?
+                    $selected = ($dimension->height === $template->getDimY() && $dimension->width === $template->getDimX() ?
                         "selected" : "");
                     if($dimension->width > 0 && $dimension->height > 0):
             ?>

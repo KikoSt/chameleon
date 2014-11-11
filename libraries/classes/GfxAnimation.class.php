@@ -7,35 +7,11 @@
  */
 class GfxAnimation
 {
-    public $target;
-    public $attributeName;
-    public $attributeType;
-    public $duration;
-    public $values;
+    private $duration;
+    private $targets;
 
-    public function getAttributeName()
+    public function __construct()
     {
-        return $this->attributeName;
-    }
-
-    public function setAttributeName($attributeName)
-    {
-        $this->attributeName = $attributeName;
-    }
-
-    public function getAttributeType()
-    {
-        return $this->attributeType;
-    }
-
-    public function setAttributeType($attributeType)
-    {
-        $this->attributeType = $attributeType;
-    }
-
-    public function getDuration()
-    {
-        return $this->duration;
     }
 
     public function setDuration($duration)
@@ -43,25 +19,42 @@ class GfxAnimation
         $this->duration = $duration;
     }
 
-    public function getTarget()
+    public function getDuration()
     {
-        return $this->target;
+        return $this->duration;
     }
 
-    public function setTarget($target)
+    public function addTarget($attribute, $stepsize)
     {
-        $this->target = $target;
+        $target = new AnimationComponent($attribute, $stepsize);
+        $this->targets[] = $target;
     }
 
-    public function getValues()
+    public function getTargets()
     {
-        return $this->values;
+        return $this->targets;
+    }
+}
+
+class AnimationComponent
+{
+    private $attribute;
+    private $stepsize;
+
+    public function __construct($attribute, $stepsize)
+    {
+        $this->attribute = $attribute;
+        $this->stepsize = $stepsize;
     }
 
-    public function setValues($values)
+    public function getAttribute()
     {
-        $this->values = $values;
+        return $this->attribute;
     }
 
+    public function getStepsize()
+    {
+        return $this->stepsize;
+    }
+}
 
-} 

@@ -80,7 +80,14 @@ class Overview extends Controller
                     $container->saveSvg();
 
                     $container->setTarget('GIF');
-                    $container->render();
+                    try
+                    {
+                        $container->render();
+                    }
+                    catch(Exception $e)
+                    {
+                        continue;
+                    }
 
                     $file = BASE_DIR . "/output/" . $container->getOutputDir() . '/' . $baseFilename . '.gif';
 

@@ -73,32 +73,63 @@ class GfxImage extends GfXComponent
      */
     public function renderSWF($canvas)
     {
+        $sprite = new SWFSprite();
+        $sprite->setFrames($this->getContainer()->getFramerate());
+
         if($this->getStroke() !== null)
         {
-            $strokeWidth = $this->getStroke()->getWidth();
-            $stroke = new GfxRectangle($this->getContainer());
-            $stroke->setWidth($this->getWidth() + ($strokeWidth * 2));
-            $stroke->setHeight($this->getHeight() + ($strokeWidth * 2));
-            $stroke->setX($this->getX() - $strokeWidth);
-            $stroke->setY($this->getY() - $strokeWidth);
-            $stroke->setFill($this->getStroke()->getColor());
-            $stroke->renderSWF($canvas);
+            $stroke = new SWFShape();
+            $this->getStroke()->setWidth(2);
+            $strokeX1 = -($this->getWidth()  / 2) - $this->getStroke()->getWidth();
+            $strokeY1 = -($this->getHeight() / 2) - $this->getStroke()->getWidth();
+            $strokeX2 = ($this->getWidth()   / 2) + $this->getStroke()->getWidth();
+            $strokeY2 = ($this->getHeight()  / 2) + $this->getStroke()->getWidth();
 
+            $strokeColor = $this->getstroke()->getColor();
+            $strokeFill = $stroke->addFill($strokeColor->getR(), $strokeColor->getG(), $strokeColor->getB(), 128);
+            $stroke->setRightFill($strokeFill);
+
+            $stroke->movePenTo($strokeX1, $strokeY1);
+            $stroke->drawLineTo($strokeX1, $strokeY2);
+            $stroke->drawLineTo($strokeX2, $strokeY2);
+            $stroke->drawLineTo($strokeX2, $strokeY1);
+            $stroke->drawLineTo($strokeX1, $strokeY1);
+
+            $shandle = $sprite->add($stroke);
         }
 
-        if($this->hasShadow())
+        $localX1 = -($this->getWidth() / 2);
+        $localY1 = -($this->getHeight() / 2);
+        $localX2 = $localX1 + $this->getWidth();
+        $localY2 = $localY1 + $this->getHeight();
+
+        $globalX1 = $this->getX() - $localX1;
+        $globalY1 = $this->getY() - $localY1;
+        $globalX2 = $globalX1 + $this->getWidth();
+        $globalY2 = $globalY1 + $this->getHeight();
+
+
+        if($this->shadowEnabled() && $this->getShadow()->getColor() instanceof GfxColor)
         {
-            $shadow = new GfxRectangle($this->getContainer());
-            $shadow->setWidth($this->getWidth());
-            $shadow->setHeight($this->getHeight());
-            $shadow->setX($this->getX() + (int) $this->getShadow()->getDist());
-            $shadow->setY($this->getY() + (int) $this->getShadow()->getDist());
-            $shadowColor = $this->getShadow()->getColor();
-            $shadowColor->setAlpha(128);
-            $shadow->setFill($shadowColor);
-            $shadow->renderSWF($canvas);
+            $shadow = new SWFShape();
+            $shadowX1 = $localX1 + $this->getShadow()->getDist();
+            $shadowY1 = $localY1 + $this->getShadow()->getDist();
+            $shadowX2 = $localX2 + $this->getShadow()->getDist();
+            $shadowY2 = $localY2 + $this->getShadow()->getDist();
 
+            $shadowColor = $this->getShadow()->getColor();
+            $shadowFill = $shadow->addFill($shadowColor->getR(), $shadowColor->getG(), $shadowColor->getB(), 128);
+            $shadow->setRightFill($shadowFill);
+
+            $shadow->movePenTo($shadowX1, $shadowY1);
+            $shadow->drawLineTo($shadowX1, $shadowY2);
+            $shadow->drawLineTo($shadowX2, $shadowY2);
+            $shadow->drawLineTo($shadowX2, $shadowY1);
+            $shadow->drawLineTo($shadowX1, $shadowY1);
+
+            $shandle = $sprite->add($shadow);
         }
+
         $imgPath = '/tmp/file' . time() . rand() . '.jpg';
 
         $output = $this->resizeImage($this->getImageUrl(), $this->getWidth(), $this->getHeight(), false);
@@ -111,10 +142,50 @@ class GfxImage extends GfXComponent
         $bastardImage = fopen($imgPath, "rb");
 
         $image  = new SWFBitmap($bastardImage);
-        $handle = $canvas->add($image);
-        $handle->moveTo($this->getX(), $this->getY());
+        $isprite = new SWFSprite();
+        $ihandle = $isprite->add($image);
+        $ihandle->moveTo($localX1, $localY1);
+        $handle = $sprite->add($isprite);
+        $isprite->nextFrame();
+        $handle->moveTo(0, 0);
+
+        if(false !== ($lhandle = $this->addClickableLink($sprite)))
+        {
+            // $handle = $canvas->add($lsprite);
+        }
+        if($this->drawCenter)
+        {
+            $chandle = $this->drawCenter($sprite);
+        }
+
+        /**
+         *  Prepare actual animation
+        **/
+        if(count($this->getAnimations()) != 0)
+        {
+            $handleList = array();
+            if(isset($lhandle))
+            {
+                $handleList['linkHandle'] = $lhandle;
+            }
+            if(isset($shandle))
+            {
+                $handleList['shadowHandle'] = $shandle;
+            }
+            $handleList['handle'] = $handle;
+            $sprite = $this->swfAnimate($handleList, $sprite);
+        }
+        /**
+         *  Animation done!
+        **/
+
         $this->getContainer()->register($bastardImage);
-        $canvas = $this->addClickableLink($canvas);
+
+        $handle = $canvas->add($sprite);
+        $handle->moveTo($this->getX() + ($this->getWidth() / 2), $this->getY() + ($this->getHeight() / 2));
+        $handle->moveTo($globalX1, $globalY1);
+        $sprite->nextFrame();
+
         unset($image);
         return $canvas;
     }
@@ -196,11 +267,13 @@ class GfxImage extends GfXComponent
      */
     public function resizeImage($file, $crop=false)
     {
-        if(false === file_get_contents(BASE_DIR . $file, 0, null, 0, 1))
+        $filepath = $this->getFilepath($file);
+        if(false === file_get_contents($filepath, 0, null, 0, 1))
         {
-            $file = '/assets/image_not_found.jpg';
+            $file = 'assets/image_not_found.jpg';
         }
-        list($originalWidth, $originalHeight) = getimagesize(BASE_DIR . $file);
+
+        list($originalWidth, $originalHeight) = getimagesize($filepath);
 
         if($originalWidth <= 0 || $originalHeight <=0)
         {
@@ -273,22 +346,24 @@ class GfxImage extends GfXComponent
         $image = null;
         $extension = strtolower($extension);
 
+        $filepath = $this->getFilepath($file);
+
         switch($extension)
         {
             case "jpg":
             case "jpeg":
             {
-                $image = imagecreatefromjpeg(BASE_DIR . $file);
+                $image = imagecreatefromjpeg($filepath);
                 break;
             }
             case "png":
             {
-                $image = imagecreatefrompng(BASE_DIR . $file);
+                $image = imagecreatefrompng($filepath);
                 break;
             }
             case "gif":
             {
-                $image = imagecreatefromgif(BASE_DIR . $file);
+                $image = imagecreatefromgif($filepath);
                 break;
             }
             default:
@@ -313,6 +388,15 @@ class GfxImage extends GfXComponent
         $svg .= "\r\n" . ' cmeo:ref="' . $this->getCmeoRef(). '"';
         $svg .= "\r\n" . ' cmeo:link="' . $this->getCmeoLink(). '"';
         $svg .= "\r\n" . ' cmeo:editGroup="' . $this->getEditGroup(). '"';
+
+        if(count($this->getAnimations()) > 0)
+        {
+            $aniString  = "\r\n" . ' cmeo:animation="';
+            $aniString .= $this->serializeAnimations();
+            $aniString .= '"';
+            $svg .= $aniString;
+        }
+
         $svg .= "\r\n" . ' xlink:href="' . $this->getImageUrl() . '"';
         $svg .= "\r\n" . ' linkurl="' . $this->getLinkUrl() . '"';
 

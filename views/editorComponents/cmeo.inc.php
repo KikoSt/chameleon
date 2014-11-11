@@ -1,10 +1,11 @@
 <div class="row">
-    <label class="col-md-3" for="<?php echo $element->getId();?>#cmeoRef">Source:</label>
+    <label class="col-md-4">Source:</label>
     <select name="<?php echo $element->getId();?>#cmeoRef"
+            id="<?php echo $element->getId();?>_source"
             class="form-control"
         <?php echo (is_a($element, 'GfxImage') || is_a($element, 'GfxText')) ? '': 'disabled'; ?>
         >
-        <option value=""><?php echo (is_a($element, 'GfxImage') || is_a($element, 'GfxText')) ? 'Select option...' : ''; ?></option>
+        <?php if(is_a($element, 'GfxImage') || is_a($element, 'GfxText')) echo '<option value="">Select option...</option>'; ?>
         <?php foreach($this->cmeoRefOptions as $option): ?>
             <option value="<?php echo $option;?>" <?php echo ($option === $element->getCmeoRef()) ? 'selected' : '';?>><?php echo $option;
                 ?></option>
@@ -12,8 +13,9 @@
     </select>
 </div>
 <div class="row">
-    <label class="col-md-3" for="<?php echo $element->getId();?>#cmeoLink">Link:</label>
+    <label class="col-md-4">Link:</label>
     <select name="<?php echo $element->getId();?>#cmeoLink"
+            id="<?php echo $element->getId();?>_link"
             class="form-control"
         >
         <option value="">Select option...</option>

@@ -1,5 +1,5 @@
 <div class="row">
-    <label class="col-md-3">Group:</label>
+    <label class="col-md-4">Group:</label>
     <div>
         <input id="<?php echo $element->getId();?>#editGroup"
                type="text"

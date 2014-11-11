@@ -45,8 +45,6 @@ class APIConnector
      */
     public function getMethodList()
     {
-        //TODO why not using get_class_methods?
-
         $methodList = array_keys($this->serviceCalls);
         return $methodList;
     }
@@ -464,7 +462,16 @@ class APIConnector
 
         $curlResponse = curl_exec($curl);
         curl_close($curl);
-        return $curlResponse;
+
+        $productList = json_decode($curlResponse)->products;
+        $products = array();
+
+        foreach($productList AS $product)
+        {
+            $products[] = $this->populateProduct($product);
+        }
+
+        return $products;
     }
 
 

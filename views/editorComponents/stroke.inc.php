@@ -6,10 +6,11 @@
            value="<?php echo $element->getId();?>"
            <?php echo (!empty($element->getStroke())) ? 'checked' : '';?>
         >
-    <label for="<?php echo $element->getId();?>_strokeCheckBox" class="col-md-3">Stroke:</label>
+    <label for="<?php echo $element->getId();?>_strokeCheckBox" class="col-md-4">Stroke:</label>
 </div>
 <?php if($this->premiumUser):?>
 <div class="row">
+    <label class="col-md-4 text-center" for="<?php echo $element->getId();?>_strokeColor">Color:</label>
     <input id="<?php echo $element->getId();?>_strokeColor"
            type="text"
            class="form-control picker cursor-pointer"
@@ -18,9 +19,9 @@
            placeholder="<?php echo (null !== $element->getStroke()) ? $element->getStroke()->getColor()->getHex() : '#000000';?>"
            <?php echo (empty($element->getStroke())) ? 'disabled' : '#000000';?>
         />
-    <label class="col-md-3 text-center" for="<?php echo $element->getId();?>_strokeColor">Color:</label>
 </div>
 <div class="row">
+    <label class="col-md-4 text-center" for="<?php echo $element->getId();?>_strokeWidth">Width:</label>
     <input id="<?php echo $element->getId();?>_strokeWidth"
            type="text"
            class="form-control"
@@ -29,6 +30,5 @@
            placeholder="<?php echo (null !== $element->getStroke()) ? $element->getStroke()->getWidth() : '1';?>"
            <?php echo (empty($element->getStroke())) ? 'disabled' : '';?>
     />
-    <label class="col-md-3 text-center" for="<?php echo $element->getId();?>_strokeWidth">Width:</label>
 </div>
 <?php endif;?>

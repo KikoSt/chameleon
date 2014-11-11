@@ -7,11 +7,11 @@
         <?php echo ($element->hasShadow()) ? 'checked' : '';?>
 
         >
-    <label for="<?php echo $element->getId();?>_shadowCheckBox" class="col-md-3">Shadow:</label>
+    <label for="<?php echo $element->getId();?>_shadowCheckBox" class="col-md-4">Shadow:</label>
 </div>
 <?php if($this->premiumUser):?>
 <div class="row">
-    <label class="col-md-3 text-center" for="<?php echo $element->getId();?>_shadowColor">Color:</label>
+    <label class="col-md-4 text-center" for="<?php echo $element->getId();?>_shadowColor">Color:</label>
     <input id="<?php echo $element->getId();?>_shadowColor"
            type="text"
            class="form-control picker cursor-pointer"
@@ -22,7 +22,7 @@
         />
 </div>
 <div class="row">
-    <label class="col-md-3 text-center" for="<?php echo $element->getId();?>_shadowDist">Dist:</label>
+    <label class="col-md-4 text-center" for="<?php echo $element->getId();?>_shadowDist">Dist:</label>
     <input id="<?php echo $element->getId();?>_shadowDist"
            type="text"
            class="form-control"

@@ -12,14 +12,6 @@ $(document).ready(function() {
         }
     });
 
-    $('.btn').on('click', function(e) {
-        btn = $(this).attr('id');
-        if(btn ==='clone' || btn ==='save' || btn === 'preview')
-        {
-            $("."+btn+"alert").removeClass("in").show().delay(1000).addClass("in").fadeOut(2000);
-        }
-    });
-
     $('.subnav').on('click', function(e) {
         var id = $(this).attr('id');
         if(id.substr(0, 5) != 'group') {
@@ -46,7 +38,7 @@ $(document).ready(function() {
     });
 
     $('.glyphicon-remove-circle').on('click', function(e) {
-        var id = $(this).attr('id');
+        var id = $(this).attr('id').replace('_close', '');
         $('#panel_' + id).hide();
     });
 
@@ -62,7 +54,6 @@ $(document).ready(function() {
     function updateEditGroup(groupId, param, value) {
         console.log('Updating group ' + groupId + ', param ' + param + ' = ' + value);
     }
-
 
 
     /* ***********************************
@@ -110,7 +101,6 @@ $(document).ready(function() {
         return false;
 
         function onloadHandler(e, args) {
-            // $('#previewalert').show();
             response = $.parseJSON(xhr.response);
             imgsrc = response.imgsrc;
             $("#previewImage img").attr('src', imgsrc + new Date().getTime());
@@ -135,10 +125,18 @@ $(document).ready(function() {
 
     // prepare image map
     var highlightColor = {};
-    highlightColor['text']      = colorToHex($('.textTitle').css('background-color')).replace('#', '');
-    highlightColor['image']     = colorToHex($('.imageTitle').css('background-color')).replace('#', '');
-    highlightColor['rectangle'] = colorToHex($('.textTitle').css('background-color')).replace('#', '');
-    highlightColor['group']     = colorToHex($('.groupTitle').css('background-color')).replace('#', '');
+    if($('.textTitle').length > 0) {
+        highlightColor['text']      = colorToHex($('.textTitle').css('background-color')).replace('#', '');
+    }
+    if($('.imageTitle').length > 0) {
+        highlightColor['image']     = colorToHex($('.imageTitle').css('background-color')).replace('#', '');
+    }
+    if($('.rectangleTitle').length > 0) {
+        highlightColor['rectangle'] = colorToHex($('.rectangleTitle').css('background-color')).replace('#', '');
+    }
+    if($('.groupTitle').length > 0) {
+        highlightColor['group']     = colorToHex($('.groupTitle').css('background-color')).replace('#', '');
+    }
 
     var areas = [];
     var areaList = $('[name="template_selection"]').find('area');
@@ -161,12 +159,77 @@ $(document).ready(function() {
     });
 
 
-    /* ***********************************
-     * PREVIEW BUTTON
-     *********************************** */
+
+    /**
+     *   Toolbar buttons
+     *
+     **/
+    $('.fa-btn').on('click', function(e) {
+        btn = $(this).attr('id');
+        if(btn === 'flash') {
+            $('#previewSwf').toggle();
+        } else if(btn === 'live') {
+            //generate preview images
+            // *****
+            // *****
+            // *****
+            // *****
+            // ***
+            // **
+            // *
+            //
+            //  **
+            // ****
+            // ****
+            //  **
+            //
+            // hiding flash preview when opening live preview since flash will hide at least some portions of the live preview banners
+            $('#previewSwf').hide();
+            var formData = new FormData();
+            var data = {};
+            var nodeList = $(document).find($('[type="file"]'));
+
+            overlayOn();
+            $('#preparepreviewalert').show();
+
+            formData.append('templateId', $('#templateId').attr('value'));
+            formData.append('advertiserId', $('#advertiserId').attr('value'));
+            formData.append('companyId', $('#companyId').attr('value'));
+            formData.append('action', 'upload');
+
+            var xhr =  new XMLHttpRequest();
+            xhr.onreadystatechange = function(e) {
+                if(xhr.readyState == 4) {
+                    response = $.parseJSON(xhr.response);
+                    var newNode = '';
+                    for(var preview in response) {
+                        newNode += '<li><a data-imagelightbox="preview" href="' + response[preview] + '?ts=' + new Date().getTime()  + '"></a></li>\n';
+                    }
+                    $('#imagelightbox-list > li').remove();
+                    $(newNode).appendTo('#imagelightbox-list');
+                    $('a[data-imagelightbox="preview"]').trigger("click");
+                }
+            };
+            xhr.open('POST', '/chameleon/ajax/getLivePreview.php', true);
+            xhr.send(formData);
+            return false;
+
+        } else if(btn ==='save')
+        {
+            $("."+btn+"alert").removeClass("in").show().delay(1000).addClass("in").fadeOut(2000);
+        }
+    });
+
+
     $('#editor').on('submit', function(e){
         e.preventDefault();
         var action = btn;
+
+        // if(action !== 'save' && action !== 'preview')
+        // {
+        //     return true;
+        // }
+
         var xhr = new XMLHttpRequest();
         $("#previewImage img").unbind('mapster');
 
@@ -183,10 +246,9 @@ $(document).ready(function() {
                 $("#previewImage img").attr('src', gifsrc);
                 $("[name='movie']").attr('value', swfsrc);
                 $("[name='movie']").prop('value', swfsrc);
-                $("#previewImage object").prop('data', swfsrc);
+                $("#previewSwf object").prop('data', swfsrc);
             }
         }
-
 
         var formData = new FormData();
 
@@ -199,12 +261,13 @@ $(document).ready(function() {
             var targetId = myId.replace('_input', '');
             var fileSelect = $("#" + myId);
 
-            var files = fileSelect.prop("files");
-
-            if(files.length > 0)
-            {
-                var file = files[0];
-                formData.append(targetId, file);
+            if("undefined" !== typeof fileSelect.prop("files")) {
+                var files = fileSelect.prop("files");
+                if("undefined" !== typeof files && files.length > 0)
+                {
+                    var file = files[0];
+                    formData.append(targetId, file);
+                }
             }
         }
         /* ******************************************************************** */
@@ -268,6 +331,143 @@ $(document).ready(function() {
         'showCaption': true,
     });
 
+    $('[id$="_source"]').change(function() {
+        console.log('source changed!');
+    });
+
+    $('[id$="_link"]').change(function() {
+        console.log('link changed!');
+    });
+
+
+
+    function updateGroup(baseElement) {
+        // if group is edited:
+        groupId = $(baseElement).parents('[id^=grouppanel]').attr('id').replace('grouppanel_', '');
+        if(groupId > 0) {
+            // NOTE: the value attribute specifies the initial value of an input,
+            // but the value property specifies the current value - baseElement comes in
+            // VERY handy here :)
+            // console.log($(baseElement).prop('value'));
+            // console.log($(baseElement).attr('value'));
+            //
+            // find the name of the edited attribute
+            attributeName = $(baseElement).attr('name').replace(/.*\#/i, '');
+
+            updateField = $(document).find('[name="' + groupId + '#' + attributeName + '"]');
+
+            var oldValue = $(baseElement).attr('value');
+            var newValue = $(baseElement).prop('value');
+
+            var elements = $("[data-groupid=" + groupId + "]");
+
+            // TODO: Update imageMap
+            //       implement colorpicker updates
+
+            // Note: even if the single component editor panes aren't displayed
+            // we need to update them in order to have the data up to date for generating
+            // previews and saving!
+
+            switch(attributeName) {
+                case 'x':
+                case 'y':
+                    var delta = newValue - oldValue;
+
+                    elements.each(function (i, member) {
+                        var inElem = $(member).find('[name$="#' + attributeName + '"]');
+                        elementName = inElem.attr('name').replace(/\#.*/i, '')
+                        $(inElem).prop('value', (Number(inElem.prop('value')) + Number(delta)));
+                        $(inElem).attr('value', (Number(inElem.attr('value')) + Number(delta)));
+
+                        // find image map area element
+
+                        $("#previewImage img").unbind('mapster');
+
+                        var imapElement = $('area#' + elementName);
+                        var coords = $(imapElement).attr('coords').split(',');
+
+                        if(attributeName === 'x') {
+                            coords[0] = Number(coords[0]) + Number(delta);
+                            coords[1] = Number(coords[1]);
+                            coords[2] = Number(coords[2]) + Number(delta);
+                            coords[3] = Number(coords[3]);
+                        } else if(attributeName === 'y') {
+                            coords[0] = Number(coords[0]);
+                            coords[1] = Number(coords[1]) + Number(delta);
+                            coords[2] = Number(coords[2]);
+                            coords[3] = Number(coords[3]) + Number(delta);
+                        }
+
+                        coords = coords.join(',');
+
+                        $(imapElement).attr('coords', coords);
+                        $(imapElement).prop('coords', coords);
+
+                        $("#previewImage img").mapster({
+                            fillColor: 'ff005',
+                            fillOpacity: 0.1,
+                            strokeWidth: 3,
+                            stroke: true,
+                            strokeColor: 'ff0000',
+                            singleSelect: true,
+                            clickNavigate: false
+                        });
+
+                        var coords = $(imapElement).attr('coords').split(',');
+                    });
+                    // TODO: calculate new image map coordinates
+                    //
+                    break;
+                case 'text':
+                    elements.each(function (i, member) {
+                        inElem = $(member).find('[name$="' + attributeName + '"]');
+                        $(inElem).prop('value', newValue);
+                        $(inElem).attr('value', newValue);
+                    });
+                    break;
+                case 'fontFamily':
+                    elements.each(function (i, member) {
+                        inElem = $(member).find('[name$="' + attributeName + '"]');
+                        if($(inElem).find('option[value="' + newValue + '"]').length) {
+                            $(inElem).find('option[value="' + newValue + '"]').prop('selected', true);
+                        }
+                    });
+                    break;
+                case 'cmeoLink':
+                    elements.each(function (i, member) {
+                        inElem = $(member).find('[name$="' + attributeName + '"]');
+                        if($(inElem).find('option[value="' + newValue + '"]').length) {
+                            $(inElem).find('option[value="' + newValue + '"]').prop('selected', true);
+                            $(inElem).find('option[value="' + newValue + '"]').attr('selected', true);
+                        }
+                    });
+                    break;
+                case 'fgcolor':
+                    elements.each(function (i, member) {
+                        if($(member).attr('data-type') == "text") {
+                            inElem = $(member).find('[name$="fill"]');
+                            $(inElem).prop('value', newValue);
+                            $(inElem).attr('value', newValue);
+                        }
+                    });
+                    break;
+                case 'bgcolor':
+                    elements.each(function (i, member) {
+                        if($(member).attr('data-type') == "rectangle") {
+                            inElem = $(member).find('[name$="fill"]');
+                            $(inElem).prop('value', newValue);
+                            $(inElem).attr('value', newValue);
+                        }
+                    });
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+
+
     $('#awesomeEditor input, #awesomeEditor select').change(function() {
         var groupId = 0;
         var groupEdit = false;
@@ -280,155 +480,27 @@ $(document).ready(function() {
             if($(this).is(":checked"))
             {
                 $(this).attr("checked", true);
-            //    $(this).attr('disabled', false).addClass('picker');
-            //    $(this).attr('disabled', false);
             }
             else
             {
                 $(this).attr("checked", false);
-            //    $("#" + id + "_shadowColor").attr('disabled', true).removeClass('picker');
-            //    $("#" + id + "_shadowDist").attr('disabled', true);
             }
         } else if($(this).attr('id').indexOf('shadowCheckBox')) {
 
             if($(this).is(":checked"))
             {
                 $(this).attr("checked", true);
-            //    $("#" + id + "_strokeColor").attr('disabled', false).addClass('picker');
-            //    $("#" + id + "_strokeWidth").attr('disabled', false);
             }
             else
             {
                 $(this).attr("checked", false);
-            //    $("#" + id + "_strokeColor").attr('disabled', true).removeClass('picker');
-            //    $("#" + id + "_strokeWidth").attr('disabled', true);
             }
         }
 
         // TODO: recalculate groups
 
         if($(this).parents('[id^=grouppanel]').length) {
-            // if group is edited:
-            groupId = $(this).parents('[id^=grouppanel]').attr('id').replace('grouppanel_', '');
-            if(groupId > 0) {
-                // NOTE: the value attribute specifies the initial value of an input,
-                // but the value property specifies the current value - this comes in
-                // VERY handy here :)
-                // console.log($(this).prop('value'));
-                // console.log($(this).attr('value'));
-                //
-                // find the name of the edited attribute
-                attributeName = $(this).attr('name').replace(/.*\#/i, '');
-
-                updateField = $(document).find('[name="' + groupId + '#' + attributeName + '"]');
-
-                var oldValue = $(this).attr('value');
-                var newValue = $(this).prop('value');
-
-                var elements = $("[data-groupid=" + groupId + "]");
-
-                // TODO: Update imageMap
-                //       implement colorpicker updates
-
-                // Note: even if the single component editor panes aren't displayed
-                // we need to update them in order to have the data up to date for generating
-                // previews and saving!
-
-                switch(attributeName) {
-                    case 'x':
-                    case 'y':
-                        var delta = newValue - oldValue;
-
-                        elements.each(function (i, member) {
-                            var inElem = $(member).find('[name$="#' + attributeName + '"]');
-                            elementName = inElem.attr('name').replace(/\#.*/i, '')
-                            $(inElem).prop('value', (Number(inElem.prop('value')) + Number(delta)));
-                            $(inElem).attr('value', (Number(inElem.attr('value')) + Number(delta)));
-
-                            // find image map area element
-
-                            $("#previewImage img").unbind('mapster');
-
-                            var imapElement = $('area#' + elementName);
-                            var coords = $(imapElement).attr('coords').split(',');
-
-                            if(attributeName === 'x') {
-                                coords[0] = Number(coords[0]) + Number(delta);
-                                coords[1] = Number(coords[1]);
-                                coords[2] = Number(coords[2]) + Number(delta);
-                                coords[3] = Number(coords[3]);
-                            } else if(attributeName === 'y') {
-                                coords[0] = Number(coords[0]);
-                                coords[1] = Number(coords[1]) + Number(delta);
-                                coords[2] = Number(coords[2]);
-                                coords[3] = Number(coords[3]) + Number(delta);
-                            }
-
-                            coords = coords.join(',');
-
-                            $(imapElement).attr('coords', coords);
-                            $(imapElement).prop('coords', coords);
-
-                            $("#previewImage img").mapster({
-                                fillColor: 'ff005',
-                                fillOpacity: 0.1,
-                                strokeWidth: 3,
-                                stroke: true,
-                                strokeColor: 'ff0000',
-                                singleSelect: true,
-                                clickNavigate: false
-                            });
-
-                            var coords = $(imapElement).attr('coords').split(',');
-                        });
-                        // TODO: calculate new image map coordinates
-                        //
-                        break;
-                    case 'text':
-                        elements.each(function (i, member) {
-                            inElem = $(member).find('[name$="' + attributeName + '"]');
-                            $(inElem).prop('value', newValue);
-                            $(inElem).attr('value', newValue);
-                        });
-                        break;
-                    case 'fontFamily':
-                        elements.each(function (i, member) {
-                            inElem = $(member).find('[name$="' + attributeName + '"]');
-                            if($(inElem).find('option[value="' + newValue + '"]').length) {
-                                $(inElem).find('option[value="' + newValue + '"]').prop('selected', true);
-                            }
-                        });
-                        break;
-                    case 'cmeoLink':
-                        elements.each(function (i, member) {
-                            inElem = $(member).find('[name$="' + attributeName + '"]');
-                            if($(inElem).find('option[value="' + newValue + '"]').length) {
-                                $(inElem).find('option[value="' + newValue + '"]').prop('selected', true);
-                            }
-                        });
-                        break;
-                    case 'fgcolor':
-                        elements.each(function (i, member) {
-                            if($(member).attr('data-type') == "text") {
-                                inElem = $(member).find('[name$="fill"]');
-                                $(inElem).prop('value', newValue);
-                                $(inElem).attr('value', newValue);
-                            }
-                        });
-                        break;
-                    case 'bgcolor':
-                        elements.each(function (i, member) {
-                            if($(member).attr('data-type') == "rectangle") {
-                                inElem = $(member).find('[name$="fill"]');
-                                $(inElem).prop('value', newValue);
-                                $(inElem).attr('value', newValue);
-                            }
-                        });
-                        break;
-                    default:
-                        break;
-                }
-            }
+            updateGroup(this);
         } else {
             var elementName = $(this).attr('name').replace(/\#.*/i, '');
 
@@ -567,4 +639,255 @@ $(document).ready(function() {
 
     // TODO: add a "initial" element to ALL templates?!
     $('area#head_large').trigger('click');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ACTIVITY INDICATOR
+
+        var activityIndicatorOn = function()
+            {
+                $( '<div id="imagelightbox-loading"><div></div></div>' ).appendTo( 'body' );
+            },
+            activityIndicatorOff = function()
+            {
+                $( '#imagelightbox-loading' ).remove();
+            },
+
+
+            // OVERLAY
+
+            overlayOn = function()
+            {
+                $( '<div id="imagelightbox-overlay"></div>' ).appendTo( 'body' );
+            },
+            overlayOff = function()
+            {
+                $( '#imagelightbox-overlay' ).remove();
+            },
+
+
+            // CLOSE BUTTON
+
+            closeButtonOn = function( instance )
+            {
+                $( '<button type="button" id="imagelightbox-close" title="Close"></button>' ).appendTo( 'body' ).on( 'click touchend', function(){ $( this ).remove(); instance.quitImageLightbox(); return false; });
+            },
+            closeButtonOff = function()
+            {
+                $( '#imagelightbox-close' ).remove();
+            },
+
+
+            // CAPTION
+
+            captionOn = function()
+            {
+                var description = $( 'a[href="' + $( '#imagelightbox' ).attr( 'src' ) + '"] img' ).attr( 'alt' );
+                if( description.length > 0 )
+                    $( '<div id="imagelightbox-caption">' + description + '</div>' ).appendTo( 'body' );
+            },
+            captionOff = function()
+            {
+                $( '#imagelightbox-caption' ).remove();
+            },
+
+
+            // NAVIGATION
+
+            navigationOn = function( instance, selector )
+            {
+                var images = $( selector );
+                if( images.length )
+                {
+                    var nav = $( '<div id="imagelightbox-nav"></div>' );
+                    for( var i = 0; i < images.length; i++ )
+                        nav.append( '<button type="button"></button>' );
+
+                    nav.appendTo( 'body' );
+                    nav.on( 'click touchend', function(){ return false; });
+
+                    var navItems = nav.find( 'button' );
+                    navItems.on( 'click touchend', function()
+                    {
+                        var $this = $( this );
+                        if( images.eq( $this.index() ).attr( 'href' ) != $( '#imagelightbox' ).attr( 'src' ) )
+                            instance.switchImageLightbox( $this.index() );
+
+                        navItems.removeClass( 'active' );
+                        navItems.eq( $this.index() ).addClass( 'active' );
+
+                        return false;
+                    })
+                    .on( 'touchend', function(){ return false; });
+                }
+            },
+            navigationUpdate = function( selector )
+            {
+                var items = $( '#imagelightbox-nav button' );
+                items.removeClass( 'active' );
+                items.eq( $( selector ).filter( '[href="' + $( '#imagelightbox' ).attr( 'src' ) + '"]' ).index( selector ) ).addClass( 'active' );
+            },
+            navigationOff = function()
+            {
+                $( '#imagelightbox-nav' ).remove();
+            },
+
+
+            // ARROWS
+
+            arrowsOn = function( instance, selector )
+            {
+                var $arrows = $( '<button type="button" class="imagelightbox-arrow imagelightbox-arrow-left"></button><button type="button" class="imagelightbox-arrow imagelightbox-arrow-right"></button>' );
+
+                $arrows.appendTo( 'body' );
+
+                $arrows.on( 'click touchend', function( e )
+                {
+                    e.preventDefault();
+
+                    var $this   = $( this ),
+                        $target = $( selector + '[href="' + $( '#imagelightbox' ).attr( 'src' ) + '"]' ),
+                        index   = $target.index( selector );
+
+                    if( $this.hasClass( 'imagelightbox-arrow-left' ) )
+                    {
+                        index = index - 1;
+                        if( !$( selector ).eq( index ).length )
+                            index = $( selector ).length;
+                    }
+                    else
+                    {
+                        index = index + 1;
+                        if( !$( selector ).eq( index ).length )
+                            index = 0;
+                    }
+
+                    instance.switchImageLightbox( index );
+                    return false;
+                });
+            },
+            arrowsOff = function()
+            {
+                $( '.imagelightbox-arrow' ).remove();
+            };
+
+
+        //  WITH ACTIVITY INDICATION
+
+        $( 'a[data-imagelightbox="a"]' ).imageLightbox(
+        {
+            onLoadStart:    function() { activityIndicatorOn(); },
+            onLoadEnd:      function() { activityIndicatorOff(); },
+            onEnd:          function() { activityIndicatorOff(); }
+        });
+
+
+        //  WITH OVERLAY & ACTIVITY INDICATION
+
+        $( 'a[data-imagelightbox="b"]' ).imageLightbox(
+        {
+            onStart:     function() { overlayOn(); },
+            onEnd:       function() { overlayOff(); activityIndicatorOff(); },
+            onLoadStart: function() { activityIndicatorOn(); },
+            onLoadEnd:   function() { activityIndicatorOff(); }
+        });
+
+
+        //  WITH "CLOSE" BUTTON & ACTIVITY INDICATION
+
+        var instanceC = $( 'a[data-imagelightbox="c"]' ).imageLightbox(
+        {
+            quitOnDocClick: false,
+            onStart:        function() { closeButtonOn( instanceC ); },
+            onEnd:          function() { closeButtonOff(); activityIndicatorOff(); },
+            onLoadStart:    function() { activityIndicatorOn(); },
+            onLoadEnd:      function() { activityIndicatorOff(); }
+        });
+
+
+        //  WITH CAPTION & ACTIVITY INDICATION
+
+        $( 'a[data-imagelightbox="d"]' ).imageLightbox(
+        {
+            onLoadStart: function() { captionOff(); activityIndicatorOn(); },
+            onLoadEnd:   function() { captionOn(); activityIndicatorOff(); },
+            onEnd:       function() { captionOff(); activityIndicatorOff(); }
+        });
+
+
+        //  WITH ARROWS & ACTIVITY INDICATION
+
+        var selectorG = 'a[data-imagelightbox="g"]';
+        var instanceG = $( selectorG ).imageLightbox(
+        {
+            onStart:        function(){ arrowsOn( instanceG, selectorG ); },
+            onEnd:          function(){ arrowsOff(); activityIndicatorOff(); },
+            onLoadStart:    function(){ activityIndicatorOn(); },
+            onLoadEnd:      function(){ $( '.imagelightbox-arrow' ).css( 'display', 'block' ); activityIndicatorOff(); }
+        });
+
+
+        //  WITH NAVIGATION & ACTIVITY INDICATION
+
+        var selectorE = 'a[data-imagelightbox="e"]';
+        var instanceE = $( selectorE ).imageLightbox(
+        {
+            onStart:     function() { navigationOn( instanceE, selectorE ); },
+            onEnd:       function() { navigationOff(); activityIndicatorOff(); },
+            onLoadStart: function() { activityIndicatorOn(); },
+            onLoadEnd:   function() { navigationUpdate( selectorE ); activityIndicatorOff(); }
+        });
+
+
+        //  ALL COMBINED
+
+        var selectorF = 'a[data-imagelightbox="f"]';
+        var instanceF = $( selectorF ).imageLightbox(
+        {
+            onStart:        function() { overlayOn(); closeButtonOn( instanceF ); arrowsOn( instanceF, selectorF ); },
+            onEnd:          function() { overlayOff(); captionOff(); closeButtonOff(); arrowsOff(); activityIndicatorOff(); },
+            onLoadStart:    function() { captionOff(); activityIndicatorOn(); },
+            onLoadEnd:      function() { captionOn(); activityIndicatorOff(); $( '.imagelightbox-arrow' ).css( 'display', 'block' ); }
+        });
+
+
+
+
+
+
+
+        $('a[data-imagelightbox="preview"]').imageLightbox({
+            onLoadStart:    function() {  },
+            onStart:        function() { $('#preparepreviewalert').hide() },
+            onEnd:          function() { overlayOff(); }
+        });
+
+
+
+
+
+
+
 });
