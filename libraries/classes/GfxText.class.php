@@ -240,9 +240,8 @@ class GfxText extends GfxComponent
         return $canvas;
     }
 
-    public function renderGif()
+    public function renderGif($animationList)
     {
-        var_dump($this->getFrameDuration());
         //set the color for the layer
         $transparent = new ImagickPixel("rgba(127,127,127,0)");
 
@@ -251,61 +250,37 @@ class GfxText extends GfxComponent
         $image->newImage($this->getContainer()->getCanvasWidth(), $this->getContainer()->getCanvasHeight(),
             $transparent);
 
-        if(count($this->getAnimations()) <= 0)
+        //set the start rotation
+        $rotation = 0;
+
+        $text = new ImagickDraw();
+        $text->setFont($this->getGIFFont());
+        $text->setfontsize($this->getFontSize());
+        $text->setGravity(Imagick::GRAVITY_CENTER);
+
+        //create a new layer
+        $image = new Imagick();
+        $image->newImage($this->getContainer()->getCanvasWidth(), $this->getContainer()->getCanvasHeight(),
+            $transparent);
+
+        $x = $this->getContainer()->getCanvasWidth() - $this->getX();
+        $y = $this->getContainer()->getCanvasHeight() - $this->getY();
+
+        if ($this->hasShadow())
         {
-            if($this->hasShadow())
-            {
-                $this->renderShadow($image);
-            }
-
-            $text = new ImagickDraw();
-            $text->setFont($this->getGIFFont());
-            $text->setfontsize($this->getFontSize());
-            $text->setfillcolor(new ImagickPixel($this->getFill()->getHex()));
-
-            //add the layer to the given canvas
-            $image->annotateImage($text, $this->getX(), $this->getY(), 0, $this->getText());
-
-            return $image;
+            $this->renderShadow($image);
         }
-        else
-        {
+
+        //add the layer to the given canvas
+        $image->annotateImage($text, $x, $y, $rotation, $this->getText());
+        $image->setImageDelay(5);
+
+        // IMPORTANT! Clean up animation mess!
+        $image->setImageDispose(3);
 
 
+        return $image;
 
-            //set the start rotation
-            $rotation = 0;
-
-            for($i=0; $i<40; $i++)
-            {
-                $text = new ImagickDraw();
-                $text->setFont($this->getGIFFont());
-                $text->setfontsize($this->getFontSize());
-                $text->setGravity(Imagick::GRAVITY_CENTER);
-
-                //create a new layer
-                $image = new Imagick();
-                $image->newImage($this->getContainer()->getCanvasWidth(), $this->getContainer()->getCanvasHeight(),
-                    $transparent);
-
-                $x = $this->getContainer()->getCanvasWidth() - $this->getX();
-                $y = $this->getContainer()->getCanvasHeight() - $this->getY();
-
-                if($this->hasShadow())
-                {
-                    $this->renderShadow($image);
-                }
-
-                //add the layer to the given canvas
-                $image->annotateImage($text, $x, $y, $rotation+$i, $this->getText());
-                $image->setImageDelay(40);
-
-                // IMPORTANT! Clean up animation mess!
-                $image->setImageDispose(3);
-//                $frame->addImage($temp);
-                return $image;
-            }
-        }
     }
 
     public function renderShadow($frame)

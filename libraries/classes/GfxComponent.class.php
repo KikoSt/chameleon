@@ -263,7 +263,7 @@ class GfXComponent implements Linkable, Resizeable
 
     protected function gifAnimate()
     {
-
+        //todo
     }
 
 
@@ -579,4 +579,10 @@ class GfXComponent implements Linkable, Resizeable
     {
         return $this->editGroup;
     }
+}
+
+class gifTransformation
+{
+    public $animationStep;
+    public $attributes;
 }

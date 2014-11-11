@@ -459,30 +459,33 @@ class GfxContainer
         $stage = new Imagick();
         $stage->newimage($this->getCanvasWidth(), $this->getCanvasHeight(), $color);
 
-//        $frameCount = $this->getFrames();
+        $frameCount = $this->getFrames();
+//        $skipFrames = 0;
 
         //create frames
-        for($animationStep = 0; $animationStep <= 0; $animationStep++)
+        for($i = 0; $i <= $frameCount; $i++) // += $skipFrames+1)
         {
             //create container for the single frame
             $frame = new Imagick();
             $frame->newimage($this->getCanvasWidth(), $this->getCanvasHeight(), $color);
 
-            $elementHandler = array();
+            $elementStack = array();
 
             //loop through all elements
             foreach ($this->elements as $element)
             {
                 //todo just for now
-                if(is_a($element, 'GfxText'))
+                if(is_a($element, 'GfxText') && $element->getId() === "price")
                 {
+                    $gifAnimationList = $this->createGifAnimationList($element->getAnimations());
+
                     //add the elements to an array
-                    $elementHandler[] = $element->renderGif();
+                    $elementStack[] = $element->renderGif();
                 }
             }
 
             //composite the single images
-            foreach($elementHandler as $singleImage)
+            foreach($elementStack as $singleImage)
             {
                 $frame->compositeimage($singleImage, Imagick::COMPOSITE_DEFAULT, 0, 0);
             }
@@ -496,6 +499,35 @@ class GfxContainer
         $success = $stage->writeImages($path, true);
 
         unset($success);
+    }
+
+    private function createGifAnimationList($animations)
+    {
+        if(empty($animations))
+        {
+            return array();
+        }
+
+        $gifAnimationList = array();
+        $animationStep = 0;
+
+        foreach($animations as $singleObject)
+        {
+            $animationStep += $singleObject->getDuration();
+
+//            for($j=1; $j<=$singleObject->getDuration();$j++)
+//            {
+//                $transformation = new gifTransformation();
+//                $transformation->animationStep = $j;
+//                $transformation->attributes = $singleObject->getTargets();
+//
+//                $gifAnimationList[] = $transformation;
+//            }
+        }
+
+        var_dump($animationStep);
+
+        return $gifAnimationList;
     }
 
 
@@ -921,5 +953,22 @@ class GfxContainer
             $this->framerate = $framerate;
         }
     }
+
+    /**
+     * @return int
+     */
+    public function getFrames()
+    {
+        return $this->frames;
+    }
+
+    /**
+     * @param int $frames
+     */
+    public function setFrames($frames)
+    {
+        $this->frames = $frames;
+    }
+
 
 }
