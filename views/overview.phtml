@@ -169,6 +169,7 @@
                 }).fail(function ()
                 {
                     $('#assigned-' + categoryId + '-' + templateId).empty().remove();
+                    $("#assignedCategory-"+templateId).find("option[value='"+categoryId+"']").remove();
                 });
             }
         });
@@ -204,10 +205,12 @@
             }).done(function(){
             }).fail(function(){
                 category.forEach(function(singleCategory){
+                    var item = $('#'+singleCategory.id);
                     $("#assignedCategory-"+templateId).find("option[value='"+singleCategory.id+"']").remove();
                     var node = '<option value="' + singleCategory.id + '">'+singleCategory.name+'</option>';
                     $('#availableCategory-'+templateId).append(node);
                     $('#assigned-'+singleCategory.id).empty().remove();
+                    $('#categoryContainerOverview-'+templateId+' #'+singleCategory.id).empty().remove();
                 });
                 $(".modal-body form").unblock();
             });
