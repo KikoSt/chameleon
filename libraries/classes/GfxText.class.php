@@ -240,44 +240,80 @@ class GfxText extends GfxComponent
         return $canvas;
     }
 
-    public function renderGif($animationList)
+    public function renderGif($transformationList = null, $skip = false)
     {
-        //set the color for the layer
-        $transparent = new ImagickPixel("rgba(127,127,127,0)");
-
-        //create a new layer
-        $image = new Imagick();
-        $image->newImage($this->getContainer()->getCanvasWidth(), $this->getContainer()->getCanvasHeight(),
-            $transparent);
-
-        //set the start rotation
-        $rotation = 0;
-
-        $text = new ImagickDraw();
-        $text->setFont($this->getGIFFont());
-        $text->setfontsize($this->getFontSize());
-        $text->setGravity(Imagick::GRAVITY_CENTER);
-
-        //create a new layer
-        $image = new Imagick();
-        $image->newImage($this->getContainer()->getCanvasWidth(), $this->getContainer()->getCanvasHeight(),
-            $transparent);
-
-        $x = $this->getContainer()->getCanvasWidth() - $this->getX();
-        $y = $this->getContainer()->getCanvasHeight() - $this->getY();
-
-        if ($this->hasShadow())
+        if(!isset($this->gifParams))
         {
-            $this->renderShadow($image);
+            $this->gifParams = new GifAnimationContainer($this);
         }
 
-        //add the layer to the given canvas
-        $image->annotateImage($text, $x, $y, $rotation, $this->getText());
-        $image->setImageDelay(5);
+        foreach($transformationList AS $attribute => $stepsize)
+        {
+            // echo $this->getId() . ': ' . $attribute . ': ' . $stepsize . "\n";
+            $stepsize = $stepsize;
+            switch($attribute)
+            {
+                case 'x':
+                    $this->gifParams->x += $stepsize;
+                    break;
+                case 'y':
+                    $this->gifParams->y += $stepsize;
+                    break;
+                case 'w':
+                    $this->gifParams->width += $stepsize;
+                    break;
+                case 'h':
+                    $this->gifParams->height += $stepsize;
+                    break;
+                case 'r':
+                    $this->gifParams->rotation += $stepsize;
+                    break;
+                default:
+                    break;
+            }
+        }
 
+        if($skip)
+        {
+            return true;
+        }
+
+        $transparent = new ImagickPixel("rgba(127,127,127,0)");
+
+        //set the color for the layer
+        $text = new ImagickDraw();
+        $text->setFont($this->getGIFFont());
+        // WHY?????????????????????????
+        $text->setFontsize($this->getFontSize() * 1.33);
+        $text->setFillColor($this->getFill()->getHex());
+
+        $imageWidth  = $this->getContainer()->getCanvasWidth();
+        $imageHeight = $this->getContainer()->getCanvasHeight();
+
+        //create a new layer
+        $image = new Imagick();
+        $image->newImage($imageWidth, $imageHeight, $transparent);
         // IMPORTANT! Clean up animation mess!
         $image->setImageDispose(3);
 
+        $x = $this->gifParams->x;
+        $y = $this->gifParams->y;
+        $width = $this->gifParams->width;
+        $height = $this->gifParams->height;
+        $rotation = $this->gifParams->rotation;
+
+        if($this->hasShadow() && $this->shadowEnabled())
+        {
+            $text->setFillColor(new ImagickPixel($this->getShadow()->getColor()->getHex() . '77'));
+            $image->annotateImage($text, $this->getShadow()->getDist(), $height + 10 + $this->getShadow()->getDist(), 0, $this->getText());
+        }
+        //add the text
+        $text->setFillColor($this->getFill()->getHex());
+        $image->annotateImage($text, 0, $height + 10, 0, $this->getText());
+
+        $distort = array($width/2, $height/2, 1,  -$rotation, $x + $width / 2, $y - $height * 1.3);
+        $image->setImageVirtualPixelMethod( Imagick::VIRTUALPIXELMETHOD_TRANSPARENT );
+        $image->distortImage(imagick::DISTORTION_SCALEROTATETRANSLATE, $distort, false);
 
         return $image;
 
@@ -287,10 +323,10 @@ class GfxText extends GfxComponent
     {
         $text = new ImagickDraw();
         $text->setFont($this->getGIFFont());
-        $text->setfontsize($this->getFontSize());
+        $text->setfontsize($this->getFontSize() * 1.33);
         $text->setfillcolor(new ImagickPixel($this->getShadow()->getColor()->getHex()));
 
-        $frame->annotateImage($text, $this->getX()+$this->getShadow()->getDist(), $this->getY()+$this->getShadow()->getDist(), 0, $this->getText());
+//        $frame->annotateImage($text, $this->getX()+, $this->getY()+$this->getShadow()->getDist(), 0, $this->getText());
     }
 
     public function getFontListForOverview()

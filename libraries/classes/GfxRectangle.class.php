@@ -1,4 +1,5 @@
 <?php
+set_time_limit(0);
 /**
  * Handles the creation of rectangles while rendering GIF and SWF
  *
@@ -144,10 +145,55 @@ class GfxRectangle extends GfxShape
 
 
 
-    public function renderGIF($frame)
+    public function renderGIF($transformationList = null)
     {
-        $rectangle = new ImagickDraw();
+        if(!isset($this->gifParams))
+        {
+            $this->gifParams = new GifAnimationContainer($this);
+        }
+        //set the color for the layer
+        $transparent = new ImagickPixel("rgba(127,127,127,0)");
 
+        $imageWidth  = $this->getContainer()->getCanvasWidth();
+        $imageHeight = $this->getContainer()->getCanvasHeight();
+
+        foreach($transformationList AS $attribute => $stepsize)
+        {
+            $stepsize = $stepsize;
+            switch($attribute)
+            {
+                case 'x':
+                    $this->gifParams->x += $stepsize;
+                    break;
+                case 'y':
+                    $this->gifParams->y += $stepsize;
+                    break;
+                case 'w':
+                    $this->gifParams->width += $stepsize;
+                    break;
+                case 'h':
+                    $this->gifParams->height += $stepsize;
+                    break;
+                case 'r':
+                    $this->gifParams->rotation += $stepsize;
+                    break;
+                default:
+                    break;
+            }
+        }
+        $x        = $this->gifParams->x;
+        $y        = $this->gifParams->y; //  - ($this->gifParams->height);
+        $width    = $this->gifParams->width;
+        $height   = $this->gifParams->height;
+        $rotation = $this->gifParams->rotation;
+
+        $rectangle = new ImagickDraw();
+        $rectangle->setGravity(Imagick::GRAVITY_CENTER);
+
+        $frame = new Imagick();
+        $frame->newimage($imageWidth, $imageHeight, $transparent);
+
+        // ????????????? W ? T ? F ???????????????????????????
         if($this->getFill()->getR() !== null)
         {
             $color = new ImagickPixel($this->getFill()->getHex());
@@ -162,7 +208,7 @@ class GfxRectangle extends GfxShape
         if($this->shadowEnabled() && $this->hasShadow())
         {
             $shadow = $this->createShadow();
-            $frame->drawimage($shadow);
+            $frame->drawImage($shadow);
         }
 
         if($this->strokeEnabled() && $this->hasStroke())
@@ -170,11 +216,21 @@ class GfxRectangle extends GfxShape
             $this->createStroke($rectangle);
         }
 
-        $x2 = $this->getX() + $this->getWidth();
-        $y2 = $this->getY() + $this->getHeight();
-        $rectangle->rectangle($this->getX(), $this->getY(), $x2, $y2);
+        $x1 = $this->gifParams->x - ($this->gifParams->width / 2);
+        $y1 = $this->gifParams->y - ($this->gifParams->height / 2);
+        $x2 = $this->gifParams->x + ($this->gifParams->width / 2);
+        $y2 = $this->gifParams->y + ($this->gifParams->height / 2);
 
+        $x1 = 0;
+        $y1 = 0;
+        $x2 = $this->gifParams->width;
+        $y2 = $this->gifParams->height;
+
+        $rectangle->rectangle($x1, $y1, $x2, $y2);
         $frame->drawImage($rectangle);
+        $distort = array($width/2, $height/2, 1, -$rotation, $this->gifParams->x + $width / 2, $this->gifParams->y + $height / 2);
+        $frame->setImageVirtualPixelMethod( Imagick::VIRTUALPIXELMETHOD_TRANSPARENT );
+        $frame->distortImage(imagick::DISTORTION_SCALEROTATETRANSLATE, $distort, false);
 
         return $frame;
     }
@@ -184,14 +240,16 @@ class GfxRectangle extends GfxShape
     {
         $color = new ImagickPixel($this->getShadow()->getColor()->getHex());
 
-        $x1 = $this->getX() + $this->getShadow()->getDist();
-        $y1 = $this->getY() + $this->getShadow()->getDist();
-        $x2 = $x1 + $this->getWidth();
-        $y2 = $y1 + $this->getHeight();
+        $dist = $this->getShadow()->getDist();
+
+        $x1 = $dist;
+        $y1 = $dist;
+        $x2 = $this->gifParams->width + $dist;
+        $y2 = $this->gifParams->height + $dist;
 
         $shadow = new ImagickDraw();
         $shadow->setFillColor($color);
-        $shadow->setfillopacity(0.5);
+        $shadow->setFillOpacity(0.5);
         $shadow->rectangle($x1, $y1, $x2, $y2);
 
         return $shadow;

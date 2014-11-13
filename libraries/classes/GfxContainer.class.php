@@ -453,86 +453,101 @@ class GfxContainer
         gc_collect_cycles();
     }
 
-    private function renderGIF()
+    private function renderGIF($animate = true)
     {
         //set the color for the layer
         $color = new ImagickPixel("rgba(127,127,127, 0)");
 
         //create the stage (container for the single frames)
         $stage = new Imagick();
-        $stage->newimage($this->getCanvasWidth(), $this->getCanvasHeight(), $color);
+        // $stage->newimage($this->getCanvasWidth(), $this->getCanvasHeight(), $color);
+        $stage->setFormat('gif');
 
-        $frameCount = $this->getFrames();
-//        $skipFrames = 0;
+        if($this->animatePreviews) {
+            $frameCount = $this->getFrames();
+        } else {
+            $frameCount = 1;
+        }
+        $skipFrames = (int) 4;
+
+        $animationElements = array();
+
+        foreach($this->elements AS $element)
+        {
+            if(count($element->getAnimations()) > 0)
+            {
+                $animationElements[] = $element;
+            }
+        }
+
+        /**
+         *  Render the first frame
+         * non-animated elements will only be rendered once
+        **/
+        $layerStack = array();
+        $background = new Imagick();
+        $background->newImage($this->getCanvasWidth(), $this->getCanvasHeight(), $color);
+        foreach ($this->elements as $element)
+        {
+            $animations = $element->getAnimations();
+
+            if(count($animations) == 0)
+            {
+                $layer = $element->renderGif(array());
+                $background->compositeImage($layer, Imagick::COMPOSITE_DEFAULT, 0, 0);
+            }
+        }
+        /**
+         * Done rendering the first frame!
+        **/
 
         //create frames
-        for($i = 0; $i <= $frameCount; $i++) // += $skipFrames+1)
+        for($i = 0; $i < $frameCount; $i += ($skipFrames+1))
         {
-            //create container for the single frame
-            $frame = new Imagick();
-            $frame->newimage($this->getCanvasWidth(), $this->getCanvasHeight(), $color);
+            $layerStack = array();
 
-            $elementStack = array();
+            $skip = true;
 
             //loop through all elements
-            foreach ($this->elements as $element)
+            foreach ($animationElements as $element)
             {
-                //todo just for now
-                if(is_a($element, 'GfxText') && $element->getId() === "price")
+                $skip = true;
+                if($skipFrames == 0 || $i % ($skipFrames + 1) == 0)
                 {
-                    $gifAnimationList = $this->createGifAnimationList($element->getAnimations());
-
-                    //add the elements to an array
-                    $elementStack[] = $element->renderGif();
+                    $skip = false;
                 }
+                //add the elements to an array
+                $animationStep = $element->getAnimationStep($i);
+                $layerStack[] = $element->renderGif($animationStep, $skip);
             }
 
-            //composite the single images
-            foreach($elementStack as $singleImage)
+            if($skip)
             {
-                $frame->compositeimage($singleImage, Imagick::COMPOSITE_DEFAULT, 0, 0);
+                continue;
+            }
+
+            //create container for the single frame
+            $frame = new Imagick();
+            $frame->newImage($this->getCanvasWidth(), $this->getCanvasHeight(), $color);
+            $frame->setImageDispose(3);
+            $frame->setImageDelay(3.9);
+            //composite the single images
+            $frame->compositeImage($background, Imagick::COMPOSITE_DEFAULT, 0, 0);
+            foreach($layerStack as $singleImage)
+            {
+                $frame->compositeImage($singleImage, Imagick::COMPOSITE_DEFAULT, 0, 0);
             }
 
             //add the complete frame to the stage
-            $stage->addimage($frame);
+            $stage->addImage($frame);
         }
 
         //complete the banner
         $path = OUTPUT_DIR . '/' . $this->getOutputDir() . '/' . $this->getOutputFilename() . '.gif';
-        $success = $stage->writeImages($path, true);
+        $animatedGif = $stage->writeImages($path, true);
 
-        unset($success);
+        unset($animatedGif);
     }
-
-    private function createGifAnimationList($animations)
-    {
-        if(empty($animations))
-        {
-            return array();
-        }
-
-        $gifAnimationList = array();
-        $animationStep = 0;
-
-        foreach($animations as $singleObject)
-        {
-            $animationStep += $singleObject->getDuration();
-
-//            for($j=1; $j<=$singleObject->getDuration();$j++)
-//            {
-//                $transformation = new gifTransformation();
-//                $transformation->animationStep = $j;
-//                $transformation->attributes = $singleObject->getTargets();
-//
-//                $gifAnimationList[] = $transformation;
-//            }
-        }
-
-        var_dump($animationStep);
-
-        return $gifAnimationList;
-    }
-
 
     public function getOptionsForEditor()
     {

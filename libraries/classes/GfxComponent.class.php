@@ -618,8 +618,22 @@ class GfXComponent implements Linkable, Resizeable
     }
 }
 
-class gifTransformation
+
+
+class GifAnimationContainer
 {
-    public $animationStep;
-    public $attributes;
+    public $x;
+    public $y;
+    public $width;
+    public $height;
+    public $rotation;
+
+    public function __construct($sourceObject)
+    {
+        $this->x = $sourceObject->getX();
+        $this->y = $sourceObject->getY();
+        $this->width = $sourceObject->getWidth();
+        $this->height = $sourceObject->getHeight();
+        $this->rotation = 0;
+    }
 }

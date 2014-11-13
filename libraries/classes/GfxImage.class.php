@@ -200,18 +200,24 @@ class GfxImage extends GfXComponent
     {
         $fileHandle = fopen(ROOT_DIR . $this->getImageUrl(), 'r');
 
+        $transparent = new ImagickPixel("rgba(127,127,127,0)");
+
         $image = new Imagick();
         $image->readimagefile($fileHandle);
 
+        $imageWidth  = $this->getContainer()->getCanvasWidth();
+        $imageHeight = $this->getContainer()->getCanvasHeight();
 
+        $frame = new Imagick();
+        $frame->newImage($imageWidth, $imageHeight, $transparent);
 
-        $image->resizeimage($this->getWidth(), $this->getHeight(), imagick::FILTER_LANCZOS, 1, true);
-
+        // $image->resizeimage($this->getWidth(), $this->getHeight(), imagick::FILTER_BOX, 0.2, true);
+        $image->scaleimage($this->getWidth(), $this->getHeight(), true);
 
         if($this->hasShadow() && $this->shadowEnabled())
         {
             $shadow = $this->createShadow();
-            $frame->compositeImage($shadow, Imagick::COMPOSITE_DEFAULT, $this->getX(), $this->getY());
+            $frame->drawImage($shadow);
         }
 
         if($this->hasStroke() && $this->strokeEnabled())
@@ -243,8 +249,8 @@ class GfxImage extends GfXComponent
 
     public function createStroke($image)
     {
-        $width = $this->getWidth() + ($this->getStroke()->getWidth() * 2);
-        $height = $this->getHeight() + ($this->getStroke()->getHeight() * 2);
+        $width =  $this->getStroke()->getWidth(); // $this->getWidth() + ($this->getStroke()->getWidth() * 2);
+        $height = $this->getStroke()->getWidth();  //  $this->getHeight() + ($this->getStroke()->getHeight() * 2);
         $image->borderimage($this->getStroke()->getColor()->getHex(), $width, $height);
     }
 
