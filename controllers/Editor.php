@@ -54,6 +54,7 @@ class Editor extends Controller
         $container->setSource($template->getSvgContent());
         $container->parse();
         $container->setPreviewMode(true);
+        $container->animatePreviews(true);
 
         $gif = 'http://' . $_SERVER['SERVER_NAME'] . '/chameleon/output/' . $container->getOutputDir() . '/' . $baseFilename . '.gif';
         $swf = 'http://' . $_SERVER['SERVER_NAME'] . '/chameleon/output/' . $container->getOutputDir() . '/' . $baseFilename . '.swf';

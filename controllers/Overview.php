@@ -38,6 +38,8 @@ class Overview extends Controller
         $this->view = $this->setLayout('views/overview.phtml')->getView();
         $this->view->advertiserId = $this->getAdvertiserId();
 
+        $container->animatePreviews(false);
+
         // get all templates for company / advertiser
         try
         {

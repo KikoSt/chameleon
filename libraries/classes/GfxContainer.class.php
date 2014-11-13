@@ -27,6 +27,8 @@ class GfxContainer
     private $frames; // number of overall frames for animation
     private $framerate;
 
+    private $animatePreviews;
+
     // private $fontFamily;
     private $globalPrimaryColor;
     private $globalSecondaryColor;
@@ -64,6 +66,7 @@ class GfxContainer
         $this->dataRegistry = array();
         $this->animationRegistry = array();
         $this->previewMode = false;
+        $this->animatePreviews = true;
         $this->groups = array();
 
         // TODO: for now ...
@@ -971,4 +974,15 @@ class GfxContainer
     }
 
 
+    public function animatePreviews($animate)
+    {
+        if($animate === true)
+        {
+            $this->animatePreviews = true;
+        }
+        else
+        {
+            $this->animatePreviews = false;
+        }
+    }
 }
