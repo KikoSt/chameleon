@@ -19,6 +19,7 @@ class GfXComponent implements Linkable, Resizeable
     private $editGroup;
 
     private $animationList;
+    private $animationSteps;
 
     private $cmeoRef;
     private $cmeoLink;
@@ -37,6 +38,7 @@ class GfXComponent implements Linkable, Resizeable
         $this->drawCenter = false;
 
         $this->animationList = array();
+        $this->animationSteps = array();
     }
 
     public function addAnimation($animationDefinition)
@@ -62,8 +64,43 @@ class GfXComponent implements Linkable, Resizeable
                     }
                 }
                 $this->animationList[] = $ani;
+
+                // create an array containing all frames indexed by frame number!
+                $stepCount = count($this->animationSteps);
+                $numSteps = $stepCount;
+                for($i=$stepCount; $i<($defs[0] + $numSteps); $i++)
+                {
+                    $animationStep = array();
+                    foreach($targets AS $target)
+                    {
+                        $aniComponent = explode('/', $target);
+
+                        if(!empty($aniComponent[0]))
+                        {
+                            $animationStep[$aniComponent[0]] = $aniComponent[1];
+                        }
+                    }
+                // echo "\n------------------\n";
+                $this->animationSteps[$stepCount] = $animationStep;
+                $stepCount++;
+                }
             }
         }
+    }
+
+    public function getAnimationStep($stepNum)
+    {
+        $stepNum = $stepNum % count($this->animationSteps);
+        if(count($this->animationSteps) > $stepNum)
+        {
+            $animationStep = $this->animationSteps[$stepNum];
+        }
+        else
+        {
+            $animationStep = array('p' => 0);
+        }
+        // echo $this->getId() . ': [' . $stepNum . '] -> ' . print_r($animationStep, true);
+        return $animationStep;
     }
 
     public function setAnimation($animationDefinition)
