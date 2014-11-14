@@ -223,10 +223,13 @@
             var companyId = id[3];
             var data = {};
 
+            console.log(id);
+
             if(confirm("Are you sure you want to CLONE this template? You will be redirected to the cloned template after confirming."))
             {
                 data.advertiserId = advertiserId;
                 data.templateId = templateId;
+                data.companyId = companyId;
 
                 $.ajax({
                     type: 'POST',
@@ -235,8 +238,9 @@
                     url: '/chameleon/ajax/cloneTemplate.php',
                     success: function (response)
                     {
-                        var url = window.location.origin + '/chameleon/index.php?page=editor&templateId=' + response.idBannerTemplate +
-                            '&companyId=' + companyId + '&advertiserId=' + advertiserId;
+                        var url = window.location.origin + '/chameleon/index.php?page=editor&templateId=' + response +
+                            '&companyId=' + companyId +
+                            '&advertiserId=' + advertiserId;
                         window.location.replace(url);
                     }
                 });

@@ -101,7 +101,7 @@
             '</div>',
         other: '<div class="file-preview-frame" id="{previewId}" title="{caption}" ' + STYLE_SETTING + '>\n' +
             '   ' + DEFAULT_PREVIEW + '\n' + PREVIEW_LABEL + 
-            '</div>',
+            '</div>'
     };
     var defaultPreviewSettings = {
         image: {width: "auto", height: "160px"},
@@ -137,7 +137,7 @@
         },
         other: function (vType, vName) {
             return true;
-        },
+        }
     };
     var isEmpty = function (value, trim) {
             return value === null || value === undefined || value == []

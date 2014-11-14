@@ -2,6 +2,7 @@
     <div class="overviewTitle">
         Assigned categories
         <span id="editAssignedCategory"
+              title="Edit the assigned categories"
               class="fa fa-pencil-square-o cursor-pointer color-black"
               data-toggle="modal"
               data-target="#categorySelect-<?php echo $preview->templateId; ?>">
