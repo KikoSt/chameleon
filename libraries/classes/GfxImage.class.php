@@ -127,7 +127,7 @@ class GfxImage extends GfXComponent
             $shadow->drawLineTo($shadowX2, $shadowY1);
             $shadow->drawLineTo($shadowX1, $shadowY1);
 
-            $shandle = $sprite->add($shadow);
+            $shadowHandle = $sprite->add($shadow);
         }
 
         $imgPath = '/tmp/file' . time() . rand() . '.jpg';
@@ -168,9 +168,9 @@ class GfxImage extends GfXComponent
             {
                 $handleList['linkHandle'] = $lhandle;
             }
-            if(isset($shandle))
+            if(isset($shadowHandle))
             {
-                $handleList['shadowHandle'] = $shandle;
+                $handleList['shadowHandle'] = $shadowHandle;
             }
             $handleList['handle'] = $handle;
             $sprite = $this->swfAnimate($handleList, $sprite);
@@ -216,10 +216,10 @@ class GfxImage extends GfXComponent
                     $this->gifParams->y += $stepsize;
                     break;
                 case 'w':
-                    $this->gifParams->width += $stepsize;
+                    $this->gifParams->width *= $stepsize;
                     break;
                 case 'h':
-                    $this->gifParams->height += $stepsize;
+                    $this->gifParams->height *= $stepsize;
                     break;
                 case 'r':
                     $this->gifParams->rotation += $stepsize;
@@ -234,11 +234,11 @@ class GfxImage extends GfXComponent
             return true;
         }
         $fileHandle = fopen(ROOT_DIR . $this->getImageUrl(), 'r');
+        $filepath = ROOT_DIR . $this->getImageUrl();
 
         $transparent = new ImagickPixel("rgba(127,127,127,0)");
 
-        $image = new Imagick();
-        $image->readimagefile($fileHandle);
+        $image = new Imagick($filepath);
 
         $imageWidth  = $this->getContainer()->getCanvasWidth();
         $imageHeight = $this->getContainer()->getCanvasHeight();
@@ -246,8 +246,10 @@ class GfxImage extends GfXComponent
         $frame = new Imagick();
         $frame->newImage($imageWidth, $imageHeight, $transparent);
 
+        // $frameDraw = new ImagickDraw();
+
         // $image->resizeimage($this->getWidth(), $this->getHeight(), imagick::FILTER_BOX, 0.2, true);
-        $image->scaleimage($this->getWidth(), $this->getHeight(), true);
+        $image->scaleimage($this->gifParams->width, $this->gifParams->height, false);
 
         if($this->hasShadow() && $this->shadowEnabled())
         {
@@ -260,10 +262,22 @@ class GfxImage extends GfXComponent
             $this->createStroke($image);
         }
 
-        $x = $this->gifParams->x;
-        $y = $this->gifParams->y;
+        $x = $this->getX() + ($this->getWidth() - $this->gifParams->width) / 2;
+        $y = $this->getY() + ($this->getHeight() - $this->gifParams->height) / 2;
 
+        $width = $this->gifParams->width;
+        $height = $this->gifParams->height;
+        $rotation = $this->gifParams->rotation;
+        $targetX = ($x + $width  / 2) + (($this->getWidth()  - $this->gifParams->width) /  2);
+        $targetY = ($y + $height / 2) + (($this->getHeight() - $this->gifParams->height) / 2);
+        $targetX = $this->gifParams->x;
+        $targetY = $this->gifParams->y;
+        $distort = array($width/2, $height/2, 1,  -$rotation, $x + $width / 2, $y - $height * 1.3);
+        // $distort = array($x - $width, $y - $height, 1,  -$rotation, $x - ($width / 2), $y - ($height / 2));
+         $distort = array(-($width/2), -($height/2), 1, 1, -$rotation, 100, 100);
+        $image->setImageVirtualPixelMethod(Imagick::VIRTUALPIXELMETHOD_TRANSPARENT);
         $frame->compositeImage($image, Imagick::COMPOSITE_DEFAULT, $x, $y);
+        // $frame->distortImage(imagick::DISTORTION_SCALEROTATETRANSLATE, $distort, false);
 
         return $frame;
     }
@@ -272,10 +286,14 @@ class GfxImage extends GfXComponent
     {
         $color = new ImagickPixel($this->getShadow()->getColor()->getHex());
 
-        $x1 = $this->gifParams->x + $this->getShadow()->getDist();
-        $y1 = $this->gifParams->y + $this->getShadow()->getDist();
-        $x2 = $x1 + $this->getWidth();
-        $y2 = $y1 + $this->getHeight();
+        $x = $this->getX() + ($this->getWidth() - $this->gifParams->width) / 2;
+        $y = $this->getY() + ($this->getHeight() - $this->gifParams->height) / 2;
+
+        $x1 = $x + $this->getShadow()->getDist();
+        $y1 = $y + $this->getShadow()->getDist();
+
+        $x2 = $x1 + $this->gifParams->width;
+        $y2 = $y1 + $this->gifParams->height;
 
         $shadow = new ImagickDraw();
         $shadow->setFillColor($color);

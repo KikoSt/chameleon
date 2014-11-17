@@ -466,6 +466,7 @@ class GfxContainer
     {
         //set the color for the layer
         $color = new ImagickPixel("rgba(127,127,127, 0)");
+        $imageDispose = 0;
 
         //create the stage (container for the single frames)
         $stage = new Imagick();
@@ -546,23 +547,17 @@ class GfxContainer
             $frame->setImageDispose($imageDispose);
             $frame->setImageDelay($delay);
             //composite the single images
-//            if($i == 0)
-//            {
-                $frame->compositeImage($background, Imagick::COMPOSITE_DEFAULT, 0, 0);
-//            }
-//            else
-//            {
-                if(count($layerStack) > 0)
+            $frame->compositeImage($background, Imagick::COMPOSITE_DEFAULT, 0, 0);
+            if(count($layerStack) > 0)
+            {
+                foreach($layerStack as $singleImage)
                 {
-                    foreach($layerStack as $singleImage)
+                    if($singleImage instanceof Imagick)
                     {
-                        if($singleImage instanceof Imagick)
-                        {
-                            $frame->compositeImage($singleImage, Imagick::COMPOSITE_DEFAULT, 0, 0);
-                        }
+                        $frame->compositeImage($singleImage, Imagick::COMPOSITE_DEFAULT, 0, 0);
                     }
                 }
-//            }
+            }
 
             //add the complete frame to the stage
             $stage->addImage($frame);

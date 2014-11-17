@@ -112,7 +112,7 @@ class GfXComponent implements Linkable, Resizeable
             $prevStep = array();
             foreach($this->animationSteps AS $animationStep)
             {
-                if($count/4 == ceil($count/4) || count(array_diff($animationStep, $prevStep)) >0 || count(array_diff_key($animationStep, $prevStep)) > 0)
+                if($count/3 == ceil($count/3) || count(array_diff($animationStep, $prevStep)) >0 || count(array_diff_key($animationStep, $prevStep)) > 0)
                 {
                     $newKeyframe = $count;
                     // interpolate one more keyframe if frame delta > x

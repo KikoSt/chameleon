@@ -169,10 +169,10 @@ class GfxRectangle extends GfxShape
                     $this->gifParams->y += $stepsize;
                     break;
                 case 'w':
-                    $this->gifParams->width += $stepsize;
+                    $this->gifParams->width *= $stepsize;
                     break;
                 case 'h':
-                    $this->gifParams->height += $stepsize;
+                    $this->gifParams->height *= $stepsize;
                     break;
                 case 'r':
                     $this->gifParams->rotation += $stepsize;
@@ -216,19 +216,17 @@ class GfxRectangle extends GfxShape
             $this->createStroke($rectangle);
         }
 
-        $x1 = $this->gifParams->x - ($this->gifParams->width / 2);
-        $y1 = $this->gifParams->y - ($this->gifParams->height / 2);
-        $x2 = $this->gifParams->x + ($this->gifParams->width / 2);
-        $y2 = $this->gifParams->y + ($this->gifParams->height / 2);
-
-        $x1 = 0;
-        $y1 = 0;
+        $x1 = -$this->gifParams->width / 2;
+        $y1 = -$this->gifParams->height / 2;
         $x2 = $this->gifParams->width;
         $y2 = $this->gifParams->height;
 
+        $targetX = ($x + $width  / 2) + (($this->getWidth()  - $this->gifParams->width) /  2);
+        $targetY = ($y + $height / 2) + (($this->getHeight() - $this->gifParams->height) / 2);
+
         $rectangle->rectangle($x1, $y1, $x2, $y2);
         $frame->drawImage($rectangle);
-        $distort = array($width/2, $height/2, 1, -$rotation, $this->gifParams->x + $width / 2, $this->gifParams->y + $height / 2);
+        $distort = array($width/2, $height/2, 1, -$rotation, $targetX, $targetY);
         $frame->setImageVirtualPixelMethod( Imagick::VIRTUALPIXELMETHOD_TRANSPARENT );
         $frame->distortImage(imagick::DISTORTION_SCALEROTATETRANSLATE, $distort, false);
 
