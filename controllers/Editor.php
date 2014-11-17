@@ -72,7 +72,7 @@ class Editor extends Controller
             }
         }
 
-        $premiumUser = false;
+        $premiumUser = true;
 
         // view parameters
         $this->view->width           = $container->getCanvasWidth();
