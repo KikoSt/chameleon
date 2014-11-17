@@ -194,7 +194,7 @@ h2 > span
     float:left;
 }
 
-.alert
+#alert-custom
 {
     position: absolute;
     width: 200px;

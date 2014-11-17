@@ -3,7 +3,7 @@ $(document).ready(function() {
     var somethingChanged = false;
     var category = {};
 
-    $('.alert').hide();
+    $('#alert-custom').hide();
 
     $(window).keydown(function(e){
         if(e.keyCode == 13) {
