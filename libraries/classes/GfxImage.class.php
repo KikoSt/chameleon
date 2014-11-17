@@ -268,16 +268,13 @@ class GfxImage extends GfXComponent
         $width = $this->gifParams->width;
         $height = $this->gifParams->height;
         $rotation = $this->gifParams->rotation;
-        $targetX = ($x + $width  / 2) + (($this->getWidth()  - $this->gifParams->width) /  2);
-        $targetY = ($y + $height / 2) + (($this->getHeight() - $this->gifParams->height) / 2);
-        $targetX = $this->gifParams->x;
-        $targetY = $this->gifParams->y;
-        $distort = array($width/2, $height/2, 1,  -$rotation, $x + $width / 2, $y - $height * 1.3);
-        // $distort = array($x - $width, $y - $height, 1,  -$rotation, $x - ($width / 2), $y - ($height / 2));
-         $distort = array(-($width/2), -($height/2), 1, 1, -$rotation, 100, 100);
-        $image->setImageVirtualPixelMethod(Imagick::VIRTUALPIXELMETHOD_TRANSPARENT);
-        $frame->compositeImage($image, Imagick::COMPOSITE_DEFAULT, $x, $y);
-        // $frame->distortImage(imagick::DISTORTION_SCALEROTATETRANSLATE, $distort, false);
+
+        $distort = array($width/2, $height /2, 1, 1, -$rotation, $x + $width / 2, $y + $height / 2);
+
+        $frame->setImageVirtualPixelMethod(Imagick::VIRTUALPIXELMETHOD_TRANSPARENT);
+
+        $frame->compositeImage($image, Imagick::COMPOSITE_DEFAULT, 0, 0); // $width / 2, $height / 2);
+        $frame->distortImage(imagick::DISTORTION_SCALEROTATETRANSLATE, $distort, false);
 
         return $frame;
     }
@@ -286,11 +283,11 @@ class GfxImage extends GfXComponent
     {
         $color = new ImagickPixel($this->getShadow()->getColor()->getHex());
 
-        $x = $this->getX() + ($this->getWidth() - $this->gifParams->width) / 2;
-        $y = $this->getY() + ($this->getHeight() - $this->gifParams->height) / 2;
+        //$x = $this->getX() + ($this->getWidth() - $this->gifParams->width) / 2;
+        //$y = $this->getY() + ($this->getHeight() - $this->gifParams->height) / 2;
 
-        $x1 = $x + $this->getShadow()->getDist();
-        $y1 = $y + $this->getShadow()->getDist();
+        $x1 = $this->getShadow()->getDist();
+        $y1 = $this->getShadow()->getDist();
 
         $x2 = $x1 + $this->gifParams->width;
         $y2 = $y1 + $this->gifParams->height;
