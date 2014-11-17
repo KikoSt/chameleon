@@ -20,6 +20,7 @@ class GfXComponent implements Linkable, Resizeable
 
     private $animationList;
     private $animationSteps;
+    private $animationKeyframes;
 
     private $cmeoRef;
     private $cmeoLink;
@@ -86,8 +87,91 @@ class GfXComponent implements Linkable, Resizeable
                 }
             }
         }
+
+        $this->animationKeyframes = $this->calculateAnimationKeyframes();
+        // echo "----------------------------------\n";
     }
 
+
+    /**
+     * calculateAnimationKeyframes
+     *
+     * keyframes are all frames where the animation changes; The first frame of a component's animation always is a
+     * keyframe obviously (no animation --> some animation)
+     *
+     * @access protected
+     * @return void
+     */
+    protected function calculateAnimationKeyframes()
+    {
+        // array_unique will not work here since we're dealing with multidimensional arrays
+        // AND it would most likely be not more performant
+        $animationKeyframes = array('p' => 0);
+        {
+            $count = 0;
+            $prevStep = array();
+            foreach($this->animationSteps AS $animationStep)
+            {
+                if($count/4 == ceil($count/4) || count(array_diff($animationStep, $prevStep)) >0 || count(array_diff_key($animationStep, $prevStep)) > 0)
+                {
+                    $newKeyframe = $count;
+                    // interpolate one more keyframe if frame delta > x
+       //             $delta = $newKeyframe - $animationKeyframes[count($animationKeyframes) -1];
+       //             if($delta > 5)
+       //             {
+       //                 $interpolated = ceil(($newKeyframe - $animationKeyframes[count($animationKeyframes) -1]) / 2);
+       //                 $animationKeyframes[] = $interpolated;
+       //             }
+                    $animationKeyframes[] = $newKeyframe;
+                    // echo "Adding keyframes ". $delta . ' and ' . $newKeyframe . "\n";
+                    $prevStep = $animationStep;
+                }
+                $count++;
+            }
+        }
+        return $animationKeyframes;
+    }
+
+    /**
+     * getAnimationKeyframes
+     *
+     * return animationKeyframes calculated by function calculateAnimationKeyframes()
+     * (and perhaps altered via function addAnimationKeyframe())
+     *
+     * @access public
+     * @return void
+     */
+    public function getAnimationKeyframes()
+    {
+        return $this->animationKeyframes;
+    }
+
+    /**
+     * addAnimationKeyframe
+     *
+     * manually add a keyframe for example in order to improve animation quality
+     *
+     * @param mixed $framenum
+     * @access public
+     * @return void
+     */
+    public function addAnimationKeyframe($framenum)
+    {
+        if(!in_array($framenum, $this->animationKeyframe))
+        {
+            $this->animationKeyframes[] = $count;
+        }
+        $this->animationKeyframes = sort($this->animationKeyframes);
+    }
+
+
+    /**
+     * getAnimationStep
+     *
+     * @param mixed $stepNum
+     * @access public
+     * @return void
+     */
     public function getAnimationStep($stepNum)
     {
         $stepNum = $stepNum % count($this->animationSteps);

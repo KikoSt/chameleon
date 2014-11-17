@@ -196,8 +196,43 @@ class GfxImage extends GfXComponent
      * @param $canvas
      * @return mixed
      */
-    public function renderGIF($frame)
+    public function renderGIF($transformationList = null, $skip = false)
     {
+        if(!isset($this->gifParams))
+        {
+            $this->gifParams = new GifAnimationContainer($this);
+        }
+
+        foreach($transformationList AS $attribute => $stepsize)
+        {
+            // echo $this->getId() . ': ' . $attribute . ': ' . $stepsize . "\n";
+            $stepsize = $stepsize;
+            switch($attribute)
+            {
+                case 'x':
+                    $this->gifParams->x += $stepsize;
+                    break;
+                case 'y':
+                    $this->gifParams->y += $stepsize;
+                    break;
+                case 'w':
+                    $this->gifParams->width += $stepsize;
+                    break;
+                case 'h':
+                    $this->gifParams->height += $stepsize;
+                    break;
+                case 'r':
+                    $this->gifParams->rotation += $stepsize;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        if($skip)
+        {
+            return true;
+        }
         $fileHandle = fopen(ROOT_DIR . $this->getImageUrl(), 'r');
 
         $transparent = new ImagickPixel("rgba(127,127,127,0)");
@@ -225,7 +260,10 @@ class GfxImage extends GfXComponent
             $this->createStroke($image);
         }
 
-        $frame->compositeImage($image, Imagick::COMPOSITE_DEFAULT, $this->getX(), $this->getY());
+        $x = $this->gifParams->x;
+        $y = $this->gifParams->y;
+
+        $frame->compositeImage($image, Imagick::COMPOSITE_DEFAULT, $x, $y);
 
         return $frame;
     }
@@ -234,8 +272,8 @@ class GfxImage extends GfXComponent
     {
         $color = new ImagickPixel($this->getShadow()->getColor()->getHex());
 
-        $x1 = $this->getX() + $this->getShadow()->getDist();
-        $y1 = $this->getY() + $this->getShadow()->getDist();
+        $x1 = $this->gifParams->x + $this->getShadow()->getDist();
+        $y1 = $this->gifParams->y + $this->getShadow()->getDist();
         $x2 = $x1 + $this->getWidth();
         $y2 = $y1 + $this->getHeight();
 

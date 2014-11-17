@@ -453,7 +453,7 @@ class GfxContainer
         gc_collect_cycles();
     }
 
-    private function renderGIF($animate = true)
+    private function renderGIF()
     {
         //set the color for the layer
         $color = new ImagickPixel("rgba(127,127,127, 0)");
@@ -468,8 +468,9 @@ class GfxContainer
         } else {
             $frameCount = 1;
         }
-        $skipFrames = (int) 4;
-
+        $skipFrames = (int) 0;
+        $imageDelay = 6; // 3.9;      // basic (initial) delay value
+        $delay = $imageDelay;   // actual delay
         $animationElements = array();
 
         foreach($this->elements AS $element)
@@ -512,9 +513,9 @@ class GfxContainer
             foreach ($animationElements as $element)
             {
                 $skip = true;
-                if($skipFrames == 0 || $i % ($skipFrames + 1) == 0)
+                if(in_array($i, $element->getAnimationKeyframes()))
                 {
-                    $skip = false;
+                   $skip = false;
                 }
                 //add the elements to an array
                 $animationStep = $element->getAnimationStep($i);
@@ -523,28 +524,54 @@ class GfxContainer
 
             if($skip)
             {
+                // increase delay
+                $delay += $imageDelay;
                 continue;
             }
 
             //create container for the single frame
             $frame = new Imagick();
             $frame->newImage($this->getCanvasWidth(), $this->getCanvasHeight(), $color);
-            $frame->setImageDispose(3);
-            $frame->setImageDelay(3.9);
+            $i > 0 ? $imageDispose = 3 : 0;
+            $i > 0 ? $delay = $delay : 0;
+            $frame->setImageDispose($imageDispose);
+            $frame->setImageDelay($delay);
             //composite the single images
-            $frame->compositeImage($background, Imagick::COMPOSITE_DEFAULT, 0, 0);
-            foreach($layerStack as $singleImage)
-            {
-                $frame->compositeImage($singleImage, Imagick::COMPOSITE_DEFAULT, 0, 0);
-            }
+//            if($i == 0)
+//            {
+                $frame->compositeImage($background, Imagick::COMPOSITE_DEFAULT, 0, 0);
+//            }
+//            else
+//            {
+                if(count($layerStack) > 0)
+                {
+                    foreach($layerStack as $singleImage)
+                    {
+                        if($singleImage instanceof Imagick)
+                        {
+                            $frame->compositeImage($singleImage, Imagick::COMPOSITE_DEFAULT, 0, 0);
+                        }
+                    }
+                }
+//            }
 
             //add the complete frame to the stage
             $stage->addImage($frame);
+            // reset delay
+            $delay = $imageDelay;
         }
 
         //complete the banner
-        $path = OUTPUT_DIR . '/' . $this->getOutputDir() . '/' . $this->getOutputFilename() . '.gif';
-        $animatedGif = $stage->writeImages($path, true);
+        $miffpath = OUTPUT_DIR . '/' . $this->getOutputDir() . '/' . $this->getOutputFilename() . '.miff';
+        $gifpath = OUTPUT_DIR . '/' . $this->getOutputDir() . '/' . $this->getOutputFilename() . '.gif';
+        $animatedGif = $stage->writeImages($gifpath, true);
+
+        // exec('convert ' . $path . ' -coalesce -layers optimize-frame optframe_erase.gif gif_anim_montage optframe_erase.gif optframe_erase_frames.gif');
+        // exec('gif_anim_montage ' . $path . ' -coalesce -layers optimize-frame optframe_erase.gif gif_anim_montage optframe_erase.gif optframe_erase_frames.gif');
+        // exec('convert ' . $path . ' ( -clone 0--1 -background none +append -quantize trnsparent -colors 63 -unique-colors - write mpr:cmap +delete ) - map mpr:cmap ' . $path);
+//         exec('convert ' . $miffpath . ' +matte +map ' . $gifpath)
+         exec('convert ' . $gifpath . ' -fuzz 8% -layers optimize-transparency +map ' . $gifpath);
+
 
         unset($animatedGif);
     }

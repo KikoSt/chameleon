@@ -294,7 +294,7 @@ class GfxText extends GfxComponent
         $image = new Imagick();
         $image->newImage($imageWidth, $imageHeight, $transparent);
         // IMPORTANT! Clean up animation mess!
-        $image->setImageDispose(3);
+         $image->setImageDispose(3);
 
         $x = $this->gifParams->x;
         $y = $this->gifParams->y;
@@ -304,7 +304,8 @@ class GfxText extends GfxComponent
 
         if($this->hasShadow() && $this->shadowEnabled())
         {
-            $text->setFillColor(new ImagickPixel($this->getShadow()->getColor()->getHex() . '77'));
+            $text->setFillColor(new ImagickPixel($this->getShadow()->getColor()->getHex() . 'ff'));
+            $text->setStrokeAntialias(true);
             $image->annotateImage($text, $this->getShadow()->getDist(), $height + 10 + $this->getShadow()->getDist(), 0, $this->getText());
         }
         //add the text
@@ -312,7 +313,7 @@ class GfxText extends GfxComponent
         $image->annotateImage($text, 0, $height + 10, 0, $this->getText());
 
         $distort = array($width/2, $height/2, 1,  -$rotation, $x + $width / 2, $y - $height * 1.3);
-        $image->setImageVirtualPixelMethod( Imagick::VIRTUALPIXELMETHOD_TRANSPARENT );
+        $image->setImageVirtualPixelMethod(Imagick::VIRTUALPIXELMETHOD_TRANSPARENT);
         $image->distortImage(imagick::DISTORTION_SCALEROTATETRANSLATE, $distort, false);
 
         return $image;
