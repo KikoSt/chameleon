@@ -56,6 +56,7 @@ class GfxContainer
     // Every registered component will be updated once for each product
     private $dataRegistry;
     private $animationRegistry;
+    private $globalAnimationKeyframes;
 
     private $previewMode;
 
@@ -72,6 +73,7 @@ class GfxContainer
         // TODO: for now ...
         $this->framerate = 30;
         $this->frames = 0;
+        $this->globalAnimationKeyframes = array();
     }
 
     public function __destruct()
@@ -205,7 +207,9 @@ class GfxContainer
             if($gfxInstance)
             {
                 $gfxInstance->create($child);
+                $this->addElement($gfxInstance);
 
+                // calculate frame length by finding max length of all child elements
                 if($gfxInstance->getAnimations() > 0)
                 {
                     $frameDuration = $gfxInstance->getFrameDuration();
@@ -215,8 +219,14 @@ class GfxContainer
                     }
                 }
 
-                $this->addElement($gfxInstance);
+                // generate entries for "global" animation keyframe list
+                $animationKeyframes = $gfxInstance->getAnimationKeyframes();
+                if(is_array($animationKeyframes))
+                {
+                    $this->globalAnimationKeyframes = $animationKeyframes + $this->globalAnimationKeyframes;
+                }
 
+                // create edit group if required
                 if(!empty($gfxInstance->getEditGroup()))
                 {
                     if(!array_key_exists($gfxInstance->getEditGroup(), $this->groups))
@@ -228,7 +238,6 @@ class GfxContainer
             }
             unset($gfxInstance);
         }
-
         ksort($this->groups);
 
         foreach($this->groups AS $group)
@@ -513,7 +522,7 @@ class GfxContainer
             foreach ($animationElements as $element)
             {
                 $skip = true;
-                if(in_array($i, $element->getAnimationKeyframes()))
+                if(in_array($i, $this->globalAnimationKeyframes))
                 {
                    $skip = false;
                 }
