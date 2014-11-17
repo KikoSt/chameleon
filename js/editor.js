@@ -93,6 +93,7 @@ $(document).ready(function() {
             if(xhr.readyState == 4) {
                 response = $.parseJSON(xhr.response);
                 imgsrc = response.imgsrc;
+
                 $("#previewImage img").attr('src', imgsrc + '?' + new Date().getTime());
             }
         };
@@ -238,6 +239,9 @@ $(document).ready(function() {
                 if(action === 'save') {
                     somethingChanged = false;
                 }
+
+                console.log(xhr);
+
                 response = $.parseJSON(xhr.response);
                 imgsrc = response.imgsrc;
                 $("#previewImage img").unbind('mapster');
@@ -328,7 +332,7 @@ $(document).ready(function() {
     $('[id$="_input"]').fileinput({
         'showUpload': false,
         'showPreview': false,
-        'showCaption': true,
+        'showCaption': true
     });
 
     $('[id$="_source"]').change(function() {
