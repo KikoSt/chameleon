@@ -98,6 +98,7 @@
         });
 
         $('.addCategoryOverview').click(function(e) {
+
             $(".modal-body form").block({
                 message: '<h1>Assigning categories...</h1>',
                 css: { border: '3px solid #a00' }
@@ -108,6 +109,10 @@
             var advertiserId = id[2];
             var data = {};
             var category = [];
+
+            if (!$("#availableVategory-"+templateId).length) {
+                $('#addCategory-'+templateId+'-'+advertiserId).setAttribute('disabled', 'disabled');
+            }
 
             $('#availableCategory-'+templateId).find('option:selected').each(function(i,selected){
                 var subscription = {};
@@ -223,8 +228,6 @@
             var advertiserId = id[2];
             var companyId = id[3];
             var data = {};
-
-            console.log(id);
 
             if(confirm("Are you sure you want to CLONE this template? You will be redirected to the cloned template after confirming."))
             {

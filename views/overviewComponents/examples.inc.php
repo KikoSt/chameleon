@@ -13,21 +13,34 @@
                 </a>
             </div>
         </div>
+        <?php
+            if(empty($preview->examples)):
+        ?>
+        <div>
+            No examples !
+        </div>
+        <?php
+            else:
+        ?>
         <!-- Wrapper for slides -->
         <div class="carousel-inner" style="padding-left: 5px; padding-right: 5px;">
-            <div class="item active">
-                <img src="<?php echo BASE_DIR;?>/output/170/122/0/rtest_117.gif" alt="..."
+            <?php
+                $active = true;
+                foreach($preview->examples as $example):
+            ?>
+            <div class="item <?php echo ($active) ? 'active' : '';?>">
+                <img src="<?php echo $example;?>"
+                     alt="..."
                      style="max-height: 320px; display: block;margin: auto">
             </div>
-            <div class="item">
-                <img src="<?php echo BASE_DIR;?>/output/170/122/0/rtest_108.gif" alt="..."
-                     style="max-height: 320px; display: block;margin: auto">
-            </div>
-            <div class="item">
-                <img src="<?php echo BASE_DIR;?>/output/170/122/0/rtest_102.gif" alt="..."
-                     style="max-height: 320px; display: block;margin: auto">
-            </div>
+            <?php
+                $active = false;
+                endforeach;
+            ?>
         </div>
+        <?php
+            endif;
+        ?>
     </div>
 
 
