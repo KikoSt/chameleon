@@ -171,19 +171,6 @@ $(document).ready(function() {
             $('#previewSwf').toggle();
         } else if(btn === 'live') {
             //generate preview images
-            // *****
-            // *****
-            // *****
-            // *****
-            // ***
-            // **
-            // *
-            //
-            //  **
-            // ****
-            // ****
-            //  **
-            //
             // hiding flash preview when opening live preview since flash will hide at least some portions of the live preview banners
             $('#previewSwf').hide();
             var formData = new FormData();
@@ -215,30 +202,31 @@ $(document).ready(function() {
             xhr.send(formData);
             return false;
 
-        } else if(btn ==='save')
+        }
+        else if(btn ==='save')
         {
-            $("."+btn+"alert").removeClass("in").show().delay(1000).addClass("in").fadeOut(2000);
+            // We are only about to send the data, it has NOT been stored so far,
+            // there is no guarantee that the data will be saved
+            // The message will be removed when the ajax call returned something
+            $(".savealert").html('Saving data, please wait');
+            $(".savealert").removeClass("in").show();
         }
         else if(btn === 'cancel')
         {
             e.preventDefault();
             window.location.reload();
         }
-
     });
 
 
     $('#editor').on('submit', function(e){
         e.preventDefault();
         var action = btn;
-
-        // if(action !== 'save' && action !== 'preview')
-        // {
-        //     return true;
-        // }
-
         var xhr = new XMLHttpRequest();
+
         $("#previewImage img").unbind('mapster');
+
+        $(".savealert").html('Saving data, please wait');
 
         xhr.onreadystatechange = function(e) {
             if(xhr.readyState == 4) {
@@ -246,7 +234,7 @@ $(document).ready(function() {
                     somethingChanged = false;
                 }
 
-                console.log(xhr);
+                $(".savealert").html('Template changes successfully saved');
 
                 response = $.parseJSON(xhr.response);
                 imgsrc = response.imgsrc;
@@ -257,6 +245,8 @@ $(document).ready(function() {
                 $("[name='movie']").attr('value', swfsrc);
                 $("[name='movie']").prop('value', swfsrc);
                 $("#previewSwf object").prop('data', swfsrc);
+
+                $(".savealert").removeClass("in").show().delay(1000).addClass("in").fadeOut(2000);
             }
         }
 
