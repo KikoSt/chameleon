@@ -485,7 +485,7 @@ class GfxImage extends GfXComponent
     public function setImageUrl($imageUrl)
     {
         $imageUrl = preg_replace('/^\/+/', '/', $imageUrl);
-
+        $imageUrl = str_replace(' ', '%20', $imageUrl);
         $this->imageUrl = $imageUrl;
     }
 

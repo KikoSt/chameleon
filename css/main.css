@@ -194,7 +194,7 @@ h2 > span
     float:left;
 }
 
-.alert
+#alert-custom
 {
     position: absolute;
     width: 200px;
@@ -296,3 +296,5 @@ input
     bottom: 0;
     left: 0;
 }
+
+

@@ -6,7 +6,6 @@
                type="text"
                value="<?php echo $this->name;?>"
                placeholder="<?php echo $this->name;?>"
-
         >
     </div>
 </div>

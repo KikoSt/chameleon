@@ -83,6 +83,7 @@ class Editor extends Controller
         $this->view->premiumUser     = $premiumUser;
         $this->view->imageMap        = getImageMap($container, $premiumUser);
         $this->view->templateId      = $container->getId();
+        $this->view->parentTemplateId = $template->getParentBannerTemplateId();
         $this->view->auditUserId     = $auditUserId;
         $this->view->advertiserId    = $container->getAdvertiserId();
         $this->view->companyId       = $container->getCompanyId();
@@ -109,6 +110,15 @@ class Editor extends Controller
         $this->view->template = $template;
 
         $this->view->page = 'editor';
+
+        if($template->getDateModified() === $template->getDateCreate())
+        {
+            $this->view->unModified = true;
+        }
+        else
+        {
+            $this->view->unModified = false;
+        }
 
         $this->addSubscribedCategoriesToSession($this->view->combinedCategories);
 

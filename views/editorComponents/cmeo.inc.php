@@ -2,7 +2,7 @@
     <label class="col-md-4">Source:</label>
     <select name="<?php echo $element->getId();?>#cmeoRef"
             id="<?php echo $element->getId();?>_source"
-            class="form-control"
+            class="form-control-select"
         <?php echo (is_a($element, 'GfxImage') || is_a($element, 'GfxText')) ? '': 'disabled'; ?>
         >
         <?php if(is_a($element, 'GfxImage') || is_a($element, 'GfxText')) echo '<option value="">Select option...</option>'; ?>
@@ -16,7 +16,7 @@
     <label class="col-md-4">Link:</label>
     <select name="<?php echo $element->getId();?>#cmeoLink"
             id="<?php echo $element->getId();?>_link"
-            class="form-control"
+            class="form-control-select"
         >
         <option value="">Select option...</option>
         <?php foreach($this->cmeoLinkOptions as $option): ?>

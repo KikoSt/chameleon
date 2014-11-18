@@ -424,6 +424,7 @@ class APIConnector
     public function cloneBannerTemplate(BannerTemplateModel $template)
     {
         $template->setParentBannerTemplateId($template->getBannerTemplateId());
+        $template->setName("COPY OF ". $template->getName());
         $template->setBannerTemplateId(NULL);
         $response = $this->sendBannerTemplate($template);
 

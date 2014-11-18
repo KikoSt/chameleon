@@ -3,7 +3,7 @@ $(document).ready(function() {
     var somethingChanged = false;
     var category = {};
 
-    $('.alert').hide();
+    $('#alert-custom').hide();
 
     $(window).keydown(function(e){
         if(e.keyCode == 13) {
@@ -93,6 +93,7 @@ $(document).ready(function() {
             if(xhr.readyState == 4) {
                 response = $.parseJSON(xhr.response);
                 imgsrc = response.imgsrc;
+
                 $("#previewImage img").attr('src', imgsrc + '?' + new Date().getTime());
             }
         };
@@ -218,6 +219,12 @@ $(document).ready(function() {
         {
             $("."+btn+"alert").removeClass("in").show().delay(1000).addClass("in").fadeOut(2000);
         }
+        else if(btn === 'cancel')
+        {
+            e.preventDefault();
+            window.location.reload();
+        }
+
     });
 
 
@@ -238,6 +245,9 @@ $(document).ready(function() {
                 if(action === 'save') {
                     somethingChanged = false;
                 }
+
+                console.log(xhr);
+
                 response = $.parseJSON(xhr.response);
                 imgsrc = response.imgsrc;
                 $("#previewImage img").unbind('mapster');
@@ -328,7 +338,7 @@ $(document).ready(function() {
     $('[id$="_input"]').fileinput({
         'showUpload': false,
         'showPreview': false,
-        'showCaption': true,
+        'showCaption': true
     });
 
     $('[id$="_source"]').change(function() {
