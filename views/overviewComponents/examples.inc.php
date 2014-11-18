@@ -15,6 +15,7 @@
         </div>
         <!-- Wrapper for slides -->
         <div class="carousel-inner" style="padding-left: 5px; padding-right: 5px;">
+            <!--
             <div class="item active">
                 <img src="<?php echo BASE_DIR;?>/output/170/122/0/rtest_117.gif" alt="..."
                      style="max-height: 320px; display: block;margin: auto">
@@ -27,6 +28,7 @@
                 <img src="<?php echo BASE_DIR;?>/output/170/122/0/rtest_102.gif" alt="..."
                      style="max-height: 320px; display: block;margin: auto">
             </div>
+            -->
         </div>
     </div>
 

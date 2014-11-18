@@ -239,8 +239,8 @@ class GfxImage extends GfXComponent
         {
             return true;
         }
-        $fileHandle = fopen(ROOT_DIR . $this->getImageUrl(), 'r');
         $filepath = ROOT_DIR . $this->getImageUrl();
+        $filepath = str_replace('%20' , ' ', $filepath);
 
         $transparent = new ImagickPixel("rgba(127,127,127,0)");
 

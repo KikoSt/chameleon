@@ -312,8 +312,15 @@ class GfxText extends GfxComponent
         $text->setFillColor($this->getFill()->getHex());
         $image->annotateImage($text, 0, $height + 10, 0, $this->getText());
 
-        $xScale = $this->gifParams->width / $this->getWidth();
-        $yScale = $this->gifParams->height / $this->getHeight();
+        if($this->getWidth() == 0)
+        {
+            throw new Exception('zero width for text ' . $this->getText() . ', element ' . $this->getId());
+        }
+        else
+        {
+            $xScale = $width / $this->getWidth();
+            $yScale = $height / $this->getHeight();
+        }
 
         $distort = array($width/2, $height/2, $xScale, $yScale,  -$rotation, $x + $width / 2, $y - $height * 1.3);
         $image->setImageVirtualPixelMethod(Imagick::VIRTUALPIXELMETHOD_TRANSPARENT);
