@@ -39,6 +39,8 @@ class Overview extends Controller
         $this->view->advertiserId = $this->getAdvertiserId();
         $this->view->companyId = $this->getCompanyId();
 
+        $container->animatePreviews(false);
+
         // get all templates for company / advertiser
         try
         {

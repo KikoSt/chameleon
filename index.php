@@ -1,7 +1,7 @@
 <?php
 require_once('config/config.inc.php');
 
-$auditUserId  = 666;
+$auditUserId  = 14;
 $advertiserId = 122;
 $companyId    = 170;
 

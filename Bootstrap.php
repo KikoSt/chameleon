@@ -8,6 +8,10 @@ function __autoload($className)
     {
         require_once(__ROOT__ . 'libraries/classes/' . $className . '.class.php');
     }
+    else if(file_exists(__ROOT__ . 'libraries/gdenhancer/' . $className . '.php'))
+    {
+        require_once(__ROOT__ . 'libraries/gdenhancer/' . $className . '.php');
+    }
     else if(file_exists(__ROOT__ . 'libraries/interfaces/' . $className . '.interface.php'))
     {
         require_once(__ROOT__ . 'libraries/interfaces/' . $className . '.interface.php');

@@ -26,6 +26,7 @@ class Library {
    public static function getFormatFromContents($contents) {
       $finfo = new \finfo();
       $mimetype = $finfo->buffer($contents, FILEINFO_MIME_TYPE);
+
       switch ($mimetype) {
          case 'image/jpeg':
             return 'jpeg';

@@ -18,6 +18,9 @@
                             <?php echo $templateSubscription->categoryName;?>
                         </p>
                     </div>
+                    <input id="<?php echo $templateSubscription->idCategory;?>"
+                           type="hidden"
+                           value="<?php echo $templateSubscription->categoryName;?>" >
         <?php
                 endif;
             endforeach;

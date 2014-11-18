@@ -46,8 +46,6 @@ if($success)
     $template = $connector->getTemplateById($templateId);
     $template->setAdvertiserId($advertiserId);
 
-    echo $advertiserId . "\n";
-
     // remove subscription
     $subscriptions = $template->getCategorySubscriptions();
 
