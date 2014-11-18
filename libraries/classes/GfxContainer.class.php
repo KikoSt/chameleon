@@ -24,7 +24,7 @@ class GfxContainer
     private $categoryId;
     private $editorOptions;
     private $allowedTargets;
-    private $frames; // number of overall frames for animation
+    private $numFrames; // number of overall frames for animation
     private $framerate;
 
     private $animatePreviews;
@@ -72,7 +72,7 @@ class GfxContainer
 
         // TODO: for now ...
         $this->framerate = 30;
-        $this->frames = 0;
+        $this->numFrames = 0;
         $this->globalAnimationKeyframes = array();
     }
 
@@ -106,6 +106,14 @@ class GfxContainer
         $this->dataRegistry[$key][] = $element;
     }
 
+
+
+    /**
+     * getSvg
+     *
+     * @access private
+     * @return void
+     */
     private function getSvg()
     {
         $svg = '';
@@ -170,6 +178,23 @@ class GfxContainer
         }
     }
 
+
+
+    public function calculateFrameDuration()
+    {
+        $maxDuration = 0;
+        foreach($this->elements AS $gfxInstance)
+        {
+            $frameDuration = $gfxInstance->getFrameDuration();
+            if($maxDuration < $frameDuration)
+            {
+                $maxDuration = $frameDuration;
+            }
+        }
+        return $maxDuration;
+    }
+
+
     /**
      * parse
      *
@@ -181,9 +206,14 @@ class GfxContainer
      */
     public function parse()
     {
+        libxml_use_internal_errors(true);
+
         // delete all elements to avoid duplicates when "parse" is called accidentially more than once
         unset($this->elements);
-        libxml_use_internal_errors(true);
+        unset($this->globalAnimationKeyframes);
+        $this->numFrames = 0;
+
+        $this->globalAnimationKeyframes = array();
 
         if(!($this->source instanceof SimpleXMLElement))
         {
@@ -191,6 +221,7 @@ class GfxContainer
         }
         $svg = $this->source;
 
+        // parse global banner information
         $this->setCanvasWidth((float) $svg->attributes()->width);
         $this->setCanvasHeight((float) $svg->attributes()->height);
         $this->setPrimaryColor(new GfxColor($svg->attributes('cmeo', true)->{"primary-color"}));
@@ -199,25 +230,24 @@ class GfxContainer
 
         $children = $svg->children();
 
+        // "g" is part of the svg standard for the node containing the actual elements
         $main = $children->g;
 
         foreach($main->children() AS $child)
         {
+            // the svg node name (NOT the element name which is stored in the ID!)
             $gfxInstance = $this->getGfxInstance($child->getName());
+
             if($gfxInstance)
             {
+                // read all information from svg into child GfxElement
                 $gfxInstance->create($child);
+
+                // and store the GfxElement
                 $this->addElement($gfxInstance);
 
                 // calculate frame length by finding max length of all child elements
-                if($gfxInstance->getAnimations() > 0)
-                {
-                    $frameDuration = $gfxInstance->getFrameDuration();
-                    if($this->frames < $frameDuration)
-                    {
-                        $this->frames = $frameDuration;
-                    }
-                }
+                $this->numFrames = $this->calculateFrameDuration();
 
                 // generate entries for "global" animation keyframe list
                 $animationKeyframes = $gfxInstance->getAnimationKeyframes();
@@ -231,8 +261,9 @@ class GfxContainer
                 {
                     if(!array_key_exists($gfxInstance->getEditGroup(), $this->groups))
                     {
-                        $dummy = new GfxGroup($gfxInstance->getEditGroup(), $this);
-                        $this->groups[$gfxInstance->getEditGroup()] = $dummy;
+                        $group = new GfxGroup($gfxInstance->getEditGroup(), $this);
+                        $this->groups[$gfxInstance->getEditGroup()] = $group;
+                        unset($group);
                     }
                 }
             }
@@ -444,7 +475,7 @@ class GfxContainer
     {
         $swf = new SWFMovie();
         $swf->setDimension($this->getCanvasWidth(), $this->getCanvasHeight());
-        $swf->setFrames($this->frames);
+        $swf->setFrames($this->numFrames);
         $swf->setRate($this->framerate);
         $swf->setBackground(0, 0, 0);
 
@@ -462,26 +493,32 @@ class GfxContainer
         gc_collect_cycles();
     }
 
+
+
+    /**
+     * renderGIF
+     *
+     * create the (animated or static) GIF and save it to file;
+     *
+     *
+     * @access private
+     * @return void
+     */
     private function renderGIF()
     {
         //set the color for the layer
         $color = new ImagickPixel("rgba(127,127,127, 0)");
         $imageDispose = 0;
+        $imageDelay   = 6; // basic (initial) delay value per frame; most browsers do not support
+                           // less than 6 frames, leading to an even worse (slower, stuttering)
+                           // result
+        $delay        = $imageDelay;   // actual delay, will be increased when frames are skipped
+
+        $animationElements = array();
 
         //create the stage (container for the single frames)
         $stage = new Imagick();
-        // $stage->newimage($this->getCanvasWidth(), $this->getCanvasHeight(), $color);
         $stage->setFormat('gif');
-
-        if($this->animatePreviews) {
-            $frameCount = $this->getFrames();
-        } else {
-            $frameCount = 1;
-        }
-        $skipFrames = (int) 0;
-        $imageDelay = 6; // 3.9;      // basic (initial) delay value
-        $delay = $imageDelay;   // actual delay
-        $animationElements = array();
 
         foreach($this->elements AS $element)
         {
@@ -492,12 +529,19 @@ class GfxContainer
         }
 
         /**
-         *  Render the first frame
+         *   Render the first frame
+         *
          * non-animated elements will only be rendered once
+         * The background is kept in memory and will be added to each frame
+         * Alternatively we could add the background to the animation as
+         * a first frame with a delay of zero ms, but most browsers do still
+         * add a small delay making the animation "blink".
+         * The static background parts will be removed later (see exec'd
+         * optimization below).
         **/
-        $layerStack = array();
         $background = new Imagick();
         $background->newImage($this->getCanvasWidth(), $this->getCanvasHeight(), $color);
+
         foreach ($this->elements as $element)
         {
             $animations = $element->getAnimations();
@@ -512,11 +556,30 @@ class GfxContainer
          * Done rendering the first frame!
         **/
 
-        //create frames
-        for($i = 0; $i < $frameCount; $i += ($skipFrames+1))
-        {
-            $layerStack = array();
+        /**
+         *   Create frames
+         *
+         * Only frames which are stored in the globalAnimationKeyframes-list will
+         * be rendered! This list is a simple array containing all keyframe numbers
+         * from all elements with animations; Keyframes are calculated based on several
+         * aspects:
+         * - change in animation
+         * - time based (every second, third ...) frame
+         *
+         * Originally, here was a "skipframe" variable in this method; This has been
+         * removed since the keyframes are already calculated time based as well and
+         * mixing this up would lead to "jerking" results
+        **/
 
+        // If the flag for animation isn't set, render only one frame
+        $frameCount = $this->animatePreviews ? $this->getNumFrames() : 1;
+
+        for($i = 0; $i <= $frameCount; $i++)
+        {
+            $layerStack = array(); // store all "subframes", i.e. elements
+                                   // has to be resetted on each iteration
+
+            // TODO: if there are no elements that have to be animated, frameCount should always be 1
             $skip = true;
 
             //loop through all elements
@@ -529,27 +592,40 @@ class GfxContainer
                 }
                 //add the elements to an array
                 $animationStep = $element->getAnimationStep($i);
+
+                // even if we don't render this frame to the final gif, the
+                // appropriate properties have to be changed according to the
+                // animationStep information
                 $layerStack[] = $element->renderGif($animationStep, $skip);
             }
 
+            if($i == 0) $skip = false;
+
             if($skip)
             {
-                // increase delay
+                // increase delay to prevend stuttering/jerky animation if
+                // frame will be omitted
                 $delay += $imageDelay;
                 continue;
             }
 
-            //create container for the single frame
+            // if not skipping, we create a container for this single frame
             $frame = new Imagick();
             $frame->newImage($this->getCanvasWidth(), $this->getCanvasHeight(), $color);
+
             $i > 0 ? $imageDispose = 3 : 0;
             $i > 0 ? $delay = $delay : 0;
+
             $frame->setImageDispose($imageDispose);
             $frame->setImageDelay($delay);
+
             //composite the single images
             $frame->compositeImage($background, Imagick::COMPOSITE_DEFAULT, 0, 0);
-            if(count($layerStack) > 0)
-            {
+            // TODO: count($layerStack) should never be ZERO here ...
+            // since we're iteratin over the animationElements, there should
+            // be an an animation for all of them
+//            if(count($layerStack) > 0)
+//            {
                 foreach($layerStack as $singleImage)
                 {
                     if($singleImage instanceof Imagick)
@@ -557,7 +633,7 @@ class GfxContainer
                         $frame->compositeImage($singleImage, Imagick::COMPOSITE_DEFAULT, 0, 0);
                     }
                 }
-            }
+//            }
 
             //add the complete frame to the stage
             $stage->addImage($frame);
@@ -566,15 +642,13 @@ class GfxContainer
         }
 
         //complete the banner
-        $miffpath = OUTPUT_DIR . '/' . $this->getOutputDir() . '/' . $this->getOutputFilename() . '.miff';
         $gifpath = OUTPUT_DIR . '/' . $this->getOutputDir() . '/' . $this->getOutputFilename() . '.gif';
+
+        // write the file to disk
         $animatedGif = $stage->writeImages($gifpath, true);
 
-        // exec('convert ' . $path . ' -coalesce -layers optimize-frame optframe_erase.gif gif_anim_montage optframe_erase.gif optframe_erase_frames.gif');
-        // exec('gif_anim_montage ' . $path . ' -coalesce -layers optimize-frame optframe_erase.gif gif_anim_montage optframe_erase.gif optframe_erase_frames.gif');
-        // exec('convert ' . $path . ' ( -clone 0--1 -background none +append -quantize trnsparent -colors 63 -unique-colors - write mpr:cmap +delete ) - map mpr:cmap ' . $path);
-//         exec('convert ' . $miffpath . ' +matte +map ' . $gifpath)
-         exec('convert ' . $gifpath . ' -fuzz 8% -layers optimize-transparency +map ' . $gifpath);
+        // optimize result
+        exec('convert ' . $gifpath . ' -fuzz 8% -layers optimize-transparency +map ' . $gifpath);
 
 
         unset($animatedGif);
@@ -1006,17 +1080,17 @@ class GfxContainer
     /**
      * @return int
      */
-    public function getFrames()
+    public function getNumFrames()
     {
-        return $this->frames;
+        return $this->numFrames;
     }
 
     /**
      * @param int $frames
      */
-    public function setFrames($frames)
+    public function setNumFrames($frames)
     {
-        $this->frames = $frames;
+        $this->numFrames = $frames;
     }
 
 

@@ -260,10 +260,10 @@ class GfxText extends GfxComponent
                     $this->gifParams->y += $stepsize;
                     break;
                 case 'w':
-                    $this->gifParams->width += $stepsize;
+                    $this->gifParams->width *= $stepsize;
                     break;
                 case 'h':
-                    $this->gifParams->height += $stepsize;
+                    $this->gifParams->height *= $stepsize;
                     break;
                 case 'r':
                     $this->gifParams->rotation += $stepsize;
@@ -312,7 +312,10 @@ class GfxText extends GfxComponent
         $text->setFillColor($this->getFill()->getHex());
         $image->annotateImage($text, 0, $height + 10, 0, $this->getText());
 
-        $distort = array($width/2, $height/2, 1,  -$rotation, $x + $width / 2, $y - $height * 1.3);
+        $xScale = $this->gifParams->width / $this->getWidth();
+        $yScale = $this->gifParams->height / $this->getHeight();
+
+        $distort = array($width/2, $height/2, $xScale, $yScale,  -$rotation, $x + $width / 2, $y - $height * 1.3);
         $image->setImageVirtualPixelMethod(Imagick::VIRTUALPIXELMETHOD_TRANSPARENT);
         $image->distortImage(imagick::DISTORTION_SCALEROTATETRANSLATE, $distort, false);
 

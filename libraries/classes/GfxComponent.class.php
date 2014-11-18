@@ -18,8 +18,8 @@ class GfXComponent implements Linkable, Resizeable
     private $linkUrl;
     private $editGroup;
 
-    private $animationList;
-    private $animationSteps;
+    private $animationList; // list of all animations relevant for this component
+    private $animationSteps; // list of all animation steps ordered and accessible by frame number
     private $animationKeyframes;
 
     private $cmeoRef;
@@ -90,6 +90,8 @@ class GfXComponent implements Linkable, Resizeable
 
         $this->animationKeyframes = $this->calculateAnimationKeyframes();
         // echo "----------------------------------\n";
+
+        $this->getContainer()->setNumFrames($this->getContainer()->calculateFrameDuration());
     }
 
 
@@ -106,13 +108,14 @@ class GfXComponent implements Linkable, Resizeable
     {
         // array_unique will not work here since we're dealing with multidimensional arrays
         // AND it would most likely be not more performant
-        $animationKeyframes = array('p' => 0);
+        // $animationKeyframes = array('p' => 0);
         {
             $count = 0;
             $prevStep = array();
+            $animationKeyframes[] = 0;
             foreach($this->animationSteps AS $animationStep)
             {
-                if($count/3 == ceil($count/3) || count(array_diff($animationStep, $prevStep)) >0 || count(array_diff_key($animationStep, $prevStep)) > 0)
+                if($count/3 == ceil($count/3) || count(array_diff($animationStep, $prevStep)) > 0 || count(array_diff_key($animationStep, $prevStep)) > 0)
                 {
                     $newKeyframe = $count;
                     // interpolate one more keyframe if frame delta > x
@@ -159,7 +162,7 @@ class GfXComponent implements Linkable, Resizeable
     {
         if(!in_array($framenum, $this->animationKeyframe))
         {
-            $this->animationKeyframes[] = $count;
+            $this->animationKeyframes[] = $framenum;
         }
         $this->animationKeyframes = sort($this->animationKeyframes);
     }

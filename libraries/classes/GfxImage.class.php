@@ -78,15 +78,16 @@ class GfxImage extends GfXComponent
 
         if($this->getStroke() !== null)
         {
+            // echo 'Stroke: ' . $this->getId() . "\n";
             $stroke = new SWFShape();
-            $this->getStroke()->setWidth(2);
+            $stroke->setLine(1, 0, 0, 0);
             $strokeX1 = -($this->getWidth()  / 2) - $this->getStroke()->getWidth();
             $strokeY1 = -($this->getHeight() / 2) - $this->getStroke()->getWidth();
             $strokeX2 = ($this->getWidth()   / 2) + $this->getStroke()->getWidth();
             $strokeY2 = ($this->getHeight()  / 2) + $this->getStroke()->getWidth();
 
             $strokeColor = $this->getstroke()->getColor();
-            $strokeFill = $stroke->addFill($strokeColor->getR(), $strokeColor->getG(), $strokeColor->getB(), 128);
+            $strokeFill = $stroke->addFill($strokeColor->getR(), $strokeColor->getG(), $strokeColor->getB(), 255);
             $stroke->setRightFill($strokeFill);
 
             $stroke->movePenTo($strokeX1, $strokeY1);
@@ -95,7 +96,7 @@ class GfxImage extends GfXComponent
             $stroke->drawLineTo($strokeX2, $strokeY1);
             $stroke->drawLineTo($strokeX1, $strokeY1);
 
-            $shandle = $sprite->add($stroke);
+            $sHandle = $sprite->add($stroke);
         }
 
         $localX1 = -($this->getWidth() / 2);
@@ -161,12 +162,17 @@ class GfxImage extends GfXComponent
         /**
          *  Prepare actual animation
         **/
+
         if(count($this->getAnimations()) != 0)
         {
             $handleList = array();
             if(isset($lhandle))
             {
                 $handleList['linkHandle'] = $lhandle;
+            }
+            if(isset($sHandle))
+            {
+                $handleList['sHandle'] = $sHandle;
             }
             if(isset($shadowHandle))
             {
@@ -282,9 +288,6 @@ class GfxImage extends GfXComponent
     public function createShadow()
     {
         $color = new ImagickPixel($this->getShadow()->getColor()->getHex());
-
-        //$x = $this->getX() + ($this->getWidth() - $this->gifParams->width) / 2;
-        //$y = $this->getY() + ($this->getHeight() - $this->gifParams->height) / 2;
 
         $x1 = $this->getShadow()->getDist();
         $y1 = $this->getShadow()->getDist();
