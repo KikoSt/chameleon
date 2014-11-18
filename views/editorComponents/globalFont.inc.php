@@ -2,7 +2,7 @@
     <label class="col-md-4">CD font:</label>
     <div>
         <select id="presetFontFamily"
-                class="form-control"
+                class="form-control-select"
                 name="<?php echo $element->getId();?>#fontFamily">
             <?php
                 foreach($this->fontlist as $key => $font):

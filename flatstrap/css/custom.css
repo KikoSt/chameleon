@@ -19,10 +19,24 @@ a,a:hover {
     font-size:12px;
 }
 
-.form-control {
+.form-control
+{
     height:20px!important;
     border-radius:0!important;
     padding:1px!important;
+}
+
+.form-control-select
+{
+    height:20px!important;
+    border-radius:0!important;
+    padding:0!important;
+    display: block;
+    width: 100%;
+    font-size: 14px;
+    color: #555;
+    background-color: #fff;
+    border: 1px solid #ccc;
 }
 
 input,

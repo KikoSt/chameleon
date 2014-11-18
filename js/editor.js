@@ -219,6 +219,12 @@ $(document).ready(function() {
         {
             $("."+btn+"alert").removeClass("in").show().delay(1000).addClass("in").fadeOut(2000);
         }
+        else if(btn === 'cancel')
+        {
+            e.preventDefault();
+            window.location.reload();
+        }
+
     });
 
 
