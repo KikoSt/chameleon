@@ -234,10 +234,12 @@ class CMEOGenerator
         }
 
         $this->container->setProductData($product);
+
         // foreach($this->iniSettings['formats'] AS $format)
         foreach($formats AS $format)
         {
             $this->container->setTarget($format);
+
             try
             {
                 $this->container->render();
@@ -247,6 +249,7 @@ class CMEOGenerator
                 $message = 'An error occured trying to render banner ' . $this->container->getOutputFilename();
                 $message .= ', current output format ' . $format . ': ' . $e->getMessage();
                 $this->logMessage($message);
+
                 continue;
             }
 

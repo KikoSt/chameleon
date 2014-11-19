@@ -203,6 +203,7 @@ class APIConnector
         $curl = $this->getCurl($resource, 'GET');
 
         $curlResponse = curl_exec($curl);
+
         curl_close($curl);
 
         $productList = json_decode($curlResponse)->products;

@@ -239,7 +239,18 @@ class GfxImage extends GfXComponent
         {
             return true;
         }
-        $filepath = ROOT_DIR . $this->getImageUrl();
+
+        $pos = strpos($this->getImageUrl(), 'http');
+
+        if($pos === false)
+        {
+            $filepath = ROOT_DIR . $this->getImageUrl();
+        }
+        else
+        {
+            $filepath = $this->getImageUrl();
+        }
+
         $filepath = str_replace('%20' , ' ', $filepath);
 
         $transparent = new ImagickPixel("rgba(127,127,127,0)");
@@ -486,6 +497,7 @@ class GfxImage extends GfXComponent
     {
         $imageUrl = preg_replace('/^\/+/', '/', $imageUrl);
         $imageUrl = str_replace(' ', '%20', $imageUrl);
+
         $this->imageUrl = $imageUrl;
     }
 
