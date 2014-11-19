@@ -644,9 +644,9 @@ $(document).ready(function() {
             }
             case "presetFont":
             {
-                var id = identifier[0] + "#fontfamily";
+                var id = identifier[0] + "_fontFamily";
 
-                $('select option').filter(function() {
+                $('select#' + id + ' option').filter(function() {
                     return $(this).text() == $('#presetFontFamily option:selected').text();
                 }).prop('selected', true);
                 break;
