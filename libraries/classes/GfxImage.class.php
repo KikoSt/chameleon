@@ -268,8 +268,8 @@ class GfxImage extends GfXComponent
             $this->createStroke($image);
         }
 
-        $x = $this->getX() + ($this->getWidth() - $this->gifParams->width) / 2;
-        $y = $this->getY() + ($this->getHeight() - $this->gifParams->height) / 2;
+        $x = $this->gifParams->x + ($this->getWidth() - $this->gifParams->width) / 2;
+        $y = $this->gifParams->y + ($this->getHeight() - $this->gifParams->height) / 2;
 
         $width = $this->gifParams->width;
         $height = $this->gifParams->height;
