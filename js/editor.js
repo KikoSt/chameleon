@@ -239,12 +239,26 @@ $(document).ready(function() {
                 response = $.parseJSON(xhr.response);
                 imgsrc = response.imgsrc;
                 $("#previewImage img").unbind('mapster');
+
                 var gifsrc = imgsrc + '.gif' + '?ts=' + new Date().getTime();
                 var swfsrc = imgsrc + '.swf' + '?ts=' + new Date().getTime();
+                var filesize = (Math.round(response.filesize / 1024).toFixed(2)) + ' kB';
+                if(response.filesize > 100000) {
+                    // ALERT
+                    $('#filesize-gif').parent().addClass('filesize-warning');
+                    $('#filesize-gif').addClass('filesize-warning');
+                } else {
+                    $('#filesize-gif').parent().removeClass('filesize-warning');
+                    $('#filesize-gif').removeClass('filesize-warning');
+                }
+
                 $("#previewImage img").attr('src', gifsrc);
                 $("[name='movie']").attr('value', swfsrc);
                 $("[name='movie']").prop('value', swfsrc);
                 $("#previewSwf object").prop('data', swfsrc);
+
+                $('#filesize-gif').attr('value', filesize);
+                $('#filesize-gif').prop('value', filesize);
 
                 $(".savealert").removeClass("in").delay(1000).addClass("in").fadeOut(2000);
             }

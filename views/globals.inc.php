@@ -12,8 +12,8 @@
                 ?>
             <div class="row">
                 <label class="col-md-4">File size:</label>
-                <div>
-                    <input type="text" disabled="disabled" value="<?php echo $this->fileSize;?> kB">
+                <div<?if($this->fileSizeWarning) echo ' class="filesize-warning"'; ?>>
+                    <input id="filesize-gif" <?if($this->fileSizeWarning) echo 'class="filesize-warning"'; ?> type="text" disabled="disabled" value="<?php echo $this->fileSize;?> kB">
                 </div>
             </div>
             <?php
