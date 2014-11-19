@@ -119,4 +119,3 @@ foreach($products AS $product)
 
 echo json_encode($files);
 
-?>

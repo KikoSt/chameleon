@@ -16,8 +16,10 @@
         <?php
             if(empty($preview->examples)):
         ?>
-        <div>
-            No examples !
+        <div id="previewcarousel-<?php echo $preview->templateId; ?>" class="carousel-inner ajaxPreview" style="padding-left: 5px;
+        padding-right:
+        5px;">
+
         </div>
         <?php
             else:
@@ -42,6 +44,4 @@
             endif;
         ?>
     </div>
-
-
 </div>

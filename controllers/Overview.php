@@ -109,8 +109,6 @@ class Overview extends Controller
                     $preview->bannerDimension = $this->getBannerDimension($container);
                     $preview->examples = $this->getExamples($container);
 
-                    var_dump($preview->examples);
-
                     if((int)$container->getCanvasWidth() > (int)$container->getCanvasHeight())
                     {
                         if($container->getCanvasHeight() > 210)

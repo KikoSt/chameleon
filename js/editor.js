@@ -894,10 +894,4 @@ $(document).ready(function() {
             onEnd:          function() { overlayOff(); }
         });
 
-
-
-
-
-
-
 });

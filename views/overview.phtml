@@ -51,7 +51,7 @@
                 </div>
             </div>
             <!-- Modal -->
-            <input type="hidden" name="templateId" value="<?php echo $preview->templateId; ?>">
+            <input id="templateId" type="hidden" name="templateId" value="<?php echo $preview->templateId; ?>">
             <input type="hidden" name="templateName" value="<?php echo $preview->templateName; ?>">
 
     <?php
@@ -68,7 +68,9 @@
 <script type="text/javascript">
     $(document).ready(function()
     {
-        $()
+        var advertiserId = $('#advertiserId').attr('value');
+        var companyId = $('#companyId').attr('value');
+
         $('#addCategory').click(function(e) {
             var selectedOpts = $('#availableCategory option:selected');
             if (selectedOpts.length == 0) {
@@ -279,6 +281,26 @@
                     }
                 });
             }
+        });
+
+        $('.ajaxPreview').each(function(e){
+            var id = $(this).attr('id').split('-');
+            var data = {};
+            var templateId = id[1];
+
+            data.advertiserId = advertiserId;
+            data.templateId   = templateId;
+            data.companyId    = companyId;
+
+            $.ajax({
+                type: "POST",
+                data: data,
+                dataType: "json",
+                url: "/chameleon/ajax/getLivePreview.php"
+            }).done(function(output){
+                console.log(id[1]);
+            })
+
         });
     });
 </script>
