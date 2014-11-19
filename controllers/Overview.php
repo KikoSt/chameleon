@@ -34,12 +34,11 @@ class Overview extends Controller
         $container->setCompanyId($this->getCompanyId());
         $container->setCategoryId(0);
         $container->setPreviewMode(true);
+        $container->animatePreviews(false);
 
         $this->view = $this->setLayout('views/overview.phtml')->getView();
         $this->view->advertiserId = $this->getAdvertiserId();
         $this->view->companyId = $this->getCompanyId();
-
-        $container->animatePreviews(false);
 
         // get all templates for company / advertiser
         try
@@ -67,7 +66,6 @@ class Overview extends Controller
                     $baseFilename = getPreviewFileName($template);
                     $filename = $baseFilename . '.svg';
                     $container->setOutputName($baseFilename);
-
                     $container->setSource($template->getSvgContent());
                     $container->setId($template->getBannerTemplateId());
 
@@ -77,25 +75,29 @@ class Overview extends Controller
                     }
                     catch(Exception $e)
                     {
-                        echo 'Skipping ' . $template->getBannerTemplateId() . "\n";
-                        var_dump($e);
+                        // we just omit "failing" templates here, rendering the overview with all
+                        // intact templates
                         continue;
                     }
 
-                    $container->saveSvg();
+                    // $container->saveSvg();
 
                     $container->setTarget('GIF');
-                    try
-                    {
-                        echo 'Rendering!';
-                        $container->render();
-                    }
-                    catch(Exception $e)
-                    {
-                        continue;
-                    }
-
                     $file = BASE_DIR . "/output/" . $container->getOutputDir() . '/' . $baseFilename . '.gif';
+                    $fileHeaders = @get_headers($file);
+                    if(strpos($fileHeaders[0], '404'))
+                    {
+                        try
+                        {
+                            $container->render();
+                        }
+                        catch(Exception $e)
+                        {
+                            // we just omit "failing" templates here, rendering the overview with all
+                            // intact templates
+                            continue;
+                        }
+                    }
 
                     $preview = new StdClass();
                     $preview->filePath = $file;

@@ -53,10 +53,12 @@ class Editor extends Controller
         $container->setOutputName($baseFilename);
         $container->setSource($template->getSvgContent());
         $container->parse();
+        $container->setTarget('GIF');
         $container->setPreviewMode(true);
         $container->animatePreviews(true);
-        $container->setTarget('GIF');
-        $container->render();
+
+        // the preview already exists from the overview - either the animated version OR the non-animated one; Using this preview
+        // and recreating it in order to get an animated version once the editor has completely loaded
 
         $gif = 'http://' . $_SERVER['SERVER_NAME'] . '/chameleon/output/' . $container->getOutputDir() . '/' . $baseFilename . '.gif';
         $swf = 'http://' . $_SERVER['SERVER_NAME'] . '/chameleon/output/' . $container->getOutputDir() . '/' . $baseFilename . '.swf';
