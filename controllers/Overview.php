@@ -34,9 +34,11 @@ class Overview extends Controller
         $container->setCompanyId($this->getCompanyId());
         $container->setCategoryId(0);
         $container->setPreviewMode(true);
+        $container->animatePreviews(false);
 
         $this->view = $this->setLayout('views/overview.phtml')->getView();
         $this->view->advertiserId = $this->getAdvertiserId();
+        $this->view->companyId = $this->getCompanyId();
 
         // get all templates for company / advertiser
         try
@@ -64,7 +66,6 @@ class Overview extends Controller
                     $baseFilename = getPreviewFileName($template);
                     $filename = $baseFilename . '.svg';
                     $container->setOutputName($baseFilename);
-
                     $container->setSource($template->getSvgContent());
                     $container->setId($template->getBannerTemplateId());
 
@@ -74,33 +75,40 @@ class Overview extends Controller
                     }
                     catch(Exception $e)
                     {
+                        // we just omit "failing" templates here, rendering the overview with all
+                        // intact templates
                         continue;
                     }
 
-                    $container->saveSvg();
+                    // $container->saveSvg();
 
                     $container->setTarget('GIF');
-                    try
-                    {
-                        $container->render();
-                    }
-                    catch(Exception $e)
-                    {
-                        continue;
-                    }
-
                     $file = BASE_DIR . "/output/" . $container->getOutputDir() . '/' . $baseFilename . '.gif';
+                    $fileHeaders = @get_headers($file);
+                    if(strpos($fileHeaders[0], '404'))
+                    {
+                        try
+                        {
+                            $container->render();
+                        }
+                        catch(Exception $e)
+                        {
+                            // we just omit "failing" templates here, rendering the overview with all
+                            // intact templates
+                            continue;
+                        }
+                    }
 
                     $preview = new StdClass();
                     $preview->filePath = $file;
                     $preview->templateName = $filename;
-                    $preview->templateId = $template->getBannerTemplateId();
+                    $preview->templateId   = $template->getBannerTemplateId();
                     $preview->advertiserId = $this->getAdvertiserId();
-                    $preview->companyId = $this->getCompanyId();
-                    $preview->fileSize = getRemoteFileSize($file);
-                    $preview->dateCreate = date("Y-m-d H:i:s", parseJavaTimestamp($template->getDateCreate()));
+                    $preview->companyId    = $this->getCompanyId();
+                    $preview->fileSize     = getRemoteFileSize($file);
+                    $preview->dateCreate   = date("Y-m-d H:i:s", parseJavaTimestamp($template->getDateCreate()));
                     $preview->dateModified = date("Y-m-d H:i:s", parseJavaTimestamp($template->getDateModified()));
-                    $preview->templateId = $template->getBannerTemplateId();
+                    $preview->templateId   = $template->getBannerTemplateId();
                     $preview->parentTemplateId = $template->getParentBannerTemplateId();
                     $preview->shortDescription = $this->getShortenedDescription($template->getName());
                     $preview->description = $template->getName();

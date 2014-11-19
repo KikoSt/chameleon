@@ -78,15 +78,16 @@ class GfxImage extends GfXComponent
 
         if($this->getStroke() !== null)
         {
+            // echo 'Stroke: ' . $this->getId() . "\n";
             $stroke = new SWFShape();
-            $this->getStroke()->setWidth(2);
+            $stroke->setLine(1, 0, 0, 0);
             $strokeX1 = -($this->getWidth()  / 2) - $this->getStroke()->getWidth();
             $strokeY1 = -($this->getHeight() / 2) - $this->getStroke()->getWidth();
             $strokeX2 = ($this->getWidth()   / 2) + $this->getStroke()->getWidth();
             $strokeY2 = ($this->getHeight()  / 2) + $this->getStroke()->getWidth();
 
             $strokeColor = $this->getstroke()->getColor();
-            $strokeFill = $stroke->addFill($strokeColor->getR(), $strokeColor->getG(), $strokeColor->getB(), 128);
+            $strokeFill = $stroke->addFill($strokeColor->getR(), $strokeColor->getG(), $strokeColor->getB(), 255);
             $stroke->setRightFill($strokeFill);
 
             $stroke->movePenTo($strokeX1, $strokeY1);
@@ -95,7 +96,7 @@ class GfxImage extends GfXComponent
             $stroke->drawLineTo($strokeX2, $strokeY1);
             $stroke->drawLineTo($strokeX1, $strokeY1);
 
-            $shandle = $sprite->add($stroke);
+            $sHandle = $sprite->add($stroke);
         }
 
         $localX1 = -($this->getWidth() / 2);
@@ -127,7 +128,7 @@ class GfxImage extends GfXComponent
             $shadow->drawLineTo($shadowX2, $shadowY1);
             $shadow->drawLineTo($shadowX1, $shadowY1);
 
-            $shandle = $sprite->add($shadow);
+            $shadowHandle = $sprite->add($shadow);
         }
 
         $imgPath = '/tmp/file' . time() . rand() . '.jpg';
@@ -161,6 +162,7 @@ class GfxImage extends GfXComponent
         /**
          *  Prepare actual animation
         **/
+
         if(count($this->getAnimations()) != 0)
         {
             $handleList = array();
@@ -168,9 +170,13 @@ class GfxImage extends GfXComponent
             {
                 $handleList['linkHandle'] = $lhandle;
             }
-            if(isset($shandle))
+            if(isset($sHandle))
             {
-                $handleList['shadowHandle'] = $shandle;
+                $handleList['sHandle'] = $sHandle;
+            }
+            if(isset($shadowHandle))
+            {
+                $handleList['shadowHandle'] = $shadowHandle;
             }
             $handleList['handle'] = $handle;
             $sprite = $this->swfAnimate($handleList, $sprite);
@@ -196,67 +202,114 @@ class GfxImage extends GfXComponent
      * @param $canvas
      * @return mixed
      */
-    public function renderGIF($canvas)
+    public function renderGIF($transformationList = null, $skip = false)
     {
+        if(!isset($this->gifParams))
+        {
+            $this->gifParams = new GifAnimationContainer($this);
+        }
+
+        foreach($transformationList AS $attribute => $stepsize)
+        {
+            // echo $this->getId() . ': ' . $attribute . ': ' . $stepsize . "\n";
+            $stepsize = $stepsize;
+            switch($attribute)
+            {
+                case 'x':
+                    $this->gifParams->x += $stepsize;
+                    break;
+                case 'y':
+                    $this->gifParams->y += $stepsize;
+                    break;
+                case 'w':
+                    $this->gifParams->width *= $stepsize;
+                    break;
+                case 'h':
+                    $this->gifParams->height *= $stepsize;
+                    break;
+                case 'r':
+                    $this->gifParams->rotation += $stepsize;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        if($skip)
+        {
+            return true;
+        }
+        $filepath = ROOT_DIR . $this->getImageUrl();
+        $filepath = str_replace('%20' , ' ', $filepath);
+
+        $transparent = new ImagickPixel("rgba(127,127,127,0)");
+
+        $image = new Imagick($filepath);
+
+        $imageWidth  = $this->getContainer()->getCanvasWidth();
+        $imageHeight = $this->getContainer()->getCanvasHeight();
+
+        $frame = new Imagick();
+        $frame->newImage($imageWidth, $imageHeight, $transparent);
+
+        // $frameDraw = new ImagickDraw();
+
+        // $image->resizeimage($this->getWidth(), $this->getHeight(), imagick::FILTER_BOX, 0.2, true);
+        $image->scaleimage($this->gifParams->width, $this->gifParams->height, false);
+
         if($this->hasShadow() && $this->shadowEnabled())
         {
-            $this->createShadow($canvas);
+            $shadow = $this->createShadow();
+            $frame->drawImage($shadow);
         }
 
         if($this->hasStroke() && $this->strokeEnabled())
         {
-            $this->createStroke($canvas);
+            $this->createStroke($image);
         }
 
-        $dst = $this->resizeImage($this->getImageUrl());
+        $x = $this->gifParams->x + ($this->getWidth() - $this->gifParams->width) / 2;
+        $y = $this->gifParams->y + ($this->getHeight() - $this->gifParams->height) / 2;
 
-        if($this->getContainer()->getPreviewMode() !== true)
-        {
-            imagecopyresized($canvas, $dst, $this->getX(), $this->getY(), 0, 0, $this->getWidth(), $this->getHeight(), $this->getWidth(),
-                        $this->getHeight());
-        }
-        else
-        {
-            imagecopyresampled($canvas, $dst, $this->getX(), $this->getY(), 0, 0, $this->getWidth(), $this->getHeight(), $this->getWidth(),
-                        $this->getHeight());
-        }
+        $width = $this->gifParams->width;
+        $height = $this->gifParams->height;
+        $rotation = $this->gifParams->rotation;
 
-        return $canvas;
+        $distort = array($width/2, $height /2, 1, 1, -$rotation, $x + $width / 2, $y + $height / 2);
+
+        $frame->setImageVirtualPixelMethod(Imagick::VIRTUALPIXELMETHOD_TRANSPARENT);
+
+        $frame->compositeImage($image, Imagick::COMPOSITE_DEFAULT, 0, 0); // $width / 2, $height / 2);
+        $frame->distortImage(imagick::DISTORTION_SCALEROTATETRANSLATE, $distort, false);
+
+        return $frame;
     }
 
-    public function createShadow($canvas)
+    public function createShadow()
     {
-        $color = imagecolorallocatealpha($canvas,
-                                         $this->getShadow()->getColor()->getR(),
-                                         $this->getShadow()->getColor()->getG(),
-                                         $this->getShadow()->getColor()->getB(),
-                                         50
-                 );
+        $color = new ImagickPixel($this->getShadow()->getColor()->getHex());
 
-        $x1 = $this->getX() + $this->getShadow()->getDist();
-        $y1 = $this->getY() + $this->getShadow()->getDist();
-        $x2 = $x1 + $this->getWidth();
-        $y2 = $y1 + $this->getHeight();
+        $x1 = $this->getShadow()->getDist();
+        $y1 = $this->getShadow()->getDist();
 
-        imagefilledrectangle($canvas, $x1, $y1, $x2, $y2, $color);
+        $x2 = $x1 + $this->gifParams->width;
+        $y2 = $y1 + $this->gifParams->height;
+
+        $shadow = new ImagickDraw();
+        $shadow->setFillColor($color);
+        $shadow->setfillopacity(0.5);
+        $shadow->rectangle($x1, $y1, $x2, $y2);
+
+        return $shadow;
     }
 
-    public function createStroke($canvas)
+    public function createStroke($image)
     {
-        // $this->getStroke()->setWidth(1);
-        $color = imagecolorallocate($canvas,
-            $this->getStroke()->getColor()->getR(),
-            $this->getStroke()->getColor()->getG(),
-            $this->getStroke()->getColor()->getB()
-        );
-
-        $x1 = $this->getX() - $this->getStroke()->getWidth();
-        $y1 = $this->getY() - $this->getStroke()->getWidth();
-        $x2 = $this->getX() + $this->getStroke()->getWidth() + $this->getWidth();
-        $y2 = $this->getY() + $this->getStroke()->getWidth() + $this->getHeight();
-
-        imagefilledrectangle($canvas, $x1, $y1, $x2, $y2, $color);
+        $width =  $this->getStroke()->getWidth(); // $this->getWidth() + ($this->getStroke()->getWidth() * 2);
+        $height = $this->getStroke()->getWidth();  //  $this->getHeight() + ($this->getStroke()->getHeight() * 2);
+        $image->borderimage($this->getStroke()->getColor()->getHex(), $width, $height);
     }
+
 
     /**
      * resize image

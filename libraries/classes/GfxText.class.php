@@ -5,6 +5,8 @@
  * Date: 17.07.14
  * Time: 11:33
  */
+use gdenhancer\GDEnhancer;
+
 require_once(ROOT_DIR . 'config/fontconfig.inc.php');
 define('FLASH_FONT_SCALE_FACTOR', 1.32);
 
@@ -19,6 +21,8 @@ class GfxText extends GfxComponent
     private $fontSize;
     private $fontFamily;
     private $textAnchor;
+
+    private $rotation;
 
     public function __construct(GfxContainer $container)
     {
@@ -236,52 +240,104 @@ class GfxText extends GfxComponent
         return $canvas;
     }
 
-
-
-
-    public function renderGif($canvas)
+    public function renderGif($transformationList = null, $skip = false)
     {
-        $textColor = imagecolorallocate($canvas,$this->getFill()->getR(),$this->getFill()->getG(),$this->getFill()->getB());
-
-        if($this->hasShadow())
+        if(!isset($this->gifParams))
         {
-            $this->renderShadow($canvas);
+            $this->gifParams = new GifAnimationContainer($this);
         }
 
-        imagettftext($canvas,
-                     $this->getFontSize(),
-                     0,
-                     $this->getX(),
-                     $this->getY(),
-                     $textColor,
-                     $this->getGIFFont(),
-//                     str_replace('€', ' Euro', $this->getText())
-                    $this->getText()  //TODO € works actually, we have to keep an eye on it
-        );
+        foreach($transformationList AS $attribute => $stepsize)
+        {
+            // echo $this->getId() . ': ' . $attribute . ': ' . $stepsize . "\n";
+            $stepsize = $stepsize;
+            switch($attribute)
+            {
+                case 'x':
+                    $this->gifParams->x += $stepsize;
+                    break;
+                case 'y':
+                    $this->gifParams->y += $stepsize;
+                    break;
+                case 'w':
+                    $this->gifParams->width *= $stepsize;
+                    break;
+                case 'h':
+                    $this->gifParams->height *= $stepsize;
+                    break;
+                case 'r':
+                    $this->gifParams->rotation += $stepsize;
+                    break;
+                default:
+                    break;
+            }
+        }
 
+        if($skip)
+        {
+            return true;
+        }
 
-        return $canvas;
+        $transparent = new ImagickPixel("rgba(127,127,127,0)");
+
+        //set the color for the layer
+        $text = new ImagickDraw();
+        $text->setFont($this->getGIFFont());
+        // WHY?????????????????????????
+        $text->setFontsize($this->getFontSize() * 1.33);
+        $text->setFillColor($this->getFill()->getHex());
+
+        $imageWidth  = $this->getContainer()->getCanvasWidth();
+        $imageHeight = $this->getContainer()->getCanvasHeight();
+
+        //create a new layer
+        $image = new Imagick();
+        $image->newImage($imageWidth, $imageHeight, $transparent);
+        // IMPORTANT! Clean up animation mess!
+         $image->setImageDispose(3);
+
+        $x = $this->gifParams->x;
+        $y = $this->gifParams->y;
+        $width = $this->gifParams->width;
+        $height = $this->gifParams->height;
+        $rotation = $this->gifParams->rotation;
+
+        if($this->hasShadow() && $this->shadowEnabled())
+        {
+            $text->setFillColor(new ImagickPixel($this->getShadow()->getColor()->getHex() . 'ff'));
+            $text->setStrokeAntialias(true);
+            $image->annotateImage($text, $this->getShadow()->getDist(), $height + 10 + $this->getShadow()->getDist(), 0, $this->getText());
+        }
+        //add the text
+        $text->setFillColor($this->getFill()->getHex());
+        $image->annotateImage($text, 0, $height + 10, 0, $this->getText());
+
+        if($this->getWidth() == 0)
+        {
+            throw new Exception('zero width for text ' . $this->getText() . ', element ' . $this->getId());
+        }
+        else
+        {
+            $xScale = $width / $this->getWidth();
+            $yScale = $height / $this->getHeight();
+        }
+
+        $distort = array($width/2, $height/2, $xScale, $yScale,  -$rotation, $x + $width / 2, $y - $height * 1.3);
+        $image->setImageVirtualPixelMethod(Imagick::VIRTUALPIXELMETHOD_TRANSPARENT);
+        $image->distortImage(imagick::DISTORTION_SCALEROTATETRANSLATE, $distort, false);
+
+        return $image;
+
     }
 
-    public function renderShadow($canvas)
+    public function renderShadow($frame)
     {
-        $color = imagecolorallocatealpha($canvas,
-                                         $this->getShadow()->getColor()->getR(),
-                                         $this->getShadow()->getColor()->getG(),
-                                         $this->getShadow()->getColor()->getB(),
-                                         50
-                 );
+        $text = new ImagickDraw();
+        $text->setFont($this->getGIFFont());
+        $text->setfontsize($this->getFontSize() * 1.33);
+        $text->setfillcolor(new ImagickPixel($this->getShadow()->getColor()->getHex()));
 
-        imagettftext($canvas,
-            $this->getFontSize(),
-            0,
-            $this->getX() + $this->getShadow()->getDist(),
-            $this->getY() + $this->getShadow()->getDist(),
-            $color,
-            $this->getGIFFont(),
-//            utf8_decode(str_replace('€', ' Euro', $this->getText()))
-            $this->getText()
-        );
+//        $frame->annotateImage($text, $this->getX()+, $this->getY()+$this->getShadow()->getDist(), 0, $this->getText());
     }
 
     public function getFontListForOverview()

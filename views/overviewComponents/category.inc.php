@@ -1,7 +1,7 @@
 <div class="thumbnail thumbnail-half col-md-4">
     <div class="overviewTitle">
         Assigned categories
-        <span id="editAssignedCategory"
+        <span id="editAssignedCategory-<?php echo $preview->templateId; ?>"
               title="Edit the assigned categories"
               class="fa fa-pencil-square-o cursor-pointer color-black"
               data-toggle="modal"

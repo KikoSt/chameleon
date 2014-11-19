@@ -1,7 +1,7 @@
 <div class="thumbnail thumbnail-quarter col-md-2">
     <div class="overviewTitle">Actions:</div>
     <div class="row" style="margin-top: 10px;">
-        <form method="post" action="index.php?page=editor&templateId=<?php echo $preview->templateId; ?>">
+        <form method="post" action="index.php?page=editor&amp;templateId=<?php echo $preview->templateId; ?>">
             <div class="row">
                 <button title="Edit this template">
                     <i class="fa fa-pencil-square-o fa-5_3x"></i>

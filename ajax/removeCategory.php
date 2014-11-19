@@ -10,56 +10,58 @@ require('../libraries/classes/BannerTemplateModel.class.php');
 
 $success = true;
 
+var_dump($_POST);
+
 if(!isset($_POST['templateId']))
 {
     $success = false;
 }
+else
+{
+    $templateId = (int) $_POST['templateId'];
+}
 
-if(!isset($_POST['category']))
+if(!isset($_POST['categoryId']))
 {
     $success = false;
+}
+else
+{
+    $categoryId = (int)$_POST['categoryId'];
 }
 
 if(!isset($_POST['advertiserId']))
 {
     $success = false;
 }
+else
+{
+    $advertiserId = (int)$_POST['advertiserId'];
+}
 
 if($success)
 {
     // get template via REST API
     $connector = new APIConnector();
-    $template = $connector->getTemplateById((int)$_POST['templateId']);
-    $template->setAdvertiserId((int)$_POST['advertiserId']);
+    $template = $connector->getTemplateById($templateId);
+    $template->setAdvertiserId($advertiserId);
 
     // remove subscription
     $subscriptions = $template->getCategorySubscriptions();
 
-    $idSubscriptions = array();
-
-    foreach($_POST['category'] as $category)
-    {
-        var_dump($category);
-
-        $idSubscriptions[(int)$category['id']] = $category['name'];
-    }
-
     foreach ($subscriptions AS $curSubscription)
     {
-        if (array_key_exists($curSubscription->idCategory, $idSubscriptions))
+        if($curSubscription->idCategory == $categoryId)
         {
             $curSubscription->userStatus = 'DELETED';
         }
     }
 
-    $template->setCategorySubscriptions($subscriptions);
+//     $template->setCategorySubscriptions($subscriptions);
 
     // store template
     $result = $connector->sendBannerTemplate($template);
+    // var_dump($result);
 }
 
 return $success;
-
-
-
-

@@ -122,7 +122,6 @@ class APIConnector
         curl_close($curl);
         $enums = json_decode($curlResponse);
         return $enums;
-
     }
 
 

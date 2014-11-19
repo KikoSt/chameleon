@@ -18,7 +18,9 @@ class GfXComponent implements Linkable, Resizeable
     private $linkUrl;
     private $editGroup;
 
-    private $animationList;
+    private $animationList; // list of all animations relevant for this component
+    private $animationSteps; // list of all animation steps ordered and accessible by frame number
+    private $animationKeyframes;
 
     private $cmeoRef;
     private $cmeoLink;
@@ -37,6 +39,7 @@ class GfXComponent implements Linkable, Resizeable
         $this->drawCenter = false;
 
         $this->animationList = array();
+        $this->animationSteps = array();
     }
 
     public function addAnimation($animationDefinition)
@@ -62,8 +65,122 @@ class GfXComponent implements Linkable, Resizeable
                     }
                 }
                 $this->animationList[] = $ani;
+
+                // create an array containing all frames indexed by frame number!
+                $stepCount = count($this->animationSteps);
+                $numSteps = $stepCount;
+                for($i=$stepCount; $i<($defs[0] + $numSteps); $i++)
+                {
+                    $animationStep = array();
+                    foreach($targets AS $target)
+                    {
+                        $aniComponent = explode('/', $target);
+
+                        if(!empty($aniComponent[0]))
+                        {
+                            $animationStep[$aniComponent[0]] = $aniComponent[1];
+                        }
+                    }
+                // echo "\n------------------\n";
+                $this->animationSteps[$stepCount] = $animationStep;
+                $stepCount++;
+                }
             }
         }
+
+        $this->animationKeyframes = $this->calculateAnimationKeyframes();
+        // echo "----------------------------------\n";
+
+        $this->getContainer()->setNumFrames($this->getContainer()->calculateFrameDuration());
+    }
+
+
+    /**
+     * calculateAnimationKeyframes
+     *
+     * keyframes are all frames where the animation changes; The first frame of a component's animation always is a
+     * keyframe obviously (no animation --> some animation)
+     *
+     * @access protected
+     * @return void
+     */
+    protected function calculateAnimationKeyframes()
+    {
+        // array_unique will not work here since we're dealing with multidimensional arrays
+        // AND it would most likely be not more performant
+        // $animationKeyframes = array('p' => 0);
+        {
+            $count = 0;
+            $prevStep = array();
+            $stepFrames = 4;
+            $animationKeyframes[] = 0;
+            foreach($this->animationSteps AS $animationStep)
+            {
+                if($count/$stepFrames == ceil($count/$stepFrames) || count(array_diff($animationStep, $prevStep)) > 0 || count(array_diff_key($animationStep, $prevStep)) > 0)
+                {
+                    $newKeyframe = $count;
+                    $animationKeyframes[] = $newKeyframe;
+                    $prevStep = $animationStep;
+                }
+                $count++;
+            }
+        }
+        return $animationKeyframes;
+    }
+
+    /**
+     * getAnimationKeyframes
+     *
+     * return animationKeyframes calculated by function calculateAnimationKeyframes()
+     * (and perhaps altered via function addAnimationKeyframe())
+     *
+     * @access public
+     * @return void
+     */
+    public function getAnimationKeyframes()
+    {
+        return $this->animationKeyframes;
+    }
+
+    /**
+     * addAnimationKeyframe
+     *
+     * manually add a keyframe for example in order to improve animation quality
+     *
+     * @param mixed $framenum
+     * @access public
+     * @return void
+     */
+    public function addAnimationKeyframe($framenum)
+    {
+        if(!in_array($framenum, $this->animationKeyframe))
+        {
+            $this->animationKeyframes[] = $framenum;
+        }
+        $this->animationKeyframes = sort($this->animationKeyframes);
+    }
+
+
+    /**
+     * getAnimationStep
+     *
+     * @param mixed $stepNum
+     * @access public
+     * @return void
+     */
+    public function getAnimationStep($stepNum)
+    {
+        $stepNum = $stepNum % count($this->animationSteps);
+        if(count($this->animationSteps) > $stepNum)
+        {
+            $animationStep = $this->animationSteps[$stepNum];
+        }
+        else
+        {
+            $animationStep = array('p' => 0);
+        }
+        // echo $this->getId() . ': [' . $stepNum . '] -> ' . print_r($animationStep, true);
+        return $animationStep;
     }
 
     public function setAnimation($animationDefinition)
@@ -259,6 +376,11 @@ class GfXComponent implements Linkable, Resizeable
             $filepath = BASE_DIR . '/' . $filepath;
         }
         return $filepath;
+    }
+
+    protected function gifAnimate()
+    {
+        //todo
     }
 
 
@@ -573,5 +695,25 @@ class GfXComponent implements Linkable, Resizeable
     public function getEditGroup()
     {
         return $this->editGroup;
+    }
+}
+
+
+
+class GifAnimationContainer
+{
+    public $x;
+    public $y;
+    public $width;
+    public $height;
+    public $rotation;
+
+    public function __construct($sourceObject)
+    {
+        $this->x = $sourceObject->getX();
+        $this->y = $sourceObject->getY();
+        $this->width = $sourceObject->getWidth();
+        $this->height = $sourceObject->getHeight();
+        $this->rotation = 0;
     }
 }
