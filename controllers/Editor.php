@@ -103,17 +103,27 @@ class Editor extends Controller
         $this->view->cmeoLinkOptions = $this->getCmeoLinkOptions();
         $this->view->name            = $template->getName();
         $this->view->fileName        = $filename;
-        $this->view->fileSize        = getRemoteFileSize($gif);
+        $this->view->gifFileSize     = getRemoteFileSize($gif);
+        $this->view->swfFileSize     = getRemoteFileSize($swf);
 
         $format = $container->getCanvasWidth() . 'x' . $container->getCanvasHeight();
 
-        if($this->view->fileSize > $sizeLimits[$format])
+        if($this->view->gifFileSize > $gifSizeLimits[$format])
         {
-            $this->view->fileSizeWarning = true;
+            $this->view->gifFileSizeWarning = true;
         }
         else
         {
-            $this->view->fileSizeWarning = false;
+            $this->view->gifFileSizeWarning = false;
+        }
+
+        if($this->view->swfFileSize > $swfSizeLimits[$format])
+        {
+            $this->view->swfFileSizeWarning = true;
+        }
+        else
+        {
+                $this->view->swfFileSizeWarning = false;
         }
 
         $this->view->categories      = $this->connector->getCategories();

@@ -4,6 +4,8 @@ $(document).ready(function() {
         url: 'ajax/getSizeLimits.php'
     }).done(function(data) {
         window.sizeLimits = $.parseJSON(data);
+        window.swfSizeLimits = window.sizeLimits.swf;
+        window.gifSizeLimits = window.sizeLimits.gif;
     });
 
     var btn;
@@ -254,8 +256,9 @@ $(document).ready(function() {
 
                 // get current file dimensions and check filesize limit
                 var dimensions = $('[name$=globalDimensions] option:selected').text().replace(/ \(.*\)/, '');
-                var filesize = (Math.round(response.filesize / 1024).toFixed(2)) + ' kB';
-                if(response.filesize / 1024 > window.sizeLimits[dimensions]) {
+                var gifFilesize = (Math.round(response.gifFilesize / 1024).toFixed(2)) + ' kB';
+                var swfFilesize = (Math.round(response.swfFilesize / 1024).toFixed(2)) + ' kB';
+                if(response.gifFilesize / 1024 > window.gifSizeLimits[dimensions]) {
                     // ALERT
                     $('#filesize-gif').parent().addClass('filesize-warning');
                     $('#filesize-gif').addClass('filesize-warning');
@@ -264,13 +267,24 @@ $(document).ready(function() {
                     $('#filesize-gif').removeClass('filesize-warning');
                 }
 
+                if(response.swfFilesize / 1024 > window.swfSizeLimits[dimensions]) {
+                    // ALERT
+                    $('#filesize-swf').parent().addClass('filesize-warning');
+                    $('#filesize-swf').addClass('filesize-warning');
+                } else {
+                    $('#filesize-swf').parent().removeClass('filesize-warning');
+                    $('#filesize-swf').removeClass('filesize-warning');
+                }
+
                 $("#previewImage img").attr('src', gifsrc);
                 $("[name='movie']").attr('value', swfsrc);
                 $("[name='movie']").prop('value', swfsrc);
                 $("#previewSwf object").prop('data', swfsrc);
 
-                $('#filesize-gif').attr('value', filesize);
-                $('#filesize-gif').prop('value', filesize);
+                $('#filesize-gif').attr('value', gifFilesize);
+                $('#filesize-gif').attr('value', gifFilesize);
+                $('#filesize-swf').prop('value', swfFilesize);
+                $('#filesize-swf').prop('value', swfFilesize);
 
                 $(".savealert").removeClass("in").delay(1000).addClass("in").fadeOut(2000);
             }
