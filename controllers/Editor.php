@@ -107,7 +107,7 @@ class Editor extends Controller
 
         $format = $container->getCanvasWidth() . 'x' . $container->getCanvasHeight();
 
-        if($this->view->fileSize > $this->sizeLimits[$format])
+        if($this->view->fileSize > $sizeLimits[$format])
         {
             $this->view->fileSizeWarning = true;
         }
@@ -115,8 +115,6 @@ class Editor extends Controller
         {
             $this->view->fileSizeWarning = false;
         }
-
-        $this->view->sizeLimits = json_encode($this->sizeLimits);
 
         $this->view->categories      = $this->connector->getCategories();
         // TODO: the same call is invoked twice here, once when calling connector->getSubscribedCategoriesByTemplateId,
