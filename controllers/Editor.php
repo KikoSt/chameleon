@@ -70,8 +70,6 @@ class Editor extends Controller
 
         $this->view->previewPaths = $this->getPreviewPaths();
 
-        // $this->view->premiumUser = false;
-
         if(isset($_REQUEST['advanced']))
         {
             if($_REQUEST['advanced'] == 'true') {
