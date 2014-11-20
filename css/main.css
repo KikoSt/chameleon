@@ -3,6 +3,14 @@ body {
     background-color: #e8e8e8;
 }
 
+#awesomeEditor input, select, .file-caption {
+    font-size: .95em !important;
+}
+
+#awesomeEditor label {
+    padding-top: 0px !important;
+}
+
 .glyphicon-remove-circle
 {
     float: right;
@@ -295,6 +303,10 @@ input
     right: 0;
     bottom: 0;
     left: 0;
+}
+
+.filesize-label {
+    padding-top: 0px !important;
 }
 
 div.filesize-warning {
