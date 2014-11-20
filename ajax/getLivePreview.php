@@ -12,7 +12,7 @@ require_once(__ROOT__ . 'libraries/functions.inc.php');
 $container = new GfxContainer();
 $connector = new APIConnector();
 
-$numPreviewPics = 10;
+$numPreviewPics = 1;
 
 // $auditUserId    = getRequestVar('auditUserId');;
 $companyId      = getRequestVar('companyId');
@@ -62,7 +62,7 @@ else
 
 $template = $connector->getTemplateById($templateId);
 
-
+$categoryIds = array();
 
 foreach($template->getCategorySubscriptions() AS $subscription)
 {
@@ -70,6 +70,11 @@ foreach($template->getCategorySubscriptions() AS $subscription)
     {
         $categoryIds[] = $subscription->idCategory;
     }
+}
+
+if(empty($categoryIds))
+{
+    exit(json_encode(array()));
 }
 
 $numSamples = ceil($numPreviewPics / count($categoryIds));
@@ -119,6 +124,7 @@ foreach($products AS $product)
     {
         $files[] = $fileName;
     }
+    continue;
 }
 
 echo json_encode($files);
