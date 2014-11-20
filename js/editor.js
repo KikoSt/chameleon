@@ -121,16 +121,6 @@ $(document).ready(function() {
         }
     });
 
-    function componentToHex(c) {
-        var hex = Number(c).toString(16);
-        return hex.length == 1 ? "0" + hex : hex;
-    }
-
-    function colorToHex(rgb) {
-        var rgb = rgb.substring(4, rgb.length-1).replace(/ /g, '').split(',');
-        return "#" + componentToHex(rgb[0]) + componentToHex(rgb[1]) + componentToHex(rgb[2]);
-    }
-
     // prepare image map
     var highlightColor = {};
     if($('.textTitle').length > 0) {
@@ -918,4 +908,24 @@ $(document).ready(function() {
     // soon as it's ready. As a quick way to do so, just triggering the changeSvg event here. This is also stored
     // the unchanged data once again which is not really required and should be prevented.
     $('#editor').trigger('submit');
+
+
+
+
+
+
+
+
+
+
+    function componentToHex(c) {
+        var hex = Number(c).toString(16);
+        return hex.length == 1 ? "0" + hex : hex;
+    }
+
+    function colorToHex(rgb) {
+        var rgb = rgb.substring(4, rgb.length-1).replace(/ /g, '').split(',');
+        return "#" + componentToHex(rgb[0]) + componentToHex(rgb[1]) + componentToHex(rgb[2]);
+    }
+
 });
