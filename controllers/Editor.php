@@ -99,6 +99,16 @@ class Editor extends Controller
         $this->view->name            = $template->getName();
         $this->view->fileName        = $filename;
         $this->view->fileSize        = getRemoteFileSize($gif);
+
+        if($this->view->fileSize > 100)
+        {
+            $this->view->fileSizeWarning = true;
+        }
+        else
+        {
+            $this->view->fileSizeWarning = false;
+        }
+
         $this->view->categories      = $this->connector->getCategories();
         // TODO: the same call is invoked twice here, once when calling connector->getSubscribedCategoriesByTemplateId,
         //       once within getSubscribedCategories

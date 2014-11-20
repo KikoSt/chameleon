@@ -297,4 +297,10 @@ input
     left: 0;
 }
 
+div.filesize-warning {
+    background-color: #ff0000;
+}
 
+input.filesize-warning {
+    background-color: #ff9999 !important;
+}

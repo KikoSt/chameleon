@@ -147,7 +147,11 @@ $response = array();
 // TODO: improve this path handling, too
 $container->setOutputName(getPreviewFileName($template));
 $imgsrc = 'output/' . $basePath . '/' . $container->getOutputName();
+
+$success = chmod('../' . $imgsrc . '.gif', 0777);
+
 $response['imgsrc'] = $imgsrc;
+$response['filesize'] = filesize('../' . $imgsrc . '.gif');
 
 echo json_encode($response);
 
