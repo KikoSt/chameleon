@@ -101,7 +101,7 @@ class CMEOGenerator
 
 
 
-    private function logMessage($message)
+    public function logMessage($message)
     {
         fwrite($this->logHandle, $message . "\n");
     }

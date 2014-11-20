@@ -287,6 +287,7 @@
             var id = $(this).attr('id').split('-');
             var data = {};
             var templateId = id[1];
+            var base_url = window.location.origin;
 
             data.advertiserId = advertiserId;
             data.templateId   = templateId;
@@ -299,9 +300,28 @@
                 url: "/chameleon/ajax/getLivePreview.php"
             }).done(function (output)
             {
-                console.log(id[1]);
-                console.log(output);
+                var first = true;
+                $.each(output, function(key, value){
+
+                    var active = ' active';
+
+                    if(!first)
+                    {
+                        active = '';
+                    }
+
+                    var node = '<div class="item'+active+'">'+
+                               '<img src="'+base_url+'/chameleon/'+value+'" alt="..."'+
+                               'style="max-height: 320px; display: block;margin: auto">'+
+                               '</div>';
+
+                    $('#previewcarousel-'+templateId).append(node);
+
+                    first = false;
+                });
             })
+
+
 
         });
     });
