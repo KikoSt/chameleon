@@ -59,6 +59,7 @@ else
 //        }
 //    }
 }
+
 $template = $connector->getTemplateById($templateId);
 
 foreach($template->getCategorySubscriptions() AS $subscription)
@@ -86,6 +87,7 @@ $files = array();
 foreach($products AS $product)
 {
     $categoryId = $product->getCategoryId();
+
     $generator->prepareLogfile($categoryId);
     $generator->getContainer()->setCategoryId($categoryId);
     $sourcePath = (string) $companyId . '/' . (string) $advertiserId . '/' . $categoryId;
@@ -119,4 +121,3 @@ foreach($products AS $product)
 
 echo json_encode($files);
 
-?>

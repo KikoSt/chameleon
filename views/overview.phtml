@@ -6,12 +6,7 @@
     <p class="notification"><?php echo $this->message; ?></p>
 <?php
     else:
-    // it is actually valid html to have input elements without a form,
-    // so this is how we store the advertiser and company ID since it's
-    // the same for all templates!!!
 ?>
-<input type="hidden" id="advertiserId" name="advertiserId" value="<?php echo $this->advertiserId; ?>">
-<input type="hidden" id="companyId"    name="companyId"    value="<?php echo $this->companyId; ?>">
 <div class="container-fluid margin-left-150">
     <div id="overviewView">
     <?php
@@ -22,14 +17,13 @@
                     <div class="row templatePreviewRow">
                         <div class="overviewTitle">Template</div>
                         <div>
-                            <a href="<?php echo BASE_DIR;?>/index.php?page=editor&amp;templateId=<?php echo $preview->templateId; ?>">
-                                <img class="thumbnail-preview" src="<?php echo $preview->filePath; ?>"
+                            <a href="<?php echo BASE_DIR;?>/index.php?page=editor&templateId=<?php echo $preview->templateId; ?>">
+                                <image class="thumbnail-preview" src="<?php echo $preview->filePath; ?>"
                                        onmouseover="showtrail('<?php echo $preview->filePath; ?>', 'Preview',
                                        <?php echo $preview->bannerDimension->width; ?>,
                                        <?php echo $preview->bannerDimension->height; ?>);"
-                                       onmouseout="hidetrail();"
-                                       alt="thumbnail preview template <?php echo $preview->templateId; ?> (<?php echo $preview->bannerDimension->width; ?>x<?php echo $preview->bannerDimension->height; ?>)"
-                                />
+                                       onmouseout="hidetrail();">
+                                </image>
                             </a>
                         </div>
                     </div>
@@ -41,14 +35,14 @@
                     include('overviewComponents/action.inc.php');
                 ?>
             </div>
-            <div class="modal fade" id="categorySelect-<?php echo $preview->templateId; ?>" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal fade" id="categorySelect-<?php echo $preview->templateId; ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header imageTitle">
                             <button type="button" class="close" data-dismiss="modal">
                                 <span class="glyphicon glyphicon-remove-circle cursor-pointer"></span>
                             </button>
-                            <h4 class="modal-title" id="myModalLabel_<?php echo $preview->templateId; ?>">Select categories:</h4>
+                            <h4 class="modal-title" id="myModalLabel">Select categories:</h4>
                         </div>
                         <div class="modal-body">
                             <?php include('overviewComponents/categoryAlignment.inc.php'); ?>
@@ -57,7 +51,7 @@
                 </div>
             </div>
             <!-- Modal -->
-            <input type="hidden" name="templateId"   value="<?php echo $preview->templateId; ?>">
+            <input id="templateId" type="hidden" name="templateId" value="<?php echo $preview->templateId; ?>">
             <input type="hidden" name="templateName" value="<?php echo $preview->templateName; ?>">
 
     <?php
@@ -71,4 +65,264 @@
     </div>
 </div>
 
-<script type="text/JavaScript" src="js/overview.js"></script>
+<script type="text/javascript">
+    $(document).ready(function()
+    {
+        var advertiserId = $('#advertiserId').attr('value');
+        var companyId = $('#companyId').attr('value');
+
+        $('#addCategory').click(function(e) {
+            var selectedOpts = $('#availableCategory option:selected');
+            if (selectedOpts.length == 0) {
+                alert("Nothing to move.");
+                e.preventDefault();
+            }
+
+            $('#assignedCategory').append($(selectedOpts).clone());
+            $(selectedOpts).remove();
+            e.preventDefault();
+        });
+
+        $('#removeCategory').click(function(e) {
+            var selectedOpts = $('#assignedCategory option:selected');
+            if (selectedOpts.length == 0) {
+                alert("Nothing to move.");
+                e.preventDefault();
+            }
+
+            $('#availableCategory').append($(selectedOpts).clone());
+            $(selectedOpts).remove();
+            e.preventDefault();
+        });
+
+        $('.carousel').carousel({
+            interval: 4000
+        });
+
+        $('.addCategoryOverview').click(function(e) {
+
+            $(".modal-body form").block({
+                message: '<h1>Assigning categories...</h1>',
+                css: { border: '3px solid #a00' }
+            });
+            e.preventDefault();
+            var id = $(this).attr('id').split('-');
+            var templateId = id[1];
+            var advertiserId = id[2];
+            var data = {};
+            var category = [];
+
+            if (!$("#availableVategory-"+templateId).length) {
+                $('#addCategory-'+templateId+'-'+advertiserId).setAttribute('disabled', 'disabled');
+            }
+
+            $('#availableCategory-'+templateId).find('option:selected').each(function(i,selected){
+                var subscription = {};
+                subscription.id = $(selected).val();
+                subscription.name = $.trim($(selected).text());
+                category.push(subscription);
+            });
+
+            data.category = category;
+            data.advertiserId = advertiserId;
+            data.templateId   = templateId;
+            data.companyId    = $('#companyId').attr('value');
+
+            $.ajax({
+                type: "POST",
+                data: data,
+                dataType: "json",
+                url: "/chameleon/ajax/addCategory.php"
+            }).done(function(){
+            }).fail(function(){
+                category.forEach(function(singleCategory){
+                    var item = '<div id="'+singleCategory.id+'" class="row"><p class="text-left overviewTitle categoryItem">'+
+                               '<a class="fa fa-trash categoryItem cursor-pointer" title="Remove category"></a>' +
+                               singleCategory.name + '</p></div>';
+                    $('#categoryContainerOverview-'+templateId).append(item);
+
+                    var node = '<option value="' + singleCategory.id + '">' + singleCategory.name + '</option>';
+                    $('#assignedCategory-'+templateId).append(node);
+                    $('#availableCategory-'+templateId).find("option[value='"+singleCategory.id+"']").remove();
+                });
+                $(".modal-body form").unblock();
+            });
+        });
+
+        $('.removeCategoryShortcut').click(function(){
+            var id = $(this).closest('div').attr('id').split('-');
+            var categoryId = id[1];
+            var templateId = id[2];
+            var subscription = {};
+            var data = {};
+            var category = [];
+
+            if(confirm("Are you sure you want to DELETE this category subscription?"))
+            {
+                subscription.id = categoryId;
+                subscription.name = $('#' + categoryId).attr('value');
+
+                category.push(subscription);
+
+                data.category = category;
+                data.advertiserId = $('#advertiserId').attr('value');
+                data.templateId = templateId;
+                data.companyId = $('#companyId').attr('value');
+
+                $.ajax({
+                    type: 'POST',
+                    data: data,
+                    dataType: "json",
+                    url: '/chameleon/ajax/removeCategory.php'
+                }).fail(function ()
+                {
+                    $('#assigned-' + categoryId + '-' + templateId).empty().remove();
+                    $("#assignedCategory-"+templateId).find("option[value='"+categoryId+"']").remove();
+                });
+            }
+        });
+
+        $('.removeCategoryOverview').click(function(e) {
+            $(".modal-body form").block({
+                message: '<h1>Removing categories</h1>',
+                css: { border: '3px solid #a00' }
+            });
+            e.preventDefault();
+            var id = $(this).attr('id').split('-');
+            var templateId = id[1];
+            var advertiserId = id[2];
+            var data = {};
+            var category = [];
+
+            $('#assignedCategory-'+templateId).find('option:selected').each(function(i,selected){
+                var subscription = {};
+                subscription.id = $(selected).val();
+                subscription.name = $.trim($(selected).text());
+                category.push(subscription);
+            });
+
+            data.category = category;
+            data.advertiserId = advertiserId;
+            data.templateId   = templateId;
+            data.companyId    = $('#companyId').attr('value');
+            $.ajax({
+                type: 'POST',
+                data: data,
+                dataType: "json",
+                url: '/chameleon/ajax/removeCategory.php'
+            }).done(function(){
+            }).fail(function(){
+                category.forEach(function(singleCategory){
+                    var item = $('#'+singleCategory.id);
+                    $("#assignedCategory-"+templateId).find("option[value='"+singleCategory.id+"']").remove();
+                    var node = '<option value="' + singleCategory.id + '">'+singleCategory.name+'</option>';
+                    $('#availableCategory-'+templateId).append(node);
+                    $('#assigned-'+singleCategory.id).empty().remove();
+                    $('#categoryContainerOverview-'+templateId+' #'+singleCategory.id).empty().remove();
+                });
+                $(".modal-body form").unblock();
+            });
+        });
+
+        $(".cloneTemplate").click(function(){
+            var id = $(this).attr('id').split('-');
+            var templateId = id[1];
+            var advertiserId = id[2];
+            var companyId = id[3];
+            var data = {};
+
+            if(confirm("Are you sure you want to CLONE this template? You will be redirected to the cloned template after confirming."))
+            {
+                data.advertiserId = advertiserId;
+                data.templateId = templateId;
+                data.companyId = companyId;
+
+                $.ajax({
+                    type: 'POST',
+                    data: data,
+                    dataType: "json",
+                    url: '/chameleon/ajax/cloneTemplate.php',
+                    success: function (response)
+                    {
+                        var url = window.location.origin + '/chameleon/index.php?page=editor&templateId=' + response +
+                            '&companyId=' + companyId +
+                            '&advertiserId=' + advertiserId;
+                        window.location.replace(url);
+                    }
+                });
+            }
+        });
+
+        $(".deleteTemplate").click(function(){
+
+            var id = $(this).attr('id').split('-');
+            var templateId = id[1];
+            var advertiserId = id[2];
+            var companyId = id[3];
+            var data = {};
+
+            if(confirm("Are you sure you want to DELETE this template?"))
+            {
+                data.advertiserId = advertiserId;
+                data.templateId   = templateId;
+
+                $.ajax({
+                    type: 'POST',
+                    data: data,
+                    dataType: "html",
+                    url:  '/chameleon/ajax/deleteTemplate.php',
+                    success: function(response){
+                        if(response.length === 0)
+                        {
+                            $('#template_'+templateId).fadeOut("slow", function(){
+                                $(this).empty();
+                            });
+                        }
+                    }
+                });
+            }
+        });
+
+        $('.ajaxPreview').each(function(e){
+            var id = $(this).attr('id').split('-');
+            var data = {};
+            var templateId = id[1];
+            var base_url = window.location.origin;
+
+            data.advertiserId = advertiserId;
+            data.templateId   = templateId;
+            data.companyId    = companyId;
+
+            $.ajax({
+                type: "POST",
+                data: data,
+                dataType: "json",
+                url: "/chameleon/ajax/getLivePreview.php"
+            }).done(function (output)
+            {
+                var first = true;
+                $.each(output, function(key, value){
+
+                    var active = ' active';
+
+                    if(!first)
+                    {
+                        active = '';
+                    }
+
+                    var node = '<div class="item'+active+'">'+
+                               '<img src="'+base_url+'/chameleon/'+value+'" alt="..."'+
+                               'style="max-height: 320px; display: block;margin: auto">'+
+                               '</div>';
+
+                    $('#previewcarousel-'+templateId).append(node);
+
+                    first = false;
+                });
+            })
+
+
+
+        });
+    });
+</script>

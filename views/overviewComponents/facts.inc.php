@@ -8,7 +8,7 @@
                         <p class="text-left">Description:</p>
                     </div>
                     <div class="col-md-8">
-                        <p class="text-left" title="<?php echo $preview->description;?>">
+                        <p id="name-<?php echo $preview->templateId; ?>" class="text-left name" title="<?php echo $preview->description;?>">
                             <?php echo $preview->shortDescription ;?>
                         </p>
                     </div>

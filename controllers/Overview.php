@@ -115,7 +115,7 @@ class Overview extends Controller
                     $preview->templateSubscription = $template->getCategorySubscriptions();
                     $preview->availableCategories = $this->getPrunedAvailableCategories($categories, $preview->templateSubscription);
                     $preview->bannerDimension = $this->getBannerDimension($container);
-
+                    $preview->examples = $this->getExamples($container);
 
                     if((int)$container->getCanvasWidth() > (int)$container->getCanvasHeight())
                     {
@@ -149,6 +149,27 @@ class Overview extends Controller
     public function setCompanyId($companyId)
     {
         $this->companyId = $companyId;
+    }
+
+    private function getExamples($container)
+    {
+        $previewDir = str_replace('/0', '/preview', $container->getOutputDir());
+        $previewDir .= '/'.$container->getId();
+        $dir = ROOT_DIR . 'output/' . $previewDir;
+
+        $examples = array();
+
+        if(is_dir($dir))
+        {
+            $examples = array_diff(scandir($dir), array('..','.'));
+        }
+
+        foreach($examples as $key => $value)
+        {
+            $examples[$key] = BASE_DIR . '/output/' . $previewDir . '/' . $value;
+        }
+
+        return $examples;
     }
 
     private function getBannerDimension(GfxContainer $container)
