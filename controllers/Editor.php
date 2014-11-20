@@ -20,6 +20,11 @@ class Editor extends Controller
         $text      = new GfxText($container);
         $this->connector = new APIConnector();
 
+        // for now, we're simply including this ajax script here
+        // until there is a decided "final" solution to the file size
+        // issue
+        require_once('ajax/getSizeLimits.php');
+
         $this->view = $this->setLayout('views/editor.phtml')->getView();
 
         $this->connector->setAdvertiserId($this->getAdvertiserId());
@@ -100,7 +105,9 @@ class Editor extends Controller
         $this->view->fileName        = $filename;
         $this->view->fileSize        = getRemoteFileSize($gif);
 
-        if($this->view->fileSize > 100)
+        $format = $container->getCanvasWidth() . 'x' . $container->getCanvasHeight();
+
+        if($this->view->fileSize > $this->sizeLimits[$format])
         {
             $this->view->fileSizeWarning = true;
         }
@@ -109,15 +116,17 @@ class Editor extends Controller
             $this->view->fileSizeWarning = false;
         }
 
+        $this->view->sizeLimits = json_encode($this->sizeLimits);
+
         $this->view->categories      = $this->connector->getCategories();
         // TODO: the same call is invoked twice here, once when calling connector->getSubscribedCategoriesByTemplateId,
         //       once within getSubscribedCategories
         //       Most likely, we wouldn't need this at all any longer since all "subscribed categories are provided
         //       along with the template
         $this->view->subscribedCategories = $this->connector->getSubscribedCategoriesByTemplateId($container->getId());
-        $this->view->combinedCategories = $this->getSubscribedCategories($template);
-        $this->view->activeCategories = $this->getActiveCategories($this->view->combinedCategories);
-        $this->view->allowedDimensions = $this->connector->getAllowedBannerDimensions();
+        $this->view->combinedCategories   = $this->getSubscribedCategories($template);
+        $this->view->activeCategories     = $this->getActiveCategories($this->view->combinedCategories);
+        $this->view->allowedDimensions    = $this->connector->getAllowedBannerDimensions();
 
         $this->view->template = $template;
 

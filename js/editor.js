@@ -1,4 +1,11 @@
 $(document).ready(function() {
+
+    $.ajax({
+        url: 'ajax/getSizeLimits.php'
+    }).done(function(data) {
+        window.sizeLimits = $.parseJSON(data);
+    });
+
     var btn;
     var somethingChanged = false;
     var category = {};
@@ -242,8 +249,11 @@ $(document).ready(function() {
 
                 var gifsrc = imgsrc + '.gif' + '?ts=' + new Date().getTime();
                 var swfsrc = imgsrc + '.swf' + '?ts=' + new Date().getTime();
+
+                // get current file dimensions and check filesize limit
+                var dimensions = $('[name$=globalDimensions] option:selected').text().replace(/ \(.*\)/, '');
                 var filesize = (Math.round(response.filesize / 1024).toFixed(2)) + ' kB';
-                if(response.filesize > 100000) {
+                if(response.filesize / 1024 > window.sizeLimits[dimensions]) {
                     // ALERT
                     $('#filesize-gif').parent().addClass('filesize-warning');
                     $('#filesize-gif').addClass('filesize-warning');
