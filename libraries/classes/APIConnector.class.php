@@ -492,10 +492,10 @@ class APIConnector
     {
         $resource = REST_API_SERVICE_URL . '/' . str_replace('{productId}', $productId,
                 $this->serviceCalls['getProductDataSamplesByProductId']);
-
         $curl = $this->getCurl($resource, 'GET');
-
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
         $curlResponse = curl_exec($curl);
+
         curl_close($curl);
 
         $result = $this->validateResponse($curlResponse);
@@ -508,8 +508,6 @@ class APIConnector
 
         return $productData;
     }
-
-
 
     /**
      * @param $serviceUrl

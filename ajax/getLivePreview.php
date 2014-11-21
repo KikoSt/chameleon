@@ -111,6 +111,8 @@ foreach($products AS $product)
         $generator->logMessage('An error occured: ' . $e->getMessage() . "\n");
         continue;
     }
+
+
     $generator->render($product, 'GIF');
 
     // move file ...

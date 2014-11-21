@@ -9,25 +9,18 @@ if(!defined('__ROOT__'))
 
 require_once(__ROOT__ . 'libraries/functions.inc.php');
 
-$container = new GfxContainer();
 $connector = new APIConnector();
 
-$numPreviewPics = 10;
-
-// $auditUserId    = getRequestVar('auditUserId');;
+$auditUserId    = getRequestVar('auditUserId');;
 $companyId      = getRequestVar('companyId');
 $advertiserId   = getRequestVar('advertiserId');
 $templateId     = getRequestVar('templateId');
-
-$auditUserId    = 1; // system
+$productId      = getRequestVar('productId');
 
 if(!isset($auditUserId) || empty($auditUserId))
 {
     return false;
 }
-
-$container->setCompanyId($companyId);
-$container->setAdvertiserId($advertiserId);
 
 $connector->setCompanyId($companyId);
 $connector->setAdvertiserId($advertiserId);
@@ -48,78 +41,42 @@ if(!file_exists($dir))
     // reset umask
     umask($old);
 }
-else
-{
-//    $files = glob($dir . '/*');
-//    foreach($files as $file)
-//    {
-//        if(is_file($file))
-//        {
-//            unlink($file);
-//        }
-//    }
-}
+
+$product = $connector->getProductDataByProductId($productId);
+
+$categoryId = $product->getCategoryId();
+
+$argv = array(null, $companyId, $advertiserId, null, $auditUserId);
+$generator = new CMEOGenerator($argv);
+$generator->setTemplates(array($templateId));
+$generator->setCategories($categoryId);
+$generator->prepareLogfile($categoryId);
+$generator->getContainer()->setCategoryId($categoryId);
+
+$sourcePath = (string) $companyId . '/' . (string) $advertiserId . '/' . $categoryId;
 
 $template = $connector->getTemplateById($templateId);
 
+$generator->getContainer()->setSource($template->getSvgContent());
+$generator->getContainer()->setId($template->getBannerTemplateId());
 
-
-foreach($template->getCategorySubscriptions() AS $subscription)
+try
 {
-    if($subscription->userStatus === 'ACTIVE')
-    {
-        $categoryIds[] = $subscription->idCategory;
-    }
+    $generator->getContainer()->parse();
+}
+catch(Exception $e)
+{
+    $message = $generator->logMessage('An error occured: ' . $e->getMessage() . "\n");
 }
 
-$numSamples = ceil($numPreviewPics / count($categoryIds));
+$generator->render($product, 'GIF');
 
-$products = $connector->getProductDataSamples($categoryIds, $numSamples);
+// move file ...
+$sourceName = '../output/' . $sourcePath . '/' . $generator->getContainer()->getOutputFilename() . '.gif';
+$targetName = '../output/' . $targetPath . '/' . $generator->getContainer()->getOutputFilename() . '.gif';
+$fileName = 'output/' . $targetPath . '/' . $generator->getContainer()->getOutputFilename() . '.gif';
 
-$argv = array(null, $companyId, $advertiserId, null, $auditUserId);
+rename($sourceName, $targetName);
 
-$generator = new CMEOGenerator($argv);
-$generator->setTemplates(array($templateId));
-$generator->setCategories($categoryIds);
-
-$count = 0;
-
-$files = array();
-
-foreach($products AS $product)
-{
-    $categoryId = $product->getCategoryId();
-
-    $generator->prepareLogfile($categoryId);
-    $generator->getContainer()->setCategoryId($categoryId);
-    $sourcePath = (string) $companyId . '/' . (string) $advertiserId . '/' . $categoryId;
-
-    $generator->getContainer()->setSource($template->getSvgContent());
-    $generator->getContainer()->setId($template->getBannerTemplateId());
-
-    try
-    {
-        $generator->getContainer()->parse();
-    }
-    catch(Exception $e)
-    {
-        $generator->logMessage('An error occured: ' . $e->getMessage() . "\n");
-        continue;
-    }
-    $generator->render($product, 'GIF');
-
-    // move file ...
-    $sourceName = '../output/' . $sourcePath . '/' . $generator->getContainer()->getOutputFilename() . '.gif';
-    $targetName = '../output/' . $targetPath . '/' . $generator->getContainer()->getOutputFilename() . '.gif';
-    $fileName = 'output/' . $targetPath . '/' . $generator->getContainer()->getOutputFilename() . '.gif';
-
-    rename($sourceName, $targetName);
-
-    if(file_exists($targetName))
-    {
-        $files[] = $fileName;
-    }
-}
-
-echo json_encode($files);
+echo json_encode($fileName);
 
