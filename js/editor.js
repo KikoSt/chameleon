@@ -641,16 +641,25 @@ $(document).ready(function() {
         });
     });
 
-    $('.preset').on('click', function(){
-        var identifier = $(this).attr('id').split('--');
 
+    // handle the "CD" (corporade design) properties:
+    // CD color 1
+    // CD color 2
+    // CD fontk
+    $('.preset').on('click', function(){
+        console.log($(this).attr('id'));
+        var identifier = $(this).attr('id').split('--');
+        var groupId = identifier[0];
         switch(identifier[1])
         {
             case "primary":
             {
-                var primaryColor = $('#primary-color').val();
-                $('#panel_'+identifier[0]+' #fill').val(primaryColor);
-                $('[name="'+identifier[0]+'#fill"]').colorpicker('setValue', primaryColor);
+                var color = $('#primary-color').val();
+                var id = identifier[0] + "";
+                var groupId = $(this).closest('.panel').attr('id').replace('grouppanel_', '');
+                $('#panel_'+identifier[0]+' #fill').val(color);
+                $('[name="'+identifier[0]+'#fill"]').colorpicker('setValue', color);
+
                 break;
             }
             case "secondary":
@@ -660,20 +669,67 @@ $(document).ready(function() {
                 $('[name="'+identifier[0]+'#fill"]').colorpicker('setValue', secondaryColor);
                 break;
             }
+            case "fgprimary":
+                // console.log('fgprimary');
+                var color = $('#primary-color').val();
+                var groupId = $(this).closest('.panel').attr('id').replace('grouppanel_', '');
+                $('#' + groupId + '--fgpreview').css('background-color', color);
+                $('#grouppanel_' + groupId).find('input#fgcolor').val(color);
+                $('[data-groupid="' + groupId + '"][data-type="text"]').find('input[id$="--preview"]').val(color);
+                $('[data-groupid="' + groupId + '"][data-type="text"]').find('input[id$="_fill"]').val(color);
+                break;
+            case "fgsecondary":
+                // console.log('fgsecondary');
+                var color = $('#secondary-color').val();
+                var groupId = $(this).closest('.panel').attr('id').replace('grouppanel_', '');
+                $('#' + groupId + '--fgpreview').css('background-color', color);
+                $('#grouppanel_' + groupId).find('input#fgcolor').val(color);
+                $('[data-groupid="' + groupId + '"][data-type="text"]').find('input[id$="--preview"]').val(color);
+                $('[data-groupid="' + groupId + '"][data-type="text"]').find('input[id$="_fill"]').val(color);
+                break;
+            case "bgprimary":
+                // console.log('bgprimary');
+                var color = $('#primary-color').val();
+                var groupId = $(this).closest('.panel').attr('id').replace('grouppanel_', '');
+                $('#' + groupId + '--bgpreview').css('background-color', color);
+                $('#grouppanel_' + groupId).find('input#bgcolor').val(color);
+                $('[data-groupid="' + groupId + '"][data-type="rectangle"]').find('input[id$="--preview"]').val(color);
+                $('[data-groupid="' + groupId + '"][data-type="rectangle"]').find('input[id$="_fill"]').val(color);
+                break;
+            case "bgsecondary":
+                // console.log('bgsecondary');
+                var color = $('#secondary-color').val();
+                var groupId = $(this).closest('.panel').attr('id').replace('grouppanel_', '');
+                $('#' + groupId + '--bgpreview').css('background-color', color);
+                $('#grouppanel_' + groupId).find('input#bgcolor').val(color);
+                $('[data-groupid="' + groupId + '"][data-type="rectangle"]').find('input[id$="--preview"]').val(color);
+                $('[data-groupid="' + groupId + '"][data-type="rectangle"]').find('input[id$="_fill"]').val(color);
+                break;
             case "presetFont":
             {
+                // the CD font has been selected, either in an "individual" editor component
+                // or in a group panel - in this case, the selected font has to be applied to
+                // each font select of this group!
                 var id = identifier[0] + "_fontFamily";
+                var groupId = $(this).closest('.panel').attr('id').replace('grouppanel_', '');
 
+                // apply font to current (clicked) field
                 $('select#' + id + ' option').filter(function() {
                     return $(this).text() == $('#presetFontFamily option:selected').text();
                 }).prop('selected', true);
+
+                // update text field editor components of this group
+                $('[data-groupid="' + groupId + '"]').find('.font-select option').filter(function() {
+                    return $(this).text() == $('#presetFontFamily option:selected').text();
+                }).prop('selected', true);
+
                 break;
             }
         }
         $('#editor').trigger('submit');
     });
 
-    // TODO: add a "initial" element to ALL templates?!
+    // TODO: add an "initial" element to ALL templates?!
     $('area#head_large').trigger('click');
 
 
