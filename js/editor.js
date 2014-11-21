@@ -245,8 +245,6 @@ $(document).ready(function() {
                     somethingChanged = false;
                 }
 
-                console.log(xhr);
-
                 response = $.parseJSON(xhr.response);
                 imgsrc = response.imgsrc;
                 $("#previewImage img").unbind('mapster');
@@ -388,9 +386,7 @@ $(document).ready(function() {
             // NOTE: the value attribute specifies the initial value of an input,
             // but the value property specifies the current value - baseElement comes in
             // VERY handy here :)
-            // console.log($(baseElement).prop('value'));
-            // console.log($(baseElement).attr('value'));
-            //
+
             // find the name of the edited attribute
             attributeName = $(baseElement).attr('name').replace(/.*\#/i, '');
 
