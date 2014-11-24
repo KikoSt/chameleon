@@ -1,3 +1,5 @@
+var $ = jQuery.noConflict();
+
 $(document).ready(function()
 {
     $('#addCategory').click(function(e) {
@@ -202,6 +204,61 @@ $(document).ready(function()
                 }
             });
         }
+    });
+
+    $('.ajaxPreview').each(function(e){
+        var id = $(this).attr('id').split('-');
+        var data = {};
+        var templateId = id[1];
+
+        $("#creativesCarousel-"+templateId).block({
+            message: '<h1><img src="'+window.location.origin+'/chameleon/img/loading.gif"/> Rendering example banners...</h1>',
+            css: { border: '3px solid #a00', width: '50%'  }
+        });
+
+        data.advertiserId   = $('#advertiserId').attr('value');
+        data.templateId     = templateId;
+        data.companyId      = $('#companyId').attr('value');
+        data.numPreviewPics = 10;
+        data.auditUserId    = 1;
+
+        $.ajax({
+            type: "POST",
+            data: data,
+            dataType: "json",
+            url: "/chameleon/ajax/getProductIdByTemplateId.php"
+        }).done(function (output)
+        {
+            if(output.length > 0)
+            {
+                $.each(output, function (key,value)
+                {
+                    data.productId = value;
+                    $.ajax({
+                        type: "POST",
+                        data: data,
+                        dataType: "json",
+                        url: "/chameleon/ajax/renderExampleForProductId.php"
+                    }).done(function (file)
+                    {
+                        $('<div class="item ">' +
+                                '<img src="' + window.location.origin + '/chameleon/' + file + '" alt="..."' +
+                                'style="max-height: 320px; display: block;margin: auto">' +
+                                '</div>').appendTo('#previewcarousel-' + templateId);
+                    });
+                });
+
+            }
+            else
+            {
+                $('<div class="item">No categories selected. Please select at least one category to render examples...</div>').appendTo
+                ('#previewcarousel-' + templateId);
+            }
+
+        }).fail(function(){
+            $('<div class="item">An error occurred during the render process...</div>').appendTo('#previewcarousel-' + templateId);
+        });
+        $("#creativesCarousel-"+templateId).unblock();
     });
 });
 
