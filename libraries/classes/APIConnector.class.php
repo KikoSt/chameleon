@@ -213,7 +213,11 @@ class APIConnector
 
         foreach($productList AS $product)
         {
-            $products[] = $this->populateProduct($product);
+            $curProduct = $this->populateProduct($product);
+            if($curProduct)
+            {
+                $products[] = $curProduct;
+            }
         }
 
         return $products;

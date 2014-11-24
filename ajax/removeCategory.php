@@ -55,8 +55,6 @@ if($success)
         }
     }
 
-//     $template->setCategorySubscriptions($subscriptions);
-
     // store template
     $result = $connector->sendBannerTemplate($template);
 }
