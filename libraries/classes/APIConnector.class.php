@@ -213,7 +213,11 @@ class APIConnector
 
         foreach($productList AS $product)
         {
-            $products[] = $this->populateProduct($product);
+            $curProduct = $this->populateProduct($product);
+            if($curProduct)
+            {
+                $products[] = $curProduct;
+            }
         }
 
         return $products;
@@ -579,6 +583,12 @@ class APIConnector
      */
     private function populateProduct($product)
     {
+        // absolutely no point in trying to render banners for products without product images
+        if(!isset($product->productUrlImage))
+        {
+            return false;
+        }
+
         $productModel = new ProductModel();
 
         $productModel->setProductId($product->idProduct);
@@ -603,8 +613,8 @@ class APIConnector
         $productModel->setPromotionEndDate($product->datePromotionEnd);
 
         $productModel->setProductSize($product->productPropertySize);
-        $productModel->setGender($product->idGender);
-        $productModel->setColor($product->colour);
+        // $productModel->setGender($product->idGender);
+        $productModel->setColor($product->productPropertyColour);
 
         return $productModel;
     }

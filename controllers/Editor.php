@@ -20,6 +20,11 @@ class Editor extends Controller
         $text      = new GfxText($container);
         $this->connector = new APIConnector();
 
+        // for now, we're simply including this ajax script here
+        // until there is a decided "final" solution to the file size
+        // issue
+        require_once('ajax/getSizeLimits.php');
+
         $this->view = $this->setLayout('views/editor.phtml')->getView();
 
         $this->connector->setAdvertiserId($this->getAdvertiserId());
@@ -65,8 +70,6 @@ class Editor extends Controller
 
         $this->view->previewPaths = $this->getPreviewPaths();
 
-        // $this->view->premiumUser = false;
-
         if(isset($_REQUEST['advanced']))
         {
             if($_REQUEST['advanced'] == 'true') {
@@ -98,15 +101,27 @@ class Editor extends Controller
         $this->view->cmeoLinkOptions = $this->getCmeoLinkOptions();
         $this->view->name            = $template->getName();
         $this->view->fileName        = $filename;
-        $this->view->fileSize        = getRemoteFileSize($gif);
+        $this->view->gifFileSize     = getRemoteFileSize($gif);
+        $this->view->swfFileSize     = getRemoteFileSize($swf);
 
-        if($this->view->fileSize > 100)
+        $format = $container->getCanvasWidth() . 'x' . $container->getCanvasHeight();
+
+        if($this->view->gifFileSize > $gifSizeLimits[$format])
         {
-            $this->view->fileSizeWarning = true;
+            $this->view->gifFileSizeWarning = true;
         }
         else
         {
-            $this->view->fileSizeWarning = false;
+            $this->view->gifFileSizeWarning = false;
+        }
+
+        if($this->view->swfFileSize > $swfSizeLimits[$format])
+        {
+            $this->view->swfFileSizeWarning = true;
+        }
+        else
+        {
+                $this->view->swfFileSizeWarning = false;
         }
 
         $this->view->categories      = $this->connector->getCategories();
@@ -115,9 +130,9 @@ class Editor extends Controller
         //       Most likely, we wouldn't need this at all any longer since all "subscribed categories are provided
         //       along with the template
         $this->view->subscribedCategories = $this->connector->getSubscribedCategoriesByTemplateId($container->getId());
-        $this->view->combinedCategories = $this->getSubscribedCategories($template);
-        $this->view->activeCategories = $this->getActiveCategories($this->view->combinedCategories);
-        $this->view->allowedDimensions = $this->connector->getAllowedBannerDimensions();
+        $this->view->combinedCategories   = $this->getSubscribedCategories($template);
+        $this->view->activeCategories     = $this->getActiveCategories($this->view->combinedCategories);
+        $this->view->allowedDimensions    = $this->connector->getAllowedBannerDimensions();
 
         $this->view->template = $template;
 

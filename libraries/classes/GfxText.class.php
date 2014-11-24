@@ -94,7 +94,7 @@ class GfxText extends GfxComponent
             if(!empty($this->getRef()))
             {
                 $productData = $this->getContainer()->getProductData();
-                $newValue = $productData->{'get' . $this->getRef()}();
+                $newValue = $productData->{'get' . ucfirst($this->getRef())}();
                 if('price' === $this->getRef() || 'oldPrice' === $this->getRef())
                 {
                     $newValue = number_format($newValue, 2, ',', '');

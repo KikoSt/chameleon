@@ -11,10 +11,15 @@
                     include('editorComponents/globalDimensions.inc.php');
                 ?>
             <div class="row">
-                <label class="col-md-4">File size:</label>
-                <div<?php if($this->fileSizeWarning) echo ' class="filesize-warning"'; ?>>
-                    <input id="filesize-gif" <?php if($this->fileSizeWarning) echo 'class="filesize-warning"'; ?> type="text"
-                           disabled="disabled" value="<?php echo $this->fileSize;?> kB">
+                <label class="col-md-4 filesize-label">GIF file size:</label>
+                <div<?php if($this->gifFileSizeWarning) echo ' class="filesize-warning"'; ?>>
+                    <input id="filesize-gif" <?php if($this->gifFileSizeWarning) echo 'class="filesize-warning"'; ?> type="text" disabled="disabled" value="<?php echo $this->gifFileSize;?> kB">
+                </div>
+            </div>
+            <div class="row">
+                <label class="col-md-4 filesize-label">SWF file size:</label>
+                <div<?php if($this->swfFileSizeWarning) echo ' class="filesize-warning"'; ?>>
+                    <input id="filesize-swf" <?php if($this->swfFileSizeWarning) echo 'class="filesize-warning"'; ?> type="text" disabled="disabled" value="<?php echo $this->swfFileSize;?> kB">
                 </div>
             </div>
             <?php

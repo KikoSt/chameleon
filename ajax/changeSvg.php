@@ -151,7 +151,8 @@ $imgsrc = 'output/' . $basePath . '/' . $container->getOutputName();
 $success = chmod('../' . $imgsrc . '.gif', 0777);
 
 $response['imgsrc'] = $imgsrc;
-$response['filesize'] = filesize('../' . $imgsrc . '.gif');
+$response['gifFilesize'] = filesize('../' . $imgsrc . '.gif');
+$response['swfFilesize'] = filesize('../' . $imgsrc . '.swf');
 
 echo json_encode($response);
 

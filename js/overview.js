@@ -1,7 +1,8 @@
-var $ = jQuery.noConflict();
-
 $(document).ready(function()
 {
+    var advertiserId = $('#advertiserId').attr('value');
+    var companyId = $('#companyId').attr('value');
+
     $('#addCategory').click(function(e) {
         var selectedOpts = $('#availableCategory option:selected');
         if (selectedOpts.length == 0) {
@@ -42,6 +43,10 @@ $(document).ready(function()
         var data = {};
         var category = [];
 
+        if (!$("#availableVategory-"+templateId).length) {
+            $('#addCategory-'+templateId+'-'+advertiserId).setAttribute('disabled', 'disabled');
+        }
+
         $('#availableCategory-'+templateId).find('option:selected').each(function(i,selected){
             var subscription = {};
             subscription.id = $(selected).val();
@@ -79,22 +84,15 @@ $(document).ready(function()
         if(confirm("Are you sure you want to DELETE this category subscription?"))
         {
             var id = $(this).closest('div').attr('id').split('-');
-            console.log(id);
             var categoryId = id[1];
             var templateId = id[2];
             var subscription = {};
             var data = {};
-            var category = [];
 
-            subscription.id = categoryId;
-            subscription.name = $('#' + categoryId).attr('value');
-
-            category.push(subscription);
-
-            data.categoryId = categoryId;
+            data.categoryId   = categoryId;
             data.advertiserId = $('#advertiserId').attr('value');
-            data.templateId = templateId;
-            data.companyId = $('#companyId').attr('value');
+            data.templateId   = templateId;
+            data.companyId    = $('#companyId').attr('value');
 
             $.ajax({
                 type: 'POST',
@@ -104,6 +102,7 @@ $(document).ready(function()
             }).fail(function ()
             {
                 $('#assigned-' + categoryId + '-' + templateId).empty().remove();
+                $("#assignedCategory-"+templateId).find("option[value='"+categoryId+"']").remove();
             });
         }
     });
@@ -139,11 +138,12 @@ $(document).ready(function()
         }).done(function(){
         }).fail(function(){
             category.forEach(function(singleCategory){
+                var item = $('#'+singleCategory.id);
                 $("#assignedCategory-"+templateId).find("option[value='"+singleCategory.id+"']").remove();
                 var node = '<option value="' + singleCategory.id + '">'+singleCategory.name+'</option>';
                 $('#availableCategory-'+templateId).append(node);
                 $('#assigned-'+singleCategory.id).empty().remove();
-
+                $('#categoryContainerOverview-'+templateId+' #'+singleCategory.id).empty().remove();
             });
             $(".modal-body form").unblock();
         });
@@ -160,6 +160,7 @@ $(document).ready(function()
         {
             data.advertiserId = advertiserId;
             data.templateId = templateId;
+            data.companyId = companyId;
 
             $.ajax({
                 type: 'POST',
@@ -168,8 +169,9 @@ $(document).ready(function()
                 url: '/chameleon/ajax/cloneTemplate.php',
                 success: function (response)
                 {
-                    var url = window.location.origin + '/chameleon/index.php?page=editor&templateId=' + response.idBannerTemplate +
-                        '&companyId=' + companyId + '&advertiserId=' + advertiserId;
+                    var url = window.location.origin + '/chameleon/index.php?page=editor&templateId=' + response +
+                        '&companyId=' + companyId +
+                        '&advertiserId=' + advertiserId;
                     window.location.replace(url);
                 }
             });
@@ -216,9 +218,9 @@ $(document).ready(function()
             css: { border: '3px solid #a00', width: '50%'  }
         });
 
-        data.advertiserId   = $('#advertiserId').attr('value');
+        data.advertiserId   = advertiserId;
         data.templateId     = templateId;
-        data.companyId      = $('#companyId').attr('value');
+        data.companyId      = companyId;
         data.numPreviewPics = 10;
         data.auditUserId    = 1;
 
@@ -242,23 +244,24 @@ $(document).ready(function()
                     }).done(function (file)
                     {
                         $('<div class="item ">' +
-                                '<img src="' + window.location.origin + '/chameleon/' + file + '" alt="..."' +
-                                'style="max-height: 320px; display: block;margin: auto">' +
-                                '</div>').appendTo('#previewcarousel-' + templateId);
-                    });
-                });
+                            '<img src="' + window.location.origin + '/chameleon/' + file + '" alt="..."' +
+                            'style="max-height: 320px; display: block;margin: auto">' +
+                            '</div>').appendTo('#previewcarousel-' + templateId);
 
+                    });
+
+                });
+                $("#previewcarousel-"+templateId+" .item").first().addClass('active');
             }
             else
             {
                 $('<div class="item">No categories selected. Please select at least one category to render examples...</div>').appendTo
                 ('#previewcarousel-' + templateId);
             }
-
+            $("#creativesCarousel-"+templateId).unblock();
         }).fail(function(){
-            $('<div class="item">An error occurred during the render process...</div>').appendTo('#previewcarousel-' + templateId);
+            $('<div class="item">An error occured during the render process...</div>').appendTo('#previewcarousel-' + templateId);
         });
-        $("#creativesCarousel-"+templateId).unblock();
     });
 });
 

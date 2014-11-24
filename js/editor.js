@@ -1,4 +1,13 @@
 $(document).ready(function() {
+
+    $.ajax({
+        url: 'ajax/getSizeLimits.php'
+    }).done(function(data) {
+        window.sizeLimits = $.parseJSON(data);
+        window.swfSizeLimits = window.sizeLimits.swf;
+        window.gifSizeLimits = window.sizeLimits.gif;
+    });
+
     var btn;
     var somethingChanged = false;
     var category = {};
@@ -114,16 +123,6 @@ $(document).ready(function() {
         }
     });
 
-    function componentToHex(c) {
-        var hex = Number(c).toString(16);
-        return hex.length == 1 ? "0" + hex : hex;
-    }
-
-    function colorToHex(rgb) {
-        var rgb = rgb.substring(4, rgb.length-1).replace(/ /g, '').split(',');
-        return "#" + componentToHex(rgb[0]) + componentToHex(rgb[1]) + componentToHex(rgb[2]);
-    }
-
     // prepare image map
     var highlightColor = {};
     if($('.textTitle').length > 0) {
@@ -235,15 +234,18 @@ $(document).ready(function() {
                 }
 
                 $(".savealert").html('Template changes successfully saved');
-
                 response = $.parseJSON(xhr.response);
                 imgsrc = response.imgsrc;
                 $("#previewImage img").unbind('mapster');
 
                 var gifsrc = imgsrc + '.gif' + '?ts=' + new Date().getTime();
                 var swfsrc = imgsrc + '.swf' + '?ts=' + new Date().getTime();
-                var filesize = (Math.round(response.filesize / 1024).toFixed(2)) + ' kB';
-                if(response.filesize > 100000) {
+
+                // get current file dimensions and check filesize limit
+                var dimensions = $('[name$=globalDimensions] option:selected').text().replace(/ \(.*\)/, '');
+                var gifFilesize = (Math.round(response.gifFilesize / 1024).toFixed(2)) + ' kB';
+                var swfFilesize = (Math.round(response.swfFilesize / 1024).toFixed(2)) + ' kB';
+                if(response.gifFilesize / 1024 > window.gifSizeLimits[dimensions]) {
                     // ALERT
                     $('#filesize-gif').parent().addClass('filesize-warning');
                     $('#filesize-gif').addClass('filesize-warning');
@@ -252,13 +254,24 @@ $(document).ready(function() {
                     $('#filesize-gif').removeClass('filesize-warning');
                 }
 
+                if(response.swfFilesize / 1024 > window.swfSizeLimits[dimensions]) {
+                    // ALERT
+                    $('#filesize-swf').parent().addClass('filesize-warning');
+                    $('#filesize-swf').addClass('filesize-warning');
+                } else {
+                    $('#filesize-swf').parent().removeClass('filesize-warning');
+                    $('#filesize-swf').removeClass('filesize-warning');
+                }
+
                 $("#previewImage img").attr('src', gifsrc);
                 $("[name='movie']").attr('value', swfsrc);
                 $("[name='movie']").prop('value', swfsrc);
                 $("#previewSwf object").prop('data', swfsrc);
 
-                $('#filesize-gif').attr('value', filesize);
-                $('#filesize-gif').prop('value', filesize);
+                $('#filesize-gif').attr('value', gifFilesize);
+                $('#filesize-gif').attr('value', gifFilesize);
+                $('#filesize-swf').prop('value', swfFilesize);
+                $('#filesize-swf').prop('value', swfFilesize);
 
                 $(".savealert").removeClass("in").delay(1000).addClass("in").fadeOut(2000);
             }
@@ -362,9 +375,7 @@ $(document).ready(function() {
             // NOTE: the value attribute specifies the initial value of an input,
             // but the value property specifies the current value - baseElement comes in
             // VERY handy here :)
-            // console.log($(baseElement).prop('value'));
-            // console.log($(baseElement).attr('value'));
-            //
+
             // find the name of the edited attribute
             attributeName = $(baseElement).attr('name').replace(/.*\#/i, '');
 
@@ -623,16 +634,25 @@ $(document).ready(function() {
         });
     });
 
-    $('.preset').on('click', function(){
-        var identifier = $(this).attr('id').split('--');
 
+    // handle the "CD" (corporade design) properties:
+    // CD color 1
+    // CD color 2
+    // CD fontk
+    $('.preset').on('click', function(){
+        console.log($(this).attr('id'));
+        var identifier = $(this).attr('id').split('--');
+        var groupId = identifier[0];
         switch(identifier[1])
         {
             case "primary":
             {
-                var primaryColor = $('#primary-color').val();
-                $('#panel_'+identifier[0]+' #fill').val(primaryColor);
-                $('[name="'+identifier[0]+'#fill"]').colorpicker('setValue', primaryColor);
+                var color = $('#primary-color').val();
+                var id = identifier[0] + "";
+                var groupId = $(this).closest('.panel').attr('id').replace('grouppanel_', '');
+                $('#panel_'+identifier[0]+' #fill').val(color);
+                $('[name="'+identifier[0]+'#fill"]').colorpicker('setValue', color);
+
                 break;
             }
             case "secondary":
@@ -642,20 +662,67 @@ $(document).ready(function() {
                 $('[name="'+identifier[0]+'#fill"]').colorpicker('setValue', secondaryColor);
                 break;
             }
+            case "fgprimary":
+                // console.log('fgprimary');
+                var color = $('#primary-color').val();
+                var groupId = $(this).closest('.panel').attr('id').replace('grouppanel_', '');
+                $('#' + groupId + '--fgpreview').css('background-color', color);
+                $('#grouppanel_' + groupId).find('input#fgcolor').val(color);
+                $('[data-groupid="' + groupId + '"][data-type="text"]').find('input[id$="--preview"]').val(color);
+                $('[data-groupid="' + groupId + '"][data-type="text"]').find('input[id$="_fill"]').val(color);
+                break;
+            case "fgsecondary":
+                // console.log('fgsecondary');
+                var color = $('#secondary-color').val();
+                var groupId = $(this).closest('.panel').attr('id').replace('grouppanel_', '');
+                $('#' + groupId + '--fgpreview').css('background-color', color);
+                $('#grouppanel_' + groupId).find('input#fgcolor').val(color);
+                $('[data-groupid="' + groupId + '"][data-type="text"]').find('input[id$="--preview"]').val(color);
+                $('[data-groupid="' + groupId + '"][data-type="text"]').find('input[id$="_fill"]').val(color);
+                break;
+            case "bgprimary":
+                // console.log('bgprimary');
+                var color = $('#primary-color').val();
+                var groupId = $(this).closest('.panel').attr('id').replace('grouppanel_', '');
+                $('#' + groupId + '--bgpreview').css('background-color', color);
+                $('#grouppanel_' + groupId).find('input#bgcolor').val(color);
+                $('[data-groupid="' + groupId + '"][data-type="rectangle"]').find('input[id$="--preview"]').val(color);
+                $('[data-groupid="' + groupId + '"][data-type="rectangle"]').find('input[id$="_fill"]').val(color);
+                break;
+            case "bgsecondary":
+                // console.log('bgsecondary');
+                var color = $('#secondary-color').val();
+                var groupId = $(this).closest('.panel').attr('id').replace('grouppanel_', '');
+                $('#' + groupId + '--bgpreview').css('background-color', color);
+                $('#grouppanel_' + groupId).find('input#bgcolor').val(color);
+                $('[data-groupid="' + groupId + '"][data-type="rectangle"]').find('input[id$="--preview"]').val(color);
+                $('[data-groupid="' + groupId + '"][data-type="rectangle"]').find('input[id$="_fill"]').val(color);
+                break;
             case "presetFont":
             {
+                // the CD font has been selected, either in an "individual" editor component
+                // or in a group panel - in this case, the selected font has to be applied to
+                // each font select of this group!
                 var id = identifier[0] + "_fontFamily";
+                var groupId = $(this).closest('.panel').attr('id').replace('grouppanel_', '');
 
+                // apply font to current (clicked) field
                 $('select#' + id + ' option').filter(function() {
                     return $(this).text() == $('#presetFontFamily option:selected').text();
                 }).prop('selected', true);
+
+                // update text field editor components of this group
+                $('[data-groupid="' + groupId + '"]').find('.font-select option').filter(function() {
+                    return $(this).text() == $('#presetFontFamily option:selected').text();
+                }).prop('selected', true);
+
                 break;
             }
         }
         $('#editor').trigger('submit');
     });
 
-    // TODO: add a "initial" element to ALL templates?!
+    // TODO: add an "initial" element to ALL templates?!
     $('area#head_large').trigger('click');
 
 
@@ -891,11 +958,6 @@ $(document).ready(function() {
         });
 
 
-
-
-
-
-
         $('a[data-imagelightbox="preview"]').imageLightbox({
             onLoadStart:    function() {  },
             onStart:        function() { $('#preparepreviewalert').hide() },
@@ -908,4 +970,20 @@ $(document).ready(function() {
     // soon as it's ready. As a quick way to do so, just triggering the changeSvg event here. This is also stored
     // the unchanged data once again which is not really required and should be prevented.
     $('#editor').trigger('submit');
+
+
+
+
+
+
+    function componentToHex(c) {
+        var hex = Number(c).toString(16);
+        return hex.length == 1 ? "0" + hex : hex;
+    }
+
+    function colorToHex(rgb) {
+        var rgb = rgb.substring(4, rgb.length-1).replace(/ /g, '').split(',');
+        return "#" + componentToHex(rgb[0]) + componentToHex(rgb[1]) + componentToHex(rgb[2]);
+    }
+
 });

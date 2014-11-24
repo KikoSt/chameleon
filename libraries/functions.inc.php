@@ -6,7 +6,8 @@ function getRequestVar($identifier)
     if(isJSON($_REQUEST))
     {
         $requestVars = json_decode($_REQUEST);
-    } else
+    }
+    else
     {
         $requestVars = $_REQUEST;
     }

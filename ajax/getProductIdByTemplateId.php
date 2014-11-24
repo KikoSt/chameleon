@@ -48,7 +48,6 @@ if(!empty($template->getCategorySubscriptions()))
             $categoryIds[] = $subscription->idCategory;
         }
     }
-
     $numSamples = ceil($numPreviewPics / count($categoryIds));
 
     $products = $connector->getProductDataSamples($categoryIds, $numSamples);

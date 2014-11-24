@@ -658,7 +658,7 @@ class GfXComponent implements Linkable, Resizeable
      */
     public function setCmeoRef($cmeoRef)
     {
-        $this->cmeoRef = $cmeoRef;
+        $this->setRef($cmeoRef);
     }
 
     /**
@@ -674,6 +674,7 @@ class GfXComponent implements Linkable, Resizeable
      */
     public function setRef($cmeoRef)
     {
+        if($cmeoRef == 'productImageUrl') $cmeoRef = 'imageUrl';
         $this->cmeoRef = $cmeoRef;
     }
 
