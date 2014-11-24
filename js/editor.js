@@ -672,6 +672,8 @@ $(document).ready(function() {
                 $('#grouppanel_' + groupId).find('input#fgcolor').val(color);
                 $('[data-groupid="' + groupId + '"][data-type="text"]').find('input[id$="--preview"]').val(color);
                 $('[data-groupid="' + groupId + '"][data-type="text"]').find('input[id$="_fill"]').val(color);
+                $('[data-groupid="' + groupId + '"][data-type="text"]').find('div[id$="--preview"]').css('background-color', color);
+                $('[name="' + groupId + '#fgcolor"]').colorpicker('setValue', color);
                 break;
             case "fgsecondary":
                 // console.log('fgsecondary');
@@ -681,6 +683,8 @@ $(document).ready(function() {
                 $('#grouppanel_' + groupId).find('input#fgcolor').val(color);
                 $('[data-groupid="' + groupId + '"][data-type="text"]').find('input[id$="--preview"]').val(color);
                 $('[data-groupid="' + groupId + '"][data-type="text"]').find('input[id$="_fill"]').val(color);
+                $('[data-groupid="' + groupId + '"][data-type="text"]').find('div[id$="--preview"]').css('background-color', color);
+                $('[name="' + groupId + '#fgcolor"]').colorpicker('setValue', color);
                 break;
             case "bgprimary":
                 // console.log('bgprimary');
@@ -690,6 +694,8 @@ $(document).ready(function() {
                 $('#grouppanel_' + groupId).find('input#bgcolor').val(color);
                 $('[data-groupid="' + groupId + '"][data-type="rectangle"]').find('input[id$="--preview"]').val(color);
                 $('[data-groupid="' + groupId + '"][data-type="rectangle"]').find('input[id$="_fill"]').val(color);
+                $('[data-groupid="' + groupId + '"][data-type="rectangle"]').find('div[id$="--preview"]').css('background-color', color);
+                $('[name="' + groupId + '#bgcolor"]').colorpicker('setValue', color);
                 break;
             case "bgsecondary":
                 // console.log('bgsecondary');
@@ -699,6 +705,8 @@ $(document).ready(function() {
                 $('#grouppanel_' + groupId).find('input#bgcolor').val(color);
                 $('[data-groupid="' + groupId + '"][data-type="rectangle"]').find('input[id$="--preview"]').val(color);
                 $('[data-groupid="' + groupId + '"][data-type="rectangle"]').find('input[id$="_fill"]').val(color);
+                $('[data-groupid="' + groupId + '"][data-type="rectangle"]').find('div[id$="--preview"]').css('background-color', color);
+                $('[name="' + groupId + '#bgcolor"]').colorpicker('setValue', color);
                 break;
             case "presetFont":
             {
