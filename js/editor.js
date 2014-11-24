@@ -958,11 +958,6 @@ $(document).ready(function() {
         });
 
 
-
-
-
-
-
         $('a[data-imagelightbox="preview"]').imageLightbox({
             onLoadStart:    function() {  },
             onStart:        function() { $('#preparepreviewalert').hide() },
@@ -975,10 +970,6 @@ $(document).ready(function() {
     // soon as it's ready. As a quick way to do so, just triggering the changeSvg event here. This is also stored
     // the unchanged data once again which is not really required and should be prevented.
     $('#editor').trigger('submit');
-
-
-
-
 
 
 
