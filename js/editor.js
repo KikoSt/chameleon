@@ -71,7 +71,6 @@ $(document).ready(function() {
     $('.kv-fileinput-upload').on('click', function(e){
         e.preventDefault();
 
-        var imgsrc = '<?php echo $this->gif;?>';
         var formData = new FormData();
         var data = {};
         var nodeList = $(document).find($('[type="file"]'));
@@ -595,7 +594,7 @@ $(document).ready(function() {
         var data = {};
         var categoryId    = $('#category').find(':selected').val()
         var categoryName  = $.trim($('#category').find(':selected').text());
-        data.templateId   = '<?php echo $this->templateId; ?>';
+        data.templateId   = $('#templateId').attr('value');
         data.categoryId   = categoryId;
         data.categoryName = categoryName;
         data.advertiserId = $('#advertiserId').attr('value');
@@ -608,7 +607,8 @@ $(document).ready(function() {
             url: "/chameleon/ajax/addCategory.php"
         }).done(function(){
         }).fail(function(){
-            $('#categoryContainer').load('ajax/categoriesSelection.inc.php?templateId=<?php echo $this->templateId; ?>');
+            var templateId   = $('#templateId').attr('value');
+            $('#categoryContainer').load('ajax/categoriesSelection.inc.php?templateId=' + templateId);
             var node = '<input type="text" disabled="disabled" id="subscription_' + categoryId + '" value="' + categoryName + '">';
             $('#global_categories').append(node);
         });
@@ -616,7 +616,7 @@ $(document).ready(function() {
 
     $('body').on('click', '#categoryContainer .removeCategory', function(e) {
         var data = {};
-        data.templateId   = '<?php echo $this->templateId; ?>';
+        data.templateId   = $('#templateId').attr('value');
         var categoryId    = $(this).attr('id');
         data.categoryId   = categoryId;
         data.categoryName = $.trim($('#category').find(':selected').text());
