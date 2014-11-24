@@ -501,25 +501,27 @@ $(document).ready(function() {
 
         // shadow / stroke
 
-        if($(this).attr('id').indexOf('shadowCheckBox'))
-        {
-            if($(this).is(":checked"))
+        if($(this).attr('id')) {
+            if($(this).attr('id').indexOf('shadowCheckBox'))
             {
-                $(this).attr("checked", true);
-            }
-            else
-            {
-                $(this).attr("checked", false);
-            }
-        } else if($(this).attr('id').indexOf('shadowCheckBox')) {
+                if($(this).is(":checked"))
+                {
+                    $(this).attr("checked", true);
+                }
+                else
+                {
+                    $(this).attr("checked", false);
+                }
+            } else if($(this).attr('id').indexOf('shadowCheckBox')) {
 
-            if($(this).is(":checked"))
-            {
-                $(this).attr("checked", true);
-            }
-            else
-            {
-                $(this).attr("checked", false);
+                if($(this).is(":checked"))
+                {
+                    $(this).attr("checked", true);
+                }
+                else
+                {
+                    $(this).attr("checked", false);
+                }
             }
         }
 
