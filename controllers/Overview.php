@@ -117,6 +117,8 @@ class Overview extends Controller
                     $preview->bannerDimension = $this->getBannerDimension($container);
                     $preview->examples = $this->getExamples($container);
 
+                    $connector->getProductDataByProductId(263459);
+
                     if((int)$container->getCanvasWidth() > (int)$container->getCanvasHeight())
                     {
                         if($container->getCanvasHeight() > 210)

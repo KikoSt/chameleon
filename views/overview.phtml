@@ -287,42 +287,56 @@
             var id = $(this).attr('id').split('-');
             var data = {};
             var templateId = id[1];
-            var base_url = window.location.origin;
 
-            data.advertiserId = advertiserId;
-            data.templateId   = templateId;
-            data.companyId    = companyId;
+            $("#creativesCarousel-"+templateId).block({
+                message: '<h1><img src="'+window.location.origin+'/chameleon/img/loading.gif"/> Rendering example banners...</h1>',
+                css: { border: '3px solid #a00', width: '50%'  }
+            });
+
+            data.advertiserId   = advertiserId;
+            data.templateId     = templateId;
+            data.companyId      = companyId;
+            data.numPreviewPics = 10;
+            data.auditUserId    = 1;
 
             $.ajax({
                 type: "POST",
                 data: data,
                 dataType: "json",
-                url: "/chameleon/ajax/getLivePreview.php"
+                url: "/chameleon/ajax/getProductIdByTemplateId.php"
             }).done(function (output)
             {
-                var first = true;
-                $.each(output, function(key, value){
-
-                    var active = ' active';
-
-                    if(!first)
+                if(output.length > 0)
+                {
+                    $.each(output, function (key,value)
                     {
-                        active = '';
-                    }
+                        data.productId = value;
+                        $.ajax({
+                            type: "POST",
+                            data: data,
+                            dataType: "json",
+                            url: "/chameleon/ajax/renderExampleForProductId.php"
+                        }).done(function (file)
+                        {
+                            $('<div class="item ">' +
+                                '<img src="' + window.location.origin + '/chameleon/' + file + '" alt="..."' +
+                                'style="max-height: 320px; display: block;margin: auto">' +
+                                '</div>').appendTo('#previewcarousel-' + templateId);
 
-                    var node = '<div class="item'+active+'">'+
-                               '<img src="'+base_url+'/chameleon/'+value+'" alt="..."'+
-                               'style="max-height: 320px; display: block;margin: auto">'+
-                               '</div>';
+                        });
 
-                    $('#previewcarousel-'+templateId).append(node);
-
-                    first = false;
-                });
-            })
-
-
-
+                    });
+                    $("#previewcarousel-"+templateId+" .item").first().addClass('active');
+                }
+                else
+                {
+                    $('<div class="item">No categories selected. Please select at least one category to render examples...</div>').appendTo
+                    ('#previewcarousel-' + templateId);
+                }
+                $("#creativesCarousel-"+templateId).unblock();
+            }).fail(function(){
+                $('<div class="item">An error occured during the render process...</div>').appendTo('#previewcarousel-' + templateId);
+            });
         });
     });
 </script>

@@ -79,7 +79,6 @@ class GfxContainer
     public function __destruct()
     {
         // exec('lsof -c php', $log);
-        // var_dump($log);
         $this->cleanup();
     }
 

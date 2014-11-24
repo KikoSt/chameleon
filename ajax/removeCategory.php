@@ -10,8 +10,6 @@ require('../libraries/classes/BannerTemplateModel.class.php');
 
 $success = true;
 
-var_dump($_POST);
-
 if(!isset($_POST['templateId']))
 {
     $success = false;
@@ -61,7 +59,6 @@ if($success)
 
     // store template
     $result = $connector->sendBannerTemplate($template);
-    // var_dump($result);
 }
 
 return $success;

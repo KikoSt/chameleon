@@ -35,6 +35,7 @@ class APIConnector
         $this->serviceCalls['getSubscribedCategories'] = 'bannerTemplate/{idBannerTemplate}/subscribedCategories';
         $this->serviceCalls['postTemplateQuery']     = 'query/bannerTemplates';
         $this->serviceCalls['getProductDataSamples'] = 'query/products';
+        $this->serviceCalls['getProductDataSamplesByProductId'] = 'product/{productId}';
     }
 
     /**
@@ -272,6 +273,13 @@ class APIConnector
         return $categoriesProcessed;
     }
 
+    /**
+     * getSubscribedCategoriesByTemplateId
+     *
+     * @param $templateId
+     * @return mixed
+     * @throws Exception
+     */
     public function getSubscribedCategoriesByTemplateId($templateId)
     {
         $resource = REST_API_SERVICE_URL . '/' . 'bannerTemplate/'.$templateId.'/subscribedCategories';
@@ -475,7 +483,31 @@ class APIConnector
         return $products;
     }
 
+    /**
+     * @param $productId
+     * @return ProductModel
+     * @throws Exception
+     */
+    public function getProductDataByProductId($productId)
+    {
+        $resource = REST_API_SERVICE_URL . '/' . str_replace('{productId}', $productId,
+                $this->serviceCalls['getProductDataSamplesByProductId']);
+        $curl = $this->getCurl($resource, 'GET');
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+        $curlResponse = curl_exec($curl);
 
+        curl_close($curl);
+
+        $result = $this->validateResponse($curlResponse);
+        if(!$result['valid'])
+        {
+            throw new Exception('An error occured: ' . $result['message']);
+        }
+
+        $productData = $this->populateProduct(json_decode($curlResponse));
+
+        return $productData;
+    }
 
     /**
      * @param $serviceUrl
@@ -542,11 +574,8 @@ class APIConnector
     }
 
     /**
-     * populateProduct
-     *
-     * @param mixed $product
-     * @access private
-     * @return void
+     * @param $product
+     * @return ProductModel
      */
     private function populateProduct($product)
     {
