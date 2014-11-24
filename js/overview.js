@@ -255,8 +255,7 @@ $(document).ready(function()
             }
             else
             {
-                $('<div class="item">No categories selected. Please select at least one category to render examples...</div>').appendTo
-                ('#previewcarousel-' + templateId);
+                $('<div class="item">No categories selected. Please select at least one category to render examples...</div>').appendTo('#previewcarousel-' + templateId);
             }
             $("#creativesCarousel-"+templateId).unblock();
         }).fail(function(){
