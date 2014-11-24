@@ -205,6 +205,7 @@ class GfxRectangle extends GfxShape
             $rectangle->setFillcolor($color);
         }
 
+
         if($this->shadowEnabled() && $this->hasShadow())
         {
             $shadow = $this->createShadow();
@@ -228,6 +229,8 @@ class GfxRectangle extends GfxShape
         $frame->drawImage($rectangle);
         $distort = array($width/2, $height/2, 1, -$rotation, $targetX, $targetY);
         $frame->setImageVirtualPixelMethod( Imagick::VIRTUALPIXELMETHOD_TRANSPARENT );
+        // TODO: this is most likely the most performance smashing line of code in the
+        // entire GIF rendering process ... try to optimize or even get rid of it eventually?!
         $frame->distortImage(imagick::DISTORTION_SCALEROTATETRANSLATE, $distort, false);
 
         return $frame;
