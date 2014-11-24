@@ -295,21 +295,21 @@ class GfxText extends GfxComponent
         // IMPORTANT! Clean up animation mess!
          $image->setImageDispose(3);
 
-        $x = $this->gifParams->x;
-        $y = $this->gifParams->y;
         $width = $this->gifParams->width;
         $height = $this->gifParams->height;
+        $x = $this->gifParams->x;
+        $y = $this->gifParams->y + ($this->gifParams->height * .6);
         $rotation = $this->gifParams->rotation;
 
         if($this->hasShadow() && $this->shadowEnabled())
         {
             $text->setFillColor(new ImagickPixel($this->getShadow()->getColor()->getHex() . 'ff'));
             $text->setStrokeAntialias(true);
-            $image->annotateImage($text, $this->getShadow()->getDist(), $height + 10 + $this->getShadow()->getDist(), 0, $this->getText());
+            $image->annotateImage($text, $this->getShadow()->getDist(), ($height * 1.2) + $this->getShadow()->getDist(), 0, $this->getText());
         }
         //add the text
         $text->setFillColor($this->getFill()->getHex());
-        $image->annotateImage($text, 0, $height + 10, 0, $this->getText());
+        $image->annotateImage($text, 0, ($height * 1.2), 0, $this->getText());
 
         if($this->getWidth() == 0)
         {
