@@ -383,6 +383,8 @@ $(document).ready(function() {
             var oldValue = $(baseElement).attr('value');
             var newValue = $(baseElement).prop('value');
 
+            $(baseElement).attr('value', newValue)
+
             var elements = $("[data-groupid=" + groupId + "]");
 
             // TODO: Update imageMap
