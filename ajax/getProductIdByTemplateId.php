@@ -48,19 +48,15 @@ if(!empty($template->getCategorySubscriptions()))
             $categoryIds[] = $subscription->idCategory;
         }
     }
-}
-else
-{
-    exit(json_encode($productIds));
-}
 
-$numSamples = ceil($numPreviewPics / count($categoryIds));
+    $numSamples = ceil($numPreviewPics / count($categoryIds));
 
-$products = $connector->getProductDataSamples($categoryIds, $numSamples);
+    $products = $connector->getProductDataSamples($categoryIds, $numSamples);
 
-foreach($products AS $product)
-{
-     $productIds[] = $product->getProductId();
+    foreach($products AS $product)
+    {
+        $productIds[] = $product->getProductId();
+    }
 }
 
 echo json_encode($productIds);
