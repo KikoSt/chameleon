@@ -573,6 +573,10 @@ class GfxContainer
         // If the flag for animation isn't set, render only one frame
         $frameCount = $this->animatePreviews ? $this->getNumFrames() : 1;
 
+        $imgTime = 0;
+        $recTime = 0;
+        $texTime = 0;
+
         for($i = 0; $i <= $frameCount; $i++)
         {
             $layerStack = array(); // store all "subframes", i.e. elements
@@ -584,6 +588,7 @@ class GfxContainer
             //loop through all elements
             foreach ($animationElements as $element)
             {
+                $start = microtime(true);
                 $skip = true;
                 if(in_array($i, $this->globalAnimationKeyframes))
                 {
@@ -596,7 +601,24 @@ class GfxContainer
                 // appropriate properties have to be changed according to the
                 // animationStep information
                 $layerStack[] = $element->renderGif($animationStep, $skip);
+                $dur = microtime(true) - $start;
+//                echo get_class($element) . ': ' . $dur . "\n";
+                switch(get_class($element))
+                {
+                    case 'GfxImage':
+                    $imgTime += $dur;
+                    break;
+
+                    case 'GfxText':
+                    $texTime += $dur;
+                    break;
+
+                    case 'GfxRectangle':
+                    $recTime += $dur;
+                    break;
+                }
             }
+//            echo "-----------------------------------------\n";
 
             if($i == 0) $skip = false;
 
@@ -639,6 +661,10 @@ class GfxContainer
             // reset delay
             $delay = $imageDelay;
         }
+
+//        echo 'IMG: ' . $imgTime . "\n";
+//        echo 'REC: ' . $recTime . "\n";
+//        echo 'TXT: ' . $texTime . "\n";
 
         //complete the banner
         $gifpath = OUTPUT_DIR . '/' . $this->getOutputDir() . '/' . $this->getOutputFilename() . '.gif';

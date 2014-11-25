@@ -44,7 +44,7 @@ $(document).ready(function()
         var category = [];
 
         if (!$("#availableVategory-"+templateId).length) {
-            $('#addCategory-'+templateId+'-'+advertiserId).setAttribute('disabled', 'disabled');
+            $('#addCategory-'+templateId+'-'+advertiserId).prop('disabled', true);
         }
 
         $('#availableCategory-'+templateId).find('option:selected').each(function(i,selected){
@@ -258,8 +258,7 @@ $(document).ready(function()
             }
             else
             {
-                $('<div class="item">No categories selected. Please select at least one category to render examples...</div>').appendTo
-                ('#previewcarousel-' + templateId);
+                $('<div class="item">No categories selected. Please select at least one category to render examples...</div>').appendTo('#previewcarousel-' + templateId);
             }
         }).fail(function(){
             $('<div class="item">An error occured during the render process...</div>').appendTo('#previewcarousel-' + templateId);

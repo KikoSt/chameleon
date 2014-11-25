@@ -122,6 +122,13 @@ class APIConnector
         }
         curl_close($curl);
         $enums = json_decode($curlResponse);
+
+        $result = $this->validateResponse($curlResponse);
+        if(!$result['valid'])
+        {
+            throw new Exception('An error occured: ' . $result['message']);
+        }
+
         return $enums;
     }
 
@@ -204,8 +211,13 @@ class APIConnector
         $curl = $this->getCurl($resource, 'GET');
 
         $curlResponse = curl_exec($curl);
-
         curl_close($curl);
+
+        $result = $this->validateResponse($curlResponse);
+        if(!$result['valid'])
+        {
+            throw new Exception('An error occured: ' . $result['message']);
+        }
 
         $productList = json_decode($curlResponse)->products;
 
@@ -393,6 +405,12 @@ class APIConnector
         $curlResponse = curl_exec($curl);
         curl_close($curl);
 
+        $result = $this->validateResponse($curlResponse);
+        if(!$result['valid'])
+        {
+            throw new Exception('An error occured: ' . $result['message']);
+        }
+
         return $this->populateBannerTemplate(json_decode($curlResponse));
     }
 
@@ -410,6 +428,12 @@ class APIConnector
 
         $curlResponse = curl_exec($curl);
         curl_close($curl);
+        $result = $this->validateResponse($curlResponse);
+        if(!$result['valid'])
+        {
+            throw new Exception('An error occured: ' . $result['message']);
+        }
+
         return $curlResponse;
     }
 
