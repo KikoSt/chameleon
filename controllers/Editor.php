@@ -97,6 +97,11 @@ class Editor extends Controller
         $this->view->container       = $container;
         $this->view->elements        = $container->getElements();
         $this->view->fontlist        = $text->getFontListForOverview();
+        $this->view->fontsizeList     = array();
+        for($i=6; $i<42; $i++)
+        {
+            $this->view->fontsizeList[] = $i;
+        }
         $this->view->cmeoRefOptions  = $this->getCmeoRefOptions();
         $this->view->cmeoLinkOptions = $this->getCmeoLinkOptions();
         $this->view->name            = $template->getName();
