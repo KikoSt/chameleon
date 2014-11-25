@@ -21,12 +21,17 @@ $(document).ready(function() {
         }
     });
 
+    /**
+     * image map clicked
+     */
     $('.subnav').on('click', function(e) {
         var id = $(this).attr('id');
         if(id.substr(0, 5) != 'group') {
+            // individual element selected
             $('.component').hide();
             $('#panel_' + id).show();
             $('#grouppanel_' + $('#panel_' + id).attr('data-groupid')).show();
+            // initially set the color previews/buttons
             $('#' + id + '--primary').css("background-color", $('#primary-color').val());
             $('#' + id + '--secondary').css("background-color", $('#secondary-color').val());
             $('#' + $('#panel_' + id).attr('data-groupid') + '--fgprimary').css("background-color", $('#primary-color').val());
@@ -34,9 +39,11 @@ $(document).ready(function() {
             $('#' + $('#panel_' + id).attr('data-groupid') + '--bgprimary').css("background-color", $('#primary-color').val());
             $('#' + $('#panel_' + id).attr('data-groupid') + '--bgsecondary').css("background-color", $('#secondary-color').val());
         } else {
+            // group element selected
             $('.component').hide();
             id = id.substr(6, 10);
             $('#grouppanel_' + id).show();
+            // initially set the color previews/buttons
             $('#' + id + '--primary').css("background-color", $('#primary-color').val());
             $('#' + id + '--secondary').css("background-color", $('#secondary-color').val());
             $('#' + id + '--fgprimary').css("background-color", $('#primary-color').val());
@@ -61,7 +68,6 @@ $(document).ready(function() {
 
 
     function updateEditGroup(groupId, param, value) {
-        console.log('Updating group ' + groupId + ', param ' + param + ' = ' + value);
     }
 
 
@@ -603,7 +609,8 @@ $(document).ready(function() {
         data.categoryName = categoryName;
         data.advertiserId = $('#advertiserId').attr('value');
         data.companyId    = $('#companyId').attr('value');
-        var pstdata = JSON.stringify(data);
+//        unused?
+//        var pstdata = JSON.stringify(data);
         $.ajax({
             type: "POST",
             data: data,
@@ -644,7 +651,6 @@ $(document).ready(function() {
     // CD color 2
     // CD fontk
     $('.preset').on('click', function(){
-        console.log($(this).attr('id'));
         var identifier = $(this).attr('id').split('--');
         var groupId = identifier[0];
         switch(identifier[1])
