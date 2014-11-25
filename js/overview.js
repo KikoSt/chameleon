@@ -179,34 +179,42 @@ $(document).ready(function()
 
         var id = $(this).attr('id').split('-');
         var templateId = id[1];
-        var advertiserId = id[2];
-        var companyId = id[3];
         var data = {};
 
-        if(confirm("Are you sure you want to DELETE this template?"))
-        {
-            data.advertiserId = advertiserId;
-            data.templateId   = templateId;
+        data.advertiserId = advertiserId;
+        data.templateId   = 666;
 
-            $.ajax({
-                type: 'POST',
-                data: data,
-                dataType: "html",
-                url:  '/chameleon/ajax/deleteTemplate.php',
-                success: function(response){
-                    if(response.length === 0)
+        $('.deleteTemplate').jBox('Confirm', {
+            title: 'Delete template',
+            confirmButton: 'Delete',
+            cancelButton: 'Cancel',
+            attach: $(this),
+            confirm: function() {
+                $.ajax({
+                    type: 'POST',
+                    data: data,
+                    dataType: "html",
+                    url:  '/chameleon/ajax/deleteTemplate.php'
+                }).done(function(response){
+                    if(response.length > 0)
+                    {
+                        var content = '<p>Oops, something went wrong...'+
+                                      '</br>This template was not deleted!</p><p></p>'+
+                                      '<p>Press [ESC] to close this window</p>';
+
+                        createNotice('Alert', content, $(this));
+                    }
+                    else
                     {
                         $('#template_'+templateId).fadeOut("slow", function(){
                             $(this).empty();
                         });
-
-                        console.log('deleted');
-
-                        $(".savealert").show();
                     }
-                }
-            });
-        }
+                });
+            },
+            cancel: function() {},
+            content: '<b>Warning!</b> Are you sure that you want to delete this template'
+        }).open();
     });
 
     $('.ajaxPreview').each(function(e){
@@ -265,5 +273,15 @@ $(document).ready(function()
         });
         $("#creativesCarousel-"+templateId).unblock();
     });
+
+    function createNotice(title, content, attachTo){
+        new jBox('Modal',{
+            width: 300,
+            height: 200,
+            attach: attachTo,
+            title: title,
+            content: content
+        }).open()
+    }
 });
 
