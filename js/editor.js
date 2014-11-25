@@ -657,19 +657,17 @@ $(document).ready(function() {
         data.categoryName = categoryName;
         data.advertiserId = $('#advertiserId').attr('value');
         data.companyId    = $('#companyId').attr('value');
-//        unused?
-//        var pstdata = JSON.stringify(data);
         $.ajax({
             type: "POST",
             data: data,
             dataType: "json",
             url: "/chameleon/ajax/addCategory.php"
         }).done(function(){
-        }).fail(function(){
             var templateId   = $('#templateId').attr('value');
             $('#categoryContainer').load('ajax/categoriesSelection.inc.php?templateId=' + templateId);
             var node = '<input type="text" disabled="disabled" id="subscription_' + categoryId + '" value="' + categoryName + '">';
             $('#global_categories').append(node);
+        }).fail(function(){
         });
     });
 
