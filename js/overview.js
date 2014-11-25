@@ -255,7 +255,7 @@ $(document).ready(function()
                     {
                         $('<div id="'+templateId+'_'+count+'" class="item">'+
                             '<img src="' + window.location.origin + '/chameleon/' + file + '" alt="..."' +
-                            'style="max-height: 320px; display: block;margin: auto">' +
+                            'style="max-height: 320px;>' +
                             '</div>').appendTo('#previewcarousel-' + templateId);
                         count++;
                         $('#'+templateId+'_1').addClass("active");

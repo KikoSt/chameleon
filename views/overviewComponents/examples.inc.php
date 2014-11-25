@@ -1,6 +1,31 @@
 
     <div class="overviewTitle">Preview of existing creatives</div>
     <div id="creativesCarousel-<?php echo $preview->templateId; ?>" class="carousel slide" data-ride="carousel" style="margin-top: 10px;">
+        <?php
+            if(empty($preview->examples)):
+        ?>
+        <div id="previewcarousel-<?php echo $preview->templateId; ?>" class="carousel-inner ajaxPreview">
+
+        </div>
+        <?php
+            else:
+        ?>
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner">
+            <?php
+                $active = true;
+                foreach($preview->examples as $example):
+            ?>
+            <div class="item<?php echo ($active) ? ' active' : '';?>">
+                <img src="<?php echo $example;?>"
+                     alt="..."
+                     style="max-height: 325px;">
+            </div>
+            <?php
+                $active = false;
+                endforeach;
+            ?>
+        </div>
         <div class="carousel-buttons">
             <div class="col-xs-6 text-center carouselChevron">
                 <a data-target="#creativesCarousel-<?php echo $preview->templateId; ?>" data-slide="prev" href="#">
@@ -14,33 +39,7 @@
             </div>
         </div>
         <?php
-            if(empty($preview->examples)):
-        ?>
-        <div id="previewcarousel-<?php echo $preview->templateId; ?>" class="carousel-inner ajaxPreview" style="padding-left: 5px;
-        padding-right:
-        5px; height: 300px;">
-
-        </div>
-        <?php
-            else:
-        ?>
-        <!-- Wrapper for slides -->
-        <div class="carousel-inner" style="padding-left: 5px; padding-right: 5px;">
-            <?php
-                $active = true;
-                foreach($preview->examples as $example):
-            ?>
-            <div class="item<?php echo ($active) ? ' active' : '';?>">
-                <img src="<?php echo $example;?>"
-                     alt="..."
-                     style="max-height: 320px; display: block;margin: auto">
-            </div>
-            <?php
-                $active = false;
-                endforeach;
-            ?>
-        </div>
-        <?php
             endif;
         ?>
+
     </div>
