@@ -226,6 +226,7 @@ $(document).ready(function() {
     $('#editor').on('submit', function(e){
         e.preventDefault();
         var action = btn;
+        if(undefined === action) action = "update";
         var xhr = new XMLHttpRequest();
 
         $("#previewImage img").unbind('mapster');
