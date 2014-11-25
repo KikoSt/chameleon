@@ -1,5 +1,25 @@
 <?php
-include('../config/pathconfig.inc.php');
+/**
+ * get or create live preview images
+ *
+ * the live preview images are actual creatives (banners) based on the currently
+ * assigned active categories to a given template.
+ *
+ * The live preview images are stored using the following path rule:
+ * <companyId>/<advertiserId>/preview/<templateId>
+ *
+ * This directory should always be purged once any changes are applied (not
+ * necessarily saved!) to a template since the preview images would no longer
+ * be up-to-date.
+ *
+ * Thus, if there are files in this directory, their pathes are returned by
+ * the script (user clicked live preview, closed it again, activated it again)
+ * TODO: check for number of files and categories!
+ *
+ * If there are no files in the directory, generate new live preview files
+ * and return them.
+ */
+require_once('../config/pathconfig.inc.php');
 require_once('../Bootstrap.php');
 
 if(!defined('__ROOT__'))

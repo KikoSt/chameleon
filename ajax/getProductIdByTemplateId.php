@@ -2,7 +2,7 @@
 /**
  *
  */
-include('../config/pathconfig.inc.php');
+require_once('../config/pathconfig.inc.php');
 require_once('../Bootstrap.php');
 
 if(!defined('__ROOT__'))
@@ -21,19 +21,11 @@ $advertiserId   = getRequestVar('advertiserId');
 $templateId     = getRequestVar('templateId');
 $numPreviewPics = getRequestVar('numPreviewPics');
 
-$auditUserId    = 1; // system
-
-if(!isset($auditUserId) || empty($auditUserId))
-{
-    return false;
-}
-
 $container->setCompanyId($companyId);
 $container->setAdvertiserId($advertiserId);
 
 $connector->setCompanyId($companyId);
 $connector->setAdvertiserId($advertiserId);
-$connector->setAuditUserId($auditUserId);
 
 $template = $connector->getTemplateById($templateId);
 
@@ -58,4 +50,3 @@ if(!empty($template->getCategorySubscriptions()))
     }
 }
 echo json_encode($productIds);
-

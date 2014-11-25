@@ -4,30 +4,17 @@ if(!defined('__ROOT__'))
     define('__ROOT__', '../');
 }
 require_once(__ROOT__ . 'libraries/functions.inc.php');
-include('../config/pathconfig.inc.php');
-require('../libraries/classes/APIConnector.class.php');
-require('../libraries/classes/BannerTemplateModel.class.php');
+require_once('../config/pathconfig.inc.php');
+require_once('../libraries/classes/APIConnector.class.php');
+require_once('../libraries/classes/BannerTemplateModel.class.php');
 
-$success = true;
+$advertiserId = (int)getRequestVar('advertiserId');
+$templateId   = (int)getRequestVar('templateId');
 
-if(!isset($_POST['templateId']))
-{
-    $success = false;
-}
+//get template via REST API
+$connector = new APIConnector();
 
-if(!isset($_POST['advertiserId']))
-{
-    $success = false;
-}
+//delete template
+$success = $connector->deleteBannerTemplate((int)$_POST['templateId']);
 
-if($success)
-{
-    //get template via REST API
-    $connector = new APIConnector();
-
-    //delete template
-    $result = $connector->deleteBannerTemplate((int)$_POST['templateId']);
-
-    echo $result;
-}
-return $success;
+echo json_encode($success);
