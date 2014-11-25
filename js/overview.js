@@ -44,7 +44,7 @@ $(document).ready(function()
         var category = [];
 
         if (!$("#availableVategory-"+templateId).length) {
-            $('#addCategory-'+templateId+'-'+advertiserId).setAttribute('disabled', 'disabled');
+            $('#addCategory-'+templateId+'-'+advertiserId).prop('disabled', true);
         }
 
         $('#availableCategory-'+templateId).find('option:selected').each(function(i,selected){
