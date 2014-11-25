@@ -12,30 +12,44 @@ require_once(__ROOT__ . 'libraries/functions.inc.php');
 $container = new GfxContainer();
 $connector = new APIConnector();
 
-$numPreviewPics = 1;
+$numPreviewPics = 5;
 
-// $auditUserId    = getRequestVar('auditUserId');;
-$companyId      = getRequestVar('companyId');
-$advertiserId   = getRequestVar('advertiserId');
-$templateId     = getRequestVar('templateId');
-
-$auditUserId    = 1; // system
-
-if(!isset($auditUserId) || empty($auditUserId))
-{
-    return false;
-}
+$companyId    = getRequestVar('companyId');
+$advertiserId = getRequestVar('advertiserId');
+$templateId   = getRequestVar('templateId');
 
 $container->setCompanyId($companyId);
 $container->setAdvertiserId($advertiserId);
 
 $connector->setCompanyId($companyId);
 $connector->setAdvertiserId($advertiserId);
-$connector->setAuditUserId($auditUserId);
 
 $targetPath = (string) $companyId . '/' . (string) $advertiserId . '/preview/' . $templateId;
-
 $dir = '../output/' . $targetPath;
+
+$template = $connector->getTemplateById($templateId);
+
+$categoryIds = array();
+$files = array();
+
+$categorySubscriptions = $template->getCategorySubscriptions();
+
+// get all ACTIVE category id's
+if(count($categorySubscriptions) > 0)
+{
+    foreach($categorySubscriptions AS $subscription)
+    {
+        if($subscription->userStatus === 'ACTIVE')
+        {
+            $categoryIds[] = $subscription->idCategory;
+        }
+    }
+}
+
+if(empty($categoryIds))
+{
+    exit(json_encode(array()));
+}
 
 if(!file_exists($dir))
 {
@@ -48,38 +62,25 @@ if(!file_exists($dir))
     // reset umask
     umask($old);
 }
-else
+
+
+// check if there are already files
+$files             = glob($dir . '/*');
+$existingProdIds   = array();
+$existingProdNames = array();
+
+foreach($files AS $file)
 {
-//    $files = glob($dir . '/*');
-//    foreach($files as $file)
-//    {
-//        if(is_file($file))
-//        {
-//            unlink($file);
-//        }
-//    }
+    $prodId = str_replace($dir . '/' . $templateId . '_', '', $file);
+    $dummyArr = explode('_', $prodId);
+    $existingProdIds[] = $dummyArr[1];
 }
 
-$template = $connector->getTemplateById($templateId);
-
-$categoryIds = array();
-
-foreach($template->getCategorySubscriptions() AS $subscription)
-{
-    if($subscription->userStatus === 'ACTIVE')
-    {
-        $categoryIds[] = $subscription->idCategory;
-    }
-}
-
-if(empty($categoryIds))
-{
-    exit(json_encode(array()));
-}
-
-$numSamples = ceil($numPreviewPics / count($categoryIds));
+$numSamples = ceil(($numPreviewPics-count($files)) / count($categoryIds)) * 10;
 
 $products = $connector->getProductDataSamples($categoryIds, $numSamples);
+
+shuffle($products);
 
 $argv = array(null, $companyId, $advertiserId, null, $auditUserId);
 
@@ -89,11 +90,14 @@ $generator->setCategories($categoryIds);
 
 $count = 0;
 
-$files = array();
-
 foreach($products AS $product)
 {
+    if(in_array($product->getProductId(), $existingProdIds) || in_array($product->getName(), $existingProdNames))
+    {
+        continue;
+    }
     $categoryId = $product->getCategoryId();
+    $existingProdNames[] = $product->getName();
 
     $generator->prepareLogfile($categoryId);
     $generator->getContainer()->setCategoryId($categoryId);
@@ -112,7 +116,6 @@ foreach($products AS $product)
         continue;
     }
 
-
     $generator->render($product, 'GIF');
 
     // move file ...
@@ -126,8 +129,17 @@ foreach($products AS $product)
     {
         $files[] = $fileName;
     }
-    continue;
+
+    if(++$count > $numPreviewPics)
+    {
+        break;
+    }
 }
 
-echo json_encode($files);
+foreach($files AS &$file)
+{
+    $file = str_replace('../', '', $file);
+}
+unset($file);
 
+echo json_encode($files);
