@@ -676,6 +676,7 @@ $(document).ready(function() {
     // CD color 2
     // CD fontk
     $('.preset').on('click', function(){
+        somethingChanged = true;
         var identifier = $(this).attr('id').split('--');
         var groupId = identifier[0];
         switch(identifier[1])
