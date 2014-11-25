@@ -31,7 +31,13 @@
                 </div>
                 <?php
                     include('overviewComponents/category.inc.php');
+                ?>
+                <div id="examples_<?php echo $preview->templateId; ?>" class="thumbnail col-md-4">
+                <?php
                     include('overviewComponents/examples.inc.php');
+                ?>
+                </div>
+                <?php
                     include('overviewComponents/action.inc.php');
                 ?>
             </div>
@@ -62,7 +68,17 @@
     <input id="advertiserId" type="hidden" name="advertiserId" value="<?php echo $preview->advertiserId; ?>">
     <input id="companyId"  type="hidden" name="companyId" value="<?php echo $preview->companyId; ?>">
 
+    <div style="z-index: 100;background-color: green;margin-top: 50%; margin-left: 50%;">
+        test
     </div>
+
+    </div>
+
 </div>
+
+
+
+
+
 
 <script type="text/JavaScript" src="js/overview.js"></script>

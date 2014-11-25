@@ -81,30 +81,27 @@ $(document).ready(function()
     });
 
     $('.removeCategoryShortcut').click(function(){
-        if(confirm("Are you sure you want to DELETE this category subscription?"))
+        createNotification("test", "toller text");
+        var id = $(this).closest('div').attr('id').split('-');
+        var categoryId = id[1];
+        var templateId = id[2];
+        var data = {};
+
+        data.categoryId   = categoryId;
+        data.advertiserId = $('#advertiserId').attr('value');
+        data.templateId   = templateId;
+        data.companyId    = $('#companyId').attr('value');
+
+        $.ajax({
+            type: 'POST',
+            data: data,
+            dataType: "json",
+            url: '/chameleon/ajax/removeCategory.php'
+        }).fail(function ()
         {
-            var id = $(this).closest('div').attr('id').split('-');
-            var categoryId = id[1];
-            var templateId = id[2];
-            var subscription = {};
-            var data = {};
-
-            data.categoryId   = categoryId;
-            data.advertiserId = $('#advertiserId').attr('value');
-            data.templateId   = templateId;
-            data.companyId    = $('#companyId').attr('value');
-
-            $.ajax({
-                type: 'POST',
-                data: data,
-                dataType: "json",
-                url: '/chameleon/ajax/removeCategory.php'
-            }).fail(function ()
-            {
-                $('#assigned-' + categoryId + '-' + templateId).empty().remove();
-                $("#assignedCategory-"+templateId).find("option[value='"+categoryId+"']").remove();
-            });
-        }
+            $('#assigned-' + categoryId + '-' + templateId).empty().remove();
+            $("#assignedCategory-"+templateId).find("option[value='"+categoryId+"']").remove();
+        });
     });
 
     $('.removeCategoryOverview').click(function(e) {
@@ -202,6 +199,10 @@ $(document).ready(function()
                         $('#template_'+templateId).fadeOut("slow", function(){
                             $(this).empty();
                         });
+
+                        console.log('deleted');
+
+                        $(".savealert").show();
                     }
                 }
             });
@@ -233,6 +234,7 @@ $(document).ready(function()
         {
             if(output.length > 0)
             {
+                var count = 1;
                 $.each(output, function (key,value)
                 {
                     data.productId = value;
@@ -243,25 +245,26 @@ $(document).ready(function()
                         url: "/chameleon/ajax/renderExampleForProductId.php"
                     }).done(function (file)
                     {
-                        $('<div class="item ">' +
+                        $('<div id="'+templateId+'_'+count+'" class="item">'+
                             '<img src="' + window.location.origin + '/chameleon/' + file + '" alt="..."' +
                             'style="max-height: 320px; display: block;margin: auto">' +
                             '</div>').appendTo('#previewcarousel-' + templateId);
-
+                        count++;
+                        $('#'+templateId+'_1').addClass("active");
+                        $("#creativesCarousel-"+templateId).carousel("pause").removeData();
+                        $("#creativesCarousel-"+templateId).carousel(0);
                     });
-
                 });
-                $("#previewcarousel-"+templateId+" .item").first().addClass('active');
             }
             else
             {
                 $('<div class="item">No categories selected. Please select at least one category to render examples...</div>').appendTo
                 ('#previewcarousel-' + templateId);
             }
-            $("#creativesCarousel-"+templateId).unblock();
         }).fail(function(){
             $('<div class="item">An error occured during the render process...</div>').appendTo('#previewcarousel-' + templateId);
         });
+        $("#creativesCarousel-"+templateId).unblock();
     });
 });
 

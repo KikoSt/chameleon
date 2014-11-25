@@ -1,4 +1,4 @@
-<div class="thumbnail col-md-4">
+
     <div class="overviewTitle">Preview of existing creatives</div>
     <div id="creativesCarousel-<?php echo $preview->templateId; ?>" class="carousel slide" data-ride="carousel" style="margin-top: 10px;">
         <div class="carousel-buttons">
@@ -44,4 +44,3 @@
             endif;
         ?>
     </div>
-</div>
