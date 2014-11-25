@@ -12,6 +12,7 @@
             include('editorComponents/text.inc.php');
             include('editorComponents/fontFamily.inc.php');
             if($this->premiumUser):
+                include('editorComponents/fontSize.inc.php');
                 include('editorComponents/coords.inc.php');
             endif;
             include('editorComponents/cmeo.inc.php');
