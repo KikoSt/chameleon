@@ -55,7 +55,7 @@ if($success)
     $result = $connector->sendBannerTemplate($template);
 }
 
-return $success;
+return json_encode($success);
 
 
 

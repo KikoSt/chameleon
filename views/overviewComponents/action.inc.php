@@ -14,7 +14,7 @@
         </form>
     </div>
     <div class="row">
-        <button id="cloneTemplate-<?php echo $preview->templateId; ?>-<?php echo $preview->advertiserId; ?>-<?php echo $preview->companyId; ?>"
+        <button id="cloneTemplate-<?php echo $preview->templateId; ?>"
                 class="cloneTemplate"
                 title="Clone this template">
             <i class="fa fa-files-o fa-2x"></i>

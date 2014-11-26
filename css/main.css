@@ -169,6 +169,10 @@ input:disabled
     padding-bottom: 6px;
 }
 
+.carouselChevron > a{
+    color: #fff !important;
+}
+
 div#previewImage > h2, div#previewSwf > h2 {
     font-size: 1.2em;
     font-weight: bold;
