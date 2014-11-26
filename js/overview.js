@@ -1,5 +1,9 @@
 $(document).ready(function()
 {
+    $('.carousel').carousel({
+        interval: 4000
+    });
+
     $('#addCategory').click(function(e) {
         var selectedOpts = $('#availableCategory option:selected');
         if (selectedOpts.length == 0) {
@@ -141,14 +145,13 @@ $(document).ready(function()
         var id = $(this).attr('id').split('-');
         var templateId = id[1];
 
-        $('.cloneTemplate').jBox('Confirm', {
+        var confirmBox = new jBox('Confirm', {
             title: 'Delete template',
             confirmButton: 'Clone',
             cancelButton: 'Cancel',
-            attach: $('#cloneTemplate-'+templateId),
+            closeOnClick: false,
             confirm: function() {
                 var data = {};
-
                 data.advertiserId = getAdvertiserId();
                 data.templateId = templateId;
                 data.companyId = getCompanyId();
@@ -158,30 +161,31 @@ $(document).ready(function()
                     data: data,
                     dataType: "json",
                     url: '/chameleon/ajax/cloneTemplate.php'
-                }).done(function(response){
-                    var url = window.location.origin + '/chameleon/index.php?page=editor&templateId=' + response +
-                            '&companyId=' + companyId +
-                            '&advertiserId=' + advertiserId;
+                }).done(function(cloneId){
+                    var url = window.location.origin + '/chameleon/index.php?page=editor&templateId=' + cloneId +
+                            '&companyId=' + getCompanyId() +
+                            '&advertiserId=' + getAdvertiserId();
                     window.location.replace(url);
                 }).fail(function(response){
-                //todo add exception handling after API change
+                    confirmBox.destroy();
+                    createNotice('Alert', response);
                 });
             },
             cancel: function() {},
             content: '<b>Warning!</b> Are you sure that you want to clone this template'
-        }).open();
+        });
+        confirmBox.open();
     });
 
     $(".deleteTemplate").click(function(){
 
-        var id = $(this).attr('id').split('-');
-        var templateId = id[1];
+        var templateId = determineTemplateId($(this));
 
-        $('.deleteTemplate').jBox('Confirm', {
+        var confirmBox = new jBox('Confirm', {
             title: 'Delete template',
             confirmButton: 'Delete',
             cancelButton: 'Cancel',
-            attach: $('#deleteTemplate-'+templateId),
+            closeOnClick: false,
             confirm: function() {
                 var data = {};
 
@@ -191,18 +195,14 @@ $(document).ready(function()
                 $.ajax({
                     type: 'POST',
                     data: data,
-                    dataType: "html",
+                    dataType: "json",
                     url:  '/chameleon/ajax/deleteTemplate.php'
-                }).done(function(response)
-                {
-                    //todo optimize this after API change
-                    if (response.length > 0)
+                }).done(function(response){
+                    //todo change if API exception handling is changed
+                    if(response.length > 0)
                     {
-                        var content = '<p>Oops, something went wrong...' +
-                                '</br>This template was not deleted!</p><p></p>' +
-                                '<p>Press [ESC] to close this window</p>';
-
-                        createNotice('Alert', content, $(this));
+                        confirmBox.destroy();
+                        createNotice('Alert', response);
                     }
                     else
                     {
@@ -211,24 +211,20 @@ $(document).ready(function()
                             $(this).empty();
                         });
                     }
-                }).fail(function(response){
-                //todo add exception handling after API change
-                });
+                }).fail(function(response){});
             },
             cancel: function() {},
             content: '<b>Warning!</b> Are you sure that you want to delete this template'
-        }).open();
+        });
+        confirmBox.open();
     });
 
-    $('.ajaxPreview').each(function(e){
-        var id = $(this).attr('id').split('-');
-        var data = {};
-        var templateId = id[1];
+    $('.ajaxPreview').each(function(){
+        createExamples(determineTemplateId($(this)));
+    });
 
-        $("#creativesCarousel-"+templateId).block({
-            message: '<h1><img src="'+window.location.origin+'/chameleon/img/loading.gif"/> Rendering example banners...</h1>',
-            css: { border: '3px solid #a00', width: '50%'  }
-        });
+    function createExamples(templateId){
+        var data = {};
 
         data.advertiserId   = getAdvertiserId();
         data.templateId     = templateId;
@@ -245,47 +241,52 @@ $(document).ready(function()
         {
             if(output.length > 0)
             {
-                var count = 1;
-                $.each(output, function (key,value)
-                {
-                    data.productId = value;
-                    $.ajax({
-                        type: "POST",
-                        data: data,
-                        dataType: "json",
-                        url: "/chameleon/ajax/renderExampleForProductId.php"
-                    }).done(function (file)
-                    {
-                        $('<div id="'+templateId+'_'+count+'" class="item">'+
-                            '<img src="' + window.location.origin + '/chameleon/' + file + '" alt="..."' +
-                            'style="max-height: 320px;>' +
-                            '</div>').appendTo('#previewcarousel-' + templateId);
-                        count++;
-                        $('#'+templateId+'_1').addClass("active");
-                        $("#creativesCarousel-"+templateId).carousel("pause").removeData();
-                        $("#creativesCarousel-"+templateId).carousel(0);
-                    });
-                });
+                renderGif(output, data);
             }
             else
             {
-                $('<div class="item">No categories selected. Please select at least one category to render examples...</div>').appendTo('#previewcarousel-' + templateId);
+                $('<div id="emptyItem-'+data.templateId+'" class="item">No categories selected. Please select at least one category to render examples...</div>').appendTo('#previewcarousel-' + data.templateId);
+                $('#emptyItem-'+data.templateId).addClass("active");
             }
-        }).fail(function(){
-            $('<div class="item">An error occured during the render process...</div>').appendTo('#previewcarousel-' + templateId);
+        }).fail(function(){});
+    }
+
+    function renderGif(output, data){
+        var count = 1;
+        $.each(output, function (key,value)
+        {
+            data.productId = value;
+
+            $.ajax({
+                type: "POST",
+                data: data,
+                dataType: "json",
+                url: "/chameleon/ajax/renderExampleForProductId.php"
+            }).done(function (file){
+                $('<div id="'+data.templateId+'_'+count+'" class="item">'+
+                '<img src="' + window.location.origin + '/chameleon/' + file + '" alt="..."' +
+                'style="max-height: 320px;">' +
+                '</div>').appendTo('#previewcarousel-' + data.templateId);
+
+                count++;
+
+                $('#'+data.templateId+'_1').addClass("active");
+                $("#creativesCarousel-"+data.templateId).carousel("pause").removeData();
+                $("#creativesCarousel-"+data.templateId).carousel(0);
+            });
         });
-        $("#creativesCarousel-"+templateId).unblock();
-    });
+    }
 
-    $('.carousel').carousel({
-        interval: 4000
-    });
+    function createNotice(title, content){
 
-    function createNotice(title, content, attachTo){
-        new jBox('Modal',{
-            width: 300,
+        content += '<p>If you need further assistence, contact us via <a>helpdesk@mediadecision.com</a></p>';
+        content += '<p>Press [ESC] to close this window</p>';
+
+        new jBox('Modal',{width: 350,
             height: 200,
-            attach: attachTo,
+            closeOnClick: true,
+            animation: 'tada',
+            zIndex: 9000,
             title: title,
             content: content
         }).open()
@@ -298,5 +299,9 @@ $(document).ready(function()
     function getCompanyId(){
         return $('#companyId').attr('value');
     }
-});
 
+    function determineTemplateId(object){
+        var id = object.attr('id').split('-');
+        return id[1];
+    }
+});

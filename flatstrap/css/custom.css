@@ -1,13 +1,18 @@
-@import url(bootstrap.css);
+@import url(bootstrap.min.css);
 @import url(fileinput.css);
 @import url(reset.min.css);
 @import url(mouseover.css);
 
 div,
-li,
 button,
-.btn {
+.form-control,
+.form-control-select{
     border-radius:0!important;
+}
+
+div,
+li,
+.btn {
     overflow:visible;
 }
 
@@ -25,14 +30,12 @@ a,a:hover {
 .form-control
 {
     height:20px!important;
-    border-radius:0!important;
     padding:1px!important;
 }
 
 .form-control-select
 {
     height:20px!important;
-    border-radius:0!important;
     padding:0!important;
     display: block;
     width: 100%;
@@ -269,22 +272,6 @@ input[type="checkbox"]
     border-radius: 3px;
 }
 
-label:after
-{
-    content: "";
-    display: inline-block;
-
-    width: 16px;
-    height: 16px;
-
-    margin-right: 10px;
-    position: absolute;
-    left: 0;
-    bottombottom: 1px;
-    background-color: #aaa;
-    box-shadow: inset 0px 2px 3px 0px rgba(0, 0, 0, .3), 0px 1px 0px 0px rgba(255, 255, 255, .8);
-}
-
 input[type=checkbox] + label:after
 {
     content: "";
@@ -362,4 +349,8 @@ input[type=checkbox]:checked + label:after
 .form-control
 {
     width: 20px;
+}
+
+.modal-backdrop{
+    z-index: auto;
 }

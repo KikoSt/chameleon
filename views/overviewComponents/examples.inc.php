@@ -4,8 +4,22 @@
         <?php
             if(empty($preview->examples)):
         ?>
-        <div id="previewcarousel-<?php echo $preview->templateId; ?>" class="carousel-inner ajaxPreview">
+        <div id="previewcarousel-<?php echo $preview->templateId; ?>" class="carousel-inner ajaxPreview" style="min-height: 320px;">
 
+        </div>
+        <div class="carousel-buttons">
+            <div class="col-xs-4 text-center carouselChevron"></div>
+            <div class="col-xs-4 text-center carouselChevron">
+                <a data-target="#creativesCarousel-<?php echo $preview->templateId; ?>" data-slide="prev" href="#" title="Show previous
+            example">
+                    <i class="fa fa-reply fa-2x"></i>
+                </a>
+                <a data-target="#creativesCarousel-<?php echo $preview->templateId; ?>" data-slide="next" href="#" title="Show next
+            example">
+                    <i class="fa fa-share fa-2x"></i>
+                </a>
+            </div>
+            <div class="col-xs-4 text-center carouselChevron"></div>
         </div>
         <?php
             else:
@@ -30,11 +44,11 @@
             <div class="col-xs-4 text-center carouselChevron"></div>
             <div class="col-xs-4 text-center carouselChevron">
                 <a data-target="#creativesCarousel-<?php echo $preview->templateId; ?>" data-slide="prev" href="#" title="Show previous
-                example">
+            example">
                     <i class="fa fa-reply fa-2x"></i>
                 </a>
                 <a data-target="#creativesCarousel-<?php echo $preview->templateId; ?>" data-slide="next" href="#" title="Show next
-                example">
+            example">
                     <i class="fa fa-share fa-2x"></i>
                 </a>
             </div>
@@ -43,5 +57,4 @@
         <?php
             endif;
         ?>
-
     </div>
