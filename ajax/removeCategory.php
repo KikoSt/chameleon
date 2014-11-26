@@ -4,49 +4,24 @@ if(!defined('__ROOT__'))
     define('__ROOT__', '../');
 }
 require_once(__ROOT__ . 'libraries/functions.inc.php');
-//include('../config/pathconfig.inc.php');
-require('../libraries/classes/APIConnector.class.php');
-require('../libraries/classes/BannerTemplateModel.class.php');
+require_once('../libraries/classes/APIConnector.class.php');
+require_once('../libraries/classes/BannerTemplateModel.class.php');
 
-$success = true;
+$companyId    = (int)getRequestVar('companyId');
+$advertiserId = (int)getRequestVar('advertiserId');
+$templateId   = (int)getRequestVar('templateId');
+$categoryId   = (int)getRequestVar('categoryId');
 
-if(!isset($_POST['templateId']))
-{
-    $success = false;
-}
-else
-{
-    $templateId = (int) $_POST['templateId'];
-}
+// get template via REST API
+$connector = new APIConnector();
+$template = $connector->getTemplateById($templateId);
+$template->setAdvertiserId($advertiserId);
 
-if(!isset($_POST['categoryId']))
-{
-    $success = false;
-}
-else
-{
-    $categoryId = (int)$_POST['categoryId'];
-}
+// remove subscription
+$subscriptions = $template->getCategorySubscriptions();
 
-if(!isset($_POST['advertiserId']))
+if(count($subscriptions > 0))
 {
-    $success = false;
-}
-else
-{
-    $advertiserId = (int)$_POST['advertiserId'];
-}
-
-if($success)
-{
-    // get template via REST API
-    $connector = new APIConnector();
-    $template = $connector->getTemplateById($templateId);
-    $template->setAdvertiserId($advertiserId);
-
-    // remove subscription
-    $subscriptions = $template->getCategorySubscriptions();
-
     foreach ($subscriptions AS $curSubscription)
     {
         if($curSubscription->idCategory == $categoryId)
@@ -54,9 +29,8 @@ if($success)
             $curSubscription->userStatus = 'DELETED';
         }
     }
-
-    // store template
-    $result = $connector->sendBannerTemplate($template);
 }
+// store template
+$success = ($result = $connector->sendBannerTemplate($template));
 
-return $success;
+echo json_encode($success);

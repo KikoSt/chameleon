@@ -7,7 +7,7 @@
  *    will no longer be up-to-date
  */
 
-include('../config/pathconfig.inc.php');
+require_once('../config/pathconfig.inc.php');
 require_once('../Bootstrap.php');
 
 if(!defined('__ROOT__'))
@@ -17,24 +17,43 @@ if(!defined('__ROOT__'))
 
 require_once(__ROOT__ . 'libraries/functions.inc.php');
 
-$companyId      = getRequestVar('companyId');
-$advertiserId   = getRequestVar('advertiserId');
-$templateId     = getRequestVar('templateId');
+$modes = array('removeEditorPreview', 'removeLivePreview');
+
+$companyId      = (int)getRequestVar('companyId');
+$advertiserId   = (int)getRequestVar('advertiserId');
+$templateId     = (int)getRequestVar('templateId');
 
 $mode           = getRequestVar('mode');
 
+if(!in_array($mode, $modes))
+{
+    return false;
+}
+
+$filepath = __ROOT__ . 'output/' . $companyId . '/' . $advertiserId . '/';
+
 if($mode === 'removeEditorPreview')
 {
-    $filepath = __ROOT__ . 'output/' . $companyId . '/' . $advertiserId . '/0/';
-    $pattern  = 'preview_' . $templateId . '*';
-    $files = glob($filepath . $pattern);
-    foreach($files AS $file)
-    {
-        $success = unlink($file);
-    }
+    // remove the editor preview image for this template
+    $filepath .= '0/';
+    $pattern   = 'preview_' . $templateId . '*';
 }
 else if($mode == 'removeLivePreview')
 {
+    // remove all live preview images for this template
+    $filepath .= 'preview/' . $templateId . '/';
+    $pattern   = '*';
 }
 
-echo  json_encode('Done!');
+$files     = glob($filepath . $pattern);
+$success   = true;
+
+if(count($files) > 0)
+{
+    foreach($files AS $file)
+    {
+        $success = $success && unlink($file);
+    }
+}
+
+echo json_encode($success);

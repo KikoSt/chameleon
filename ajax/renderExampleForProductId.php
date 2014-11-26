@@ -17,17 +17,11 @@ $advertiserId   = getRequestVar('advertiserId');
 $templateId     = getRequestVar('templateId');
 $productId      = getRequestVar('productId');
 
-if(!isset($auditUserId) || empty($auditUserId))
-{
-    return false;
-}
-
 $connector->setCompanyId($companyId);
 $connector->setAdvertiserId($advertiserId);
 $connector->setAuditUserId($auditUserId);
 
 $targetPath = (string) $companyId . '/' . (string) $advertiserId . '/preview/' . $templateId;
-
 $dir = '../output/' . $targetPath;
 
 if(!file_exists($dir))

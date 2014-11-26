@@ -7,7 +7,7 @@ session_start();
  * Time: 07:21
  */
 
-include('../config/pathconfig.inc.php');
+require_once('../config/pathconfig.inc.php');
 require_once('../Bootstrap.php');
 
 if(!defined('__ROOT__'))
@@ -17,19 +17,15 @@ if(!defined('__ROOT__'))
 
 require_once(__ROOT__ . 'libraries/functions.inc.php');
 
-$container = new GfxContainer();
-$connector = new APIConnector();
+$container  = new GfxContainer();
+$connector  = new APIConnector();
 $svgHandler = new SvgFileHandler();
 
-$auditUserId    = getRequestVar('auditUserId');;
-$companyId      = getRequestVar('companyId');
-$advertiserId   = getRequestVar('advertiserId');
-$templateId     = getRequestVar('templateId');
-
-if(!isset($auditUserId) || empty($auditUserId))
-{
-    return false;
-}
+$auditUserId  = (int)getRequestVar('auditUserId');;
+$companyId    = (int)getRequestVar('companyId');
+$advertiserId = (int)getRequestVar('advertiserId');
+$templateId   = (int)getRequestVar('templateId');
+$action       = getRequestVar('action');
 
 $container->setCompanyId($companyId);
 $container->setAdvertiserId($advertiserId);
@@ -41,15 +37,9 @@ $connector->setAdvertiserId($advertiserId);
 // to the the path from the container!
 $basePath = (string) $companyId . '/' . (string) $advertiserId . '/0';
 
-if(array_key_exists('action', $_REQUEST))
-{
-    $action = $_REQUEST['action'];
-}
-else
-{
-    return false;
-}
-
+/**
+ * handle file uploads
+ */
 if(!empty($_FILES))
 {
     foreach($_FILES as $singleFile)
@@ -98,19 +88,14 @@ $container->setTarget('SWF');
 $container->render();
 
 $container->setTarget('GIF');
+$container->render();
 
-if(!empty($action))
-{
-    $container->render();
-}
-
-if($action === 'clone' || $action === 'save' || $action === 'saveCategory')
+if($action === 'save')
 {
     $connector = new APIConnector();
     $connector->setCompanyId(getRequestVar('companyId'));
     $connector->setAdvertiserId(getRequestVar('advertiserId'));
 
-    //update template in the data base
     $bannerTemplateModel = new BannerTemplateModel();
 
     $bannerTemplateModel->setSvgContent($svgContent);
@@ -121,25 +106,9 @@ if($action === 'clone' || $action === 'save' || $action === 'saveCategory')
     $bannerTemplateModel->setAuditUserId($auditUserId);
     $bannerTemplateModel->setAdvertiserId($advertiserId);
     $bannerTemplateModel->setDescription('testing');
+    $bannerTemplateModel->setName($_REQUEST['templateName']);
 
-    //TODO while uploading an image, there's no template name present
-    //TODO option 1: set a hidden field with the template name
-    //TODO option 2: fetch the templateName using the given template id
-    //have to figure it out
-    if(isset($_REQUEST['templateName']))
-    {
-        $bannerTemplateModel->setName($_REQUEST['templateName']);
-    }
-
-    if($action === 'clone' )
-    {
-        $response = $connector->cloneBannerTemplate($bannerTemplateModel);
-    }
-
-    if($action === 'save')
-    {
-        $response = $connector->sendBannerTemplate($bannerTemplateModel);
-    }
+    $response = $connector->sendBannerTemplate($bannerTemplateModel);
 }
 
 $response = array();
@@ -150,6 +119,7 @@ $imgsrc = 'output/' . $basePath . '/' . $container->getOutputName();
 
 $success = chmod('../' . $imgsrc . '.gif', 0777);
 
+$response['action'] = $action;
 $response['imgsrc'] = $imgsrc;
 $response['gifFilesize'] = filesize('../' . $imgsrc . '.gif');
 $response['swfFilesize'] = filesize('../' . $imgsrc . '.swf');

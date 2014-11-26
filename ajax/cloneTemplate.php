@@ -4,61 +4,43 @@ if(!defined('__ROOT__'))
     define('__ROOT__', '../');
 }
 require_once(__ROOT__ . 'libraries/functions.inc.php');
-include('../config/pathconfig.inc.php');
+require_once('../config/pathconfig.inc.php');
 require_once('../Bootstrap.php');
 
-$success = true;
+$companyId    = (int)getRequestVar('companyId');
+$advertiserId = (int)getRequestVar('advertiserId');
+$templateId   = (int)getRequestVar('templateId');
 
-if(!isset($_POST['templateId']))
-{
-    $success = false;
-}
+// get template via REST API
+$connector = new APIConnector();
+$container = new GfxContainer();
+$template  = $connector->getTemplateById($templateId);
+$template->setAdvertiserId($advertiserId);
 
-if(!isset($_POST['advertiserId']))
-{
-    $success = false;
-}
+//store template
+$result = $connector->cloneBannerTemplate($template);
 
-if(!isset($_POST['companyId']))
-{
-    $success = false;
-}
+//get cloned template
+$clone = json_decode($result);
 
-if($success)
-{
-    // get template via REST API
-    $connector = new APIConnector();
-    $container = new GfxContainer();
-    $template = $connector->getTemplateById($_POST['templateId']);
-    $template->setAdvertiserId((int)$_POST['advertiserId']);
+$templateNew = $connector->getTemplateById($clone->idBannerTemplate);
 
-    //store template
-    $result = $connector->cloneBannerTemplate($template);
+$container->setId($clone->idBannerTemplate);
+$container->setcompanyId($_POST['companyId']);
+$container->setAdvertiserId($_POST['advertiserId']);
 
-    //get cloned template
-    $clone = json_decode($result);
+$baseFilename = getPreviewFileName($templateNew);
 
-    $templateNew = $connector->getTemplateById($clone->idBannerTemplate);
+// render gif for editor view
+$container->setCategoryId(0); // general, so ZERO here
+$container->setOutputName($baseFilename);
+$container->setSource($templateNew->getSvgContent());
+$container->parse();
+$container->setPreviewMode(true);
 
-    $container->setId($clone->idBannerTemplate);
-    $container->setcompanyId($_POST['companyId']);
-    $container->setAdvertiserId($_POST['advertiserId']);
+$container->setTarget('GIF');
+$container->render();
 
-    $baseFilename = getPreviewFileName($templateNew);
+$success = ($cloneId = $templateNew->getBannerTemplateId());
 
-    // render gif for editor view
-    $container->setCategoryId(0); // general, so ZERO here
-    $container->setOutputName($baseFilename);
-    $container->setSource($templateNew->getSvgContent());
-    $container->parse();
-    $container->setPreviewMode(true);
-
-    $container->setTarget('GIF');
-    $container->render();
-
-    echo $templateNew->getBannerTemplateId();
-}
-return $success;
-
-
-
+echo json_encode($cloneId);
