@@ -69,11 +69,10 @@ $(document).ready(function() {
         'showCaption': true
     });
 
-
     /**
      * image map clicked
      */
-    $('.subnav').on('click', function(e) {
+    $('.maparea').on('click', function(e) {
         var id = $(this).attr('id');
         if(id.substr(0, 5) != 'group') {
             // individual element selected
