@@ -321,6 +321,17 @@ input.filesize-warning {
     background-color: #ff9999 !important;
 }
 
-.jBox-Confirm-no-confirm {
-    display: none;
+.jBox-custom-padding-line-1x{
+    padding-top: 15px;
 }
+
+.jBox-custom-padding-line-2x{
+    padding-top: 30px;
+}
+
+.jBox-custom-padding-text{
+    padding-top: 5px;
+}
+
+
+

@@ -34,45 +34,40 @@ $(document).ready(function()
             css: { border: '3px solid #a00' }
         });
         e.preventDefault();
-        var id = $(this).attr('id').split('-');
-        var templateId = id[1];
-        var data = {};
-        var category = [];
+        var metaData = getMetaData($(this));
 
-        if (!$("#availableVategory-"+templateId).length) {
-            $('#addCategory-'+templateId+'-'+advertiserId).prop('disabled', true);
+        metaData.type = 'available';
+
+        setSelectedCategories(metaData);
+
+        if (!$("#availableVategory-"+metaData.templateId).length) {
+            $('#addCategory-'+metaData.templateId+'-'+metaData.advertiserId).prop('disabled', true);
         }
-
-        $('#availableCategory-'+templateId).find('option:selected').each(function(i,selected){
-            var subscription = {};
-            subscription.id = $(selected).val();
-            subscription.name = $.trim($(selected).text());
-            category.push(subscription);
-        });
-
-        data.category = category;
-        data.advertiserId = getAdvertiserId();
-        data.templateId   = templateId;
-        data.companyId    = getCompanyId();
 
         $.ajax({
             type: "POST",
-            data: data,
+            data: metaData,
             dataType: "json",
             url: "/chameleon/ajax/addCategory.php"
         }).done(function(){
-        }).fail(function(){
-            category.forEach(function(singleCategory){
-                var item = '<div id="'+singleCategory.id+'" class="row"><p class="text-left overviewTitle categoryItem">'+
-                            '<a class="fa fa-trash categoryItem cursor-pointer" title="Remove category"></a>' +
-                            singleCategory.name + '</p></div>';
-                $('#categoryContainerOverview-'+templateId).append(item);
 
+            metaData.categoryId.forEach(function(singleCategory){
+                //create item for right select
+                var item = '<div id="'+singleCategory.id+'" class="row"><p class="text-left overviewTitle categoryItem">'+
+                        '<a class="fa fa-trash categoryItem cursor-pointer" title="Remove category"></a>' +
+                        singleCategory.name + '</p></div>';
+                //append item
+                $('#categoryContainerOverview-'+templateId).append(item);
+                //create node for overview
                 var node = '<option value="' + singleCategory.id + '">' + singleCategory.name + '</option>';
+                //append node
                 $('#assignedCategory-'+templateId).append(node);
+                //remove item from left select
                 $('#availableCategory-'+templateId).find("option[value='"+singleCategory.id+"']").remove();
             });
             $(".modal-body form").unblock();
+        }).fail(function(){
+
         });
     });
 
@@ -106,44 +101,45 @@ $(document).ready(function()
             css: { border: '3px solid #a00' }
         });
         e.preventDefault();
-        var id = $(this).attr('id').split('-');
-        var templateId = id[1];
-        var data = {};
-        var category = [];
+        var metaData = getMetaData($(this));
 
-        $('#assignedCategory-'+templateId).find('option:selected').each(function(i,selected){
-            var subscription = {};
-            subscription.id = $(selected).val();
-            subscription.name = $.trim($(selected).text());
-            category.push(subscription);
-        });
+        metaData.type = 'assigned';
 
-        data.category = category;
-        data.advertiserId = getAdvertiserId();
-        data.templateId   = templateId;
-        data.companyId    = getCompanyId();
+        setSelectedCategories(metaData);
+
         $.ajax({
             type: 'POST',
-            data: data,
+            data: metaData,
             dataType: "json",
             url: '/chameleon/ajax/removeCategory.php'
         }).done(function(){
-        }).fail(function(){
-            category.forEach(function(singleCategory){
-                var item = $('#'+singleCategory.id);
-                $("#assignedCategory-"+templateId).find("option[value='"+singleCategory.id+"']").remove();
+
+            metaData.categoryId.forEach(function(singleCategory){
+                //remove category from right select
+                $("#assignedCategory-"+metaData.templateId).find("option[value='"+singleCategory.id+"']").remove();
+
+                //create node for left select
                 var node = '<option value="' + singleCategory.id + '">'+singleCategory.name+'</option>';
-                $('#availableCategory-'+templateId).append(node);
-                $('#assigned-'+singleCategory.id).empty().remove();
-                $('#categoryContainerOverview-'+templateId+' #'+singleCategory.id).empty().remove();
+
+                //append node at left select
+                $('#availableCategory-'+metaData.templateId).append(node);
+
+                //remove category from overview
+                $('#assigned-'+singleCategory.id+'-'+metaData.templateId).empty().remove();
+                $('#categoryContainerOverview-'+metaData.templateId+' #'+singleCategory.id).empty().remove();
             });
             $(".modal-body form").unblock();
+
+        }).fail(function(){
+            console.log('fail');
         });
     });
 
+    /**
+     *
+     */
     $(".cloneTemplate").click(function(){
-        var id = $(this).attr('id').split('-');
-        var templateId = id[1];
+        var metaData = getMetaData($(this));
 
         var confirmBox = new jBox('Confirm', {
             title: 'Delete template',
@@ -151,35 +147,32 @@ $(document).ready(function()
             cancelButton: 'Cancel',
             closeOnClick: false,
             confirm: function() {
-                var data = {};
-                data.advertiserId = getAdvertiserId();
-                data.templateId = templateId;
-                data.companyId = getCompanyId();
-
                 $.ajax({
                     type: 'POST',
-                    data: data,
+                    data: metaData,
                     dataType: "json",
                     url: '/chameleon/ajax/cloneTemplate.php'
                 }).done(function(cloneId){
                     var url = window.location.origin + '/chameleon/index.php?page=editor&templateId=' + cloneId +
-                            '&companyId=' + getCompanyId() +
-                            '&advertiserId=' + getAdvertiserId();
+                            '&companyId=' + metaData.companyId +
+                            '&advertiserId=' + metaData.advertiserId;
                     window.location.replace(url);
                 }).fail(function(response){
                     confirmBox.destroy();
-                    createNotice('Alert', response);
+                    createErrorNotification('Alert', response);
                 });
             },
             cancel: function() {},
-            content: '<b>Warning!</b> Are you sure that you want to clone this template'
+            content: '<b>Warning!</b> Are you sure that you want to clone this template?'
         });
         confirmBox.open();
     });
 
+    /**
+     *
+     */
     $(".deleteTemplate").click(function(){
-
-        var templateId = determineTemplateId($(this));
+        var metaData = getMetaData($(this));
 
         var confirmBox = new jBox('Confirm', {
             title: 'Delete template',
@@ -187,14 +180,9 @@ $(document).ready(function()
             cancelButton: 'Cancel',
             closeOnClick: false,
             confirm: function() {
-                var data = {};
-
-                data.advertiserId = getAdvertiserId();
-                data.templateId   = templateId;
-
                 $.ajax({
                     type: 'POST',
-                    data: data,
+                    data: metaData,
                     dataType: "json",
                     url:  '/chameleon/ajax/deleteTemplate.php'
                 }).done(function(response){
@@ -202,11 +190,11 @@ $(document).ready(function()
                     if(response.length > 0)
                     {
                         confirmBox.destroy();
-                        createNotice('Alert', response);
+                        createErrorNotification('<i class="fa fa-exclamation-triangle"></i> An error occurred', response);
                     }
                     else
                     {
-                        $('#template_' + templateId).fadeOut("slow", function ()
+                        $('#template_' + metaData.templateId).fadeOut("slow", function ()
                         {
                             $(this).empty();
                         });
@@ -214,43 +202,52 @@ $(document).ready(function()
                 }).fail(function(response){});
             },
             cancel: function() {},
-            content: '<b>Warning!</b> Are you sure that you want to delete this template'
+            content: '<p>Are you sure that you want to delete template</p><p class="jBox-custom-padding-text">"'+metaData.templateName+'"?</p>'
         });
         confirmBox.open();
     });
 
+    /**
+     *
+     */
     $('.ajaxPreview').each(function(){
-        createExamples(determineTemplateId($(this)));
+        createExamples($(this));
     });
 
-    function createExamples(templateId){
-        var data = {};
+    /**
+     *
+     * @param templateId
+     */
+    function createExamples(jQueryObject){
+        var metaData = getMetaData(jQueryObject);
 
-        data.advertiserId   = getAdvertiserId();
-        data.templateId     = templateId;
-        data.companyId      = getCompanyId();
-        data.numPreviewPics = 10;
-        data.auditUserId    = 1;
+        metaData.numPreviewPics = 10;
+        metaData.auditUserId    = 1;
 
         $.ajax({
             type: "POST",
-            data: data,
+            data: metaData,
             dataType: "json",
             url: "/chameleon/ajax/getProductIdByTemplateId.php"
         }).done(function (output)
         {
             if(output.length > 0)
             {
-                renderGif(output, data);
+                renderGif(output, metaData);
             }
             else
             {
-                $('<div id="emptyItem-'+data.templateId+'" class="item">No categories selected. Please select at least one category to render examples...</div>').appendTo('#previewcarousel-' + data.templateId);
-                $('#emptyItem-'+data.templateId).addClass("active");
+                $('<div id="emptyItem-'+metaData.templateId+'" class="item">No categories selected. Please select at least one category to render examples...</div>').appendTo('#previewcarousel-' + metaData.templateId);
+                $('#emptyItem-'+metaData.templateId).addClass("active");
             }
         }).fail(function(){});
     }
 
+    /**
+     *
+     * @param output
+     * @param data
+     */
     function renderGif(output, data){
         var count = 1;
         $.each(output, function (key,value)
@@ -277,31 +274,59 @@ $(document).ready(function()
         });
     }
 
-    function createNotice(title, content){
+    /**
+     *
+     * @param title
+     * @param content
+     * @param width
+     * @param height
+     */
+    function createErrorNotification(title, content, width, height){
 
-        content += '<p>If you need further assistence, contact us via <a>helpdesk@mediadecision.com</a></p>';
-        content += '<p>Press [ESC] to close this window</p>';
+        width = (typeof width === "undefined") ? 500 : width;
+        height = (typeof height === "undefined") ? 250 : height;
 
-        new jBox('Modal',{width: 350,
-            height: 200,
+        content += '<p class="jBox-custom-padding-line-2x">If you need further assistence, contact us via</p>';
+        content += '<p class="jBox-custom-padding-text"><a>helpdesk@mediadecision.com</a>.</p>';
+        content += '<p class="jBox-custom-padding-line-1x">Press [ESC] to close this window or click anywhere.</p>';
+
+        new jBox('Modal',{width: width,
+            height: height,
             closeOnClick: true,
             animation: 'tada',
-            zIndex: 9000,
             title: title,
             content: content
         }).open()
     }
 
-    function getAdvertiserId(){
-        return $('#advertiserId').attr('value');
+    /**
+     *
+     * @param object
+     * @returns {{}}
+     */
+    function getMetaData(jQueryObject){
+        var metaData = {};
+        var id = jQueryObject.attr('id').split('-');
+
+        metaData.templateId = parseInt(id[1]);
+        metaData.templateName = $('#name-'+id[1]).attr('title');
+        metaData.advertiserId = parseInt($('#advertiserId').attr('value'));
+        metaData.companyId = parseInt($('#companyId').attr('value'));
+
+        return metaData;
     }
 
-    function getCompanyId(){
-        return $('#companyId').attr('value');
-    }
+    function setSelectedCategories(metaData)
+    {
+        var category = [];
 
-    function determineTemplateId(object){
-        var id = object.attr('id').split('-');
-        return id[1];
+        $('#'+metaData.type+'Category-'+metaData.templateId).find('option:selected').each(function(i,selected){
+            var subscription = {};
+            subscription.id = $(selected).val();
+            subscription.name = $.trim($(selected).text());
+            category.push(subscription);
+        });
+
+        metaData.categoryId = category;
     }
 });

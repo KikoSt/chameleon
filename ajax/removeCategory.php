@@ -10,7 +10,12 @@ require_once('../libraries/classes/BannerTemplateModel.class.php');
 $companyId    = (int)getRequestVar('companyId');
 $advertiserId = (int)getRequestVar('advertiserId');
 $templateId   = (int)getRequestVar('templateId');
-$categoryId   = (int)getRequestVar('categoryId');
+$categoryId   = $_REQUEST['categoryId'];
+
+foreach($categoryId as $singleCategory)
+{
+    $purgedCategoryId[] = $singleCategory['id'];
+}
 
 // get template via REST API
 $connector = new APIConnector();
@@ -24,7 +29,7 @@ if(count($subscriptions > 0))
 {
     foreach ($subscriptions AS $curSubscription)
     {
-        if($curSubscription->idCategory == $categoryId)
+        if(in_array($curSubscription->idCategory, $purgedCategoryId))
         {
             $curSubscription->userStatus = 'DELETED';
         }
