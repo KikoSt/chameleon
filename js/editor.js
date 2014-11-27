@@ -8,15 +8,15 @@ $(document).ready(function() {
         window.gifSizeLimits = window.sizeLimits.gif;
     });
 
-    var btn;
     var somethingChanged = false;
     var category = {};
 
+    // TODO: check: why isn't it hidden by css in the first place?
     $('#alert-custom').hide();
 
+    // refresh preview image for this template upon loading the page
     var action = 'update';
     updateTemplateData(action);
-
 
     // prepare image map
     var highlightColor = {};
@@ -41,23 +41,7 @@ $(document).ready(function() {
         areas.push({ key: value, strokeColor: highlightColor[type]});
     });
 
-
-    function mapsterInit()
-    {
-        // start image map plugin
-        $("#previewImage").mapster({
-            fillColor: 'ff005',
-            fillOpacity: 0,
-            strokeWidth: 2,
-            stroke: true,
-            strokeColor: 'ff0000',
-            singleSelect: true,
-            clickNavigate: false,
-            mapKey: 'data-key',
-            areas: areas
-        });
-    }
-
+    mapsterInit();
 
     /**
      *  configure and activate the fileinput
@@ -69,11 +53,10 @@ $(document).ready(function() {
         'showCaption': true
     });
 
-
     /**
      * image map clicked
      */
-    $('.subnav').on('click', function(e) {
+    $('.maparea').on('click', function(e) {
         var id = $(this).attr('id');
         if(id.substr(0, 5) != 'group') {
             // individual element selected
@@ -102,9 +85,9 @@ $(document).ready(function() {
         }
     });
 
+    // activate the "head_large" element as "default" selected element
     // TODO: add an "initial" element to ALL templates?!
     $('area#head_large').trigger('click');
-
 
 
     /***************************************
@@ -132,21 +115,18 @@ $(document).ready(function() {
          // since flash will hide at least some portions of
          // the live preview banners
          $('#previewSwf').hide();
-         var formData = new FormData();
-         var data = {};
-         var nodeList = $(document).find($('[type="file"]'));
-
          overlayOn();
          $('#preparepreviewalert').show();
 
-         formData.append('templateId', $('#templateId').attr('value'));
-         formData.append('advertiserId', $('#advertiserId').attr('value'));
-         formData.append('companyId', $('#companyId').attr('value'));
+         var formData = new FormData();
+         var nodeList = $(document).find($('[type="file"]'));
+
          formData.append('action', 'upload');
 
          var xhr =  new XMLHttpRequest();
          xhr.onload = function() {
              if(xhr.status === 200) {
+                // done
                  response = $.parseJSON(xhr.response);
                  var newNode = '';
                  for(var preview in response) {
@@ -173,17 +153,14 @@ $(document).ready(function() {
     /**
      *  disable default "submit" action
      */
-    $('#editor').on('submit', function(e){
-        e.preventDefault();
-    });
-
+    $('#editor').on('submit', false);
 
     /**
      *  ONCHANGE handler
      *
      * most input and select fields, so largest part of the editor
      */
-    $('#awesomeEditor input, #awesomeEditor select').change(function(e) {
+    $('#awesomeEditor input, #awesomeEditor select').on('change', function(e) {
         var inputType = $(this).attr('type');
         var action = 'update';
 
@@ -226,7 +203,6 @@ $(document).ready(function() {
             case "secondary":
             {
                 var color = $('#' + identifier[1] + '-color').val();
-                console.log(color);
                 var groupId = $(this).closest('.panel').attr('id').replace('grouppanel_', '');
                 $('#panel_'+identifier[0]+' #fill').val(color);
                 $('[name="'+identifier[0]+'#fill"]').colorpicker('setValue', color);
@@ -271,7 +247,7 @@ $(document).ready(function() {
     /**
      *  'overview' backlink click handler
      */
-    $('#overview').click(function() {
+    $('#overview').on('click', function() {
         if(somethingChanged === true) {
             var leaveConfirm = confirm('Unsaved changes detected! Continue?');
             if(true === leaveConfirm){
@@ -293,7 +269,7 @@ $(document).ready(function() {
     });
 
 
-    $("#category").change(function() {
+    $("#category").on('change', function() {
         $( "#category option:selected" ).each(function() {
 
             var key = $(this).attr('value');
@@ -353,12 +329,11 @@ $(document).ready(function() {
      *  Update individual preselect color fields with global color values (bgcolor!)
      *  when global - i.e. cd - colors are changed
      **/
-    $('.globalColor').focusout(function(){
-        console.log('focusout');
+    $('.globalColor').on('focusout', function() {
         var id = $(this).attr('id');
         var color = $('#'+id).val();
         var idsplit = id.split('-');
-        $('.'+idsplit[0]).css("background-color", color);
+        $('.' + idsplit[0]).css("background-color", color);
         $('#' + id + '--preview').css("background-color", color);
     });
 
@@ -743,14 +718,14 @@ $(document).ready(function() {
 
         xhr.onload = function() {
             if(xhr.status === 200) {
-                console.log('done!');
+                // done
                 updateEditorMediaMarkup(xhr.response);
                 if(action === 'save') {
                     $(".savealert").html('Template changes successfully saved');
                     $(".savealert").removeClass("in").delay(1000).addClass("in").fadeOut(2000);
                 }
             } else if(xhr.status !== 200) {
-                console.log('fail!');
+                // fail
             }
         }
 
@@ -807,8 +782,6 @@ $(document).ready(function() {
         // prepare required information
         var gifsrc = data.imgsrc + '.gif?ts=' + new Date().getTime();
         var swfsrc = data.imgsrc + '.swf?ts=' + new Date().getTime();
-
-        console.log(gifsrc);
 
         var dimensions    = $('[name$=globalDimensions] option:selected').text().replace(/ \(.*\)/, '');
         var gifFilesize   = data.gifFilesize;
@@ -975,6 +948,23 @@ $(document).ready(function() {
                     break;
             }
         }
+    }
+
+    // initialize imageMap plugin
+    function mapsterInit()
+    {
+        // start image map plugin
+        $("#previewImage").mapster({
+            fillColor: 'ff005',
+            fillOpacity: 0,
+            strokeWidth: 2,
+            stroke: true,
+            strokeColor: 'ff0000',
+            singleSelect: true,
+            clickNavigate: false,
+            mapKey: 'data-key',
+            areas: areas
+        });
     }
 
     function componentToHex(c) {
