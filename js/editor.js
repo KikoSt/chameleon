@@ -675,6 +675,12 @@ $(document).ready(function() {
     }
 
 
+
+
+    function updateTemplateData(action) {
+        refreshGif(action, 'static');
+    }
+
     /**
      *  updateTemplateData
      *
@@ -683,11 +689,16 @@ $(document).ready(function() {
      * if action !== 'save', the data will NOT be save to the db!
      *
      **/
-    function updateTemplateData(action) {
-        var xhr = new XMLHttpRequest();
+    function refreshGif(action, mode) {
+        if(renderXHR !== undefined) {
+            renderXHR.abort();
+        }
+        renderXHR = new XMLHttpRequest();
         var formData = new FormData();
         var data = $('#editor').serializeArray();
         var nodeList = $(document).find($('[type="file"]'));
+
+        if(undefined === mode) mode = 'static';
 
         $.each(data, function(key, inputfield) {
             formData.append(inputfield.name, inputfield.value);
@@ -698,6 +709,8 @@ $(document).ready(function() {
         }
 
         formData.append('action', action);
+        formData.append('mode', mode);
+        // TODO!
         formData.append('auditUserId', 14);
 
         // process file input fields (images)
@@ -716,21 +729,26 @@ $(document).ready(function() {
             }
         }
 
-        xhr.onload = function() {
-            if(xhr.status === 200) {
+        renderXHR.onload = function() {
+            if(renderXHR.status === 200) {
+                unregisterXHR(renderXHR);
                 // done
-                updateEditorMediaMarkup(xhr.response);
+                updateEditorMediaMarkup(renderXHR.response);
+                // if a static gif had been rendered, render an animated version now
+                // and replace the static version asap
+                if(mode === 'static')
+                {
+                    refreshGif(action, 'animated');
+                }
                 if(action === 'save') {
                     $(".savealert").html('Template changes successfully saved');
                     $(".savealert").removeClass("in").delay(1000).addClass("in").fadeOut(2000);
                 }
-            } else if(xhr.status !== 200) {
+            } else if(renderXHR.status !== 200) {
                 // fail
             }
         }
 
-        xhr.open('POST', '/chameleon/ajax/changeSvg.php', true);
-        xhr.send(formData);
     }
 
 
