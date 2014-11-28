@@ -7,7 +7,7 @@ $(document).ready(function()
     $('#addCategory').click(function(e) {
         var selectedOpts = $('#availableCategory option:selected');
         if (selectedOpts.length == 0) {
-            alert("Nothing to move.");
+            createErrorNotification('Alert', 'Nothing to move.');
             e.preventDefault();
         }
 
@@ -19,7 +19,7 @@ $(document).ready(function()
     $('#removeCategory').click(function(e) {
         var selectedOpts = $('#assignedCategory option:selected');
         if (selectedOpts.length == 0) {
-            alert("Nothing to move.");
+            createErrorNotification('Alert', 'Mothing to move');
             e.preventDefault();
         }
 
@@ -66,8 +66,8 @@ $(document).ready(function()
                 $('#availableCategory-'+templateId).find("option[value='"+singleCategory.id+"']").remove();
             });
             $(".modal-body form").unblock();
-        }).fail(function(){
-
+        }).fail(function(response){
+            createErrorNotification('Alert', response);
         });
     });
 
@@ -129,9 +129,8 @@ $(document).ready(function()
                 $('#categoryContainerOverview-'+metaData.templateId+' #'+singleCategory.id).empty().remove();
             });
             $(".modal-body form").unblock();
-
-        }).fail(function(){
-            console.log('fail');
+        }).fail(function(response){
+            createErrorNotification('Alert', response);
         });
     });
 
