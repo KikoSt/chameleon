@@ -7,7 +7,7 @@
 <?php
     else:
 ?>
-<div class="container-fluid margin-left-150">
+<div class="container margin-left-150">
     <div id="overviewView">
     <?php
         foreach($this->previews as $preview):
@@ -31,7 +31,13 @@
                 </div>
                 <?php
                     include('overviewComponents/category.inc.php');
+                ?>
+                <div id="examples_<?php echo $preview->templateId; ?>" class="thumbnail col-md-4">
+                <?php
                     include('overviewComponents/examples.inc.php');
+                ?>
+                </div>
+                <?php
                     include('overviewComponents/action.inc.php');
                 ?>
             </div>
@@ -63,6 +69,7 @@
     <input id="companyId"  type="hidden" name="companyId" value="<?php echo $preview->companyId; ?>">
 
     </div>
+
 </div>
 
 <script type="text/JavaScript" src="js/overview.js"></script>

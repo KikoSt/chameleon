@@ -14,11 +14,11 @@
         </div>
         <div class="col-md-1" style="margin-right: 10px; margin-left: 10px;">
             <div class="row" style="margin-top: 120px;">
-                <button id="addCategory-<?php echo $preview->templateId; ?>-<?php echo $this->advertiserId; ?>"
+                <button id="addCategory-<?php echo $preview->templateId; ?>"
                         class="addCategoryOverview"><i class="fa fa-angle-right fa-3x"></i></button>
             </div>
             <div class="row">
-                <button id="removeCategory-<?php echo $preview->templateId; ?>-<?php echo $this->advertiserId; ?>"
+                <button id="removeCategory-<?php echo $preview->templateId; ?>"
                         class="removeCategoryOverview"><i class="fa fa-angle-left fa-3x"></i></button>
             </div>
         </div>

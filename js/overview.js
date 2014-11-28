@@ -1,12 +1,13 @@
 $(document).ready(function()
 {
-    var advertiserId = $('#advertiserId').attr('value');
-    var companyId = $('#companyId').attr('value');
+    $('.carousel').carousel({
+        interval: 4000
+    });
 
     $('#addCategory').click(function(e) {
         var selectedOpts = $('#availableCategory option:selected');
         if (selectedOpts.length == 0) {
-            alert("Nothing to move.");
+            createErrorNotification('Alert', 'Nothing to move.');
             e.preventDefault();
         }
 
@@ -18,7 +19,7 @@ $(document).ready(function()
     $('#removeCategory').click(function(e) {
         var selectedOpts = $('#assignedCategory option:selected');
         if (selectedOpts.length == 0) {
-            alert("Nothing to move.");
+            createErrorNotification('Alert', 'Mothing to move');
             e.preventDefault();
         }
 
@@ -27,84 +28,61 @@ $(document).ready(function()
         e.preventDefault();
     });
 
-    $('.carousel').carousel({
-        interval: 4000
-    });
-
     $('.addCategoryOverview').click(function(e) {
         $(".modal-body form").block({
             message: '<h1>Assigning categories...</h1>',
             css: { border: '3px solid #a00' }
         });
         e.preventDefault();
-        var id = $(this).attr('id').split('-');
-        var templateId = id[1];
-        var advertiserId = id[2];
-        var data = {};
-        var category = [];
+        var metaData = getMetaData($(this));
 
-        if (!$("#availableVategory-"+templateId).length) {
-            $('#addCategory-'+templateId+'-'+advertiserId).prop('disabled', true);
+        setSelectedCategories(metaData, 'available');
+
+        if (!$("#availableCategory-"+metaData.templateId).length) {
+            $('#addCategory-'+metaData.templateId+'-'+metaData.advertiserId).prop('disabled', true);
         }
-
-        $('#availableCategory-'+templateId).find('option:selected').each(function(i,selected){
-            var subscription = {};
-            subscription.id = $(selected).val();
-            subscription.name = $.trim($(selected).text());
-            category.push(subscription);
-        });
-
-        data.category = category;
-        data.advertiserId = advertiserId;
-        data.templateId   = templateId;
-        data.companyId    = $('#companyId').attr('value');
 
         $.ajax({
             type: "POST",
-            data: data,
+            data: metaData,
             dataType: "json",
             url: "/chameleon/ajax/addCategory.php"
         }).done(function(){
-        }).fail(function(){
-            category.forEach(function(singleCategory){
-                var item = '<div id="'+singleCategory.id+'" class="row"><p class="text-left overviewTitle categoryItem">'+
-                            '<a class="fa fa-trash categoryItem cursor-pointer" title="Remove category"></a>' +
-                            singleCategory.name + '</p></div>';
-                $('#categoryContainerOverview-'+templateId).append(item);
 
+            metaData.categoryId.forEach(function(singleCategory){
+                //create item for right select
+                var item = '<div id="'+singleCategory.id+'" class="row"><p class="text-left overviewTitle categoryItem">'+
+                        '<a class="fa fa-trash categoryItem cursor-pointer" title="Remove category"></a>' +
+                        singleCategory.name + '</p></div>';
+                //append item
+                $('#categoryContainerOverview-'+templateId).append(item);
+                //create node for overview
                 var node = '<option value="' + singleCategory.id + '">' + singleCategory.name + '</option>';
+                //append node
                 $('#assignedCategory-'+templateId).append(node);
+                //remove item from left select
                 $('#availableCategory-'+templateId).find("option[value='"+singleCategory.id+"']").remove();
             });
             $(".modal-body form").unblock();
+        }).fail(function(response){
+            createErrorNotification('Alert', response);
         });
     });
 
     $('.removeCategoryShortcut').click(function(){
-        if(confirm("Are you sure you want to DELETE this category subscription?"))
-        {
-            var id = $(this).closest('div').attr('id').split('-');
-            var categoryId = id[1];
-            var templateId = id[2];
-            var subscription = {};
-            var data = {};
+        var metaData = getMetaData($(this));
 
-            data.categoryId   = categoryId;
-            data.advertiserId = $('#advertiserId').attr('value');
-            data.templateId   = templateId;
-            data.companyId    = $('#companyId').attr('value');
-
-            $.ajax({
-                type: 'POST',
-                data: data,
-                dataType: "json",
-                url: '/chameleon/ajax/removeCategory.php'
-            }).fail(function ()
-            {
-                $('#assigned-' + categoryId + '-' + templateId).empty().remove();
-                $("#assignedCategory-"+templateId).find("option[value='"+categoryId+"']").remove();
-            });
-        }
+        $.ajax({
+            type: 'POST',
+            data: metaData,
+            dataType: "json",
+            url: '/chameleon/ajax/removeCategory.php'
+        }).done(function(){
+            $('#assigned-' + metaData.categoryId + '-' + metaData.templateId).empty().remove();
+            $("#assignedCategory-"+metaData.templateId).find("option[value='"+metaData.categoryId+"']").remove();
+        }).fail(function(response){
+            createErrorNotification('An error occurred...', response);
+        });
     });
 
     $('.removeCategoryOverview').click(function(e) {
@@ -113,154 +91,238 @@ $(document).ready(function()
             css: { border: '3px solid #a00' }
         });
         e.preventDefault();
-        var id = $(this).attr('id').split('-');
-        var templateId = id[1];
-        var advertiserId = id[2];
-        var data = {};
-        var category = [];
+        var metaData = getMetaData($(this));
 
-        $('#assignedCategory-'+templateId).find('option:selected').each(function(i,selected){
-            var subscription = {};
-            subscription.id = $(selected).val();
-            subscription.name = $.trim($(selected).text());
-            category.push(subscription);
-        });
+        setSelectedCategories(metaData, 'assigned');
 
-        data.category = category;
-        data.advertiserId = advertiserId;
-        data.templateId   = templateId;
-        data.companyId    = $('#companyId').attr('value');
         $.ajax({
             type: 'POST',
-            data: data,
+            data: metaData,
             dataType: "json",
             url: '/chameleon/ajax/removeCategory.php'
         }).done(function(){
-        }).fail(function(){
-            category.forEach(function(singleCategory){
-                var item = $('#'+singleCategory.id);
-                $("#assignedCategory-"+templateId).find("option[value='"+singleCategory.id+"']").remove();
+
+            metaData.categoryId.forEach(function(singleCategory){
+                //remove category from right select
+                $("#assignedCategory-"+metaData.templateId).find("option[value='"+singleCategory.id+"']").remove();
+
+                //create node for left select
                 var node = '<option value="' + singleCategory.id + '">'+singleCategory.name+'</option>';
-                $('#availableCategory-'+templateId).append(node);
-                $('#assigned-'+singleCategory.id).empty().remove();
-                $('#categoryContainerOverview-'+templateId+' #'+singleCategory.id).empty().remove();
+
+                //append node at left select
+                $('#availableCategory-'+metaData.templateId).append(node);
+
+                //remove category from overview
+                $('#assigned-'+singleCategory.id+'-'+metaData.templateId).empty().remove();
+                $('#categoryContainerOverview-'+metaData.templateId+' #'+singleCategory.id).empty().remove();
             });
             $(".modal-body form").unblock();
+        }).fail(function(response){
+            createErrorNotification('An error occurred', response);
         });
     });
 
+    /**
+     *
+     */
     $(".cloneTemplate").click(function(){
-        var id = $(this).attr('id').split('-');
-        var templateId = id[1];
-        var advertiserId = id[2];
-        var companyId = id[3];
-        var data = {};
+        var metaData = getMetaData($(this));
 
-        if(confirm("Are you sure you want to CLONE this template? You will be redirected to the cloned template after confirming."))
-        {
-            data.advertiserId = advertiserId;
-            data.templateId = templateId;
-            data.companyId = companyId;
-
-            $.ajax({
-                type: 'POST',
-                data: data,
-                dataType: "json",
-                url: '/chameleon/ajax/cloneTemplate.php',
-                success: function (response)
-                {
-                    var url = window.location.origin + '/chameleon/index.php?page=editor&templateId=' + response +
-                        '&companyId=' + companyId +
-                        '&advertiserId=' + advertiserId;
-                    window.location.replace(url);
-                }
-            });
-        }
+        var confirmBox = new jBox('Confirm', {
+            title: 'Delete template',
+            confirmButton: 'Clone',
+            cancelButton: 'Cancel',
+            closeOnClick: false,
+            confirm: function() {
+                $.ajax({
+                    type: 'POST',
+                    data: metaData,
+                    dataType: "json",
+                    url: '/chameleon/ajax/cloneTemplate.php'
+                }).done(function(cloneId){
+                    if(cloneId !== "undefinded" && cloneId !== 0){
+                        var url = window.location.origin + '/chameleon/index.php?page=editor&templateId=' + cloneId +
+                                '&companyId=' + metaData.companyId +
+                                '&advertiserId=' + metaData.advertiserId;
+                        window.location.replace(url);
+                    }
+                }).fail(function(response){
+                    confirmBox.destroy();
+                    createErrorNotification('An error occurred', response);
+                });
+            },
+            cancel: function() {},
+            content: '<b>Warning!</b> Are you sure that you want to clone this template?'
+        });
+        confirmBox.open();
     });
 
+    /**
+     *
+     */
     $(".deleteTemplate").click(function(){
+        var metaData = getMetaData($(this));
 
-        var id = $(this).attr('id').split('-');
-        var templateId = id[1];
-        var advertiserId = id[2];
-        var companyId = id[3];
-        var data = {};
-
-        if(confirm("Are you sure you want to DELETE this template?"))
-        {
-            data.advertiserId = advertiserId;
-            data.templateId   = templateId;
-
-            $.ajax({
-                type: 'POST',
-                data: data,
-                dataType: "html",
-                url:  '/chameleon/ajax/deleteTemplate.php',
-                success: function(response){
-                    if(response.length === 0)
+        var confirmBox = new jBox('Confirm', {
+            title: 'Delete template',
+            confirmButton: 'Delete',
+            cancelButton: 'Cancel',
+            closeOnClick: false,
+            confirm: function() {
+                $.ajax({
+                    type: 'POST',
+                    data: metaData,
+                    dataType: "json",
+                    url:  '/chameleon/ajax/deleteTemplate.php'
+                }).done(function(response){
+                    //todo change if API exception handling is changed
+                    if(response.length > 0)
                     {
-                        $('#template_'+templateId).fadeOut("slow", function(){
+                        confirmBox.destroy();
+                        createErrorNotification('An error occurred', response);
+                    }
+                    else
+                    {
+                        $('#template_' + metaData.templateId).fadeOut("slow", function ()
+                        {
                             $(this).empty();
                         });
                     }
-                }
-            });
-        }
+                }).fail(function(response){});
+            },
+            cancel: function() {},
+            content: '<p>Are you sure that you want to delete template</p><p class="jBox-custom-padding-text">"'+metaData.templateName+'"?</p>'
+        });
+        confirmBox.open();
     });
 
-    $('.ajaxPreview').each(function(e){
-        var id = $(this).attr('id').split('-');
-        var data = {};
-        var templateId = id[1];
+    /**
+     *
+     */
+    $('.ajaxPreview').each(function(){
+        createExamples($(this));
+    });
 
-        $("#creativesCarousel-"+templateId).block({
-            message: '<h1><img src="'+window.location.origin+'/chameleon/img/loading.gif"/> Rendering example banners...</h1>',
-            css: { border: '3px solid #a00', width: '50%'  }
-        });
+    /**
+     *
+     * @param templateId
+     */
+    function createExamples(jQueryObject){
+        var metaData = getMetaData(jQueryObject);
 
-        data.advertiserId   = advertiserId;
-        data.templateId     = templateId;
-        data.companyId      = companyId;
-        data.numPreviewPics = 10;
-        data.auditUserId    = 1;
+        metaData.numPreviewPics = 10;
+        metaData.auditUserId    = 1;
 
         $.ajax({
             type: "POST",
-            data: data,
+            data: metaData,
             dataType: "json",
             url: "/chameleon/ajax/getProductIdByTemplateId.php"
         }).done(function (output)
         {
             if(output.length > 0)
             {
-                $.each(output, function (key,value)
-                {
-                    data.productId = value;
-                    $.ajax({
-                        type: "POST",
-                        data: data,
-                        dataType: "json",
-                        url: "/chameleon/ajax/renderExampleForProductId.php"
-                    }).done(function (file)
-                    {
-                        $('<div class="item ">' +
-                            '<img src="' + window.location.origin + '/chameleon/' + file + '" alt="..."' +
-                            'style="max-height: 320px; display: block;margin: auto">' +
-                            '</div>').appendTo('#previewcarousel-' + templateId);
-
-                    });
-
-                });
-                $("#previewcarousel-"+templateId+" .item").first().addClass('active');
+                getRenderedGif(output, metaData);
             }
             else
             {
-                $('<div class="item">No categories selected. Please select at least one category to render examples...</div>').appendTo('#previewcarousel-' + templateId);
+                $('<div id="emptyItem-'+metaData.templateId+'" class="item">No categories selected. Please select at least one category to render examples...</div>').appendTo('#previewcarousel-' + metaData.templateId);
+                $('#emptyItem-'+metaData.templateId).addClass("active");
             }
-            $("#creativesCarousel-"+templateId).unblock();
         }).fail(function(){
-            $('<div class="item">An error occured during the render process...</div>').appendTo('#previewcarousel-' + templateId);
-        });
-    });
-});
 
+        });
+    }
+
+    /**
+     *
+     * @param output
+     * @param data
+     */
+    function getRenderedGif(output, data){
+        var count = 1;
+        $.each(output, function (key,value)
+        {
+            data.productId = value;
+
+            $.ajax({
+                type: "POST",
+                data: data,
+                dataType: "json",
+                url: "/chameleon/ajax/renderExampleForProductId.php"
+            }).done(function (file){
+                $('<div id="'+data.templateId+'_'+count+'" class="item">'+
+                '<img src="' + window.location.origin + '/chameleon/' + file + '" alt="..."' +
+                'style="max-height: 320px;">' +
+                '</div>').appendTo('#previewcarousel-' + data.templateId);
+
+                count++;
+
+                $('#'+data.templateId+'_1').addClass("active");
+                $("#creativesCarousel-"+data.templateId).carousel("pause").removeData();
+                $("#creativesCarousel-"+data.templateId).carousel(0);
+            });
+        });
+    }
+
+    /**
+     *
+     * @param title
+     * @param content
+     * @param width
+     * @param height
+     */
+    function createErrorNotification(title, content, width, height){
+
+        width = (typeof width === "undefined") ? 500 : width;
+        height = (typeof height === "undefined") ? 250 : height;
+
+        content += '<p class="jBox-custom-padding-line-2x">If you need further assistence, contact us via</p>';
+        content += '<p class="jBox-custom-padding-text"><a>helpdesk@mediadecision.com</a>.</p>';
+        content += '<p class="jBox-custom-padding-line-1x">Press [ESC] to close this window or click anywhere.</p>';
+
+        new jBox('Modal',{width: width,
+            height: height,
+            closeOnClick: true,
+            animation: 'tada',
+            title: title,
+            content: content
+        }).open()
+    }
+
+    /**
+     *
+     * @param object
+     * @returns {{}}
+     */
+    function getMetaData(jQueryObject){
+        var metaData = {};
+        var id = jQueryObject.attr('id').split('-');
+
+        metaData.templateId = parseInt(id[1]);
+        metaData.templateName = $('#name-'+id[1]).attr('title');
+        metaData.advertiserId = parseInt($('#advertiserId').attr('value'));
+        metaData.companyId = parseInt($('#companyId').attr('value'));
+
+        return metaData;
+    }
+
+    /**
+     *
+     * @param metaData
+     * @param section String available, assigned
+     */
+    function setSelectedCategories(metaData, section)
+    {
+        var category = [];
+
+        $('#'+section+'Category-'+metaData.templateId).find('option:selected').each(function(i,selected){
+            var subscription = {};
+            subscription.id = $(selected).val();
+            subscription.name = $.trim($(selected).text());
+            category.push(subscription);
+        });
+
+        metaData.categoryId = category;
+    }
+});

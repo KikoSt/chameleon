@@ -8,25 +8,26 @@ require_once(__ROOT__ . 'libraries/functions.inc.php');
 require_once('../libraries/classes/APIConnector.class.php');
 require_once('../libraries/classes/BannerTemplateModel.class.php');
 
+var_dump($_REQUEST);
+
 $templateId   = (int)getRequestVar('templateId');
 $advertiserId = (int)getRequestVar('advertiserId');
-// array! id AND name
-$category     = getRequestVar('category');
+$category   = $_REQUEST['category'];
 
 // get template via REST API
 $connector = new APIConnector();
-$template = $connector->getTemplateById($_POST['templateId']);
+$template = $connector->getTemplateById($templateId);
 
-$template->setAdvertiserId((int)$advertiserId);
+$template->setAdvertiserId($advertiserId);
 $subscriptions = $template->getCategorySubscriptions();
 
-foreach($_POST['category'] as $category)
+foreach($category as $singleCategory)
 {
     // add subscription
     $newSubscription = new StdClass();
-    $newSubscription->idCategory = (int)$category['id'];
+    $newSubscription->idCategory = (int)$singleCategory['id'];
     $newSubscription->userStatus = 'ACTIVE';
-    $newSubscription->categoryName = $category['name'];
+    $newSubscription->categoryName = $singleCategory['name'];
 
     array_push($subscriptions, $newSubscription);
 }

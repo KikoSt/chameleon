@@ -169,6 +169,10 @@ input:disabled
     padding-bottom: 6px;
 }
 
+.carouselChevron > a{
+    color: #fff !important;
+}
+
 div#previewImage > h2, div#previewSwf > h2 {
     font-size: 1.2em;
     font-weight: bold;
@@ -317,7 +321,6 @@ input.filesize-warning {
     background-color: #ff9999 !important;
 }
 
-
 #loadification {
     width: 25px;
     height: 25px;
@@ -327,4 +330,16 @@ input.filesize-warning {
     padding: 5px;
     background-color: #ffffff;
     box-shadow: 3px 3px 3px #777777;
+}
+
+.jBox-custom-padding-line-1x{
+    padding-top: 15px;
+}
+
+.jBox-custom-padding-line-2x{
+    padding-top: 30px;
+}
+
+.jBox-custom-padding-text{
+    padding-top: 5px;
 }
