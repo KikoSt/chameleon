@@ -1,5 +1,7 @@
 $(document).ready(function() {
 
+    $.showDuration = 0;
+
     var renderXHR; // store currently running xhr request rendering the preview to allow aborting
     $.xhrPool = [];
 
@@ -86,9 +88,9 @@ $(document).ready(function() {
         var id = $(this).attr('id');
         if(id.substr(0, 5) != 'group') {
             // individual element selected
-            $('.component').hide();
-            $('#panel_' + id).show();
-            $('#grouppanel_' + $('#panel_' + id).attr('data-groupid')).show();
+            $('.component').hide(0);
+            $('#panel_' + id).show($.showDuration);
+            $('#grouppanel_' + $('#panel_' + id).attr('data-groupid')).show($.showDuration);
             // initially set the color previews/buttons
             $('#' + id + '--primary').css("background-color", $('#primary-color').val());
             $('#' + id + '--secondary').css("background-color", $('#secondary-color').val());
@@ -98,9 +100,9 @@ $(document).ready(function() {
             $('#' + $('#panel_' + id).attr('data-groupid') + '--bgsecondary').css("background-color", $('#secondary-color').val());
         } else {
             // group element selected
-            $('.component').hide();
+            $('.component').hide(0);
             id = id.substr(6, 10);
-            $('#grouppanel_' + id).show();
+            $('#grouppanel_' + id).show($.showDuration);
             // initially set the color previews/buttons
             $('#' + id + '--primary').css("background-color", $('#primary-color').val());
             $('#' + id + '--secondary').css("background-color", $('#secondary-color').val());
@@ -135,7 +137,7 @@ $(document).ready(function() {
      });
 
      $('#flash').on('click', function(e) {
-         $('#previewSwf').toggle();
+         $('#previewSwf').toggle($.showDuration);
      });
 
      $('#cancel').on('click', function(e) {
