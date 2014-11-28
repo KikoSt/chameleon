@@ -1,5 +1,26 @@
 $(document).ready(function() {
 
+    var renderXHR; // store currently running xhr request rendering the preview to allow aborting
+    $.xhrPool = [];
+
+    registerXHR = function(jqXHR) {
+        showLoadification();
+        $.xhrPool.push(jqXHR);
+    }
+
+    unregisterXHR = function(jqXHR) {
+        var i = $.inArray(jqXHR, $.xhrPool);
+        if(i > -1) $.xhrPool.splice(i, 1);
+        if($.xhrPool.length < 1) {
+            hideLoadification();
+        }
+    }
+
+    $.ajaxSetup({
+        beforeSend: registerXHR,
+        complete:  unregisterXHR
+    });
+
     $.ajax({
         url: 'ajax/getSizeLimits.php'
     }).done(function(data) {
@@ -42,6 +63,11 @@ $(document).ready(function() {
     });
 
     mapsterInit();
+
+
+
+
+
 
     /**
      *  configure and activate the fileinput
@@ -110,37 +136,39 @@ $(document).ready(function() {
      });
 
      $('#live').on('click', function(e) {
-         //generate preview images
-         // hiding flash preview when opening live preview
-         // since flash will hide at least some portions of
-         // the live preview banners
-         $('#previewSwf').hide();
-         overlayOn();
-         $('#preparepreviewalert').show();
+        //generate preview images
+        // hiding flash preview when opening live preview
+        // since flash will hide at least some portions of
+        // the live preview banners
+        $('#previewSwf').hide();
+        overlayOn();
+        $('#preparepreviewalert').show();
 
-         var formData = new FormData();
-         var nodeList = $(document).find($('[type="file"]'));
+        var formData = new FormData();
+        var nodeList = $(document).find($('[type="file"]'));
 
-         formData.append('action', 'upload');
+        formData.append('action', 'upload');
 
-         var xhr =  new XMLHttpRequest();
-         xhr.onload = function() {
-             if(xhr.status === 200) {
-                // done
-                 response = $.parseJSON(xhr.response);
-                 var newNode = '';
-                 for(var preview in response) {
-                     newNode += '<li><a data-imagelightbox="preview" href="' + response[preview] + '?ts=' + new Date().getTime()  + '"></a></li>\n';
-                 }
-                 $('#imagelightbox-list > li').remove();
-                 $(newNode).appendTo('#imagelightbox-list');
-                 $('a[data-imagelightbox="preview"]').trigger("click");
-             } else if(xhr.status !== 200) {
-                 // failed to load preview data
-             }
-         };
-         xhr.open('POST', '/chameleon/ajax/getLivePreview.php', true);
-         xhr.send(formData);
+        var xhr =  new XMLHttpRequest();
+        xhr.onload = function() {
+            unregisterXHR(xhr);
+            if(xhr.status === 200) {
+            // done
+                response = $.parseJSON(xhr.response);
+                var newNode = '';
+                for(var preview in response) {
+                    newNode += '<li><a data-imagelightbox="preview" href="' + response[preview] + '?ts=' + new Date().getTime()  + '"></a></li>\n';
+                }
+                $('#imagelightbox-list > li').remove();
+                $(newNode).appendTo('#imagelightbox-list');
+                $('a[data-imagelightbox="preview"]').trigger("click");
+            } else if(xhr.status !== 200) {
+                // failed to load preview data
+            }
+        };
+        xhr.open('POST', '/chameleon/ajax/getLivePreview.php', true);
+        registerXHR(xhr);
+        xhr.send(formData);
      });
 
      $('#save').on('click', function(e) {
@@ -675,6 +703,27 @@ $(document).ready(function() {
     }
 
 
+
+
+    function updateTemplateData(action) {
+        refreshGif(action, 'static');
+    }
+
+    function showLoadification()
+    {
+        if($('#loadification').length == 0) {
+            $('#loadification').remove();
+            var loader = '<div id="loadification"><img src="img/loading.gif" alt="loading"/></div>';
+            $('body').append(loader);
+        }
+    }
+
+    function hideLoadification()
+    {
+       $('#loadification').remove();
+    }
+
+
     /**
      *  updateTemplateData
      *
@@ -683,11 +732,16 @@ $(document).ready(function() {
      * if action !== 'save', the data will NOT be save to the db!
      *
      **/
-    function updateTemplateData(action) {
-        var xhr = new XMLHttpRequest();
+    function refreshGif(action, mode) {
+        if(renderXHR !== undefined) {
+            renderXHR.abort();
+        }
+        renderXHR = new XMLHttpRequest();
         var formData = new FormData();
         var data = $('#editor').serializeArray();
         var nodeList = $(document).find($('[type="file"]'));
+
+        if(undefined === mode) mode = 'static';
 
         $.each(data, function(key, inputfield) {
             formData.append(inputfield.name, inputfield.value);
@@ -698,6 +752,8 @@ $(document).ready(function() {
         }
 
         formData.append('action', action);
+        formData.append('mode', mode);
+        // TODO!
         formData.append('auditUserId', 14);
 
         // process file input fields (images)
@@ -716,21 +772,30 @@ $(document).ready(function() {
             }
         }
 
-        xhr.onload = function() {
-            if(xhr.status === 200) {
+        renderXHR.onload = function() {
+            if(renderXHR.status === 200) {
+                unregisterXHR(renderXHR);
                 // done
-                updateEditorMediaMarkup(xhr.response);
+                updateEditorMediaMarkup(renderXHR.response);
+                // if a static gif had been rendered, render an animated version now
+                // and replace the static version asap
+                if(mode === 'static')
+                {
+                    refreshGif(action, 'animated');
+                }
                 if(action === 'save') {
                     $(".savealert").html('Template changes successfully saved');
                     $(".savealert").removeClass("in").delay(1000).addClass("in").fadeOut(2000);
                 }
-            } else if(xhr.status !== 200) {
+            } else if(renderXHR.status !== 200) {
                 // fail
             }
         }
 
-        xhr.open('POST', '/chameleon/ajax/changeSvg.php', true);
-        xhr.send(formData);
+        showLoadification();
+        renderXHR.open('POST', '/chameleon/ajax/changeSvg.php', true);
+        registerXHR(renderXHR);
+        renderXHR.send(formData);
     }
 
 
