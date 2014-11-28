@@ -70,6 +70,8 @@ class GfxContainer
         $this->animatePreviews = true;
         $this->groups = array();
 
+        $this->maxDuration = 10;
+
         // TODO: for now ...
         $this->framerate = 30;
         $this->numFrames = 0;
@@ -573,6 +575,25 @@ class GfxContainer
         // If the flag for animation isn't set, render only one frame
         $frameCount = $this->animatePreviews ? $this->getNumFrames() : 1;
 
+        // 30 or 15 seconds of animation right now!
+        // imageDelay is measured in 1/100th, so an imageDelay of 6 means ideally
+        // 100 / 6 images are displayed per second AND
+        // we can have
+        // 15 * (100 / 6) = 250 OR
+        // 30 * (100 / 6) = 500
+        // images (frames) in our GIF
+        // This again means that we can have
+        // 250 (500) / frameCount
+        // iterations
+        if($frameCount > 1) {
+            $overallFrames = $this->maxDuration * (100 / $imageDelay);
+            $numIterations = ceil($overallFrames / $frameCount);
+        }
+        else
+        {
+            $numIterations = 1;
+        }
+
         $imgTime = 0;
         $recTime = 0;
         $texTime = 0;
@@ -602,7 +623,6 @@ class GfxContainer
                 // animationStep information
                 $layerStack[] = $element->renderGif($animationStep, $skip);
                 $dur = microtime(true) - $start;
-//                echo get_class($element) . ': ' . $dur . "\n";
                 switch(get_class($element))
                 {
                     case 'GfxImage':
@@ -618,8 +638,7 @@ class GfxContainer
                     break;
                 }
             }
-//            echo "-----------------------------------------\n";
-
+            // never skip the first frame!
             if($i == 0) $skip = false;
 
             if($skip)
@@ -642,22 +661,18 @@ class GfxContainer
 
             //composite the single images
             $frame->compositeImage($background, Imagick::COMPOSITE_DEFAULT, 0, 0);
-            // TODO: count($layerStack) should never be ZERO here ...
-            // since we're iteratin over the animationElements, there should
-            // be an an animation for all of them
-//            if(count($layerStack) > 0)
-//            {
-                foreach($layerStack as $singleImage)
+
+            foreach($layerStack as $singleImage)
+            {
+                if($singleImage instanceof Imagick)
                 {
-                    if($singleImage instanceof Imagick)
-                    {
-                        $frame->compositeImage($singleImage, Imagick::COMPOSITE_DEFAULT, 0, 0);
-                    }
+                    $frame->compositeImage($singleImage, Imagick::COMPOSITE_DEFAULT, 0, 0);
                 }
-//            }
+            }
 
             //add the complete frame to the stage
             $stage->addImage($frame);
+            $stage->setImageIterations($numIterations);
             // reset delay
             $delay = $imageDelay;
         }

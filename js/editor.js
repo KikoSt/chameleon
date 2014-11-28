@@ -126,6 +126,14 @@ $(document).ready(function() {
     /**
      *   Toolbar buttons
      **/
+     $('#play').on('click', function(e) {
+        var gifsrc = $('#previewImage').attr('src');
+        gifsrc = gifsrc.replace(/\?ts=.*/, '?ts=' + new Date().getTime());
+        $("#previewImage").unbind('mapster');
+        $("#previewImage").attr('src', gifsrc);
+        mapsterInit();
+     });
+
      $('#flash').on('click', function(e) {
          $('#previewSwf').toggle();
      });
