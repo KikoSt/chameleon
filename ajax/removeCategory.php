@@ -12,6 +12,8 @@ $advertiserId = (int)getRequestVar('advertiserId');
 $templateId   = (int)getRequestVar('templateId');
 $categoryId   = $_REQUEST['categoryId'];
 
+var_dump($categoryId);
+
 foreach($categoryId as $singleCategory)
 {
     $purgedCategoryId[] = $singleCategory['id'];
@@ -38,4 +40,4 @@ if(count($subscriptions > 0))
 // store template
 $success = ($result = $connector->sendBannerTemplate($template));
 
-echo json_encode($success);
+//echo json_encode($success);

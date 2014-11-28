@@ -36,11 +36,9 @@ $(document).ready(function()
         e.preventDefault();
         var metaData = getMetaData($(this));
 
-        metaData.type = 'available';
+        setSelectedCategories(metaData, 'available');
 
-        setSelectedCategories(metaData);
-
-        if (!$("#availableVategory-"+metaData.templateId).length) {
+        if (!$("#availableCategory-"+metaData.templateId).length) {
             $('#addCategory-'+metaData.templateId+'-'+metaData.advertiserId).prop('disabled', true);
         }
 
@@ -72,26 +70,18 @@ $(document).ready(function()
     });
 
     $('.removeCategoryShortcut').click(function(){
-        createNotification("test", "toller text");
-        var id = $(this).closest('div').attr('id').split('-');
-        var categoryId = id[1];
-        var templateId = id[2];
-        var data = {};
-
-        data.categoryId   = categoryId;
-        data.advertiserId = $('#advertiserId').attr('value');
-        data.templateId   = templateId;
-        data.companyId    = $('#companyId').attr('value');
+        var metaData = getMetaData($(this));
 
         $.ajax({
             type: 'POST',
-            data: data,
+            data: metaData,
             dataType: "json",
             url: '/chameleon/ajax/removeCategory.php'
-        }).fail(function ()
-        {
-            $('#assigned-' + categoryId + '-' + templateId).empty().remove();
-            $("#assignedCategory-"+templateId).find("option[value='"+categoryId+"']").remove();
+        }).done(function(){
+            $('#assigned-' + metaData.categoryId + '-' + metaData.templateId).empty().remove();
+            $("#assignedCategory-"+metaData.templateId).find("option[value='"+metaData.categoryId+"']").remove();
+        }).fail(function(response){
+            createErrorNotification('An error occurred...', response);
         });
     });
 
@@ -103,9 +93,7 @@ $(document).ready(function()
         e.preventDefault();
         var metaData = getMetaData($(this));
 
-        metaData.type = 'assigned';
-
-        setSelectedCategories(metaData);
+        setSelectedCategories(metaData, 'assigned');
 
         $.ajax({
             type: 'POST',
@@ -130,7 +118,7 @@ $(document).ready(function()
             });
             $(".modal-body form").unblock();
         }).fail(function(response){
-            createErrorNotification('Alert', response);
+            createErrorNotification('An error occurred', response);
         });
     });
 
@@ -152,13 +140,15 @@ $(document).ready(function()
                     dataType: "json",
                     url: '/chameleon/ajax/cloneTemplate.php'
                 }).done(function(cloneId){
-                    var url = window.location.origin + '/chameleon/index.php?page=editor&templateId=' + cloneId +
-                            '&companyId=' + metaData.companyId +
-                            '&advertiserId=' + metaData.advertiserId;
-                    window.location.replace(url);
+                    if(cloneId !== "undefinded" && cloneId !== 0){
+                        var url = window.location.origin + '/chameleon/index.php?page=editor&templateId=' + cloneId +
+                                '&companyId=' + metaData.companyId +
+                                '&advertiserId=' + metaData.advertiserId;
+                        window.location.replace(url);
+                    }
                 }).fail(function(response){
                     confirmBox.destroy();
-                    createErrorNotification('Alert', response);
+                    createErrorNotification('An error occurred', response);
                 });
             },
             cancel: function() {},
@@ -189,7 +179,7 @@ $(document).ready(function()
                     if(response.length > 0)
                     {
                         confirmBox.destroy();
-                        createErrorNotification('<i class="fa fa-exclamation-triangle"></i> An error occurred', response);
+                        createErrorNotification('An error occurred', response);
                     }
                     else
                     {
@@ -232,14 +222,16 @@ $(document).ready(function()
         {
             if(output.length > 0)
             {
-                renderGif(output, metaData);
+                getRenderedGif(output, metaData);
             }
             else
             {
                 $('<div id="emptyItem-'+metaData.templateId+'" class="item">No categories selected. Please select at least one category to render examples...</div>').appendTo('#previewcarousel-' + metaData.templateId);
                 $('#emptyItem-'+metaData.templateId).addClass("active");
             }
-        }).fail(function(){});
+        }).fail(function(){
+
+        });
     }
 
     /**
@@ -247,7 +239,7 @@ $(document).ready(function()
      * @param output
      * @param data
      */
-    function renderGif(output, data){
+    function getRenderedGif(output, data){
         var count = 1;
         $.each(output, function (key,value)
         {
@@ -315,11 +307,16 @@ $(document).ready(function()
         return metaData;
     }
 
-    function setSelectedCategories(metaData)
+    /**
+     *
+     * @param metaData
+     * @param section String available, assigned
+     */
+    function setSelectedCategories(metaData, section)
     {
         var category = [];
 
-        $('#'+metaData.type+'Category-'+metaData.templateId).find('option:selected').each(function(i,selected){
+        $('#'+section+'Category-'+metaData.templateId).find('option:selected').each(function(i,selected){
             var subscription = {};
             subscription.id = $(selected).val();
             subscription.name = $.trim($(selected).text());

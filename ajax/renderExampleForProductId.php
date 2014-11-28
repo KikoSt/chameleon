@@ -40,37 +40,50 @@ $product = $connector->getProductDataByProductId($productId);
 
 $categoryId = $product->getCategoryId();
 
+$template = $connector->getTemplateById($templateId);
+
 $argv = array(null, $companyId, $advertiserId, null, $auditUserId);
 $generator = new CMEOGenerator($argv);
 $generator->setTemplates(array($templateId));
 $generator->setCategories($categoryId);
 $generator->prepareLogfile($categoryId);
 $generator->getContainer()->setCategoryId($categoryId);
+$generator->getContainer()->setProductData($product);
+$generator->getContainer()->setCanvasHeight($template->getDimY());
+$generator->getContainer()->setCanvasWidth($template->getDimX());
 
 $sourcePath = (string) $companyId . '/' . (string) $advertiserId . '/' . $categoryId;
-
-$template = $connector->getTemplateById($templateId);
 
 $generator->getContainer()->setSource($template->getSvgContent());
 $generator->getContainer()->setId($template->getBannerTemplateId());
 
-try
+$schroedingersFile = $dir."/".$generator->getContainer()->getOutputFilename().".gif";
+
+if(file_exists($schroedingersFile))
 {
-    $generator->getContainer()->parse();
+    $fileName = str_replace("../", '', $schroedingersFile);
+
 }
-catch(Exception $e)
+else
 {
-    $message = $generator->logMessage('An error occured: ' . $e->getMessage() . "\n");
+    try
+    {
+        $generator->getContainer()->parse();
+    }
+    catch(Exception $e)
+    {
+        $message = $generator->logMessage('An error occured: ' . $e->getMessage() . "\n");
+    }
+
+    $generator->render($product, 'GIF');
+
+    // move file ...
+    $sourceName = '../output/' . $sourcePath . '/' . $generator->getContainer()->getOutputFilename() . '.gif';
+    $targetName = '../output/' . $targetPath . '/' . $generator->getContainer()->getOutputFilename() . '.gif';
+    $fileName = 'output/' . $targetPath . '/' . $generator->getContainer()->getOutputFilename() . '.gif';
+
+    rename($sourceName, $targetName);
 }
-
-$generator->render($product, 'GIF');
-
-// move file ...
-$sourceName = '../output/' . $sourcePath . '/' . $generator->getContainer()->getOutputFilename() . '.gif';
-$targetName = '../output/' . $targetPath . '/' . $generator->getContainer()->getOutputFilename() . '.gif';
-$fileName = 'output/' . $targetPath . '/' . $generator->getContainer()->getOutputFilename() . '.gif';
-
-rename($sourceName, $targetName);
 
 echo json_encode($fileName);
 
