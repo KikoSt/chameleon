@@ -744,6 +744,7 @@ $(document).ready(function() {
      **/
     function refreshGif(action, mode) {
         if(renderXHR !== undefined) {
+            unregisterXHR(renderXHR);
             renderXHR.abort();
         }
         renderXHR = new XMLHttpRequest();
