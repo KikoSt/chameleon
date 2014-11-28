@@ -62,7 +62,6 @@ $schroedingersFile = $dir."/".$generator->getContainer()->getOutputFilename().".
 if(file_exists($schroedingersFile))
 {
     $fileName = str_replace("../", '', $schroedingersFile);
-
 }
 else
 {

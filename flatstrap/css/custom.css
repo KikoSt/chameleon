@@ -354,3 +354,7 @@ input[type=checkbox]:checked + label:after
 .modal-backdrop{
     z-index: auto;
 }
+
+.carousel-inner > .item > img{
+    margin: auto!important;
+}

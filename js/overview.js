@@ -239,28 +239,28 @@ $(document).ready(function()
      * @param output
      * @param data
      */
-    function getRenderedGif(output, data){
+    function getRenderedGif(output, metaData){
         var count = 1;
         $.each(output, function (key,value)
         {
-            data.productId = value;
+            metaData.productId = value;
 
             $.ajax({
                 type: "POST",
-                data: data,
+                data: metaData,
                 dataType: "json",
                 url: "/chameleon/ajax/renderExampleForProductId.php"
             }).done(function (file){
-                $('<div id="'+data.templateId+'_'+count+'" class="item">'+
+                $('<div id="'+metaData.templateId+'_'+count+'" class="item">'+
                 '<img src="' + window.location.origin + '/chameleon/' + file + '" alt="..."' +
                 'style="max-height: 320px;">' +
-                '</div>').appendTo('#previewcarousel-' + data.templateId);
+                '</div>').appendTo('#previewcarousel-' + metaData.templateId);
 
                 count++;
 
-                $('#'+data.templateId+'_1').addClass("active");
-                $("#creativesCarousel-"+data.templateId).carousel("pause").removeData();
-                $("#creativesCarousel-"+data.templateId).carousel(0);
+                $('#'+metaData.templateId+'_1').addClass("active");
+                $("#creativesCarousel-"+metaData.templateId).carousel("pause").removeData();
+                $("#creativesCarousel-"+metaData.templateId).carousel(0);
             });
         });
     }
