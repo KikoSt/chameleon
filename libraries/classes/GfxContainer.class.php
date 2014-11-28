@@ -623,7 +623,6 @@ class GfxContainer
                 // animationStep information
                 $layerStack[] = $element->renderGif($animationStep, $skip);
                 $dur = microtime(true) - $start;
-//                echo get_class($element) . ': ' . $dur . "\n";
                 switch(get_class($element))
                 {
                     case 'GfxImage':
@@ -639,8 +638,7 @@ class GfxContainer
                     break;
                 }
             }
-//            echo "-----------------------------------------\n";
-
+            // never skip the first frame!
             if($i == 0) $skip = false;
 
             if($skip)
@@ -663,19 +661,14 @@ class GfxContainer
 
             //composite the single images
             $frame->compositeImage($background, Imagick::COMPOSITE_DEFAULT, 0, 0);
-            // TODO: count($layerStack) should never be ZERO here ...
-            // since we're iteratin over the animationElements, there should
-            // be an an animation for all of them
-//            if(count($layerStack) > 0)
-//            {
-                foreach($layerStack as $singleImage)
+
+            foreach($layerStack as $singleImage)
+            {
+                if($singleImage instanceof Imagick)
                 {
-                    if($singleImage instanceof Imagick)
-                    {
-                        $frame->compositeImage($singleImage, Imagick::COMPOSITE_DEFAULT, 0, 0);
-                    }
+                    $frame->compositeImage($singleImage, Imagick::COMPOSITE_DEFAULT, 0, 0);
                 }
-//            }
+            }
 
             //add the complete frame to the stage
             $stage->addImage($frame);
