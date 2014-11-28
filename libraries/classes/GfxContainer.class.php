@@ -70,6 +70,8 @@ class GfxContainer
         $this->animatePreviews = true;
         $this->groups = array();
 
+        $this->maxDuration = 10;
+
         // TODO: for now ...
         $this->framerate = 30;
         $this->numFrames = 0;
@@ -573,6 +575,25 @@ class GfxContainer
         // If the flag for animation isn't set, render only one frame
         $frameCount = $this->animatePreviews ? $this->getNumFrames() : 1;
 
+        // 30 or 15 seconds of animation right now!
+        // imageDelay is measured in 1/100th, so an imageDelay of 6 means ideally
+        // 100 / 6 images are displayed per second AND
+        // we can have
+        // 15 * (100 / 6) = 250 OR
+        // 30 * (100 / 6) = 500
+        // images (frames) in our GIF
+        // This again means that we can have
+        // 250 (500) / frameCount
+        // iterations
+        if($frameCount > 1) {
+            $overallFrames = $this->maxDuration * (100 / $imageDelay);
+            $numIterations = ceil($overallFrames / $frameCount);
+        }
+        else
+        {
+            $numIterations = 1;
+        }
+
         $imgTime = 0;
         $recTime = 0;
         $texTime = 0;
@@ -658,6 +679,7 @@ class GfxContainer
 
             //add the complete frame to the stage
             $stage->addImage($frame);
+            $stage->setImageIterations($numIterations);
             // reset delay
             $delay = $imageDelay;
         }
