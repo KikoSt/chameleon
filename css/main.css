@@ -321,6 +321,17 @@ input.filesize-warning {
     background-color: #ff9999 !important;
 }
 
+#loadification {
+    width: 25px;
+    height: 25px;
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    padding: 5px;
+    background-color: #ffffff;
+    box-shadow: 3px 3px 3px #777777;
+}
+
 .jBox-custom-padding-line-1x{
     padding-top: 15px;
 }
@@ -332,6 +343,3 @@ input.filesize-warning {
 .jBox-custom-padding-text{
     padding-top: 5px;
 }
-
-
-

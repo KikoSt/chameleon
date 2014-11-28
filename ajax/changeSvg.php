@@ -26,6 +26,14 @@ $companyId    = (int)getRequestVar('companyId');
 $advertiserId = (int)getRequestVar('advertiserId');
 $templateId   = (int)getRequestVar('templateId');
 $action       = getRequestVar('action');
+if(isset($_REQUEST['mode']))
+{
+    $mode = $_REQUEST['mode'];
+}
+else
+{
+    $mode = 'animated';
+}
 
 $container->setCompanyId($companyId);
 $container->setAdvertiserId($advertiserId);
@@ -46,6 +54,18 @@ if(!empty($_FILES))
     {
         $filename = ASSET_DIR . '/' . $singleFile['name'];
         move_uploaded_file($singleFile['tmp_name'], $filename);
+    }
+}
+
+if(isset($mode))
+{
+    if($mode === 'static')
+    {
+        $container->animatePreviews(false);
+    }
+    else
+    {
+        $container->animatePreviews(true);
     }
 }
 
