@@ -11,7 +11,6 @@ require_once(__ROOT__ . 'libraries/functions.inc.php');
 
 $connector = new APIConnector();
 
-$auditUserId    = getRequestVar('auditUserId');;
 $companyId      = getRequestVar('companyId');
 $advertiserId   = getRequestVar('advertiserId');
 $templateId     = getRequestVar('templateId');
@@ -19,7 +18,6 @@ $productId      = getRequestVar('productId');
 
 $connector->setCompanyId($companyId);
 $connector->setAdvertiserId($advertiserId);
-$connector->setAuditUserId($auditUserId);
 
 $targetPath = (string) $companyId . '/' . (string) $advertiserId . '/preview/' . $templateId;
 $dir = '../output/' . $targetPath;
@@ -37,9 +35,7 @@ if(!file_exists($dir))
 }
 
 $product = $connector->getProductDataByProductId($productId);
-
 $categoryId = $product->getCategoryId();
-
 $template = $connector->getTemplateById($templateId);
 
 $argv = array(null, $companyId, $advertiserId, null, $auditUserId);

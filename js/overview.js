@@ -211,7 +211,6 @@ $(document).ready(function()
         var metaData = getMetaData(jQueryObject);
 
         metaData.numPreviewPics = 10;
-        metaData.auditUserId    = 1;
 
         $.ajax({
             type: "POST",
