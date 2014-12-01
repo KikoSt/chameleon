@@ -240,8 +240,9 @@ $(document).ready(function()
      */
     function getRenderedGif(output, data){
         var count = 1;
-        $.each(output, function (key,value)
+        if(output.length > 0)
         {
+            value = output.shift();
             data.productId = value;
 
             $.ajax({
@@ -251,7 +252,7 @@ $(document).ready(function()
                 url: "/chameleon/ajax/renderExampleForProductId.php"
             }).done(function (file){
                 $('<div id="'+data.templateId+'_'+count+'" class="item">'+
-                '<img src="' + window.location.origin + '/chameleon/' + file + '" alt="..."' +
+                '<img src="' + window.location.origin + '/chameleon/' + file + '" alt="preview ' + data.productId + '" ' +
                 'style="max-height: 320px;">' +
                 '</div>').appendTo('#previewcarousel-' + data.templateId);
 
@@ -260,8 +261,10 @@ $(document).ready(function()
                 $('#'+data.templateId+'_1').addClass("active");
                 $("#creativesCarousel-"+data.templateId).carousel("pause").removeData();
                 $("#creativesCarousel-"+data.templateId).carousel(0);
+                console.log('done');
+                getRenderedGif(output, data);
             });
-        });
+        }
     }
 
     /**
