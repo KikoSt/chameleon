@@ -12,10 +12,18 @@ $advertiserId = (int)getRequestVar('advertiserId');
 $templateId   = (int)getRequestVar('templateId');
 $categoryId   = $_REQUEST['categoryId'];
 
-foreach($categoryId as $singleCategory)
+if(is_array($categoryId))
 {
-    $purgedCategoryId[] = $singleCategory['id'];
+    foreach($categoryId as $singleCategory)
+    {
+        $purgedCategoryId[] = $singleCategory['id'];
+    }
 }
+else
+{
+    $purgedCategoryId[] = $categoryId;
+}
+
 
 // get template via REST API
 $connector = new APIConnector();

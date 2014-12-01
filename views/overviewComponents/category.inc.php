@@ -15,7 +15,7 @@
         ?>
                     <div id="assigned-<?php echo $templateSubscription->idCategory;?>-<?php echo $preview->templateId; ?>" class="row">
                         <p class="text-left categoryItem">
-                            <a id="cat-<?php echo $preview->templateId; ?>-<?php echo $templateSubscription->idCategory;?> "class="fa
+                            <a id="cat-<?php echo $preview->templateId; ?>-<?php echo $templateSubscription->idCategory;?>" class="fa
                             fa-trash categoryItem cursor-pointer removeCategoryShortcut" title="Remove category"></a>
                             <?php echo $templateSubscription->categoryName;?>
                         </p>

@@ -30,10 +30,12 @@
                 <?php // TODO: this is a dirty, dirty hack! ?>
                 <label class="col-md-4" style="height: <?php echo count($this->activeCategories) * 19?>px;">
                     Categories:
-                    <button id="editCategoriesEditor" type="button" class="btn btn-xs" data-toggle="modal" data-target="#categorySelect"
-                            style="background-color: #7f7f7f; color: #FFFFFF;">
-                        <span class="glyphicon glyphicon-pencil"></span>
-                    </button>
+                    <span id="editCategoriesEditor"
+                          title="Edit the assigned categories"
+                          class="fa fa-pencil-square-o cursor-pointer"
+                          data-toggle="modal"
+                          data-target="#categorySelect">
+                    </span>
                 </label>
                 <div>
                     <?php
