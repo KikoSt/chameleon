@@ -4,6 +4,13 @@ $(document).ready(function()
         interval: 4000
     });
 
+    /**
+     *
+     */
+    $('.ajaxPreview').each(function(){
+        createExamples($(this));
+    });
+
     $('#addCategory').click(function(e) {
         var selectedOpts = $('#availableCategory option:selected');
         if (selectedOpts.length == 0) {
@@ -194,13 +201,6 @@ $(document).ready(function()
             content: '<p>Are you sure that you want to delete template</p><p class="jBox-custom-padding-text">"'+metaData.templateName+'"?</p>'
         });
         confirmBox.open();
-    });
-
-    /**
-     *
-     */
-    $('.ajaxPreview').each(function(){
-        createExamples($(this));
     });
 
     /**
