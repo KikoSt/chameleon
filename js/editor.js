@@ -37,7 +37,6 @@ $(document).ready(function() {
     var somethingChanged = false;
     var category = {};
 
-    // refresh preview image for this template upon loading the page
     var action = 'update';
     updateTemplateData(action);
     mapsterInit();
