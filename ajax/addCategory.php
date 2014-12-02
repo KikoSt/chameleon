@@ -35,7 +35,7 @@ $template->setCategorySubscriptions($subscriptions);
 // store template
 $success = ($result = $connector->sendBannerTemplate($template));
 
-return json_encode($success);
+echo json_encode($success);
 
 
 

@@ -112,7 +112,7 @@ Cmeo.prototype.removeCategoryByModalView = function(templateId) {
         });
         $(".modal-body form").unblock();
     }).fail(function(response){
-        this.createErrorNotification('An error occurred', response);
+        Cmeo.prototype.createErrorNotification('An error occurred', response);
     });
 };
 
