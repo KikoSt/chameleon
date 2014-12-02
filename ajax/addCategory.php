@@ -8,11 +8,9 @@ require_once(__ROOT__ . 'libraries/functions.inc.php');
 require_once('../libraries/classes/APIConnector.class.php');
 require_once('../libraries/classes/BannerTemplateModel.class.php');
 
-var_dump($_REQUEST);
-
 $templateId   = (int)getRequestVar('templateId');
 $advertiserId = (int)getRequestVar('advertiserId');
-$category   = $_REQUEST['category'];
+$category   = $_REQUEST['categoryId'];
 
 // get template via REST API
 $connector = new APIConnector();

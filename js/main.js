@@ -6,6 +6,14 @@ var Constructor = function(name){
     this.name = name;
 };
 
+/**
+ * Create a error notification
+ *
+ * @param title
+ * @param content
+ * @param width
+ * @param height
+ */
 Constructor.prototype.createErrorNotification = function(title, content, width, height){
 
     width = (typeof width === "undefined") ? 500 : width;
@@ -26,6 +34,7 @@ Constructor.prototype.createErrorNotification = function(title, content, width, 
 
 /**
  *
+ *
  * @param metaData
  * @param section String available, assigned
  */
@@ -43,13 +52,12 @@ Constructor.prototype.setSelectedCategories = function(metaData, section) {
 };
 
 Constructor.prototype.addCategoryModal = function(){
-    var metaData = this.getMetaData();
-
     $(".modal-body form").block({
         message: '<h1>Assigning categories...</h1>',
         css: { border: '3px solid #a00' }
     });
 
+    var metaData = this.getMetaData();
     this.setSelectedCategories(metaData, 'available');
 
     if (!$("#availableCategory-"+metaData.templateId).length) {
@@ -62,7 +70,6 @@ Constructor.prototype.addCategoryModal = function(){
         dataType: "json",
         url: "/chameleon/ajax/addCategory.php"
     }).done(function(){
-
         metaData.categoryId.forEach(function(singleCategory){
             //create item for right select
             var item = '<div id="'+singleCategory.id+'" class="row"><p class="text-left overviewTitle categoryItem">'+
@@ -79,10 +86,13 @@ Constructor.prototype.addCategoryModal = function(){
         });
         $(".modal-body form").unblock();
     }).fail(function(response){
-        this.createErrorNotification('Alert', response);
+        Constructor.prototype.createErrorNotification('Alert', response);
     });
 };
 
+/**
+ * Remove one or more categories from the template via the modal
+ */
 Constructor.prototype.removeCategoryModal = function() {
     var metaData = this.getMetaData();
 
