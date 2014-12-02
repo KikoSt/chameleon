@@ -35,9 +35,6 @@ $(document).ready(function() {
     var somethingChanged = false;
     var category = {};
 
-    // TODO: check: why isn't it hidden by css in the first place?
-    $('#alert-custom').hide();
-
     // refresh preview image for this template upon loading the page
     var action = 'update';
     updateTemplateData(action);
