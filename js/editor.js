@@ -15,6 +15,8 @@ function hideLoadification()
 
 $(document).ready(function() {
 
+    $.xhrPool = new XHRPool();
+
     $.showDuration = 0;
 
     var renderXHR; // store currently running xhr request rendering the preview to allow aborting
@@ -1050,3 +1052,26 @@ $(document).ready(function() {
     }
 
 });
+
+
+
+
+var XHRPool = new function() {
+    this.requests = [];
+};
+
+XHRPool.prototype.registerRequest(request) {
+    showLoadification();
+    this.requests.push(request);
+}
+
+XHRPool.prototype.unregisterRequest(request) {
+    var i = $.inArray(request, this.requests);
+    if(i > -1) {
+        this.requests.splice(i, 1);
+    }
+    if(this.requests.length < 1) {
+        hideLoadification();
+    }
+}
+
