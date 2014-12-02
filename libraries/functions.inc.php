@@ -172,3 +172,22 @@ function getImageMap($container, $displayComponentLinks)
     $imageMap .= '</map>';
     return $imageMap;
 }
+
+function getPrunedAvailableCategories($categories, $templateSubscriptions)
+{
+    $prunedCategories = array();
+
+    foreach($categories as $category)
+    {
+        $prunedCategories[$category->id] = $category->name;
+    }
+
+    foreach($templateSubscriptions as $subscription)
+    {
+        if($subscription->userStatus === "ACTIVE")
+        {
+            unset($prunedCategories[$subscription->idCategory]);
+        }
+    }
+    return $prunedCategories;
+}

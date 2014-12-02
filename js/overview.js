@@ -1,6 +1,6 @@
 $(document).ready(function()
 {
-    var overview = new Constructor("overview");
+    var overview = new Cmeo("overview");
 
     /**
      * Initializing of the carousel
@@ -13,33 +13,35 @@ $(document).ready(function()
      *
      */
     $('.ajaxPreview').each(function(){
-        overview.setClickTarget($(this));
-        overview.createExamples();
+        var id = $(this).attr('id').split('-');
+        var templateId = parseInt(id[1]);
+        overview.createExamples(templateId);
     });
 
     /**
-     * Add one or more categories to the "Assigned" list
+     * Add one or more categories to the "Assigned" list and remove the same from the "Available" list
      */
-    $('#addCategory').click(function() {
+    $('#addCategory').on('click', function(e) {
+        e.preventDefault();
         overview.moveCategoryModal('assigned');
-        e.preventDefault();
     });
 
     /**
-     * Remove one or more categories from the "Assigned" list
+     * Remove one or more categories from the "Assigned" list and add the same to the "Assigned" list
      */
-    $('#removeCategory').click(function(e) {
-        overview.moveCategoryModal('available');
+    $('#removeCategory').on('click', function(e) {
         e.preventDefault();
+        overview.moveCategoryModal('available');
     });
 
     /**
      * Add categories to the template via the "Select categories" pop-up (AJAX)
      */
-    $('.addCategoryOverview').click(function(e) {
+    $('.addCategoryOverview').on('click', function(e) {
         e.preventDefault();
-        overview.setClickTarget($(this));
-        overview.addCategoryModal();
+        var id = $(this).attr('id').split('-');
+        var templateId = parseInt(id[1]);
+        overview.addCategoryByModalView(templateId);
     });
 
     /**
@@ -47,9 +49,11 @@ $(document).ready(function()
      *
      * The category will not be deleted but set on "DELETED"
      */
-    $('.removeCategoryShortcut').click(function(){
-        overview.setClickTarget($(this));
-        overview.removeCategoryShortcut();
+    $('.removeCategoryShortcut').on('click', function(){
+        var id = $(this).attr('id').split('-');
+        var templateId = parseInt(id[1]);
+        var categoryId = parseInt(id[2]);
+        overview.removeCategoryByShortcut(templateId, categoryId);
     });
 
     /**
@@ -57,25 +61,28 @@ $(document).ready(function()
      *
      * The category will not be deleted but set on "DELETED"
      */
-    $('.removeCategoryOverview').click(function(e) {
+    $('.removeCategoryOverview').on('click', function(e) {
         e.preventDefault();
-        overview.setClickTarget($(this));
-        overview.removeCategoryModal();
+        var id = $(this).attr('id').split('-');
+        var templateId = parseInt(id[1]);
+        overview.removeCategoryByModalView(templateId);
     });
 
     /**
-     *
+     * Clone a template
      */
-    $(".cloneTemplate").click(function(){
-        overview.setClickTarget($(this));
-        overview.cloneTemplate();
+    $(".cloneTemplate").on('click', function(){
+        var id = $(this).attr('id').split('-');
+        var templateId = parseInt(id[1]);
+        overview.cloneTemplate(templateId);
     });
 
     /**
-     *
+     * Delete a template
      */
-    $(".deleteTemplate").click(function(){
-        overview.setClickTarget($(this));
-        overview.deleteTemplate();
+    $(".deleteTemplate").on('click', function(){
+        var id = $(this).attr('id').split('-');
+        var templateId = parseInt(id[1]);
+        overview.deleteTemplate(templateId);
     });
 });

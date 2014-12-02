@@ -137,10 +137,13 @@ class Editor extends Controller
         //       once within getSubscribedCategories
         //       Most likely, we wouldn't need this at all any longer since all "subscribed categories are provided
         //       along with the template
-        $this->view->subscribedCategories = $this->connector->getSubscribedCategoriesByTemplateId($container->getId());
         $this->view->combinedCategories   = $this->getSubscribedCategories($template);
         $this->view->activeCategories     = $this->getActiveCategories($this->view->combinedCategories);
         $this->view->allowedDimensions    = $this->connector->getAllowedBannerDimensions();
+
+        //todo the following two calls deliver the same result, figure out if this is necessary
+        $this->view->templateSubscription = $template->getCategorySubscriptions();
+        $this->view->subscribedCategories = $this->connector->getSubscribedCategoriesByTemplateId($container->getId());
 
         $this->view->template = $template;
 
@@ -276,7 +279,6 @@ class Editor extends Controller
 
         return $subscribedCategories;
     }
-
 
     private function getPreviewPaths()
     {

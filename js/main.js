@@ -2,19 +2,19 @@
  * Created by thomas on 01.12.14.
  */
 
-var Constructor = function(name){
+var Cmeo = function(name){
     this.name = name;
 };
 
 /**
  * Create a error notification
  *
- * @param title
- * @param content
- * @param width
- * @param height
+ * @param {String}  [title]
+ * @param {String}  [content]
+ * @param {Integer} [width]     optional
+ * @param {Integer} [height]    optional
  */
-Constructor.prototype.createErrorNotification = function(title, content, width, height){
+Cmeo.prototype.createErrorNotification = function(title, content, width, height){
 
     width = (typeof width === "undefined") ? 500 : width;
     height = (typeof height === "undefined") ? 250 : height;
@@ -33,32 +33,18 @@ Constructor.prototype.createErrorNotification = function(title, content, width, 
 };
 
 /**
+ * Add one or more categories to the template via the modal view
  *
- *
- * @param metaData
- * @param section String available, assigned
+ * @param {Integer} [templateId]
  */
-Constructor.prototype.setSelectedCategories = function(metaData, section) {
-    var category = [];
-
-    $('#'+section+'Category-'+metaData.templateId).find('option:selected').each(function(i,selected){
-        var subscription = {};
-        subscription.id = $(selected).val();
-        subscription.name = $.trim($(selected).text());
-        category.push(subscription);
-    });
-
-    metaData.categoryId = category;
-};
-
-Constructor.prototype.addCategoryModal = function(){
+Cmeo.prototype.addCategoryByModalView = function(templateId){
     $(".modal-body form").block({
         message: '<h1>Assigning categories...</h1>',
         css: { border: '3px solid #a00' }
     });
 
-    var metaData = this.getMetaData();
-    this.setSelectedCategories(metaData, 'available');
+    var metaData = getMetaData(templateId);
+    metaData = addSelectedCategories(metaData, 'available');
 
     if (!$("#availableCategory-"+metaData.templateId).length) {
         $('#addCategory-'+metaData.templateId+'-'+metaData.advertiserId).prop('disabled', true);
@@ -86,22 +72,23 @@ Constructor.prototype.addCategoryModal = function(){
         });
         $(".modal-body form").unblock();
     }).fail(function(response){
-        Constructor.prototype.createErrorNotification('Alert', response);
+        Cmeo.prototype.createErrorNotification('Alert', response);
     });
 };
 
 /**
- * Remove one or more categories from the template via the modal
+ * Remove one or more categories from the template via the modal view
+ *
+ * @param {Integer} [templateId]
  */
-Constructor.prototype.removeCategoryModal = function() {
-    var metaData = this.getMetaData();
-
+Cmeo.prototype.removeCategoryByModalView = function(templateId) {
     $(".modal-body form").block({
         message: '<h1>Removing categories</h1>',
         css: { border: '3px solid #a00' }
     });
 
-    this.setSelectedCategories(metaData, 'assigned');
+    var metaData = getMetaData(templateId);
+    metaData = addSelectedCategories(metaData, 'assigned');
 
     $.ajax({
         type: 'POST',
@@ -131,10 +118,11 @@ Constructor.prototype.removeCategoryModal = function() {
 
 /**
  * Remove a category via the shortcut at the overview (trash can icon)
+ *
+ * @param {Integer} [templateId]
  */
-Constructor.prototype.removeCategoryShortcut = function(){
-    var metaData = this.getMetaData();
-
+Cmeo.prototype.removeCategoryByShortcut = function(templateId, categoryId){
+    var metaData = getMetaData(templateId,categoryId);
     $.ajax({
         type: 'POST',
         data: metaData,
@@ -144,15 +132,17 @@ Constructor.prototype.removeCategoryShortcut = function(){
         $('#assigned-' + metaData.categoryId + '-' +metaData.templateId).empty().remove();
         $("#assignedCategory-"+metaData.templateId).find("option[value='"+metaData.categoryId+"']").remove();
     }).fail(function(response){
-        Constructor.prototype.createErrorNotification('An error occurred...', response);
+        Cmeo.prototype.createErrorNotification('An error occurred...', response);
     });
 };
 
 /**
  * Delete a template
+ *
+ * @param {Integer} [templateId]
  */
-Constructor.prototype.deleteTemplate = function(){
-    var metaData = this.getMetaData();
+Cmeo.prototype.deleteTemplate = function(templateId){
+    var metaData = getMetaData(templateId);
 
     var confirmBox = new jBox('Confirm', {
         title: 'Delete template',
@@ -190,16 +180,17 @@ Constructor.prototype.deleteTemplate = function(){
 
 /**
  * clone a template and redirect to the editor
+ *
+ * @param {Integer} [templateId]
  */
-Constructor.prototype.cloneTemplate = function(){
-    var metaData = this.getMetaData();
-
+Cmeo.prototype.cloneTemplate = function(templateId){
     var confirmBox = new jBox('Confirm', {
         title: 'Delete template',
         confirmButton: 'Clone',
         cancelButton: 'Cancel',
         closeOnClick: false,
         confirm: function() {
+            var metaData = getMetaData(templateId);
             $.ajax({
                 type: 'POST',
                 data: metaData,
@@ -226,9 +217,10 @@ Constructor.prototype.cloneTemplate = function(){
 /**
  * Create examples for each template
  */
-Constructor.prototype.createExamples = function(){
-    var metaData = this.getMetaData();
+Cmeo.prototype.createExamples = function(templateId){
+    var metaData = getMetaData(templateId);
 
+    //todo till we get this via user defined value or something like that
     metaData.numPreviewPics = 10;
     metaData.auditUserId    = 1;
 
@@ -254,7 +246,12 @@ Constructor.prototype.createExamples = function(){
     });
 };
 
-Constructor.prototype.moveCategoryModal = function(target){
+/**
+ * Move a category to the set target (just UI )
+ *
+ * @param target
+ */
+Cmeo.prototype.moveCategoryModal = function(target){
     var selectedOpts = $('#availableCategory option:selected');
     if (selectedOpts.length == 0) {
         overview.createErrorNotification('Alert', 'Nothing to move.');
@@ -271,33 +268,19 @@ Constructor.prototype.moveCategoryModal = function(target){
  *
  * @returns object List of meta data values
  */
-Constructor.prototype.getMetaData = function(){
+function getMetaData(templateId, categoryId){
+    categoryId = (typeof categoryId === "undefined") ? null : categoryId;
+
     var metaData = {};
-    var clickTarget = this.clickTarget;
-    var id = clickTarget.attr('id').split('-');
 
-    if(typeof id[2] !== 'undefined')
-    {
-        metaData.categoryId = parseInt(id[2]);
-    }
-
-    metaData.templateId = parseInt(id[1]);
-    metaData.templateName = $('#name-'+id[1]).attr('title');
+    metaData.templateId   = templateId;
+    metaData.templateName = $('#name-'+templateId).attr('title');
+    metaData.categoryId   = categoryId;
     metaData.advertiserId = parseInt($('#advertiserId').attr('value'));
-    metaData.companyId = parseInt($('#companyId').attr('value'));
+    metaData.companyId    = parseInt($('#companyId').attr('value'));
 
     return metaData;
 };
-
-/**
- * Set the click target
- *
- * @param clickTarget
- */
-Constructor.prototype.setClickTarget = function(clickTarget){
-    this.clickTarget = clickTarget;
-};
-
 
 /**
  * Get the rendered examples
@@ -330,6 +313,27 @@ function getRenderedGif(output, metaData){
             $("#creativesCarousel-"+metaData.templateId).carousel(0);
         });
     });
+}
+
+/**
+ * Get the selected categories
+ *
+ * @param metaData
+ * @param section String available, assigned
+ */
+function addSelectedCategories(metaData, section) {
+    var category = [];
+
+    $('#'+section+'Category-'+metaData.templateId).find('option:selected').each(function(i,selected){
+        var subscription = {};
+        subscription.id = $(selected).val();
+        subscription.name = $.trim($(selected).text());
+        category.push(subscription);
+    });
+
+    metaData.categoryId = category;
+
+    return metaData;
 }
 
 

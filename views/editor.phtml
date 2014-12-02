@@ -97,24 +97,14 @@
         </div>
     </form>
 </div>
-<?php echo $this->imageMap; ?>
-<!-- Modal -->
-<div class="modal fade" id="categorySelect" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header imageTitle">
-                <button type="button" class="close" data-dismiss="modal">
-                    <span class="glyphicon glyphicon-remove-circle cursor-pointer"></span>
-                </button>
-                <h4 class="modal-title" id="myModalLabel">Select categories:</h4>
-            </div>
-            <div class="modal-body">
-                <?php include('overviewComponents/categoryAlignment.inc.php'); ?>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Modal -->
+<?php
+    echo $this->imageMap;
+
+    $templateId = $this->templateId;
+    $availableCategories = $this->availableCategories;
+    $templateSubscriptions = $this->templateSubscription;
+    include('categoryAlignmentModal.inc.php');
+?>
 
 
 <div id="alert-custom" class="alert alert-warning alert-dismissible savealert" role="alert" style="margin:0;">
