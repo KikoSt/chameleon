@@ -73,7 +73,7 @@ class GfxContainer
         $this->maxDuration = 10;
 
         // TODO: for now ...
-        $this->framerate = 30;
+        $this->framerate = 24;
         $this->numFrames = 0;
         $this->globalAnimationKeyframes = array();
     }
@@ -513,6 +513,12 @@ class GfxContainer
         $imageDelay   = 6; // basic (initial) delay value per frame; most browsers do not support
                            // less than 6 frames, leading to an even worse (slower, stuttering)
                            // result
+                           // !!!
+                           // !!!    Taking this into consideration, we will always have a limit of
+                           // !!!    1 / (6 / 100) = 100 / 6 = 16.7 ~ 17 fps AT MAX
+                           //        since the image delay cannot be smaller, there will not be a higher
+                           // !!!    framerate!
+                           // !!!
         $delay        = $imageDelay;   // actual delay, will be increased when frames are skipped
 
         $animationElements = array();
