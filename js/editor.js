@@ -1,27 +1,27 @@
+function showLoadification()
+{
+    if($('#loadification').length == 0) {
+        $('#loadification').remove();
+        var loader = '<div id="loadification"><img src="img/loading.gif" alt="loading"/></div>';
+        $('body').append(loader);
+    }
+}
+
+function hideLoadification()
+{
+    $('#loadification').remove();
+}
+
+
 $(document).ready(function() {
 
     $.showDuration = 0;
 
     var renderXHR; // store currently running xhr request rendering the preview to allow aborting
-    $.xhrPool = [];
+    $.xhrPool = new XHRPoolManager();
 
-    registerXHR = function(jqXHR) {
-        showLoadification();
-        $.xhrPool.push(jqXHR);
-    }
-
-    unregisterXHR = function(jqXHR) {
-        var i = $.inArray(jqXHR, $.xhrPool);
-        if(i > -1) $.xhrPool.splice(i, 1);
-        if($.xhrPool.length < 1) {
-            hideLoadification();
-        }
-    }
-
-    $.ajaxSetup({
-        beforeSend: registerXHR,
-        complete:  unregisterXHR
-    });
+    $(document).ajaxSend(function(event, request) { $.xhrPool.registerXhr(request); });
+    $(document).ajaxComplete(function(event, request) { $.xhrPool.unregisterXhr(request); });
 
     $.ajax({
         url: 'ajax/getSizeLimits.php'
@@ -134,7 +134,7 @@ $(document).ready(function() {
 
         var xhr =  new XMLHttpRequest();
         xhr.onload = function() {
-            unregisterXHR(xhr);
+            $.xhrPool.unregisterXhr(xhr);
             if(xhr.status === 200) {
             // done
                 response = $.parseJSON(xhr.response);
@@ -150,7 +150,7 @@ $(document).ready(function() {
             }
         };
         xhr.open('POST', '/chameleon/ajax/getLivePreview.php', true);
-        registerXHR(xhr);
+        $.xhrPool.registerXhr(xhr);
         xhr.send(formData);
      });
 
@@ -699,21 +699,6 @@ $(document).ready(function() {
         refreshGif(action, 'static');
     }
 
-    function showLoadification()
-    {
-        if($('#loadification').length == 0) {
-            $('#loadification').remove();
-            var loader = '<div id="loadification"><img src="img/loading.gif" alt="loading"/></div>';
-            $('body').append(loader);
-        }
-    }
-
-    function hideLoadification()
-    {
-       $('#loadification').remove();
-    }
-
-
     /**
      *  updateTemplateData
      *
@@ -724,7 +709,7 @@ $(document).ready(function() {
      **/
     function refreshGif(action, mode) {
         if(renderXHR !== undefined) {
-            unregisterXHR(renderXHR);
+            $.xhrPool.unregisterXhr(renderXHR);
             renderXHR.abort();
         }
         renderXHR = new XMLHttpRequest();
@@ -766,7 +751,7 @@ $(document).ready(function() {
         renderXHR.onload = function() {
             if(renderXHR.status === 200) {
                 $('area#' + $.activeIMapElementId).trigger('click');
-                unregisterXHR(renderXHR);
+                $.xhrPool.unregisterXhr(renderXHR);
                 // done
                 updateEditorMediaMarkup(renderXHR.response);
                 // if a static gif had been rendered, render an animated version now
@@ -786,7 +771,7 @@ $(document).ready(function() {
 
         showLoadification();
         renderXHR.open('POST', '/chameleon/ajax/changeSvg.php', true);
-        registerXHR(renderXHR);
+        $.xhrPool.registerXhr(renderXHR);
         renderXHR.send(formData);
     }
 
