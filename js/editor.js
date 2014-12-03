@@ -18,7 +18,8 @@ $(document).ready(function() {
     $.showDuration = 0;
 
     var renderXHR; // store currently running xhr request rendering the preview to allow aborting
-    $.xhrPool = new XHRPoolManager();
+    var editor = new Cmeo("editor");
+    $.xhrPool  = new XHRPoolManager();
 
     $(document).ajaxSend(function(event, request) { $.xhrPool.registerXhr(request); });
     $(document).ajaxComplete(function(event, request) { $.xhrPool.unregisterXhr(request); });
@@ -288,15 +289,13 @@ $(document).ready(function() {
             category[key] = value;
         });
     })
-    .trigger( "change" );
+    // .trigger( "change" );
 
     /***************************************
      *
      *  Handles the category alignment (start)
      *
      ***************************************/
-
-    var editor = new Cmeo("editor");
 
     /**
      * Add one or more categories to the "Assigned" list and remove the same from the "Available" list
@@ -380,8 +379,6 @@ $(document).ready(function() {
     /**
      *  COLORPICKER FUNCTIONS AND HANDLERS
      **/
-    $('.picker').colorpicker();
-
     $('.picker').colorpicker().on('changeColor', function(e) {
         $(this).attr('value', e.color.toHex());
         var color = e.color.toHex();
@@ -727,10 +724,11 @@ $(document).ready(function() {
             action = 'update';
         }
 
+        var auditUserId = $('#auditUserId').val();
+
         formData.append('action', action);
         formData.append('mode', mode);
-        // TODO!
-        formData.append('auditUserId', 14);
+        formData.append('auditUserId', auditUserId);
 
         // process file input fields (images)
         for (var i = 0; i < nodeList.length; i++) {
@@ -750,10 +748,10 @@ $(document).ready(function() {
 
         renderXHR.onload = function() {
             if(renderXHR.status === 200) {
-                $('area#' + $.activeIMapElementId).trigger('click');
                 $.xhrPool.unregisterXhr(renderXHR);
                 // done
                 updateEditorMediaMarkup(renderXHR.response);
+                $('img').mapster('highlight', $.activeIMapElementId + '_text');
                 // if a static gif had been rendered, render an animated version now
                 // and replace the static version asap
                 if(mode === 'static')
@@ -836,6 +834,7 @@ $(document).ready(function() {
         $("[name='movie']").prop('value', swfsrc);
         $("#previewSwf object").prop('data', swfsrc);
 
+        // rebind mapster again ...
         mapsterInit();
 
         if(gifFilesizeKB > window.gifSizeLimits[dimensions]) {
