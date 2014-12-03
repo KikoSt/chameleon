@@ -40,36 +40,7 @@ $(document).ready(function() {
     // refresh preview image for this template upon loading the page
     var action = 'update';
     updateTemplateData(action);
-
-    // prepare image map
-    var highlightColor = {};
-    if($('.textTitle').length > 0) {
-        highlightColor['text'] = colorToHex($('.textTitle').css('background-color')).replace('#', '');
-    }
-    if($('.imageTitle').length > 0) {
-        highlightColor['image'] = colorToHex($('.imageTitle').css('background-color')).replace('#', '');
-    }
-    if($('.rectangleTitle').length > 0) {
-        highlightColor['rectangle'] = colorToHex($('.rectangleTitle').css('background-color')).replace('#', '');
-    }
-    if($('.groupTitle').length > 0) {
-        highlightColor['group'] = colorToHex($('.groupTitle').css('background-color')).replace('#', '');
-    }
-
-    var areas = [];
-    var areaList = $('[name="template_selection"]').find('area');
-    $.each(areaList, function(index, value) {
-        value = $(value).attr("data-key").replace('area#', '');
-        var type = value.split('_').pop();
-        areas.push({ key: value, strokeColor: highlightColor[type]});
-    });
-
     mapsterInit();
-
-
-
-
-
 
     /**
      *  configure and activate the fileinput
@@ -86,6 +57,8 @@ $(document).ready(function() {
      */
     $('.maparea').on('click', function(e) {
         var id = $(this).attr('id');
+        // store the currently clicked element's id to reactivate it after refocusing this area after reloading!
+        $.activeIMapElementId = id;
         if(id.substr(0, 5) != 'group') {
             // individual element selected
             $('.component').hide(0);
@@ -785,6 +758,7 @@ $(document).ready(function() {
 
         renderXHR.onload = function() {
             if(renderXHR.status === 200) {
+                $('area#' + $.activeIMapElementId).trigger('click');
                 unregisterXHR(renderXHR);
                 // done
                 updateEditorMediaMarkup(renderXHR.response);
@@ -1029,6 +1003,7 @@ $(document).ready(function() {
     // initialize imageMap plugin
     function mapsterInit()
     {
+        areas = getImageMapAreas();
         // start image map plugin
         $("#previewImage").mapster({
             fillColor: 'ff005',
@@ -1042,6 +1017,33 @@ $(document).ready(function() {
             areas: areas
         });
     }
+
+    function getImageMapAreas() {
+        // prepare image map
+        var highlightColor = {};
+        if($('.textTitle').length > 0) {
+            highlightColor['text'] = colorToHex($('.textTitle').css('background-color')).replace('#', '');
+        }
+        if($('.imageTitle').length > 0) {
+            highlightColor['image'] = colorToHex($('.imageTitle').css('background-color')).replace('#', '');
+        }
+        if($('.rectangleTitle').length > 0) {
+            highlightColor['rectangle'] = colorToHex($('.rectangleTitle').css('background-color')).replace('#', '');
+        }
+        if($('.groupTitle').length > 0) {
+            highlightColor['group'] = colorToHex($('.groupTitle').css('background-color')).replace('#', '');
+        }
+
+        var areas = [];
+        var areaList = $('[name="template_selection"]').find('area');
+        $.each(areaList, function(index, value) {
+            value = $(value).attr("data-key").replace('area#', '');
+            var type = value.split('_').pop();
+            areas.push({ key: value, strokeColor: highlightColor[type]});
+        });
+        return areas;
+    }
+
 
     function componentToHex(c) {
         var hex = Number(c).toString(16);
