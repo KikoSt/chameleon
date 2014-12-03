@@ -145,6 +145,8 @@ class Editor extends Controller
         $this->view->templateSubscription = $template->getCategorySubscriptions();
         $this->view->subscribedCategories = $this->connector->getSubscribedCategoriesByTemplateId($container->getId());
 
+        $this->view->availableCategories = getPrunedAvailableCategories($this->view->categories , $this->view->templateSubscription);
+
         $this->view->template = $template;
 
         $this->view->page = 'editor';
