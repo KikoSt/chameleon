@@ -113,11 +113,9 @@ class Overview extends Controller
                     $preview->shortDescription = $this->getShortenedDescription($template->getName());
                     $preview->description = $template->getName();
                     $preview->templateSubscription = $template->getCategorySubscriptions();
-                    $preview->availableCategories = $this->getPrunedAvailableCategories($categories, $preview->templateSubscription);
+                    $preview->availableCategories = getPrunedAvailableCategories($categories, $preview->templateSubscription);
                     $preview->bannerDimension = $this->getBannerDimension($container);
                     $preview->examples = $this->getExamples($container);
-
-                    $connector->getProductDataByProductId(263459);
 
                     if((int)$container->getCanvasWidth() > (int)$container->getCanvasHeight())
                     {
@@ -131,7 +129,6 @@ class Overview extends Controller
                         }
 
                     }
-
                     $previews[] = $preview;
                 }
             }
@@ -210,25 +207,6 @@ class Overview extends Controller
         }
 
         return $description;
-    }
-
-    private function getPrunedAvailableCategories($categories, $templateSubscriptions)
-    {
-        $prunedCategories = array();
-
-        foreach($categories as $category)
-        {
-            $prunedCategories[$category->id] = $category->name;
-        }
-
-        foreach($templateSubscriptions as $subscription)
-        {
-            if($subscription->userStatus === "ACTIVE")
-            {
-                unset($prunedCategories[$subscription->idCategory]);
-            }
-        }
-        return $prunedCategories;
     }
 
     public function getCompanyId()

@@ -53,12 +53,11 @@ $sourcePath = (string) $companyId . '/' . (string) $advertiserId . '/' . $catego
 $generator->getContainer()->setSource($template->getSvgContent());
 $generator->getContainer()->setId($template->getBannerTemplateId());
 
-$schroedingersFile = $dir."/".$generator->getContainer()->getOutputFilename().".gif";
+$currentFile = $dir."/".$generator->getContainer()->getOutputFilename().".gif";
 
-if(file_exists($schroedingersFile))
+if(file_exists($currentFile))
 {
-    $fileName = str_replace("../", '', $schroedingersFile);
-
+    $fileName = str_replace("../", '', $currentFile);
 }
 else
 {

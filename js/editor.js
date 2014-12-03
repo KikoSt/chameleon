@@ -290,50 +290,57 @@ $(document).ready(function() {
     })
     .trigger( "change" );
 
+    /***************************************
+     *
+     *  Handles the category alignment (start)
+     *
+     ***************************************/
 
-    $('body').on('click', '#addCategory', function(e) {
-        var data = {};
-        var categoryId    = $('#category').find(':selected').val()
-        var categoryName  = $.trim($('#category').find(':selected').text());
-        data.templateId   = $('#templateId').attr('value');
-        data.categoryId   = categoryId;
-        data.categoryName = categoryName;
-        data.advertiserId = $('#advertiserId').attr('value');
-        data.companyId    = $('#companyId').attr('value');
-        $.ajax({
-            type: "POST",
-            data: data,
-            dataType: "json",
-            url: "/chameleon/ajax/addCategory.php"
-        }).done(function(){
-            var templateId   = $('#templateId').attr('value');
-            $('#categoryContainer').load('ajax/categoriesSelection.inc.php?templateId=' + templateId);
-            var node = '<input type="text" disabled="disabled" id="subscription_' + categoryId + '" value="' + categoryName + '">';
-            $('#global_categories').append(node);
-        }).fail(function(){
-        });
+    var editor = new Cmeo("editor");
+
+    /**
+     * Add one or more categories to the "Assigned" list and remove the same from the "Available" list
+     */
+    $('#addCategory').on('click', function(e) {
+        e.preventDefault();
+        editor.moveCategoryModal('assigned');
     });
 
-
-    $('body').on('click', '#categoryContainer .removeCategory', function(e) {
-        var data = {};
-        data.templateId   = $('#templateId').attr('value');
-        var categoryId    = $(this).attr('id');
-        data.categoryId   = categoryId;
-        data.categoryName = $.trim($('#category').find(':selected').text());
-        data.advertiserId = $('#advertiserId').attr('value');
-        data.companyId    = $('#companyId').attr('value');
-        $.ajax({
-            type: 'POST',
-            data: data,
-            dataType: "json",
-            url:  '/chameleon/ajax/removeCategory.php'
-        }).done(function(){
-        }).fail(function(){
-            $('#row_' + categoryId).remove();
-            $('#subscription_' + categoryId).remove();
-        });
+    /**
+     * Remove one or more categories from the "Assigned" list and add the same to the "Assigned" list
+     */
+    $('#removeCategory').on('click', function(e) {
+        e.preventDefault();
+        editor.moveCategoryModal('available');
     });
+
+    /**
+     * Add categories to the template via the "Select categories" pop-up (AJAX)
+     */
+    $('.addCategoryOverview').on('click', function(e) {
+        e.preventDefault();
+        var id = $(this).attr('id').split('-');
+        var templateId = parseInt(id[1]);
+        editor.addCategoryByModalView(templateId);
+    });
+
+    /**
+     * Remove categories from the template via the "Select categories" pop-up (AJAX)
+     *
+     * The category will not be deleted but set on "DELETED"
+     */
+    $('.removeCategoryOverview').on('click', function(e) {
+        e.preventDefault();
+        var id = $(this).attr('id').split('-');
+        var templateId = parseInt(id[1]);
+        editor.removeCategoryByModalView(templateId);
+    });
+
+    /***************************************
+     *
+     *  Handles the category alignment (end)
+     *
+     ***************************************/
 
 
     /**

@@ -41,23 +41,13 @@
                     include('overviewComponents/action.inc.php');
                 ?>
             </div>
-            <div class="modal fade" id="categorySelect-<?php echo $preview->templateId; ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header imageTitle">
-                            <button type="button" class="close" data-dismiss="modal">
-                                <span class="glyphicon glyphicon-remove-circle cursor-pointer"></span>
-                            </button>
-                            <h4 class="modal-title" id="myModalLabel">Select categories:</h4>
-                        </div>
-                        <div class="modal-body">
-                            <?php include('overviewComponents/categoryAlignment.inc.php'); ?>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Modal -->
-            <input id="templateId" type="hidden" name="templateId" value="<?php echo $preview->templateId; ?>">
+            <?php
+                $templateId = $preview->templateId;
+                $availableCategories = $preview->availableCategories;
+                $templateSubscriptions = $preview->templateSubscription;
+                include('categoryAlignmentModal.inc.php');
+            ?>
+            <input type="hidden" id="templateId"  name="templateId" value="<?php echo $preview->templateId; ?>">
             <input type="hidden" name="templateName" value="<?php echo $preview->templateName; ?>">
 
     <?php
@@ -65,8 +55,8 @@
         endif;
     ?>
 
-    <input id="advertiserId" type="hidden" name="advertiserId" value="<?php echo $preview->advertiserId; ?>">
-    <input id="companyId"  type="hidden" name="companyId" value="<?php echo $preview->companyId; ?>">
+    <input type="hidden" id="advertiserId" name="advertiserId" value="<?php echo $preview->advertiserId; ?>">
+    <input type="hidden" id="companyId"  name="companyId" value="<?php echo $preview->companyId; ?>">
 
     </div>
 

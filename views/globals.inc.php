@@ -26,20 +26,28 @@
                 include('editorComponents/globalColor.inc.php');
                 include('editorComponents/globalFont.inc.php');
             ?>
-            <div id="global_categories" class="row">
+            <div id="categoryContainerOverview-<?php echo $this->templateId; ?> class="row">
                 <?php // TODO: this is a dirty, dirty hack! ?>
                 <label class="col-md-4" style="height: <?php echo count($this->activeCategories) * 19?>px;">
                     Categories:
-                    <button id="editCategoriesEditor" type="button" class="btn btn-xs" data-toggle="modal" data-target="#categorySelect"
-                            style="background-color: #7f7f7f; color: #FFFFFF;">
-                        <span class="glyphicon glyphicon-pencil"></span>
-                    </button>
+                    <span id="editAssignedCategory-<?php echo $this->templateId; ?>"
+                          title="Edit the assigned categories"
+                          class="fa fa-pencil-square-o cursor-pointer"
+                          data-toggle="modal"
+                          data-target="#categorySelect-<?php echo $this->templateId; ?>">
+                    </span>
                 </label>
                 <div>
                     <?php
                         foreach($this->activeCategories as $activeCategory):
                     ?>
-                    <input type="text" disabled="disabled" id="subscription_<?php echo $activeCategory['id']; ?>" value="<?php echo $activeCategory['name'];?>">
+                            <div id="assigned-<?php echo $activeCategory['id'];?>-<?php echo $this->templateId; ?>" class="row">
+                                <p class="text-left categoryItem">
+                                    <a id="cat-<?php echo $this->templateId; ?>-<?php echo $activeCategory['id'];?>" class="fa
+                            fa-trash categoryItem cursor-pointer removeCategoryShortcut" title="Remove category"></a>
+                                    <?php echo $activeCategory['name'];?>
+                                </p>
+                            </div>
                     <?php
                         endforeach;
                     ?>
