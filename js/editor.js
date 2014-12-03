@@ -57,7 +57,7 @@ $(document).ready(function() {
      * image map clicked
      */
     $('.maparea').on('click', function(e) {
-        var id = $(this).attr('id');
+        var id = $(this).attr('data-key');
         // store the currently clicked element's id to reactivate it after refocusing this area after reloading!
         $.activeIMapElementId = id;
         if(id.substr(0, 5) != 'group') {
@@ -751,7 +751,7 @@ $(document).ready(function() {
                 $.xhrPool.unregisterXhr(renderXHR);
                 // done
                 updateEditorMediaMarkup(renderXHR.response);
-                $('img').mapster('highlight', $.activeIMapElementId + '_text');
+                $('img').mapster('highlight', $.activeIMapElementId);
                 // if a static gif had been rendered, render an animated version now
                 // and replace the static version asap
                 if(mode === 'static')
