@@ -15,7 +15,6 @@ require_once(__ROOT__ . 'libraries/functions.inc.php');
 $container = new GfxContainer();
 $connector = new APIConnector();
 
-// $auditUserId    = getRequestVar('auditUserId');;
 $companyId      = getRequestVar('companyId');
 $advertiserId   = getRequestVar('advertiserId');
 $templateId     = getRequestVar('templateId');

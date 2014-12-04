@@ -38,7 +38,7 @@ $product = $connector->getProductDataByProductId($productId);
 $categoryId = $product->getCategoryId();
 $template = $connector->getTemplateById($templateId);
 
-$argv = array(null, $companyId, $advertiserId, null, $auditUserId);
+$argv = array(null, $companyId, $advertiserId, null);
 $generator = new CMEOGenerator($argv);
 $generator->setTemplates(array($templateId));
 $generator->setCategories($categoryId);
