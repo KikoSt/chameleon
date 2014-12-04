@@ -65,8 +65,7 @@ class CMEOGenerator
     {
         $this->companyId    = (int) $argv[1];
         $this->advertiserId = (int) $argv[2];
-        // $this->categoryId   = (int) $argv[3];
-        $this->auditUserId  = (int) $argv[4];
+        // $this->auditUserId  = (int) $argv[4];
 
         $this->connector = new APIConnector();
         $this->container = new GfxContainer();
