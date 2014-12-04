@@ -44,6 +44,6 @@ if(count($subscriptions > 0))
     }
 }
 // store template
-$success = ($result = $connector->sendBannerTemplate($template));
+$success = ($result = $connector->sendBannerTemplate($template) !== false);
 
 echo json_encode($success);
