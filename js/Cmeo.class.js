@@ -222,24 +222,33 @@ Cmeo.prototype.createExamples = function(templateId){
 
     //todo till we get this via user defined value or something like that
     metaData.numPreviewPics = 10;
-    metaData.auditUserId    = 1;
 
     $.ajax({
         type: "POST",
         data: metaData,
         dataType: "json",
         url: "/chameleon/ajax/getProductIdByTemplateId.php"
-    }).done(function (output)
+    }).done(function (response)
     {
-        if(output.length > 0)
+        var productIds = response.productIds;
+        var categoryIds = response.categoryIds;
+        console.log(productIds);
+        if(productIds.length > 0)
         {
-            getRenderedGif(output, metaData);
+            getRenderedGif(productIds, metaData);
         }
         else
         {
-            $('<div id="emptyItem-'+metaData.templateId+'" class="item">No categories selected. ' +
-            'Please select at least one category to render examples...</div>').appendTo('#previewcarousel-' + metaData.templateId);
-            $('#emptyItem-'+metaData.templateId).addClass("active");
+            if(categoryIds.length > 0) {
+                $('<div id="emptyItem-'+metaData.templateId+'" class="item information">The selected categories contain no products or no product images. ' +
+                'Please select at least one more category to render examples.</div>').appendTo('#previewcarousel-' + metaData.templateId);
+                $('#emptyItem-'+metaData.templateId).addClass("active");
+            }
+            else {
+                $('<div id="emptyItem-'+metaData.templateId+'" class="item">No categories selected. ' +
+                'Please select at least one category to render examples.</div>').appendTo('#previewcarousel-' + metaData.templateId);
+                $('#emptyItem-'+metaData.templateId).addClass("active");
+            }
         }
     }).fail(function(response){
 
