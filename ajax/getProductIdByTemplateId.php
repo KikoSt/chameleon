@@ -49,4 +49,8 @@ if(!empty($template->getCategorySubscriptions()))
     }
 }
 
-echo json_encode($productIds);
+$response = array();
+$response['productIds']  = $productIds;
+$response['categoryIds'] = $categoryIds;
+
+echo json_encode($response);
