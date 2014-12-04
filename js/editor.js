@@ -57,9 +57,10 @@ $(document).ready(function() {
      * image map clicked
      */
     $('.maparea').on('click', function(e) {
-        var id = $(this).attr('data-key');
+        var id = $(this).attr('id');
+        var longId = $(this).attr('data-key');
         // store the currently clicked element's id to reactivate it after refocusing this area after reloading!
-        $.activeIMapElementId = id;
+        $.activeIMapElementId = longId;
         if(id.substr(0, 5) != 'group') {
             // individual element selected
             $('.component').hide(0);
