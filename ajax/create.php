@@ -1,4 +1,9 @@
 <?php
+if(!defined('__ROOT__'))
+{
+    define('__ROOT__', '../');
+}
+
 // error_reporting(E_ALL);
 require_once('../config/pathconfig.inc.php');
 require_once('../Bootstrap.php');
@@ -6,10 +11,7 @@ require_once('../Bootstrap.php');
 iconv_set_encoding("internal_encoding", "UTF-8");
 iconv_set_encoding("output_encoding", "UTF-8");
 
-if(!defined('__ROOT__'))
-{
-    define('__ROOT__', '../');
-}
+require_once(__ROOT__ . '/libraries/functions.inc.php');
 
 // get ini settings
 $iniSettings = parse_ini_file('../generate.ini');
@@ -19,16 +21,23 @@ if(!$iniSettings)
     exit(1);
 }
 
-$advertiserId = 122;
-$companyId    = 170;
-$userId       = 14;
-$templateId   = 96;
-$auditUserId  = 1;
+$auditUserId  = 14;
+
+$advertiserId = (int)getRequestVar('advertiserId');
+$companyId    = (int)getRequestVar('companyId');
+$templateId   = (int)getRequestVar('templateId');
+
+$connector = new APIConnector();
+
+$connector->setAdvertiserId($advertiserId);
+$connector->setCompanyId($companyId);
+
+$template = $connector->getTemplateById($templateId);
 
 // get all categories
 try
 {
-    $productCategoryIds = getCategories($companyId, $advertiserId);
+    $productCategoryIds = $template->getCategorySubscriptions();
 }
 catch(Exception $e)
 {
@@ -36,21 +45,21 @@ catch(Exception $e)
     exit(1);
 }
 
-// for testing, take a random slice with 5 entries and generate only those ...
-$sliceStart = rand(0, count($productCategoryIds));
-$productCategoryIds = array_slice($productCategoryIds, $sliceStart, 5);
-
-foreach($productCategoryIds AS $categoryId)
+foreach($productCategoryIds AS $category)
 {
-    try
+    if($category->userStatus === 'ACTIVE')
     {
-        $result = passthru('php ./generate.php ' . $companyId . ' ' . $advertiserId . ' ' . $categoryId . ' ' . $auditUserId);
+        $categoryId = $category->idCategory;
+        try
+        {
+            $result = passthru('php ./generate.php ' . $companyId . ' ' . $advertiserId . ' ' . $categoryId . ' ' . $templateId);
+        }
+        catch(Exception $e)
+        {
+            echo $e->getMessage();
+        }
+        // passthru('php ./cacheimages.php ' . $companyId . ' ' . $advertiserId . ' ' . $categoryId . ' ' . $auditUserId);
     }
-    catch(Exception $e)
-    {
-        echo $e->getMessage();
-    }
-    // passthru('php ./cacheimages.php ' . $companyId . ' ' . $advertiserId . ' ' . $categoryId . ' ' . $auditUserId);
 }
 
 

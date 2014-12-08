@@ -34,12 +34,11 @@ if(!defined('__ROOT__'))
 // }
 
 $categoryId = (int) $argv[3];
+$templateId = (int) $argv[4];
 
 error_reporting(E_ALL);
 $generator = new CMEOGenerator($argv);
-$generator->setTemplates(array(96));
-echo $categoryId . "\n\n";
+$generator->setTemplates(array($templateId));
 $generator->setCategories($categoryId);
-echo 'generating' . "\n";
 $generator->generate();
 

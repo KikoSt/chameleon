@@ -85,4 +85,14 @@ $(document).ready(function()
         var templateId = parseInt(id[1]);
         overview.deleteTemplate(templateId);
     });
+
+    $('.createCreatives').on('click', function() {
+        var target = $(this).attr('id').split('-');
+        var data = {};
+        data.templateId   = parseInt(target[1]);
+        data.advertiserId = parseInt(target[2]);
+        data.companyId    = parseInt(target[3]);
+        data.numPreviewPics = 10;
+        overview.generateCreatives(data);
+    });
 });
