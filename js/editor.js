@@ -15,7 +15,7 @@ function hideLoadification()
 
 $(document).ready(function() {
 
-    $.xhrPool = new XHRPool();
+    $.xhrPool = new XHRPoolManager();
 
     $.showDuration = 0;
 
@@ -1054,7 +1054,7 @@ $(document).ready(function() {
 
 
 
-
+/*
 var XHRPool = new function() {
     this.requests = [];
 };
@@ -1073,4 +1073,4 @@ XHRPool.prototype.unregisterRequest(request) {
         hideLoadification();
     }
 }
-
+*/
