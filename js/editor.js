@@ -15,6 +15,8 @@ function hideLoadification()
 
 $(document).ready(function() {
 
+    $.xhrPool = new XHRPoolManager();
+
     $.showDuration = 0;
 
     var renderXHR; // store currently running xhr request rendering the preview to allow aborting
@@ -35,10 +37,6 @@ $(document).ready(function() {
     var somethingChanged = false;
     var category = {};
 
-    // TODO: check: why isn't it hidden by css in the first place?
-    $('#alert-custom').hide();
-
-    // refresh preview image for this template upon loading the page
     var action = 'update';
     updateTemplateData(action);
     mapsterInit();
@@ -1053,3 +1051,26 @@ $(document).ready(function() {
     }
 
 });
+
+
+
+/*
+var XHRPool = new function() {
+    this.requests = [];
+};
+
+XHRPool.prototype.registerRequest(request) {
+    showLoadification();
+    this.requests.push(request);
+}
+
+XHRPool.prototype.unregisterRequest(request) {
+    var i = $.inArray(request, this.requests);
+    if(i > -1) {
+        this.requests.splice(i, 1);
+    }
+    if(this.requests.length < 1) {
+        hideLoadification();
+    }
+}
+*/

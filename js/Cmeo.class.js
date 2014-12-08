@@ -272,3 +272,17 @@ Cmeo.prototype.moveCategoryModal = function(target){
     e.preventDefault();
 };
 
+Cmeo.prototype.generateCreatives = function(data) {
+    $.ajax({
+        type: "POST",
+        data: data,
+        dataType: "json",
+        url: "/chameleon/ajax/create.php"
+    }).done(function (response)
+    {
+        console.log('Done!');
+    })
+    .fail(function(response) {
+        console.log('Fail!');
+    })
+};
