@@ -26,9 +26,8 @@
                 include('editorComponents/globalColor.inc.php');
                 include('editorComponents/globalFont.inc.php');
             ?>
-            <div id="categoryContainerOverview-<?php echo $this->templateId; ?> class="row">
-                <?php // TODO: this is a dirty, dirty hack! ?>
-                <label class="col-md-4" style="height: <?php echo count($this->activeCategories) * 19?>px;">
+            <div id="categoryContainerOverview-<?php echo $this->templateId; ?>" class="row" style="min-height: 20px;">
+                <label class="col-md-4">
                     Categories:
                     <span id="editAssignedCategory-<?php echo $this->templateId; ?>"
                           title="Edit the assigned categories"
@@ -37,21 +36,33 @@
                           data-target="#categorySelect-<?php echo $this->templateId; ?>">
                     </span>
                 </label>
-                <div>
-                    <?php
-                        foreach($this->activeCategories as $activeCategory):
-                    ?>
-                            <div id="assigned-<?php echo $activeCategory['id'];?>-<?php echo $this->templateId; ?>" class="row">
-                                <p class="text-left categoryItem">
-                                    <a id="cat-<?php echo $this->templateId; ?>-<?php echo $activeCategory['id'];?>" class="fa
-                            fa-trash categoryItem cursor-pointer removeCategoryShortcut" title="Remove category"></a>
-                                    <?php echo $activeCategory['name'];?>
-                                </p>
-                            </div>
-                    <?php
-                        endforeach;
-                    ?>
+                <div class="col-md-8">
+                    <?php //todo remove after internet failure
+                    for($i=1; $i <=6; $i++):
+                        ?>
+                        <div id="assigned-666-1">
+                            <p class="text-left categoryItem-editor">
+                                fubar <?php echo $i;?>
+                            </p>
+                        </div>
+                    <?php endfor;?>
                 </div>
+
+<!--                <div>-->
+<!--                    --><?php
+//                        foreach($this->activeCategories as $activeCategory):
+//                    ?>
+<!--                            <div id="assigned---><?php //echo $activeCategory['id'];?><!-----><?php //echo $this->templateId; ?><!--" class="row">-->
+<!--                                <p class="text-left categoryItem">-->
+<!--                                    <a id="cat---><?php //echo $this->templateId; ?><!-----><?php //echo $activeCategory['id'];?><!--" class="fa-->
+<!--                            fa-trash categoryItem cursor-pointer removeCategoryShortcut" title="Remove category"></a>-->
+<!--                                    --><?php //echo $activeCategory['name'];?>
+<!--                                </p>-->
+<!--                            </div>-->
+<!--                    --><?php
+//                        endforeach;
+//                    ?>
+<!--                </div>-->
             </div>
         </div>
     </div>

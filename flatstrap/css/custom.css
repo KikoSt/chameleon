@@ -127,6 +127,14 @@ select.font-select
     margin:0 3px;
 }
 
+.categoryItem-editor {
+    background-color:#bbb;
+    color:#555;
+    margin-bottom: 2px;
+    padding: 2px;
+    max-width: 183px;
+}
+
 .list-group-item {
     background-color:transparent;
     font-size:1.3em;
