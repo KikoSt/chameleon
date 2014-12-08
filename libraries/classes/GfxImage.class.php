@@ -325,6 +325,8 @@ class GfxImage extends GfXComponent
     /**
      * resize image
      *
+     * using GD! this should be changed at some point, too, and we need a similar method for the gif creatives rendering
+     *
      * @param $file
      * @param bool $crop
      * @return resource
@@ -335,6 +337,7 @@ class GfxImage extends GfXComponent
         if(false === file_get_contents($filepath, 0, null, 0, 1))
         {
             $file = 'assets/image_not_found.jpg';
+            throw new Exception('Could not open file ' . $filepath);
         }
 
         list($originalWidth, $originalHeight) = getimagesize($filepath);
