@@ -178,10 +178,14 @@ class CMEOGenerator
         {
             echo "\nGenerating template " . $template->getBannerTemplateId() . "\n";
             $categorySubscriptions = $template->getCategorySubscriptions();
+            $selectedCategories = $this->getCategories();
             $subscriptionList = array();
             foreach($categorySubscriptions AS $categorySubscription)
             {
-                $subscriptionList[] = (int) $categorySubscription->idCategory;
+                if($categorySubscription->userStatus === 'ACTIVE')
+                {
+                    $subscriptionList[] = (int) $categorySubscription->idCategory;
+                }
             }
             $categories = array_intersect($this->categoryList, $subscriptionList);
             $categories = $subscriptionList;
@@ -199,7 +203,7 @@ class CMEOGenerator
                 $logMessage .= 'companyId = ' . $this->companyId . ', ';
                 $logMessage .= 'advertiserId = ' . $this->advertiserId . ', ';
                 $logMessage .= 'categoryId = ' . $categoryId;
-//                 $this->logMessage($logMessage);
+                $this->logMessage($logMessage);
 
                 $this->container->setSource($template->getSvgContent());
                 $this->container->setId($template->getBannerTemplateId());
@@ -302,6 +306,11 @@ class CMEOGenerator
         } else {
             $this->categoryList = array_merge($this->categoryList, $categoryList);
         }
+    }
+
+    public function getCategories()
+    {
+        return $this->categoryList;
     }
 
     /**
