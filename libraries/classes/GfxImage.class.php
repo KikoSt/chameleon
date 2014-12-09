@@ -12,6 +12,7 @@
 class GfxImage extends GfXComponent
 {
     private $imageUrl;
+    private $tempPath;
 
     /**
      * __construct
@@ -53,16 +54,88 @@ class GfxImage extends GfXComponent
     public function create($svgRootNode)
     {
         parent::create($svgRootNode);
-        $imageUrl = (string) $svgRootNode->attributes('xlink', true)->href;
         if((string) $svgRootNode->attributes()->linkurl !== '')
         {
             $this->setLinkUrl((string) $svgRootNode->attributes()->linkurl);
         }
 
+        $imageUrl = (string) $svgRootNode->attributes('xlink', true)->href;
         $imageUrl = str_replace("//assets", "/assets", $imageUrl);
-
         $this->setImageUrl($imageUrl);
+
+        $this->setTempPath($this->createResizedImage());
     }
+
+    /**
+     * createResizedImage
+
+     * create a resized version of the image IF REQUIRED, storing the file temporarily
+     * and returning the path
+     *
+     * NOTE: This method should only be executed ONCE, not over and over again for each
+     * frame;
+     *
+     * @access public
+     * @return void
+     */
+    public function createResizedImage()
+    {
+        $image = new Imagick($this->getImagePath());
+        $dimensions  = $image->getImageGeometry();
+        $imgWidth    = $dimensions['width'];
+        $imgHeight   = $dimensions['height'];
+
+        $aspectRatio = $imgWidth / $imgHeight;
+
+        $newWidth  = $this->getWidth();
+        $newHeight = $this->getHeight();
+
+//        $cachedFile = IMGCACHE_DIR . '/' . $this->getContainer()->getOutputDir() . '/' . urlencode($file);
+//        if(file_exists($cachedFile))
+//        {
+//            $file = $cachedFile;
+//        }
+
+        if($aspectRatio < 1)
+        {
+            $newWidth = $newHeight * $aspectRatio;
+        }
+        else
+        {
+            $newHeight = $newWidth / $aspectRatio;
+        }
+
+        $image->scaleImage($newWidth, $newHeight);
+        $filename = $this->getId() . '.gif';
+        $path = 'tmp';
+        imSaveImage($image, $filename, $path);
+
+        return $path . '/' . $filename;
+    }
+
+
+
+
+    public function getImagePath()
+    {
+        $pos = strpos($this->getImageUrl(), 'http');
+
+        if($pos === false)
+        {
+            $filepath = ROOT_DIR . $this->getImageUrl();
+        }
+        else
+        {
+            $filepath = $this->getImageUrl();
+        }
+
+        $filepath = str_replace('%20' , ' ', $filepath);
+        $filepath = str_replace('//' , '/', $filepath);
+
+        return $filepath;
+    }
+
+
 
     /**
      * renderSWF
@@ -240,18 +313,8 @@ class GfxImage extends GfXComponent
             return true;
         }
 
-        $pos = strpos($this->getImageUrl(), 'http');
-
-        if($pos === false)
-        {
-            $filepath = ROOT_DIR . $this->getImageUrl();
-        }
-        else
-        {
-            $filepath = $this->getImageUrl();
-        }
-
-        $filepath = str_replace('%20' , ' ', $filepath);
+        $filepath = $this->getImagePath();
+        $filepath = __ROOT__ . $this->getTempPath();
 
         $transparent = new ImagickPixel("rgba(127,127,127,0)");
 
@@ -513,6 +576,16 @@ class GfxImage extends GfXComponent
     public function getImageUrl()
     {
         return $this->imageUrl;
+    }
+
+    public function getTempPath()
+    {
+        return $this->tempPath;
+    }
+
+    public function setTempPath($path)
+    {
+        $this->tempPath = $path;
     }
 
 
