@@ -57,16 +57,37 @@ Cmeo.prototype.addCategoryByModalView = function(templateId){
         url: "/chameleon/ajax/addCategory.php"
     }).done(function(){
         metaData.categoryId.forEach(function(singleCategory){
-            //create item for right select
-            var item = '<div id="'+singleCategory.id+'" class="row"><p class="text-left overviewTitle categoryItem">'+
-                    '<a class="fa fa-trash categoryItem cursor-pointer" title="Remove category"></a>' +
-                    singleCategory.name + '</p></div>';
-            //append item
-            $('#categoryContainerOverview-'+templateId).append(item);
-            //create node for overview
+
+            var item = '';
+            var container = '';
+
+            if(window.location.search.substring(1).indexOf("page=editor") > -1)
+            {
+                item = '<div id="assigned-'+singleCategory.id+'-'+metaData.templateId+'">' +
+                           '<p class="text-left categoryItem-editor">'+singleCategory.name+'</p></div>';
+
+                container = "Editor";
+            }
+            else
+            {
+                //create item for overview
+                item = '<div id="'+singleCategory.id+'" class="row"><p class="text-left overviewTitle categoryItem">'+
+                        '<a class="fa fa-trash categoryItem cursor-pointer" title="Remove category"></a>' +
+                        singleCategory.name + '</p></div>';
+
+                container = "Overview";
+            }
+
+            //append item to overview
+            $('#categoryContainer'+container+'-'+templateId).append(item);
+
+
+            //create node for select
             var node = '<option value="' + singleCategory.id + '">' + singleCategory.name + '</option>';
             //append node
             $('#assignedCategory-'+templateId).append(node);
+
+
             //remove item from left select
             $('#availableCategory-'+templateId).find("option[value='"+singleCategory.id+"']").remove();
         });
@@ -97,6 +118,7 @@ Cmeo.prototype.removeCategoryByModalView = function(templateId) {
         url: '/chameleon/ajax/removeCategory.php'
     }).done(function(){
         metaData.categoryId.forEach(function(singleCategory){
+
             //remove category from right select
             $("#assignedCategory-"+metaData.templateId).find("option[value='"+singleCategory.id+"']").remove();
 
@@ -108,7 +130,25 @@ Cmeo.prototype.removeCategoryByModalView = function(templateId) {
 
             //remove category from overview
             $('#assigned-'+singleCategory.id+'-'+metaData.templateId).empty().remove();
-            $('#categoryContainerOverview-'+metaData.templateId+' #'+singleCategory.id).empty().remove();
+
+            var container = '';
+
+            if(window.location.search.substring(1).indexOf("page=editor") > -1)
+            {
+                container = "Editor";
+            }
+            else
+            {
+                container = "Overview";
+            }
+
+            $('#categoryContainer'+container+'-'+metaData.templateId+' #'+singleCategory.id).empty().remove();
+
+
+
+
+
+
         });
         $(".modal-body form").unblock();
     }).fail(function(response){
