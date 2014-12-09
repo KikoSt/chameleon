@@ -143,13 +143,9 @@ Cmeo.prototype.removeCategoryByModalView = function(templateId) {
             }
 
             $('#categoryContainer'+container+'-'+metaData.templateId+' #'+singleCategory.id).empty().remove();
-
-
-
-
-
-
         });
+
+
         $(".modal-body form").unblock();
     }).fail(function(response){
         Cmeo.prototype.createErrorNotification('An error occurred', response);
