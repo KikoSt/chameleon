@@ -78,37 +78,68 @@ class GfxImage extends GfXComponent
      * @access public
      * @return void
      */
-    public function createResizedImage()
+    public function createResizedImage($mode = 'fill')
     {
+        // 3 possibilities:
+        // - crop:   insert a larger pic as is, i.e. crop the bottom and/or right borders
+        // - center: resize and center image keeping the spect ratio
+        // - fill:   resize to element size ignoring the aspect ratio
+        $modes = array('crop', 'center', 'fill');
+        if(!in_array($mode, $modes))
+        {
+            return false;
+        }
         $image = new Imagick($this->getImagePath());
         $dimensions  = $image->getImageGeometry();
         $imgWidth    = $dimensions['width'];
         $imgHeight   = $dimensions['height'];
 
-        $aspectRatio = $imgWidth / $imgHeight;
-
-        $newWidth  = $this->getWidth();
-        $newHeight = $this->getHeight();
-
-//        $cachedFile = IMGCACHE_DIR . '/' . $this->getContainer()->getOutputDir() . '/' . urlencode($file);
-//        if(file_exists($cachedFile))
-//        {
-//            $file = $cachedFile;
-//        }
-
-        if($aspectRatio < 1)
+        if($mode === 'center')
         {
-            $newWidth = $newHeight * $aspectRatio;
+            $aspectRatio = $imgWidth / $imgHeight;
+
+            $newWidth  = $this->getWidth();
+            $newHeight = $this->getHeight();
+
+            if($aspectRatio > 1)
+            {
+                $newWidth = $newHeight * $aspectRatio;
+            }
+            else
+            {
+                $newHeight = $newWidth / $aspectRatio;
+            }
+
+            $image->scaleImage($newWidth, $newHeight, true);
+
+            $newX = ($this->getWidth() - $newWidth) / 2;
+            $newY = ($this->getHeight() - $newHeight) / 2;
         }
-        else
+        else if($mode === 'crop')
         {
-            $newHeight = $newWidth / $aspectRatio;
+            $newX = 0;
+            $newY = 0;
+        }
+        else if($mode === 'fill')
+        {
+            $newWidth  = $this->getWidth();
+            $newHeight = $this->getHeight();
+
+            $image->scaleImage($newWidth, $newHeight, false);
+
+            $newX = 0;
+            $newY = 0;
         }
 
-        $image->scaleImage($newWidth, $newHeight);
+        $background = new Imagick();
+        $background->newImage($this->getWidth(), $this->getHeight(), new ImagickPixel('white'));
+        $background->setImageFormat('gif');
+
+        $background->compositeImage($image, Imagick::COMPOSITE_DEFAULT, $newX, $newY);
+
         $filename = $this->getId() . '.gif';
         $path = 'tmp';
-        imSaveImage($image, $filename, $path);
+        imSaveImage($background, $filename, $path);
 
         return $path . '/' . $filename;
     }
@@ -116,6 +147,16 @@ class GfxImage extends GfXComponent
 
 
 
+    /**
+     * getImagePath
+     *
+     * evaluation and adjustment of imagePath;
+     *
+     * TODO: name and or functionality? Restructure all those methods more clearly!
+     *
+     * @access public
+     * @return void
+     */
     public function getImagePath()
     {
         $pos = strpos($this->getImageUrl(), 'http');
@@ -206,7 +247,7 @@ class GfxImage extends GfXComponent
 
         $imgPath = '/tmp/file' . time() . rand() . '.jpg';
 
-        $output = $this->resizeImage($this->getImageUrl(), $this->getWidth(), $this->getHeight(), false);
+        $output = $this->createImageFromSourceFile($this->getTempPath());
 
         $result = imagejpeg($output, $imgPath, 100);
         imagedestroy($output);
@@ -385,86 +426,6 @@ class GfxImage extends GfXComponent
     }
 
 
-    /**
-     * resize image
-     *
-     * using GD! this should be changed at some point, too, and we need a similar method for the gif creatives rendering
-     *
-     * @param $file
-     * @param bool $crop
-     * @return resource
-     */
-    public function resizeImage($file, $crop=false)
-    {
-        $filepath = $this->getFilepath($file);
-        if(false === file_get_contents($filepath, 0, null, 0, 1))
-        {
-            $file = 'assets/image_not_found.jpg';
-            throw new Exception('Could not open file ' . $filepath);
-        }
-
-        list($originalWidth, $originalHeight) = getimagesize($filepath);
-
-        if($originalWidth <= 0 || $originalHeight <=0)
-        {
-            throw new Exception('Getting file ' . $file . ' failed; Dimensions <= zero found');
-        }
-        $aspectRatio = $originalWidth / $originalHeight;
-
-        $newWidth  = $this->getWidth();
-        $newHeight = $this->getHeight();
-
-        $cachedFile = IMGCACHE_DIR . '/' . $this->getContainer()->getOutputDir() . '/' . urlencode($file);
-        if(file_exists($cachedFile))
-        {
-            $file = $cachedFile;
-        }
-
-        if($aspectRatio < 1 )
-        {
-            $newWidth = $newHeight * $aspectRatio;
-        }
-        else
-        {
-            $newHeight = $newWidth / $aspectRatio;
-        }
-
-        $resizedWidth = $newWidth;
-        $resizedHeight = $newHeight;
-        $newX = ($this->getWidth() - $newWidth) / 2;
-        $newY = ($this->getHeight() - $newHeight) / 2;
-
-        $originalImage = $this->createImageFromSourceFile($file);
-
-        //canvas for resized image
-        $resizedImage = imagecreatetruecolor($this->getWidth(), $this->getHeight());
-
-        if(!$resizedImage)
-        {
-            throw new Exception('Could not create image ' . $this->getId());
-        }
-        imagealphablending($resizedImage, true);
-
-        $bgcolor = imagecolorallocatealpha($resizedImage, 255, 255, 255, 0);
-        imagefill($resizedImage, 0, 0, $bgcolor);
-
-        // massively time consuming
-        if($this->getContainer()->getPreviewMode() !== true)
-        {
-            imagecopyresampled($resizedImage, $originalImage, $newX, $newY, 0, 0, $resizedWidth, $resizedHeight, $originalWidth, $originalHeight);
-        }
-        else
-        {
-            imagecopyresized($resizedImage, $originalImage, $newX, $newY, 0, 0, $resizedWidth, $resizedHeight, $originalWidth, $originalHeight);
-        }
-
-        imagealphablending($resizedImage, false);
-        imagesavealpha($resizedImage,true);
-
-        imagedestroy($originalImage);
-
-        return $resizedImage;
-    }
 
     private function createImageFromSourceFile($file)
     {

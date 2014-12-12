@@ -285,6 +285,7 @@ class Editor extends Controller
     private function getPreviewPaths()
     {
         $filePaths = array();
+        // TODO: problematic if directory doesn't exist ...
         if($dirhandle = opendir('output/' . $this->companyId . '/' . $this->advertiserId . '/preview/' . $this->templateId))
         {
             while(false !== ($file = readdir($dirhandle)))
