@@ -26,9 +26,8 @@
                 include('editorComponents/globalColor.inc.php');
                 include('editorComponents/globalFont.inc.php');
             ?>
-            <div id="categoryContainerOverview-<?php echo $this->templateId; ?> class="row">
-                <?php // TODO: this is a dirty, dirty hack! ?>
-                <label class="col-md-4" style="height: <?php echo count($this->activeCategories) * 19?>px;">
+            <div id="categoryContainerOverview-<?php echo $this->templateId; ?>" class="row">
+                <label class="col-md-4">
                     Categories:
                     <span id="editAssignedCategory-<?php echo $this->templateId; ?>"
                           title="Edit the assigned categories"
@@ -37,20 +36,16 @@
                           data-target="#categorySelect-<?php echo $this->templateId; ?>">
                     </span>
                 </label>
-                <div>
-                    <?php
-                        foreach($this->activeCategories as $activeCategory):
-                    ?>
-                            <div id="assigned-<?php echo $activeCategory['id'];?>-<?php echo $this->templateId; ?>" class="row">
-                                <p class="text-left categoryItem">
-                                    <a id="cat-<?php echo $this->templateId; ?>-<?php echo $activeCategory['id'];?>" class="fa
-                            fa-trash categoryItem cursor-pointer removeCategoryShortcut" title="Remove category"></a>
-                                    <?php echo $activeCategory['name'];?>
-                                </p>
-                            </div>
-                    <?php
-                        endforeach;
-                    ?>
+                <div id="categoryContainerEditor-<?php echo $this->templateId; ?>" class="col-md-8">
+                <?php
+                    foreach($this->activeCategories as $activeCategory):
+                ?>
+                        <div id="assigned-<?php echo $activeCategory['id'];?>-<?php echo $this->templateId; ?>">
+                            <p class="text-left categoryItem-editor">
+                                <?php echo $activeCategory['name'];?>
+                            </p>
+                        </div>
+                    <?php endforeach;?>
                 </div>
             </div>
         </div>
