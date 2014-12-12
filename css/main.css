@@ -36,7 +36,7 @@ a.maparea
 
 #awesomeEditor > div
 {
-    margin-top:50px;
+    margin-top:150px;
 }
 
 .panel
@@ -376,6 +376,14 @@ input.filesize-warning {
     height: 70px;
 }
 
-
+#toolbox {
+    background:#c7c7c7;
+    padding-top: 150px;
+    margin-bottom: 66px;
+    margin-top: 156px;
+    min-height: 365px;
+    width: 80px;
+    text-align: center;
+}
 
 
