@@ -41,6 +41,15 @@ $(document).ready(function() {
     updateTemplateData(action);
     mapsterInit();
 
+    $('.ttip').webuiPopover({
+                                trigger:'hover',
+                                placement:'top-left',
+                                style:'inverse',
+                                arrow:false,
+                                width:'auto',
+                                height:'auto'
+                            });
+
     /**
      *  configure and activate the fileinput
      *  plugin
