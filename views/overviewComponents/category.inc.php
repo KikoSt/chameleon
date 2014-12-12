@@ -8,7 +8,7 @@
               data-target="#categorySelect-<?php echo $preview->templateId; ?>">
         </span>
     </div>
-    <div id="categoryContainerOverview-<?php echo $preview->templateId; ?>" style="overflow-y: auto; max-height: 350px;">
+    <div id="categoryContainerOverview-<?php echo $preview->templateId; ?>" class="categoryContainerOverview">
         <?php
             foreach($preview->templateSubscription as $templateSubscription):
                 if($templateSubscription->userStatus === 'ACTIVE'):

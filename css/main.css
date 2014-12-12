@@ -8,7 +8,7 @@ body {
 }
 
 #awesomeEditor label {
-    padding-top: 0px !important;
+    padding-top: 0 !important;
 }
 
 .glyphicon-remove-circle
@@ -36,7 +36,7 @@ a.maparea
 
 #awesomeEditor > div
 {
-    margin-top:50px;
+    margin-top:150px;
 }
 
 .panel
@@ -350,3 +350,40 @@ input.filesize-warning {
     margin: 2px 10px 5px 10px;
     background: #cccccc;
 }
+
+.categoryContainerOverview{
+    overflow-y: auto;
+    max-height: 350px;
+    margin-top: 10px;
+}
+
+.carousel-inner{
+    width: 98% !important;
+    margin-left: 5px;
+}
+
+#actionsContainer{
+    margin-top: 10px;
+}
+
+#actionsContainer > .row > .smallActionButton{
+    width: 38px;
+    height: 38px;
+}
+
+#actionsContainer > .row > button{
+    width: 79px;
+    height: 70px;
+}
+
+#toolbox {
+    background:#c7c7c7;
+    padding-top: 150px;
+    margin-bottom: 66px;
+    margin-top: 156px;
+    min-height: 365px;
+    width: 80px;
+    text-align: center;
+}
+
+

@@ -1054,7 +1054,8 @@ $(document).ready(function() {
         return "#" + componentToHex(rgb[0]) + componentToHex(rgb[1]) + componentToHex(rgb[2]);
     }
 
-    function getElementsByGroupId(groupId) {
+    function getElementsByGroupId(groupId)
+    {
         var elements = $(document).find("[data-groupid=" + groupId + "]");
         return elements;
     }
