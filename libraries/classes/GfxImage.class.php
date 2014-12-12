@@ -12,6 +12,7 @@
 class GfxImage extends GfXComponent
 {
     private $imageUrl;
+    private $tempPath;
 
     /**
      * __construct
@@ -53,16 +54,129 @@ class GfxImage extends GfXComponent
     public function create($svgRootNode)
     {
         parent::create($svgRootNode);
-        $imageUrl = (string) $svgRootNode->attributes('xlink', true)->href;
         if((string) $svgRootNode->attributes()->linkurl !== '')
         {
             $this->setLinkUrl((string) $svgRootNode->attributes()->linkurl);
         }
 
+        $imageUrl = (string) $svgRootNode->attributes('xlink', true)->href;
         $imageUrl = str_replace("//assets", "/assets", $imageUrl);
-
         $this->setImageUrl($imageUrl);
+
+        $this->setTempPath($this->createResizedImage());
     }
+
+    /**
+     * createResizedImage
+
+     * create a resized version of the image IF REQUIRED, storing the file temporarily
+     * and returning the path
+     *
+     * NOTE: This method should only be executed ONCE, not over and over again for each
+     * frame;
+     *
+     * @access public
+     * @return void
+     */
+    public function createResizedImage($mode = 'fill')
+    {
+        // 3 possibilities:
+        // - crop:   insert a larger pic as is, i.e. crop the bottom and/or right borders
+        // - center: resize and center image keeping the spect ratio
+        // - fill:   resize to element size ignoring the aspect ratio
+        $modes = array('crop', 'center', 'fill');
+        if(!in_array($mode, $modes))
+        {
+            return false;
+        }
+        $image = new Imagick($this->getImagePath());
+        $dimensions  = $image->getImageGeometry();
+        $imgWidth    = $dimensions['width'];
+        $imgHeight   = $dimensions['height'];
+
+        if($mode === 'center')
+        {
+            $aspectRatio = $imgWidth / $imgHeight;
+
+            $newWidth  = $this->getWidth();
+            $newHeight = $this->getHeight();
+
+            if($aspectRatio > 1)
+            {
+                $newWidth = $newHeight * $aspectRatio;
+            }
+            else
+            {
+                $newHeight = $newWidth / $aspectRatio;
+            }
+
+            $image->scaleImage($newWidth, $newHeight, true);
+
+            $newX = ($this->getWidth() - $newWidth) / 2;
+            $newY = ($this->getHeight() - $newHeight) / 2;
+        }
+        else if($mode === 'crop')
+        {
+            $newX = 0;
+            $newY = 0;
+        }
+        else if($mode === 'fill')
+        {
+            $newWidth  = $this->getWidth();
+            $newHeight = $this->getHeight();
+
+            $image->scaleImage($newWidth, $newHeight, false);
+
+            $newX = 0;
+            $newY = 0;
+        }
+
+        $background = new Imagick();
+        $background->newImage($this->getWidth(), $this->getHeight(), new ImagickPixel('white'));
+        $background->setImageFormat('gif');
+
+        $background->compositeImage($image, Imagick::COMPOSITE_DEFAULT, $newX, $newY);
+
+        $filename = $this->getId() . '.gif';
+        $path = 'tmp';
+        imSaveImage($background, $filename, $path);
+
+        return $path . '/' . $filename;
+    }
+
+
+
+
+    /**
+     * getImagePath
+     *
+     * evaluation and adjustment of imagePath;
+     *
+     * TODO: name and or functionality? Restructure all those methods more clearly!
+     *
+     * @access public
+     * @return void
+     */
+    public function getImagePath()
+    {
+        $pos = strpos($this->getImageUrl(), 'http');
+
+        if($pos === false)
+        {
+            $filepath = ROOT_DIR . $this->getImageUrl();
+        }
+        else
+        {
+            $filepath = $this->getImageUrl();
+        }
+
+        $filepath = str_replace('%20' , ' ', $filepath);
+        $filepath = str_replace('//' , '/', $filepath);
+
+        return $filepath;
+    }
+
+
 
     /**
      * renderSWF
@@ -133,7 +247,7 @@ class GfxImage extends GfXComponent
 
         $imgPath = '/tmp/file' . time() . rand() . '.jpg';
 
-        $output = $this->resizeImage($this->getImageUrl(), $this->getWidth(), $this->getHeight(), false);
+        $output = $this->createImageFromSourceFile($this->getTempPath());
 
         $result = imagejpeg($output, $imgPath, 100);
         imagedestroy($output);
@@ -240,18 +354,8 @@ class GfxImage extends GfXComponent
             return true;
         }
 
-        $pos = strpos($this->getImageUrl(), 'http');
-
-        if($pos === false)
-        {
-            $filepath = ROOT_DIR . $this->getImageUrl();
-        }
-        else
-        {
-            $filepath = $this->getImageUrl();
-        }
-
-        $filepath = str_replace('%20' , ' ', $filepath);
+        $filepath = $this->getImagePath();
+        $filepath = __ROOT__ . $this->getTempPath();
 
         $transparent = new ImagickPixel("rgba(127,127,127,0)");
 
@@ -322,83 +426,6 @@ class GfxImage extends GfXComponent
     }
 
 
-    /**
-     * resize image
-     *
-     * @param $file
-     * @param bool $crop
-     * @return resource
-     */
-    public function resizeImage($file, $crop=false)
-    {
-        $filepath = $this->getFilepath($file);
-        if(false === file_get_contents($filepath, 0, null, 0, 1))
-        {
-            $file = 'assets/image_not_found.jpg';
-        }
-
-        list($originalWidth, $originalHeight) = getimagesize($filepath);
-
-        if($originalWidth <= 0 || $originalHeight <=0)
-        {
-            throw new Exception('Getting file ' . $file . ' failed; Dimensions <= zero found');
-        }
-        $aspectRatio = $originalWidth / $originalHeight;
-
-        $newWidth  = $this->getWidth();
-        $newHeight = $this->getHeight();
-
-        $cachedFile = IMGCACHE_DIR . '/' . $this->getContainer()->getOutputDir() . '/' . urlencode($file);
-        if(file_exists($cachedFile))
-        {
-            $file = $cachedFile;
-        }
-
-        if($aspectRatio < 1 )
-        {
-            $newWidth = $newHeight * $aspectRatio;
-        }
-        else
-        {
-            $newHeight = $newWidth / $aspectRatio;
-        }
-
-        $resizedWidth = $newWidth;
-        $resizedHeight = $newHeight;
-        $newX = ($this->getWidth() - $newWidth) / 2;
-        $newY = ($this->getHeight() - $newHeight) / 2;
-
-        $originalImage = $this->createImageFromSourceFile($file);
-
-        //canvas for resized image
-        $resizedImage = imagecreatetruecolor($this->getWidth(), $this->getHeight());
-
-        if(!$resizedImage)
-        {
-            throw new Exception('Could not create image ' . $this->getId());
-        }
-        imagealphablending($resizedImage, true);
-
-        $bgcolor = imagecolorallocatealpha($resizedImage, 255, 255, 255, 0);
-        imagefill($resizedImage, 0, 0, $bgcolor);
-
-        // massively time consuming
-        if($this->getContainer()->getPreviewMode() !== true)
-        {
-            imagecopyresampled($resizedImage, $originalImage, $newX, $newY, 0, 0, $resizedWidth, $resizedHeight, $originalWidth, $originalHeight);
-        }
-        else
-        {
-            imagecopyresized($resizedImage, $originalImage, $newX, $newY, 0, 0, $resizedWidth, $resizedHeight, $originalWidth, $originalHeight);
-        }
-
-        imagealphablending($resizedImage, false);
-        imagesavealpha($resizedImage,true);
-
-        imagedestroy($originalImage);
-
-        return $resizedImage;
-    }
 
     private function createImageFromSourceFile($file)
     {
@@ -510,6 +537,16 @@ class GfxImage extends GfXComponent
     public function getImageUrl()
     {
         return $this->imageUrl;
+    }
+
+    public function getTempPath()
+    {
+        return $this->tempPath;
+    }
+
+    public function setTempPath($path)
+    {
+        $this->tempPath = $path;
     }
 
 

@@ -191,3 +191,31 @@ function getPrunedAvailableCategories($categories, $templateSubscriptions)
     }
     return $prunedCategories;
 }
+
+function imSaveImage($image, $filename, $path)
+{
+    // check if directory exists
+    // create if not
+    $path = __ROOT__ . $path;
+    if(!($success = is_dir($path)))
+    {
+        // set the current umask to 0766
+        $old = umask(0);
+        if(!mkdir($path, 0766, true))
+        {
+            throw new Exception('Could not create directory ' . $path . ' to write file ' . $filename . ': ' . print_r($success, true));
+        }
+        // reset umask
+        umask($old);
+    }
+    // write image accessible for all users
+    if(is_dir($path))
+    {
+        $image->writeImage($path . '/' . $filename);
+        chmod($path . '/' . $filename, 0766);
+    }
+    else
+    {
+        throw new Exception('Could not write file ' . $path . '/' . $filename);
+    }
+}
