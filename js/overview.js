@@ -89,10 +89,15 @@ $(document).ready(function()
     $('.createCreatives').on('click', function() {
         var target = $(this).attr('id').split('-');
         var data = {};
-        data.templateId   = parseInt(target[1]);
+        var templateId = parseInt(target[1]);
+        data.templateId   = templateId;
         data.advertiserId = parseInt(target[2]);
         data.companyId    = parseInt(target[3]);
         data.numPreviewPics = 10;
+
+        var infoNode = '<div id="createInfo"><img src="img/loading.gif" /></div>';
+        $('#actionsContainer_' + templateId).append($(infoNode));
+
         overview.generateCreatives(data);
     });
 });
