@@ -9,6 +9,9 @@
  * @author Christoph 'Kiko' Starkmann <christoph.starkmann@explido.de>
  * @license Proprietary/Closed Source
  */
+
+require_once(__ROOT__ . 'libraries/functions.inc.php');
+
 class GfxImage extends GfXComponent
 {
     private $imageUrl;
@@ -476,8 +479,8 @@ class GfxImage extends GfXComponent
 
         $svg = '';
         $svg .= "\r\n" . '<image';
-        $svg .= "\r\n" . ' cmeo:ref="' . $this->getCmeoRef(). '"';
-        $svg .= "\r\n" . ' cmeo:link="' . $this->getCmeoLink(). '"';
+        $svg .= "\r\n" . ' cmeo:ref="' . $this->getRef(). '"';
+        $svg .= "\r\n" . ' cmeo:link="' . $this->getLinkUrl(). '"';
         $svg .= "\r\n" . ' cmeo:editGroup="' . $this->getEditGroup(). '"';
 
         if(count($this->getAnimations()) > 0)

@@ -777,6 +777,7 @@ class GfxContainer
             $element->disableStroke();
             foreach($valueList[$id] AS $param => $value)
             {
+                $param = str_replace('cmeo', '', $param);
                 $func="set" . ucwords($param);
 
                 if(substr($param, 0, 6) === 'shadow')

@@ -632,38 +632,6 @@ class GfXComponent implements Linkable, Resizeable
     /**
      * @return mixed
      */
-    public function getCmeoLink()
-    {
-        return $this->cmeoLink;
-    }
-
-    /**
-     * @param mixed $cmeoLink
-     */
-    public function setCmeoLink($cmeoLink)
-    {
-        $this->cmeoLink = $cmeoLink;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getCmeoRef()
-    {
-        return $this->cmeoRef;
-    }
-
-    /**
-     * @param mixed $cmeoRef
-     */
-    public function setCmeoRef($cmeoRef)
-    {
-        $this->setRef($cmeoRef);
-    }
-
-    /**
-     * @return mixed
-     */
     public function getRef()
     {
         return $this->cmeoRef;

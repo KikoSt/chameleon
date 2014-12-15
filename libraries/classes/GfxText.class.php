@@ -362,8 +362,8 @@ class GfxText extends GfxComponent
 
         $svg = '';
         $svg .= "\r\n" . '<text xml:space="preserve"';
-        $svg .= "\r\n" . ' cmeo:ref="' . $this->getCmeoRef(). '"';
-        $svg .= "\r\n" . ' cmeo:link="' . $this->getCmeoLink(). '"';
+        $svg .= "\r\n" . ' cmeo:ref="' . $this->getRef(). '"';
+        $svg .= "\r\n" . ' cmeo:link="' . $this->getLinkUrl(). '"';
         $svg .= "\r\n" . ' cmeo:editGroup="' . $this->getEditGroup(). '"';
         if(count($this->getAnimations()) > 0)
         {

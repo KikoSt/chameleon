@@ -90,7 +90,7 @@
                     $this->fontFamily = $element->getFontFamily();
                 }
 
-                $this->setLink($element->getCmeoLink());
+                $this->setLink($element->getLinkUrl());
 
                 // calculate own properties based on those elements' properties
                 // $this->elements[] = $element;

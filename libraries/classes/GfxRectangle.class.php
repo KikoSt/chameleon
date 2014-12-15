@@ -271,7 +271,7 @@ class GfxRectangle extends GfxShape
         $svg = '';
 
         $svg .= "\r\n" . '<rect';
-        $svg .= "\r\n" . ' cmeo:link="' . $this->getCmeoLink() . '"';
+        $svg .= "\r\n" . ' cmeo:link="' . $this->getLinkUrl() . '"';
         $svg .= "\r\n" . ' cmeo:editGroup="' . $this->getEditGroup(). '"';
         $svg .= "\r\n" . ' fill="' . $this->getFill()->getHex() . '"';
 
