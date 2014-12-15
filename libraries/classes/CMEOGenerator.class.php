@@ -134,7 +134,7 @@ class CMEOGenerator
         }
         else
         {
-            throw new Exception ('ini settings not found');
+            throw new FileAccessFailedException ('ini settings not found');
         }
 
         $datetime    = new Datetime();
@@ -155,7 +155,7 @@ class CMEOGenerator
         $this->logHandle = fopen(LOG_DIR . '/' . $logfileName, 'a');
         if(!$this->logHandle)
         {
-            // throw new Exception('Could not open log file ' . LOG_DIR . '/' . $logfileName . '. Exiting');
+            throw new FileAccessFailedException('Could not open log file ' . LOG_DIR . '/' . $logfileName . '. Exiting');
         }
     }
 

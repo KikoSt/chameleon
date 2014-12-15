@@ -126,7 +126,7 @@ class APIConnector
         $result = $this->validateResponse($curlResponse);
         if(!$result['valid'])
         {
-            throw new Exception('An error occured: ' . $result['message']);
+            throw new RestResponseException('An error occured: ' . $result['message']);
         }
 
         return $enums;
@@ -216,7 +216,7 @@ class APIConnector
         $result = $this->validateResponse($curlResponse);
         if(!$result['valid'])
         {
-            throw new Exception('An error occured: ' . $result['message']);
+            throw new RestResponseException('An error occured: ' . $result['message']);
         }
 
         $productList = json_decode($curlResponse)->products;
@@ -269,7 +269,7 @@ class APIConnector
         $result = $this->validateResponse($curlResponse);
         if(!$result['valid'])
         {
-            throw new Exception('An error occured: ' . $result['message']);
+            throw new RestResponseException('An error occured: ' . $result['message']);
         }
 
         $categories = json_decode($curlResponse)->categories;
@@ -307,7 +307,7 @@ class APIConnector
         $result = $this->validateResponse($curlResponse);
         if(!$result['valid'])
         {
-            throw new Exception('An error occured: ' . $result['message']);
+            throw new RestResponseException('An error occured: ' . $result['message']);
         }
 
         $subscribedCategories = json_decode($curlResponse)->categories;
@@ -354,7 +354,7 @@ class APIConnector
     {
         if(!isset($this->advertiserId))
         {
-            throw new Exception('advertiserId not set');
+            throw new RestResponseException('advertiserId not set');
         }
 
         if(null === $groupId)
@@ -374,7 +374,7 @@ class APIConnector
         $result = $this->validateResponse($curlResponse);
         if(!$result['valid'])
         {
-            throw new Exception('Error trying to get templates');
+            throw new RestResponseException('Error trying to get templates');
         }
 
         curl_close($curl);
@@ -396,7 +396,7 @@ class APIConnector
     {
         if(!isset($templateId))
         {
-            throw new Exception('bannerTemplateId not set');
+            throw new RestResponseException('bannerTemplateId not set');
         }
 
         $resource = REST_API_SERVICE_URL . '/' . str_replace('{templateId}', $templateId, $this->serviceCalls['getTemplateById']);
@@ -408,7 +408,7 @@ class APIConnector
         $result = $this->validateResponse($curlResponse);
         if(!$result['valid'])
         {
-            throw new Exception('An error occured: ' . $result['message']);
+            throw new RestResponseException('An error occured: ' . $result['message']);
         }
 
         return $this->populateBannerTemplate(json_decode($curlResponse));
@@ -431,7 +431,7 @@ class APIConnector
         $result = $this->validateResponse($curlResponse);
         if(!$result['valid'])
         {
-            throw new Exception('An error occured: ' . $result['message']);
+            throw new RestResponseException('An error occured: ' . $result['message']);
         }
 
         return $curlResponse;
@@ -529,7 +529,7 @@ class APIConnector
         $result = $this->validateResponse($curlResponse);
         if(!$result['valid'])
         {
-            throw new Exception('An error occured: ' . $result['message']);
+            throw new RestResponseException('An error occured: ' . $result['message']);
         }
 
         $productData = $this->populateProduct(json_decode($curlResponse));
@@ -694,7 +694,7 @@ class APIConnector
     {
         if(!isset($this->auditUserId))
         {
-            throw new Exception('AuditUserId not provided!');
+            throw new UserAuthentificationException('AuditUserId not provided!');
         }
         else
         {
