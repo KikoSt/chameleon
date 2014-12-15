@@ -170,13 +170,11 @@ class CMEOGenerator
 
         foreach($this->templateList AS $curTemplateId)
         {
-            echo '> ' . $curTemplateId . ' <';
             $templates[] = $this->connector->getTemplateById($curTemplateId);
         }
 
         foreach($templates AS $template)
         {
-            echo "\nGenerating template " . $template->getBannerTemplateId() . "\n";
             $categorySubscriptions = $template->getCategorySubscriptions();
             $selectedCategories = $this->getCategories();
             $subscriptionList = array();
@@ -225,9 +223,7 @@ class CMEOGenerator
                     $count++;
                 }
             }
-            echo "--------------------------------------\n";
         }
-        echo "======================================\n";
     }
 
 
