@@ -190,6 +190,8 @@ class CMEOGenerator
             $categories = array_intersect($this->categoryList, $subscriptionList);
             $categories = $subscriptionList;
 
+            $categories = $this->getCategories();
+
             foreach($categories AS $categoryId)
             {
                 $this->prepareLogfile($categoryId);
