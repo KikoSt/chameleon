@@ -136,9 +136,15 @@ $(document).ready(function() {
         overlayOn();
         $('#preparepreviewalert').show();
 
-        var formData = new FormData();
         var nodeList = $(document).find($('[type="file"]'));
 
+        var formData = new FormData();
+        var metadata = getMetaData(templateId);
+        var templateId = $('#templateId').val();
+
+        formData.append('templateId', templateId);
+        formData.append('companyId', metadata.companyId);
+        formData.append('advertiserId', metadata.advertiserId);
         formData.append('action', 'upload');
 
         var xhr =  new XMLHttpRequest();
@@ -156,6 +162,8 @@ $(document).ready(function() {
                 $('a[data-imagelightbox="preview"]').trigger("click");
             } else if(xhr.status !== 200) {
                 // failed to load preview data
+                $('#preparepreviewalert').hide();
+                overlayOff();
             }
         };
         xhr.open('POST', '/chameleon/ajax/getLivePreview.php', true);
