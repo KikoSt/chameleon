@@ -683,10 +683,6 @@ class GfxContainer
             $delay = $imageDelay;
         }
 
-//        echo 'IMG: ' . $imgTime . "\n";
-//        echo 'REC: ' . $recTime . "\n";
-//        echo 'TXT: ' . $texTime . "\n";
-
         //complete the banner
         $gifpath = OUTPUT_DIR . '/' . $this->getOutputDir() . '/' . $this->getOutputFilename() . '.gif';
 
@@ -777,7 +773,7 @@ class GfxContainer
             $element->disableStroke();
             foreach($valueList[$id] AS $param => $value)
             {
-                $param = str_replace('cmeo', '', $param);
+                // $param = str_replace('cmeo', '', $param);
                 $func="set" . ucwords($param);
 
                 if(substr($param, 0, 6) === 'shadow')
@@ -840,6 +836,9 @@ class GfxContainer
                 {
                     $element->setAnimation($value);
                 }
+                // elseif($param == 'cmeoLink')
+                // {
+                // }
                 else
                 {
                     $element->$func($value);

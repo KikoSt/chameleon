@@ -42,6 +42,97 @@ class GfXComponent implements Linkable, Resizeable
         $this->animationSteps = array();
     }
 
+    /**
+     * create
+     *
+     * initially create the element using the given svg (xml!) node
+     *
+     * @param mixed $svgRootNode
+     * @access public
+     * @return void
+     */
+    public function create($svgRootNode)
+    {
+        $attr = $svgRootNode->attributes();
+
+        $this->setX((float) $attr->x);
+        $this->setY((float) $attr->y);
+        $this->setWidth((float) $attr->width);
+        $this->setHeight((float) $attr->height);
+
+        $this->setId((string) $attr->id);
+
+        // shadow and stroke are stored in the 'style' attribute; process them if the attribute exists
+        if((string) $svgRootNode->attributes()->style !== '')
+        {
+            $styles = array();
+            $style = $svgRootNode->attributes()->style;
+            $style = rtrim($style, ';');
+            $stylesList = explode(';', $style);
+            foreach($stylesList AS $curStyle)
+            {
+                list($curKey, $curValue) = explode(':', $curStyle);
+                $styles[$curKey] = $curValue;
+            }
+
+            if(array_key_exists('stroke', $styles))
+            {
+                $strokeColor = new GfxColor($styles['stroke']);
+                $strokeWidth = (int) $styles['stroke-width'];
+                $stroke = new GfxStroke($strokeColor, $strokeWidth);
+                $stroke->setColor($strokeColor);
+                $stroke->setWidth($strokeWidth);
+                $this->setStroke($stroke);
+                $this->enableStroke();
+            }
+            else if($attr->stroke !== null && (int) $attr->{'stroke-width'} !== 0)
+            {
+                $strokeColor = new GfxColor($attr->stroke);
+                $strokeWidth = (int) $attr->{'stroke-width'};
+                $stroke = new GfxStroke($strokeColor, $strokeWidth);
+                $stroke->setColor($strokeColor);
+                $stroke->setWidth($strokeWidth);
+                $this->setStroke($stroke);
+                $this->enableStroke();
+            }
+
+            if(array_key_exists('shadow', $styles))
+            {
+                $shadowColor = new GfxColor($styles['shadow']);
+                $shadowDist = (int) $styles['shadow-dist'];
+                $shadow = new GfxShadow($shadowColor, $shadowDist);
+                $this->setShadow($shadow);
+                $this->enableShadow();
+            }
+        }
+
+        $ref        = (string) $svgRootNode->attributes('cmeo', true)->ref;
+        $link       = (string) $svgRootNode->attributes('cmeo', true)->link;
+        $editGroup  = (int)    $svgRootNode->attributes('cmeo', true)->editGroup;
+        $animations = (string) $svgRootNode->attributes('cmeo', true)->animation;
+
+        if(!empty($ref))
+        {
+            // tell the container that we want to get an update upon new data
+            $this->getContainer()->registerDataUpdate($ref, $this);
+            $this->setRef($ref);
+        }
+        if(!empty($link))
+        {
+            // tell the container that we want to get an update upon new data
+            $this->getContainer()->registerDataUpdate($link, $this);
+            $this->setLink($link);
+        }
+        if(!empty($editGroup))
+        {
+            $this->setEditGroup($editGroup);
+        }
+        if(!empty($animations))
+        {
+            $this->addAnimation($animations);
+        }
+    }
+
     public function addAnimation($animationDefinition)
     {
         $animationDefinition = str_replace('[', '', $animationDefinition);
@@ -232,92 +323,6 @@ class GfXComponent implements Linkable, Resizeable
     public function updateData()
     {
     }
-
-    public function create($svgRootNode)
-    {
-        $attr = $svgRootNode->attributes();
-
-        $this->setX((float) $attr->x);
-        $this->setY((float) $attr->y);
-        $this->setWidth((float) $attr->width);
-        $this->setHeight((float) $attr->height);
-
-        $this->setId((string) $attr->id);
-
-        if((string) $svgRootNode->attributes()->style !== '')
-        {
-            $styles = array();
-            $style = $svgRootNode->attributes()->style;
-            $style = rtrim($style, ';');
-            $stylesList = explode(';', $style);
-            foreach($stylesList AS $curStyle)
-            {
-                list($curKey, $curValue) = explode(':', $curStyle);
-                $styles[$curKey] = $curValue;
-            }
-
-            if(array_key_exists('stroke', $styles))
-            {
-                $strokeColor = new GfxColor($styles['stroke']);
-                $strokeWidth = (int) $styles['stroke-width'];
-                $stroke = new GfxStroke($strokeColor, $strokeWidth);
-                $stroke->setColor($strokeColor);
-                $stroke->setWidth($strokeWidth);
-                $this->setStroke($stroke);
-                $this->enableStroke();
-            }
-            else if($attr->stroke !== null && (int) $attr->{'stroke-width'} !== 0)
-            {
-                $strokeColor = new GfxColor($attr->stroke);
-                $strokeWidth = (int) $attr->{'stroke-width'};
-                $stroke = new GfxStroke($strokeColor, $strokeWidth);
-                $stroke->setColor($strokeColor);
-                $stroke->setWidth($strokeWidth);
-                $this->setStroke($stroke);
-                $this->enableStroke();
-            }
-
-            if(array_key_exists('shadow', $styles))
-            {
-                $shadowColor = new GfxColor($styles['shadow']);
-                $shadowDist = (int) $styles['shadow-dist'];
-                $shadow = new GfxShadow($shadowColor, $shadowDist);
-                $this->setShadow($shadow);
-                $this->enableShadow();
-            }
-        }
-
-        $ref        = (string) $svgRootNode->attributes('cmeo', true)->ref;
-        $link       = (string) $svgRootNode->attributes('cmeo', true)->link;
-        $editGroup  = (int)    $svgRootNode->attributes('cmeo', true)->editGroup;
-        $animations = (string) $svgRootNode->attributes('cmeo', true)->animation;
-
-        if(!empty($ref))
-        {
-            $this->getContainer()->registerDataUpdate($ref, $this);
-            $this->setRef($ref);
-            $this->setCmeoRef($ref);
-        }
-        if(!empty($link))
-        {
-            $this->getContainer()->registerDataUpdate($link, $this);
-            $this->setCmeoLink($link);
-            $this->setLink($link);
-        }
-        if(!empty($editGroup))
-        {
-            $this->setEditGroup($editGroup);
-        }
-        if(!empty($animations))
-        {
-            $this->addAnimation($animations);
-        }
-    }
-
-//    public function clearAnimations()
-//    {
-//        $this->animationList = array();
-//    }
 
     public function hasShadow()
     {
@@ -559,10 +564,12 @@ class GfXComponent implements Linkable, Resizeable
 
     public function render($canvas) {}
 
+/*
     public function setLink($url)
     {
         $this->url = $url;
     }
+*/
 
     public function setX($x)
     {
@@ -629,6 +636,17 @@ class GfXComponent implements Linkable, Resizeable
         $this->container = $container;
     }
 
+
+    public function setLink($cmeoLink)
+    {
+        $this->cmeoLink = $cmeoLink;
+    }
+
+    public function getLink()
+    {
+        return $this->cmeoLink;
+    }
+
     /**
      * @return mixed
      */
@@ -644,6 +662,33 @@ class GfXComponent implements Linkable, Resizeable
     {
         if($cmeoRef == 'productImageUrl') $cmeoRef = 'imageUrl';
         $this->cmeoRef = $cmeoRef;
+    }
+
+    public function getCmeoRef()
+    {
+        return $this->cmeoRef;
+    }
+
+    /**
+     * @param mixed $cmeoRef
+     */
+    public function setCmeoRef($cmeoRef)
+    {
+        if($cmeoRef == 'productImageUrl') $cmeoRef = 'imageUrl';
+        $this->cmeoRef = $cmeoRef;
+    }
+
+    public function getCmeoLink()
+    {
+        return $this->cmeoLink;
+    }
+
+    /**
+     * @param mixed $cmeoLink
+     */
+    public function setCmeoLink($cmeoLink)
+    {
+        $this->cmeoLink = $cmeoLink;
     }
 
     public function shadowEnabled()

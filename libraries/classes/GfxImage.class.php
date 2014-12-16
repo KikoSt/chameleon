@@ -38,11 +38,12 @@ class GfxImage extends GfXComponent
             if(!empty($this->getRef()))
             {
                 $this->setImageUrl($this->getContainer()->getProductData()->getImageUrl());
+                $this->setTempPath($this->createResizedImage());
             }
 
-            if(!empty($this->getLinkUrl()))
+            if(!empty($this->getCmeoLink()))
             {
-                $this->setLinkUrl($this->getContainer()->getProductData()->getProductUrl());
+                $this->setCmeoLink($this->getContainer()->getProductData()->getProductUrl());
             }
         }
     }
@@ -421,6 +422,8 @@ class GfxImage extends GfXComponent
         return $shadow;
     }
 
+
+
     public function createStroke($image)
     {
         $width =  $this->getStroke()->getWidth(); // $this->getWidth() + ($this->getStroke()->getWidth() * 2);
@@ -480,7 +483,7 @@ class GfxImage extends GfXComponent
         $svg = '';
         $svg .= "\r\n" . '<image';
         $svg .= "\r\n" . ' cmeo:ref="' . $this->getRef(). '"';
-        $svg .= "\r\n" . ' cmeo:link="' . $this->getLinkUrl(). '"';
+        $svg .= "\r\n" . ' cmeo:link="' . $this->getCmeoLink(). '"';
         $svg .= "\r\n" . ' cmeo:editGroup="' . $this->getEditGroup(). '"';
 
         if(count($this->getAnimations()) > 0)
