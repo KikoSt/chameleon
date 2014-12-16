@@ -9,9 +9,11 @@ class GfxAnimation
 {
     private $duration;
     private $targets;
+    private $keyframes;
 
     public function __construct()
     {
+        $this->keyframes = array();
     }
 
     public function setDuration($duration)
@@ -33,6 +35,15 @@ class GfxAnimation
     public function getTargets()
     {
         return $this->targets;
+    }
+
+    public function addKeyframe($framenum)
+    {
+        if(!in_array($framenum, $this->animationKeyframe))
+        {
+            $this->animationKeyframes[] = $framenum;
+        }
+        $this->animationKeyframes = sort($this->animationKeyframes);
     }
 }
 
