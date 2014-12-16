@@ -372,9 +372,6 @@ class GfxImage extends GfXComponent
         $frame = new Imagick();
         $frame->newImage($imageWidth, $imageHeight, $transparent);
 
-        // $frameDraw = new ImagickDraw();
-
-        // $image->resizeimage($this->getWidth(), $this->getHeight(), imagick::FILTER_BOX, 0.2, true);
         $image->scaleimage($this->gifParams->width, $this->gifParams->height, false);
 
         if($this->hasShadow() && $this->shadowEnabled())
@@ -399,7 +396,7 @@ class GfxImage extends GfXComponent
 
         $frame->setImageVirtualPixelMethod(Imagick::VIRTUALPIXELMETHOD_TRANSPARENT);
 
-        $frame->compositeImage($image, Imagick::COMPOSITE_DEFAULT, 0, 0); // $width / 2, $height / 2);
+        $frame->compositeImage($image, Imagick::COMPOSITE_DEFAULT, 0, 0);
         $frame->distortImage(imagick::DISTORTION_SCALEROTATETRANSLATE, $distort, false);
 
         return $frame;
@@ -427,8 +424,8 @@ class GfxImage extends GfXComponent
 
     public function createStroke($image)
     {
-        $width =  $this->getStroke()->getWidth(); // $this->getWidth() + ($this->getStroke()->getWidth() * 2);
-        $height = $this->getStroke()->getWidth();  //  $this->getHeight() + ($this->getStroke()->getHeight() * 2);
+        $width =  $this->getStroke()->getWidth();
+        $height = $this->getStroke()->getWidth();
         $image->borderimage($this->getStroke()->getColor()->getHex(), $width, $height);
     }
 
