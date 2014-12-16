@@ -115,13 +115,14 @@ class GfXComponent implements Linkable, Resizeable
         {
             // tell the container that we want to get an update upon new data
             $this->getContainer()->registerDataUpdate($ref, $this);
+            $this->setCmeoRef($ref);
             $this->setRef($ref);
         }
         if(!empty($link))
         {
             // tell the container that we want to get an update upon new data
             $this->getContainer()->registerDataUpdate($link, $this);
-            $this->setLink($link);
+            $this->setCmeoLink($link);
         }
         if(!empty($editGroup))
         {

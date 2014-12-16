@@ -221,7 +221,7 @@ class Editor extends Controller
     {
         $options = array();
         $options['GfxText'] = array('description', 'name', 'price', 'priceOld');
-        $options['GfxImage'] = array('productImageUrl');
+        $options['GfxImage'] = array('imageUrl');
         return $options;
     }
 
