@@ -317,8 +317,10 @@ Cmeo.prototype.generateCreatives = function(data) {
     }).done(function (response)
     {
         console.log('Done!');
+        $('#createInfo').remove();
     })
     .fail(function(response) {
         console.log('Fail!');
+        $('#createInfo').remove();
     })
 };

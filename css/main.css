@@ -366,16 +366,6 @@ input.filesize-warning {
     margin-top: 10px;
 }
 
-#actionsContainer > .row > .smallActionButton{
-    width: 38px;
-    height: 38px;
-}
-
-#actionsContainer > .row > button{
-    width: 79px;
-    height: 70px;
-}
-
 #toolbox {
     background:#c7c7c7;
     padding-top: 150px;
@@ -387,3 +377,37 @@ input.filesize-warning {
 }
 
 
+.action_button_large {
+    width: 80px;
+    height: 80px;
+    border: none;
+    padding: auto;
+    margin: 0px 2px 4px 0px;
+}
+
+.top_row {
+    margin-top: 10px;
+    padding-top: 10px;
+}
+
+.action_button_small {
+    width: 36px;
+    height: 36px;
+    margin: auto;
+    padding: 1px;
+    border: none;
+    margin: 0px 2px 4px 0px;
+}
+
+.action_button_small:nth-child(n+1) {
+    margin-left: 2px;
+}
+
+#createInfo {
+    background-color: #eeeeee;
+    width: 81px;
+    height: 25px;
+    padding: auto;
+    margin: auto;
+    padding-top: 4px;
+}

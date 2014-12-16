@@ -145,4 +145,3 @@ $response['gifFilesize'] = filesize('../' . $imgsrc . '.gif');
 $response['swfFilesize'] = filesize('../' . $imgsrc . '.swf');
 
 echo json_encode($response);
-

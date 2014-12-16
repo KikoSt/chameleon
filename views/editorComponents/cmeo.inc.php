@@ -5,8 +5,23 @@
             class="form-control-select"
         <?php echo (is_a($element, 'GfxImage') || is_a($element, 'GfxText')) ? '': 'disabled'; ?>
         >
+        <?php
+            if(is_a($element, 'GfxImage'))
+            {
+                $options = $this->cmeoRefOptions['GfxImage'];
+            }
+            else if(is_a($element, 'GfxText'))
+            {
+                $options = $this->cmeoRefOptions['GfxText'];
+                var_dump($options);
+            }
+            else
+            {
+                echo 'disabled';
+            }
+        ?>
         <?php if(is_a($element, 'GfxImage') || is_a($element, 'GfxText')) echo '<option value="">Select option...</option>'; ?>
-        <?php foreach($this->cmeoRefOptions as $option): ?>
+        <?php foreach($options as $option): ?>
             <option value="<?php echo $option;?>" <?php echo ($option === $element->getCmeoRef()) ? 'selected' : '';?>><?php echo $option;
                 ?></option>
         <?php endforeach;?>

@@ -134,7 +134,7 @@ class CMEOGenerator
         }
         else
         {
-            throw new Exception ('ini settings not found');
+            throw new FileAccessFailedException ('ini settings not found');
         }
 
         $datetime    = new Datetime();
@@ -155,7 +155,7 @@ class CMEOGenerator
         $this->logHandle = fopen(LOG_DIR . '/' . $logfileName, 'a');
         if(!$this->logHandle)
         {
-            // throw new Exception('Could not open log file ' . LOG_DIR . '/' . $logfileName . '. Exiting');
+            throw new FileAccessFailedException('Could not open log file ' . LOG_DIR . '/' . $logfileName . '. Exiting');
         }
     }
 
@@ -170,13 +170,11 @@ class CMEOGenerator
 
         foreach($this->templateList AS $curTemplateId)
         {
-            echo '> ' . $curTemplateId . ' <';
             $templates[] = $this->connector->getTemplateById($curTemplateId);
         }
 
         foreach($templates AS $template)
         {
-            echo "\nGenerating template " . $template->getBannerTemplateId() . "\n";
             $categorySubscriptions = $template->getCategorySubscriptions();
             $selectedCategories = $this->getCategories();
             $subscriptionList = array();
@@ -189,6 +187,8 @@ class CMEOGenerator
             }
             $categories = array_intersect($this->categoryList, $subscriptionList);
             $categories = $subscriptionList;
+
+            $categories = $this->getCategories();
 
             foreach($categories AS $categoryId)
             {
@@ -223,9 +223,7 @@ class CMEOGenerator
                     $count++;
                 }
             }
-            echo "--------------------------------------\n";
         }
-        echo "======================================\n";
     }
 
 

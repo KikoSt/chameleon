@@ -102,7 +102,7 @@ $products = $connector->getProductDataSamples($categoryIds, $numSamples);
 
 shuffle($products);
 
-$argv = array(null, $companyId, $advertiserId, null, $auditUserId);
+$argv = array(null, $companyId, $advertiserId, null);
 
 $generator = new CMEOGenerator($argv);
 $generator->setTemplates(array($templateId));

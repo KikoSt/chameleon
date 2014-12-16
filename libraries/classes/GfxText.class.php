@@ -248,8 +248,6 @@ class GfxText extends GfxComponent
 
         foreach($transformationList AS $attribute => $stepsize)
         {
-            // echo $this->getId() . ': ' . $attribute . ': ' . $stepsize . "\n";
-            $stepsize = $stepsize;
             switch($attribute)
             {
                 case 'x':
@@ -282,9 +280,15 @@ class GfxText extends GfxComponent
         //set the color for the layer
         $text = new ImagickDraw();
         $text->setFont($this->getGIFFont());
-        // WHY?????????????????????????
-        $text->setFontsize($this->getFontSize() * 1.33);
         $text->setFillColor($this->getFill()->getHex());
+        // completely different measure than in SWF here. Imagick uses the POINT sizes :(
+        // swf on the other hand uses PIXEL sizes ... mathematically, a pixel equals .75pt
+        // 1 px = 1/96 inch; 1 pt = 1 / 72 inch
+        // => 72 / 96 = .75, so this is how we can readjust the sizes
+        // Since we started with SWF and then went to GIF, all font sizes here are based on pixels.
+        // No technical preference, though pixel sound more sensible since we're talking about
+        // screen, not print ads here.
+        $text->setFontsize($this->getFontSize() / .75);
 
         $imageWidth  = $this->getContainer()->getCanvasWidth();
         $imageHeight = $this->getContainer()->getCanvasHeight();
@@ -295,7 +299,7 @@ class GfxText extends GfxComponent
         // IMPORTANT! Clean up animation mess!
          $image->setImageDispose(3);
 
-        $width = $this->gifParams->width;
+        $width  = $this->gifParams->width;
         $height = $this->gifParams->height;
         $x = $this->gifParams->x;
         $y = $this->gifParams->y + ($this->gifParams->height * .6);
@@ -362,8 +366,8 @@ class GfxText extends GfxComponent
 
         $svg = '';
         $svg .= "\r\n" . '<text xml:space="preserve"';
-        $svg .= "\r\n" . ' cmeo:ref="' . $this->getCmeoRef(). '"';
-        $svg .= "\r\n" . ' cmeo:link="' . $this->getCmeoLink(). '"';
+        $svg .= "\r\n" . ' cmeo:ref="' . $this->getRef(). '"';
+        $svg .= "\r\n" . ' cmeo:link="' . $this->getLinkUrl(). '"';
         $svg .= "\r\n" . ' cmeo:editGroup="' . $this->getEditGroup(). '"';
         if(count($this->getAnimations()) > 0)
         {
