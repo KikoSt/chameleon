@@ -219,8 +219,10 @@ class Editor extends Controller
 
     private function getCmeoRefOptions()
     {
-        $array = array('description', 'name', 'productImageUrl', 'price', 'priceOld');
-        return $array;
+        $options = array();
+        $options['GfxText'] = array('description', 'name', 'price', 'priceOld');
+        $options['GfxImage'] = array('productImageUrl');
+        return $options;
     }
 
     private function getCmeoLinkOptions()
