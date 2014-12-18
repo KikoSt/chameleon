@@ -29,6 +29,11 @@ class GfxImage extends GfXComponent
     }
 
 
+    public function updateTempImage()
+    {
+        $this->setTempPath($this->createResizedImage());
+    }
+
     public function updateData()
     {
         parent::updateData();

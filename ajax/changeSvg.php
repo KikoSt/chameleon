@@ -97,6 +97,7 @@ if(null !== $_FILES && count($_FILES) > 0)
             if($key === $element->getId())
             {
                 $element->setImageUrl('/assets/' . $singleFile['name']);
+                $element->updateTempImage();
             }
         }
     }
