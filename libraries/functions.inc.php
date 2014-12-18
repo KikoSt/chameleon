@@ -118,9 +118,9 @@ function getImageMap($container, $displayComponentLinks)
             $imageMap .= '"';
             $imageMap .= ' href="#"';
             $imageMap .= ' alt="group_' . $curGroup->getId() . '"';
-            $imageMap .= ' title="group_' . $curGroup->getId() . '"';
+            $imageMap .= ' data-content="group_' . $curGroup->getId() . '"';
             $imageMap .= ' id="group_' .$curGroup->getId() . '"';
-            $imageMap .= ' class="maparea"';
+            $imageMap .= ' class="maparea ttip"';
             $imageMap .= ' data-key="' . $curGroup->getId() . '_group"';
             $imageMap .= ' />';
         }
@@ -156,9 +156,9 @@ function getImageMap($container, $displayComponentLinks)
             $imageMap .= '"';
             $imageMap .= ' href="#"';
             $imageMap .= ' alt="' . $curElement->getId() . '"';
-            $imageMap .= ' title="' . $curElement->getId() . '"';
+            $imageMap .= ' data-content="' . $curElement->getId() . '"';
             $imageMap .= ' id="' .$curElement->getId() . '"';
-            $imageMap .= ' class="maparea"';
+            $imageMap .= ' class="maparea ttip"';
             $imageMap .= ' data-key="';
             $imageMap .= $curElement->getId();
             if($curElement instanceof GfxText) $imageMap .= '_text';
