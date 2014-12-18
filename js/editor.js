@@ -47,6 +47,11 @@ $(document).ready(function() {
                         },
                         style: {
                             classes: 'qtip-jtools'
+                        },
+                        position: {
+                            my: 'bottom center',
+                            at: 'top center',
+                            target: 'mouse'
                         }
                     });
 
