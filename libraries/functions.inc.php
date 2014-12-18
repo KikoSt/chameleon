@@ -135,7 +135,7 @@ function getImageMap($container, $displayComponentLinks)
             if($curElement instanceof GfxText)
             {
                 $imageMap .= (int) ($curElement->getX() - $textfieldpadding) . ',';
-                $imageMap .= (int) ($curElement->getY() - $curElement->getHeight() - $textfieldpadding) . ',';
+                $imageMap .= (int) ($curElement->getY() - $textfieldpadding) . ',';
             }
             else
             {
@@ -146,7 +146,7 @@ function getImageMap($container, $displayComponentLinks)
             if($curElement instanceof GfxText)
             {
                 $imageMap .= (int) ($curElement->getX() + $curElement->getWidth() + $textfieldpadding) . ',';
-                $imageMap .= (int) ($curElement->getY() + $textfieldpadding);
+                $imageMap .= (int) ($curElement->getY() + $curElement->getHeight() + $textfieldpadding);
             }
             else
             {
