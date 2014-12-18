@@ -231,7 +231,7 @@ class GfxText extends GfxComponent
         **/
 
         $handle = $canvas->add($sprite);
-        $handle->moveTo($this->getX() + ($this->getTextWidth()/2), $this->getY());
+        $handle->moveTo($this->getX() + ($this->getTextWidth()/2), $this->getY() + $this->getHeight());
         $sprite->nextFrame();
 
         unset($handle);
@@ -325,7 +325,9 @@ class GfxText extends GfxComponent
             $yScale = $height / $this->getHeight();
         }
 
-        $distort = array($width/2, $height/2, $xScale, $yScale,  -$rotation, $x + $width / 2, $y - $height * 1.3);
+        $yOffset = $this->getHeight();
+
+        $distort = array($width/2, $height/2, $xScale, $yScale,  -$rotation, $x + $width / 2, $y - $height * 1.3 + $yOffset);
         $image->setImageVirtualPixelMethod(Imagick::VIRTUALPIXELMETHOD_TRANSPARENT);
         $image->distortImage(imagick::DISTORTION_SCALEROTATETRANSLATE, $distort, false);
 
