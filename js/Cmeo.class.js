@@ -268,7 +268,6 @@ Cmeo.prototype.createExamples = function(templateId){
     {
         var productIds = response.productIds;
         var categoryIds = response.categoryIds;
-        console.log(productIds);
         if(productIds.length > 0)
         {
             getRenderedGif(productIds, metaData);

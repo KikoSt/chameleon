@@ -26,27 +26,28 @@ function getMetaData(templateId, categoryId){
 function getRenderedGif(output, metaData){
     var count = 1;
 
-    $.each(output, function (key,value)
-    {
-        metaData.productId = value;
+    metaData.productId = output.pop();
 
-        $.ajax({
-            type: "POST",
-            data: metaData,
-            dataType: "json",
-            url: "/chameleon/ajax/renderExampleForProductId.php"
-        }).done(function (file){
-            $('<div id="'+ metaData.templateId+'_'+count+'" class="item">'+
-            '<img src="' + window.location.origin + '/chameleon/' + file + '" alt="..."' +
-            'style="max-height: 320px;">' +
-            '</div>').appendTo('#previewcarousel-' + metaData.templateId);
+    $.ajax({
+        type: "POST",
+        data: metaData,
+        dataType: "json",
+        url: "/chameleon/ajax/renderExampleForProductId.php"
+    }).done(function (file){
+        $('.active').removeClass('active');
+        var previewNode = '<div id="' + metaData.templateId + '_' + count + '" class="item active">';
+        previewNode    += '<img src="'  + window.location.origin + '/chameleon/' + file + '" alt="..."';
+        previewNode    += 'style="max-height: 320px;">';
+        previewNode    += '</div>';
+        $(previewNode).appendTo('#previewcarousel-' + metaData.templateId);
 
-            count++;
+        count++;
 
-            $('#'+metaData.templateId+'_1').addClass("active");
-            $("#creativesCarousel-"+metaData.templateId).carousel("pause").removeData();
-            $("#creativesCarousel-"+metaData.templateId).carousel(0);
-        });
+        $('#'+metaData.templateId+'_1').addClass("active");
+        $("#creativesCarousel-"+metaData.templateId).carousel("pause").removeData();
+        $("#creativesCarousel-"+metaData.templateId).carousel(0);
+
+        if(output.length > 0) getRenderedGif(output, metaData);
     });
 }
 
