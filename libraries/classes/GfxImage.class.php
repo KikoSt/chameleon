@@ -147,7 +147,7 @@ class GfxImage extends GfXComponent
 
         $background->compositeImage($image, Imagick::COMPOSITE_DEFAULT, $newX, $newY);
 
-        $filename = $this->getId() . '.gif';
+        $filename = $this->getId() . time() . rand() . '.gif';
         $path = 'tmp';
         imSaveImage($background, $filename, $path);
 
