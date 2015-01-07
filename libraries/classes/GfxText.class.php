@@ -4,6 +4,17 @@
  * User: thomas
  * Date: 17.07.14
  * Time: 11:33
+ *
+ * Class GfxText
+ *
+ * handle all chameleon text components - placement, editing, animation and rendering
+ *
+ * NOTE: other than non-textual elements like images and rectangles, text is positioned
+ * using the baseline, so the y-coordinate is the text baseline, NOT the text top.
+ * While this actually makes sense from a designer point of view (imagine 'oneword' and 'Anotherword'
+ * sharing the same y-coordinate!), we are using the top left corner of the text bounding box
+ * for editing.
+ *
  */
 use gdenhancer\GDEnhancer;
 
@@ -60,6 +71,7 @@ class GfxText extends GfxComponent
     }
 
 
+    // calculate the actual text width based on the text and the font and font size
     public function getTextWidth()
     {
         $text = new SWFText();
@@ -70,16 +82,22 @@ class GfxText extends GfxComponent
         return($width);
     }
 
+    // Those wrapper functions are required to provide access on GfxComponent compatible
+    // access to properties
+
+    // wrapper function for getTextWidth
     public function getWidth()
     {
         return $this->getTextWidth();
     }
 
+    // wrapper function for getFontSize which actually is the Text height
     public function getTextHeight()
     {
         return $this->getFontSize();
     }
 
+    //wrapper function
     public function getHeight()
     {
         return $this->getTextHeight();
@@ -95,10 +113,14 @@ class GfxText extends GfxComponent
             {
                 $productData = $this->getContainer()->getProductData();
                 $newValue = $productData->{'get' . ucfirst($this->getRef())}();
+
+                // special computations if the field is to display price information
                 if('price' === $this->getRef() || 'oldPrice' === $this->getRef())
                 {
+                    // for now: european number format: '1250,99'
                     $newValue = number_format($newValue, 2, ',', '');
 
+                    // NOTE: this is an assuption!
                     if(empty($productData->getCurrencySymbol()) && empty($productData->getCurrencyShort()))
                     {
                         $newValue .= '€';
@@ -107,12 +129,10 @@ class GfxText extends GfxComponent
                     {
                         if(!empty($productData->getCurrencySymbol()))
                         {
-                            echo '1';
                             $newValue .= $productData->getCurrencySymbol();
                         }
                         else
                         {
-                            echo '2';
                             $newValue .= $productData->getCurrencyShort();
                         }
                     }
@@ -122,54 +142,15 @@ class GfxText extends GfxComponent
         }
     }
 
-    public function renderSWF($canvas)
+
+    protected function createSwfShadow()
     {
-        $text = new SWFText();
-        $sprite = new SWFSprite();
-        $sprite->setFrames($this->getContainer()->getFramerate());
-
-        if($this->hasShadow())
-        {
-            $shadow = new SWFText();
-
-            if(null !== $this->getSWFFont()) {
-                try
-                {
-                    $shadow->setFont($this->getSWFFont());
-                }
-                catch(Exception $e)
-                {
-                    echo 'Error trying to open font ' . $this->getSWFFont();
-                }
-            } else {
-                throw new Exception('No font set!');
-            }
-            try {
-                $shadowFill = $this->getShadow()->getColor();
-            } catch(Exception $e) {
-                echo 'Error trying to get color';
-                return false;
-            }
-            $shadowDist = $this->getShadow()->getDist();
-            try {
-                $shadow->setColor($shadowFill->getR(), $shadowFill->getG(), $shadowFill->getB(), 128);
-            } catch(Exception $e) {
-                echo 'Error trying to set color!';
-                return false;
-            }
-            $shadow->setHeight($this->getFontSize() * FLASH_FONT_SCALE_FACTOR);
-            // position: CENTERED!
-
-            // $shadow->moveTo(- ($this->getTextWidth()/2), 0);
-            $shadow->moveTo(-$this->getTextWidth() / 2 + $shadowDist, $shadowDist);
-            $shadow->addString(utf8_decode(str_replace('€', ' Euro', $this->getText())));
-            $shandle = $sprite->add($shadow);
-        }
+        $shadow = new SWFText();
 
         if(null !== $this->getSWFFont()) {
             try
             {
-                $text->setFont($this->getSWFFont());
+                $shadow->setFont($this->getSWFFont());
             }
             catch(Exception $e)
             {
@@ -179,29 +160,54 @@ class GfxText extends GfxComponent
             throw new Exception('No font set!');
         }
         try {
-            $curFill = $this->getFill();
+            $shadowFill = $this->getShadow()->getColor();
         } catch(Exception $e) {
             echo 'Error trying to get color';
             return false;
         }
+        $shadowDist = $this->getShadow()->getDist();
         try {
-            $text->setColor($curFill->getR(), $curFill->getG(), $curFill->getB());
+            $shadow->setColor($shadowFill->getR(), $shadowFill->getG(), $shadowFill->getB(), 128);
         } catch(Exception $e) {
             echo 'Error trying to set color!';
             return false;
         }
-        $text->setHeight($this->getFontSize() * FLASH_FONT_SCALE_FACTOR);
+        $shadow->setHeight($this->getFontSize() * FLASH_FONT_SCALE_FACTOR);
         // position: CENTERED!
 
+        // $shadow->moveTo(- ($this->getTextWidth()/2), 0);
+        $shadow->moveTo(-$this->getTextWidth() / 2 + $shadowDist, $shadowDist);
+        $shadow->addString(utf8_decode(str_replace('€', ' Euro', $this->getText())));
+
+        return $shadow;
+    }
+
+
+    // create the component for the swf
+    public function renderSWF($canvas)
+    {
+        $text   = new SWFText();
+        $sprite = new SWFSprite();
+        $sprite->setFrames($this->getContainer()->getFramerate());
+
+        if($this->hasShadow())
+        {
+            $shadow = $this->createSwfShadow();
+            $shandle = $sprite->add($shadow);
+        }
+
+        $curFill = $this->getFill();
+
+        $text->setFont($this->getSWFFont());
+        $text->setColor($curFill->getR(), $curFill->getG(), $curFill->getB());
+        $text->setHeight($this->getFontSize() * FLASH_FONT_SCALE_FACTOR);
+
+        // position: CENTERED!
         $text->moveTo(- ($this->getTextWidth()/2), 0);
         $text->addString(utf8_decode(str_replace('€', ' Euro', $this->getText())));
+        // $text->addString(utf8_decode($this->getText()));
 
         $handle = $sprite->add($text);
-
-        if($this->drawCenter)
-        {
-            $chandle = $this->drawCenter($sprite);
-        }
 
         $lhandle = $this->addClickableLink($sprite);
 
@@ -332,20 +338,20 @@ class GfxText extends GfxComponent
         $image->distortImage(imagick::DISTORTION_SCALEROTATETRANSLATE, $distort, false);
 
         return $image;
-
     }
 
-    public function renderShadow($frame)
-    {
-        $text = new ImagickDraw();
-        $text->setFont($this->getGIFFont());
-        $text->setfontsize($this->getFontSize() * 1.33);
-        $text->setfillcolor(new ImagickPixel($this->getShadow()->getColor()->getHex()));
+//     public function renderShadow($frame)
+//     {
+//         $text = new ImagickDraw();
+//         $text->setFont($this->getGIFFont());
+//         $text->setfontsize($this->getFontSize() * 1.33);
+//         $text->setfillcolor(new ImagickPixel($this->getShadow()->getColor()->getHex()));
+//
+// //        $frame->annotateImage($text, $this->getX()+, $this->getY()+$this->getShadow()->getDist(), 0, $this->getText());
+//     }
 
-//        $frame->annotateImage($text, $this->getX()+, $this->getY()+$this->getShadow()->getDist(), 0, $this->getText());
-    }
-
-    public function getFontListForOverview()
+    // TODO: really like this?
+    public static function getFontListForOverview()
     {
         $fontlist = $GLOBALS['fontlist']['GIF'];
 
@@ -415,9 +421,6 @@ class GfxText extends GfxComponent
         $this->textAnchor = $textAnchor;
     }
 
-
-
-
     public function getText()
     {
         return $this->text;
@@ -430,8 +433,6 @@ class GfxText extends GfxComponent
         $text = str_replace('Ã¼', 'ü', $text);
         $this->text = $text;
     }
-
-
 
     public function getSWFFont()
     {

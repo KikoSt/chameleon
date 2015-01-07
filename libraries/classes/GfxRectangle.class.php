@@ -30,7 +30,6 @@ class GfxRectangle extends GfxShape
     }
 
 
-
     /**
      * renderSWF
      *
@@ -182,7 +181,7 @@ class GfxRectangle extends GfxShape
             }
         }
         $x        = $this->gifParams->x;
-        $y        = $this->gifParams->y; //  - ($this->gifParams->height);
+        $y        = $this->gifParams->y;
         $width    = $this->gifParams->width;
         $height   = $this->gifParams->height;
         $rotation = $this->gifParams->rotation;
@@ -193,7 +192,6 @@ class GfxRectangle extends GfxShape
         $frame = new Imagick();
         $frame->newimage($imageWidth, $imageHeight, $transparent);
 
-        // ????????????? W ? T ? F ???????????????????????????
         if($this->getFill()->getR() !== null)
         {
             $color = new ImagickPixel($this->getFill()->getHex());
