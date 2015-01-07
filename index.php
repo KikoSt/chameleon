@@ -10,7 +10,7 @@ $myIndex = new Index();
 session_start();
 
 $params = array_keys($_REQUEST);
-$modules = array('overview', 'editor');
+$modules = array('overview', 'editor', 'manage');
 
 if(!in_array('page', $params) || !in_array($_REQUEST['page'], $modules))
 {

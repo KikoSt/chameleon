@@ -5,7 +5,7 @@
             <a href="index.php?page=overview">Overview</a>
         </li>
         <li class="sidebar">
-            <a href="#">Manage</a>
+            <a href="index.php?page=manage">Manage</a>
         </li>
     </ul>
     </div>

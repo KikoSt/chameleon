@@ -21,6 +21,11 @@ class Index extends Controller
                 return new Editor();
                 break;
             }
+            case "manage":
+            {
+                return new Manager();
+                break;
+            }
             default:
             {
                 throw new Exception('No applicable module found');
