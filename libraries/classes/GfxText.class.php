@@ -68,6 +68,11 @@ class GfxText extends GfxComponent
         }
         $this->setFontVariant($fontVariant);
         $this->setFontFamily((string) $attr->{'font-family'});
+
+        // overwrite width; don't use the stored width here, but calculate the actual width
+        // depending on the font, font size and text content
+        $this->setWidth($this->getTextWidth());
+
     }
 
 
@@ -287,6 +292,7 @@ class GfxText extends GfxComponent
         $text = new ImagickDraw();
         $text->setFont($this->getGIFFont());
         $text->setFillColor($this->getFill()->getHex());
+
         // completely different measure than in SWF here. Imagick uses the POINT sizes :(
         // swf on the other hand uses PIXEL sizes ... mathematically, a pixel equals .75pt
         // 1 px = 1/96 inch; 1 pt = 1 / 72 inch
