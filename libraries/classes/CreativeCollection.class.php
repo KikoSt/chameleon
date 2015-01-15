@@ -1,9 +1,9 @@
 <?php
 
 /**
- * TemplateCollection
+ * CreativeCollection
  *
- * Handle a collection of templates, retrieve them filtered, sorted etc.
+ * Handle a collection of creatives, retrieve them filtered, sorted etc.
  *
  *
  * @package
@@ -12,10 +12,11 @@
  * @author Christoph 'Kiko' Starkmann <christoph.starkmann@mediadecision.com>
  * @license Proprietary/Closed Source
  */
-class TemplateCollection extends ElementCollection
+class CreativeCollection extends ElementCollection
 {
     public function __construct()
     {
-        parent::__construct('id');
+        parent::__construct('gifpath');
     }
 }
+

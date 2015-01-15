@@ -34,6 +34,7 @@ abstract class ElementCollection
     private $elements;
     private $properties;
     private $propertyList;
+    private $uidName; // name of the unique identifier in the derived class. NOT mutual after object creation!
 
     public function __construct($uidName)
     {
@@ -43,10 +44,7 @@ abstract class ElementCollection
 
         $this->uidName = $uidName;
 
-        // TODO: this will NOT be valid for both creatives AND templates ....
-        // templates have an ID, creatives a filepath as unique identifier.
-        // Then again, we could use the filepath as UID for creatives ...?!
-        $this->properties['id']   = array();
+        $this->properties['uid']   = array();
         $this->properties['name'] = array();
     }
 
@@ -56,20 +54,21 @@ abstract class ElementCollection
         {
             $index = count($this->elements);
             $this->elements[$index]           = $element;
-            $this->properties['id'][$index]   = $element->{'get' . $this->uidName}();
+            $this->properties['uid'][$index]  = $element->{'get' . $this->uidName}();
             $this->properties['name'][$index] = $element->getName();
         }
         // adding all required properties to the corresponding dictionaries will be done in the subclasses
     }
 
-    public function removeElement($elementId)
+    public function removeElement($elementUid)
     {
         // check if element with given ID exists and retrieve the key if it does
-        // TODO: ... either this or the addElement method will NOT work ... ;)
-        if(($key = array_search($elementId, $this->elements)) !== false)
+        if(($key = array_search($elementUid, $this->properties['uid'])) !== false)
         {
             // remove this element
             unset($this->elements[$key]);
+            unset($this->properties['name'][$key]);
+            unset($this->properties['uid'][$key]);
         }
     }
 }
