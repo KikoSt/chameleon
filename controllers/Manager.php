@@ -5,13 +5,33 @@ class Manager extends Controller
     private $advertiserId;
     private $companyId;
     private $view;
+    private $templateCollection;
+    // private $creativeCollection;
 
     public function create()
     {
-        $templateIds = $this->getTemplateIds();
+        $this->view = $this->setLayout('views/manager.phtml')->getView();
 
-        $this->view = '<br /><br /><br /><br /><br /><br /><h1>Manage</h1>';
-        $this->view .= $this->getCreatives($templateIds);
+        // $this->view->creativeDirectory = $this->getCreatives($templateIds);
+        $this->view->companyId         = $this->companyId;
+        $this->view->advertiserId      = $this->advertiserId;
+        $this->view->page              = 'manage';
+
+        $this->templateCollection = new TemplateCollection();
+
+        $connector = new APIConnector();
+        $connector->setAdvertiserId($this->advertiserId);
+        $connector->setCompanyId($this->companyId);
+
+        $templateIds = $this->getTemplateIds();
+        foreach($templateIds AS $templateId)
+        {
+            $template = $connector->getTemplateById($templateId);
+            $this->templateCollection->addElement($template);
+        }
+        $this->view->elements = $this->templateCollection;
+        $this->view->message = 'Guten Tag, guten Tag!';
+        var_dump($this->templateCollection);
     }
 
     public function display()
@@ -67,28 +87,52 @@ class Manager extends Controller
     }
 
 
-    private function getCreativesByTemplateId($templateId)
+
+    // TODO: method to retrieve creatives using filter:
+    // - templateId
+    // - categoryId
+
+
+
+    private function getCreativesFiltered($filterTemplateId = null, $filterCategoryId = null)
     {
+        $filterCategoryId = 167574;
         $result = array();
 
         // get a list of all sub directories representing categories at first
         // we do NOT want the '..', the '.' and the preview folder
         $exclude = array('..', '.', 'preview');
-        $path = __ROOT__ . '/output/' . $this->getCompanyId() . '/' . $this->getAdvertiserId() . '/';
-        $list = array_diff(scandir($path), $exclude);
+        $path = __ROOT__ . 'output/' . $this->getCompanyId() . '/' . $this->getAdvertiserId();
 
-        // now scan all sub dirs for files with the given template ID
-        foreach($list AS $subdir)
+        if(null !== $categoryId)
         {
-            $subpath = $path . '/' . $subdir;
+            // only scan the given category subdir if any one is given
+            $categoryList = array($filterCategoryId);
+        }
+        else
+        {
+            // or all except the excluded directories
+            $categoryList = array_diff(scandir($path), $exclude);
+        }
+
+        // now scan all subdirs for files with the given template ID
+        foreach($categoryList AS $categoryId)
+        {
+            $subpath = $path . '/' . $categoryId;
             $sublist = array_diff(scandir($subpath), $exclude);
             if(count($sublist) > 0)
             {
                 foreach($sublist AS $creative)
                 {
-                    if(false !== strpos($creative, '' . $templateId) && 0 === strpos($creative, '' . $templateId))
+                    if(false !== strpos($creative, '' . $filterTemplateId) && 0 === strpos($creative, '' . $filterTemplateId))
                     {
-                        $result[] = $subpath . '/' . $creative;
+                        $curCreative = new StdClass();
+                        $curCreative->filePath     = $subpath . '/' . $creative;
+                        $curCreative->categoryId   = $categoryId;
+                        $curCreative->templateId   = $filterTemplateId;
+                        $curCreative->companyId    = $this->getCompanyId();
+                        $curCreative->advertiserId = $this->getAdvertiserId();
+                        $result[] = $curCreative;
                     }
                 }
             }
@@ -98,25 +142,20 @@ class Manager extends Controller
 
     private function getCreatives($templateIds)
     {
-        $string = '';
+        $result = array();
 
         foreach($templateIds AS $templateId)
         {
-            $string .= $templateId . ':<br />';
-            $result = $this->getCreativesByTemplateId($templateId);
-            foreach($result AS $creative)
+            $creatives = $this->getCreativesFiltered($templateId);
+            foreach($creatives AS $creative)
             {
-                if(false !== strpos($creative, '.gif'))
+                if(false !== strpos($creative->filePath, '.gif'))
                 {
-                    echo basename($creative);
-                    echo '<br />';
-                    echo '<img src="' . $creative . '" /><br />';
-                    echo '<br />';
+                    $result[] = $creative;
                 }
             }
 
         }
-
-        return $string;
+        return $result;
     }
 }
