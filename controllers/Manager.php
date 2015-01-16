@@ -31,7 +31,6 @@ class Manager extends Controller
         }
         $this->view->elements = $this->templateCollection;
         $this->view->message = 'Guten Tag, guten Tag!';
-        var_dump($this->templateCollection);
     }
 
     public function display()
