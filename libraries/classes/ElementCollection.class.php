@@ -83,6 +83,8 @@ abstract class ElementCollection implements Iterator
             unset($this->elements[$key]);
             unset($this->properties['name'][$key]);
             unset($this->properties['uid'][$key]);
+            // TODO: - check if we should remove company id(s), advertiser id(s) and/or category id(s) ....
+            //       - find a good way to check this ;)
         }
     }
 
@@ -104,38 +106,29 @@ abstract class ElementCollection implements Iterator
 
     public function getCompanyId()
     {
-        if(count($this->companyId) > 0)
+        if(count($this->companyIds) > 1)
         {
-            throw new Exception('Multiple companyId\'s set already, no unabiguous change possible. Please use method getCompanyId() instead');
+            throw new Exception('Multiple companyId\'s set already, no unabiguous reference possible. Please use method getCompanyIds() instead');
         }
-        else
-        {
-            return $this->companyIds[0];
-        }
+        return $this->companyIds[0];
     }
 
     public function getAdvertiserId()
     {
-        if(count($this->advertiserIds) > 0)
+        if(count($this->advertiserIds) > 1)
         {
-            throw new Exception('Multiple advertiserId\'s set already, no unabiguous change possible. Please use method getAdvertiserId() instead');
+            throw new Exception('Multiple advertiserId\'s set already, no unabiguous reference possible. Please use method getAdvertiserIds() instead');
         }
-        else
-        {
-            return $this->advertiserIds[0];
-        }
+        return $this->advertiserIds[0];
     }
 
     public function getCategoryId()
     {
-        if(count($this->categoryId) > 0)
+        if(count($this->categoryIds) > 1)
         {
-            throw new Exception('Multiple categoryId\'s set already, no unabiguous change possible. Please use method getCategoryId() instead');
+            throw new Exception('Multiple categoryId\'s set already, no unabiguous reference possible. Please use method getCategoryIds() instead');
         }
-        else
-        {
-            return $this->categoryIds[0];
-        }
+        return $this->categoryIds[0];
     }
 
 
