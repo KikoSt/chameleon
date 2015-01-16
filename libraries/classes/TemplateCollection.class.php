@@ -18,4 +18,19 @@ class TemplateCollection extends ElementCollection
     {
         parent::__construct('id');
     }
+
+    public function addElement($element)
+    {
+        parent::addElement($element);
+
+        $this->addCompanyId(0); // $element->getCompanyId());
+
+        foreach($element->getCategorySubscriptions() AS $category)
+        {
+            if($category->userStatus === 'ACTIVE')
+            {
+                $this->addCategoryId($category->idCategory);
+            }
+        }
+    }
 }

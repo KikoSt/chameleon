@@ -68,8 +68,8 @@ abstract class ElementCollection implements Iterator
             $this->elements[$index]           = $element;
             $this->properties['uid'][$index]  = $element->{'get' . $this->uidName}();
             $this->properties['name'][$index] = $element->getName();
-            $this->addCompanyId(0); // $element->getCompanyId());
             $this->addAdvertiserId($element->getAdvertiserId());
+
         }
         // adding all required properties to the corresponding dictionaries will be done in the subclasses
     }
@@ -86,96 +86,7 @@ abstract class ElementCollection implements Iterator
         }
     }
 
-
-    // if there's only one company ID, the company ID for the collection can be used like any single value property, using the
-    // set/get accessor methods. As soon as there had been more ID's added using the add method, it's no longer possible to 'set'
-    // the id.
-    // NOTE: It is highly recommended to use the collection in one way only. Either use set/get and never add multiple id's using
-    // the add method, or use add/remove only and the corresponding getCompanyIds method ...
-    public function setCompanyId($companyId)
-    {
-        if(count($this->companyIds) > 0)
-        {
-            throw new Exception('Multiple companyId\'s set already, no unabiguous change possible. Please use method addcompanyId() instead');
-        }
-        else
-        {
-            $this->companyIds[0] = $companyId;
-        }
-    }
-
-    public function setAdvertiserId($advertiserId)
-    {
-        if(count($this->advertiserIds) > 0)
-        {
-            throw new Exception('Multiple advertiserId\'s set already, no unabiguous change possible. Please use method addAdvertiserId() instead');
-        }
-        else
-        {
-            $this->advertiserIds[0] = $advertiserId;
-        }
-    }
-
-    public function setCategoryId($categoryId)
-    {
-        if(count($this->categoryIds) > 0)
-        {
-            throw new Exception('Multiple categoryId\'s set already, no unabiguous change possible. Please use method addCategoryId() instead');
-        }
-        else
-        {
-            $this->categoryIds[0] = $categoryId;
-        }
-    }
-
-    public function addCompanyId($companyId)
-    {
-        if(array_search($companyId, $this->companyIds) === false)
-        {
-            $this->companyIds[] = $companyId;
-        }
-    }
-
-    public function addAdvertiserId($advertiserId)
-    {
-        if(array_search($advertiserId, $this->advertiserIds) === false)
-        {
-            $this->advertiserIds[] = $advertiserId;
-        }
-    }
-
-    public function addCategoryId($categoryId)
-    {
-        if(array_search($categoryId, $this->categoryIds) === false)
-        {
-            $this->categoryIds[] = $categoryId;
-        }
-    }
-
-    public function removeCompanyId($companyId)
-    {
-        if(($key = array_search($companyId, $this->companyIds)) !== false)
-        {
-            unset($this->companyIds[$key]);
-        }
-    }
-
-    public function removeAdvertiserId($advertiserId)
-    {
-        if(($key = array_search($advertiserId, $this->advertiserIds)) !== false)
-        {
-            unset($this->advertiserIds[$key]);
-        }
-    }
-
-    public function removeCategoryId($categoryId)
-    {
-        if(($key = array_search($categoryId, $this->categoryIds)) !== false)
-        {
-            unset($this->categoryIds[$key]);
-        }
-    }
-
+    // public accessor methods
     public function getCompanyIds()
     {
         return $this->companyIds;
@@ -229,6 +140,96 @@ abstract class ElementCollection implements Iterator
 
 
 
+    // Those methods should not be calles from externally, so they are protected
+
+    // if there's only one company ID, the company ID for the collection can be used like any single value property, using the
+    // set/get accessor methods. As soon as there had been more ID's added using the add method, it's no longer possible to 'set'
+    // the id.
+    // NOTE: It is highly recommended to use the collection in one way only. Either use set/get and never add multiple id's using
+    // the add method, or use add/remove only and the corresponding getCompanyIds method ...
+    protected function setCompanyId($companyId)
+    {
+        if(count($this->companyIds) > 0)
+        {
+            throw new Exception('Multiple companyId\'s set already, no unabiguous change possible. Please use method addcompanyId() instead');
+        }
+        else
+        {
+            $this->companyIds[0] = $companyId;
+        }
+    }
+
+    protected function setAdvertiserId($advertiserId)
+    {
+        if(count($this->advertiserIds) > 0)
+        {
+            throw new Exception('Multiple advertiserId\'s set already, no unabiguous change possible. Please use method addAdvertiserId() instead');
+        }
+        else
+        {
+            $this->advertiserIds[0] = $advertiserId;
+        }
+    }
+
+    protected function setCategoryId($categoryId)
+    {
+        if(count($this->categoryIds) > 0)
+        {
+            throw new Exception('Multiple categoryId\'s set already, no unabiguous change possible. Please use method addCategoryId() instead');
+        }
+        else
+        {
+            $this->categoryIds[0] = $categoryId;
+        }
+    }
+
+    protected function addCompanyId($companyId)
+    {
+        if(array_search($companyId, $this->companyIds) === false)
+        {
+            $this->companyIds[] = $companyId;
+        }
+    }
+
+    protected function addAdvertiserId($advertiserId)
+    {
+        if(array_search($advertiserId, $this->advertiserIds) === false)
+        {
+            $this->advertiserIds[] = $advertiserId;
+        }
+    }
+
+    protected function addCategoryId($categoryId)
+    {
+        if(array_search($categoryId, $this->categoryIds) === false)
+        {
+            $this->categoryIds[] = $categoryId;
+        }
+    }
+
+    protected function removeCompanyId($companyId)
+    {
+        if(($key = array_search($companyId, $this->companyIds)) !== false)
+        {
+            unset($this->companyIds[$key]);
+        }
+    }
+
+    protected function removeAdvertiserId($advertiserId)
+    {
+        if(($key = array_search($advertiserId, $this->advertiserIds)) !== false)
+        {
+            unset($this->advertiserIds[$key]);
+        }
+    }
+
+    protected function removeCategoryId($categoryId)
+    {
+        if(($key = array_search($categoryId, $this->categoryIds)) !== false)
+        {
+            unset($this->categoryIds[$key]);
+        }
+    }
 
     /* ****************** *
      *  ITERATOR methods  *
