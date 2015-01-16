@@ -411,3 +411,8 @@ input.filesize-warning {
     margin: auto;
     padding-top: 4px;
 }
+
+#managerView {
+    margin-top:  100px;
+    width: 90%;
+}

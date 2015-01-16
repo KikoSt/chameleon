@@ -10,9 +10,21 @@
 <div class="container margin-left-150">
     <div id="managerView">
     <?php
-        foreach($this->elements as $creative):
+        echo 'Company: ';
+        foreach($this->elements->getCompanyIds() AS $companyId):
+        echo $companyId . '; ';
+        endforeach;
+        echo '<br />';
+        echo 'Advertiser: ';
+        foreach($this->elements->getAdvertiserIds() AS $advertiserId):
+        echo $advertiserId . '; ';
+        endforeach;
+        echo '<br />';
+        echo '<br />';
+        foreach($this->elements as $key => $element):
     ?>
-        <!-- ... -->
+        - <?php echo $element->getName(); ?>
+        <br />
     <?php
         endforeach;
         endif;
