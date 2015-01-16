@@ -48,6 +48,7 @@ abstract class ElementCollection implements Iterator
 
         $this->advertiserIds = array();
         $this->companyIds    = array();
+        $this->categoryIds   = array();
 
         $this->elements      = array();
         $this->properties    = array();
@@ -115,6 +116,18 @@ abstract class ElementCollection implements Iterator
         }
     }
 
+    public function setCategoryId($categoryId)
+    {
+        if(count($this->categoryIds) > 0)
+        {
+            throw new Exception('Multiple categoryId\'s set already, no unabiguous change possible. Please use method addCategoryId() instead');
+        }
+        else
+        {
+            $this->categoryIds[0] = $categoryId;
+        }
+    }
+
     public function addCompanyId($companyId)
     {
         if(array_search($companyId, $this->companyIds) === false)
@@ -128,6 +141,14 @@ abstract class ElementCollection implements Iterator
         if(array_search($advertiserId, $this->advertiserIds) === false)
         {
             $this->advertiserIds[] = $advertiserId;
+        }
+    }
+
+    public function addCategoryId($categoryId)
+    {
+        if(array_search($categoryId, $this->categoryIds) === false)
+        {
+            $this->categoryIds[] = $categoryId;
         }
     }
 
@@ -147,6 +168,14 @@ abstract class ElementCollection implements Iterator
         }
     }
 
+    public function removeCategoryId($categoryId)
+    {
+        if(($key = array_search($categoryId, $this->categoryIds)) !== false)
+        {
+            unset($this->categoryIds[$key]);
+        }
+    }
+
     public function getCompanyIds()
     {
         return $this->companyIds;
@@ -155,6 +184,23 @@ abstract class ElementCollection implements Iterator
     public function getAdvertiserIds()
     {
         return $this->advertiserIds;
+    }
+
+    public function getCategoryIds()
+    {
+        return $this->categoryIds;
+    }
+
+    public function getCompanyId()
+    {
+        if(count($this->companyId) > 0)
+        {
+            throw new Exception('Multiple companyId\'s set already, no unabiguous change possible. Please use method getCompanyId() instead');
+        }
+        else
+        {
+            return $this->companyIds[0];
+        }
     }
 
     public function getAdvertiserId()
@@ -169,17 +215,18 @@ abstract class ElementCollection implements Iterator
         }
     }
 
-    public function getCompanyId()
+    public function getCategoryId()
     {
-        if(count($this->companyId) > 0)
+        if(count($this->categoryId) > 0)
         {
-            throw new Exception('Multiple companyId\'s set already, no unabiguous change possible. Please use method getCompanyId() instead');
+            throw new Exception('Multiple categoryId\'s set already, no unabiguous change possible. Please use method getCategoryId() instead');
         }
         else
         {
-            return $this->companyIds[0];
+            return $this->categoryIds[0];
         }
     }
+
 
 
 
