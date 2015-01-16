@@ -29,8 +29,9 @@
  * $properties[<other_property_name>][2] = [element_y_id]
  *
  */
-abstract class ElementCollection
+abstract class ElementCollection implements Iterator
 {
+    private $position = 0;
     private $elements;
     private $properties;
     private $propertyList;
@@ -38,9 +39,8 @@ abstract class ElementCollection
 
     public function __construct($uidName)
     {
-        $this->elements     = array();
-        $this->properties   = array();
-        $this->propertyList = array();
+        $this->position = 0;
+
 
         $this->uidName = $uidName;
 
@@ -70,5 +70,33 @@ abstract class ElementCollection
             unset($this->properties['name'][$key]);
             unset($this->properties['uid'][$key]);
         }
+    }
+    /* ****************** *
+     *  ITERATOR methods  *
+     * ****************** */
+
+    function current()
+    {
+        return $this->elements[$this->position];
+    }
+
+    function key()
+    {
+        return $this->position;
+    }
+
+    function next()
+    {
+        ++$this->position;
+    }
+
+    function rewind()
+    {
+        $this->position = 0;
+    }
+
+    function valid()
+    {
+        return isset($this->elements[$this->position]);
     }
 }
