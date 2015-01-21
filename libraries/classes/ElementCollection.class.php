@@ -79,29 +79,48 @@ abstract class ElementCollection implements Iterator
         // check if element with given ID exists and retrieve the key if it does
         if(($key = array_search($elementUid, $this->properties['uid'])) !== false)
         {
+            $element = $this->elements[$key];
             // remove this element
-            unset($this->elements[$key]);
             unset($this->properties['name'][$key]);
             unset($this->properties['uid'][$key]);
-            // TODO: - check if we should remove company id(s), advertiser id(s) and/or category id(s) ....
-            //       - find a good way to check this ;)
+
+            $this->advertiserIds[$this->elements->getAdvertiserId()]--;
+            if($this->advertiserIds[$this->elements->getAdvertiserId()] === 0)
+            {
+                unset($this->advertiserIds[$this->elements->getAdvertiserId()]);
+            }
+
+            // finally, remove the element itself ...
+            unset($this->elements[$key]);
+            unset($element);
+        }
+    }
+
+    // remove a category and all elements that are associated with this category only;
+    // elements will NOT be removed if they are not only associated with this category, but also with another
+    // category
+    public function removeCategory($categoryId)
+    {
+        foreach($this->elements AS $element)
+        {
+
         }
     }
 
     // public accessor methods
     public function getCompanyIds()
     {
-        return $this->companyIds;
+        return array_keys($this->companyIds);
     }
 
     public function getAdvertiserIds()
     {
-        return $this->advertiserIds;
+        return array_keys($this->advertiserIds);
     }
 
     public function getCategoryIds()
     {
-        return $this->categoryIds;
+        return array_keys($this->categoryIds);
     }
 
     public function getCompanyId()
@@ -176,28 +195,33 @@ abstract class ElementCollection implements Iterator
         }
     }
 
+    // TODO: Actually, I don't really like to implicitely take advantage of the lose typing in php ... but it's the
+    // fastest way I can think of right now
     protected function addCompanyId($companyId)
     {
-        if(array_search($companyId, $this->companyIds) === false)
+        if(!isset($this->companyIds[$companyId]))
         {
-            $this->companyIds[] = $companyId;
+             $this->companyIds[$companyId] = 0;
         }
+        $this->companyIds[$companyId]++;
     }
 
     protected function addAdvertiserId($advertiserId)
     {
-        if(array_search($advertiserId, $this->advertiserIds) === false)
+        if(!isset($this->advertiserIds[$advertiserId]))
         {
-            $this->advertiserIds[] = $advertiserId;
+             $this->advertiserIds[$advertiserId] = 0;
         }
+        $this->advertiserIds[$advertiserId]++;
     }
 
     protected function addCategoryId($categoryId)
     {
-        if(array_search($categoryId, $this->categoryIds) === false)
+        if(!isset($this->categoryIds[$categoryId]))
         {
-            $this->categoryIds[] = $categoryId;
+             $this->categoryIds[$categoryId] = 0;
         }
+        $this->categoryIds[$categoryId]++;
     }
 
     protected function removeCompanyId($companyId)
