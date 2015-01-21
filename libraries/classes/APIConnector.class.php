@@ -581,7 +581,7 @@ class APIConnector
      */
     private function populateBannerTemplate($template)
     {
-        $bannerTemplateModel = new BannerTemplateModel();
+        $bannerTemplateModel = new BannerTemplateElement();
         $bannerTemplateModel->setAdvertiserId($this->advertiserId);
         $bannerTemplateModel->setAuditUserId((int) $template->idAuditUser);
         $bannerTemplateModel->setDescription((string) $template->description);
