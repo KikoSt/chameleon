@@ -25,9 +25,23 @@ class TemplateCollection extends ElementCollection
 
         $this->addCompanyId(0); // $element->getCompanyId());
 
-        foreach($element->getCategorySubscriptions() AS $category)
+//        var_dump($element->getCategoryIds());
+//
+//        foreach($element->getCategorySubscriptions() AS $category)
+//        {
+//            if($category->userStatus === 'ACTIVE')
+//            {
+//                $this->addCategoryId($category->idCategory);
+//            }
+//        }
+        // we cannot use any other "simple" array operations here since we're counting the number of
+        // elements with each category id to be able to decide whether or not we can remove a category
+        // id completely from the list here in the collection
+        foreach($element->getCategoryIds() as $categoryId)
         {
-            if($category->userStatus === 'ACTIVE')
+            $this->addCategoryId($categoryId);
+        }
+    }
 
     public function removeElement($elementUid)
     {
