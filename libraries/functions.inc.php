@@ -1,7 +1,7 @@
 <?php
 
 
-function getRequestVar($identifier)
+function getRequestVar($identifier, $exceptionOnMissing=true)
 {
     if(isJSON($_REQUEST))
     {
@@ -18,7 +18,14 @@ function getRequestVar($identifier)
     }
     else
     {
-        throw new Exception($identifier . ' not provided');
+        if($exceptionOnMissing)
+        {
+            throw new Exception($identifier . ' not provided');
+        }
+        else
+        {
+            $returnValue = false;
+        }
     }
     return $returnValue;
 }
