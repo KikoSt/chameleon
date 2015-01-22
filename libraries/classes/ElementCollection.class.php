@@ -70,6 +70,8 @@ abstract class ElementCollection implements Iterator
             $this->properties['name'][$index] = $element->getName();
             $this->addAdvertiserId($element->getAdvertiserId());
 
+            $this->properties['width'][$index] = $element->getWidth();
+            $this->properties['height'][$index] = $element->getHeight();
         }
         // adding all required properties to the corresponding dictionaries will be done in the subclasses
     }

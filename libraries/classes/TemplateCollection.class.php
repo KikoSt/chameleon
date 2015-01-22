@@ -23,17 +23,10 @@ class TemplateCollection extends ElementCollection
     {
         parent::addElement($element);
 
-        $this->addCompanyId(0); // $element->getCompanyId());
+        // TODO: where do we get this info from?
+        $element->setCompanyId(170);
+        $this->addCompanyId(170); // $element->getCompanyId());
 
-//        var_dump($element->getCategoryIds());
-//
-//        foreach($element->getCategorySubscriptions() AS $category)
-//        {
-//            if($category->userStatus === 'ACTIVE')
-//            {
-//                $this->addCategoryId($category->idCategory);
-//            }
-//        }
         // we cannot use any other "simple" array operations here since we're counting the number of
         // elements with each category id to be able to decide whether or not we can remove a category
         // id completely from the list here in the collection
