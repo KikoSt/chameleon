@@ -17,6 +17,29 @@ function getMetaData(templateId, categoryId){
     return metaData;
 };
 
+
+/**
+ * getTemplatePreview
+ *
+ * render generic preview for a given template; the ajax script called here will do this
+ * when called without passing a productId
+ *
+ * @param output $output
+ * @param metaData $metaData
+ * @access public
+ * @return void
+ */
+function getTemplatePreview(output, metaData) {
+    $.ajax({
+        type: "POST",
+        data: metaData,
+        dataType: "json",
+        url: "/chameleon/ajax/renderPreview.php"
+    }).done(function (file){
+        console.log('Done!');
+    });
+}
+
 /**
  * Get the rendered examples
  *
@@ -32,7 +55,7 @@ function getRenderedGif(output, metaData){
         type: "POST",
         data: metaData,
         dataType: "json",
-        url: "/chameleon/ajax/renderExampleForProductId.php"
+        url: "/chameleon/ajax/renderPreview.php"
     }).done(function (file){
         $('.active').removeClass('active');
         var previewNode = '<div id="' + metaData.templateId + '_' + count + '" class="item active">';
