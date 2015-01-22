@@ -86,11 +86,13 @@ abstract class ElementCollection implements Iterator
             unset($this->properties['name'][$key]);
             unset($this->properties['uid'][$key]);
 
-            $this->advertiserIds[$this->elements->getAdvertiserId()]--;
-            if($this->advertiserIds[$this->elements->getAdvertiserId()] === 0)
-            {
-                unset($this->advertiserIds[$this->elements->getAdvertiserId()]);
-            }
+            // REMOVAL here means that the value stored for the respective
+            // id(s) (company, advertiser, categories) will be reduced by 1;
+            // if the value is zero, the field will be unset completely
+            $this->removeCompanyId($this->elements[$key]->getCompanyId());
+            $this->removeAdvertiserId($this->elements[$key]->getAdvertiserId());
+            $this->removeCategoryIds($this->elements[$key]->getAdvertiserId());
+            // remove ALL corresponding category IDs
 
             // finally, remove the element itself ...
             unset($this->elements[$key]);
@@ -98,16 +100,6 @@ abstract class ElementCollection implements Iterator
         }
     }
 
-    // remove a category and all elements that are associated with this category only;
-    // elements will NOT be removed if they are not only associated with this category, but also with another
-    // category
-    public function removeCategory($categoryId)
-    {
-        foreach($this->elements AS $element)
-        {
-
-        }
-    }
 
     // public accessor methods
     public function getCompanyIds()
@@ -230,7 +222,11 @@ abstract class ElementCollection implements Iterator
     {
         if(($key = array_search($companyId, $this->companyIds)) !== false)
         {
-            unset($this->companyIds[$key]);
+            $this->companyIds[$key]--;
+            if($this->companyIds[$key] <= 0)
+            {
+                unset($this->companyIds[$key]);
+            }
         }
     }
 
