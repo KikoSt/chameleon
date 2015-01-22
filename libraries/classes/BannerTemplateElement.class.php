@@ -2,6 +2,7 @@
 class BannerTemplateElement extends BannerTemplateModel
 {
     private $categoryIds;
+    private $companyId;
 
     public function __construct($source=null)
     {
@@ -22,6 +23,17 @@ class BannerTemplateElement extends BannerTemplateModel
         }
     }
 
+    // the BannerTemplateModel doesn't store a company ID, so we are doing this here
+    public function setCompanyId($companyId)
+    {
+        $this->companyId = $companyId;
+    }
+
+    public function getCompanyId()
+    {
+        return $this->companyId;
+    }
+
     protected function addCategoryId($categoryId)
     {
         if(array_search($categoryId, $this->categoryIds) === false)
@@ -33,5 +45,15 @@ class BannerTemplateElement extends BannerTemplateModel
     public function getCategoryIds()
     {
         return $this->categoryIds;
+    }
+
+    public function getWidth()
+    {
+        return $this->getDimX();
+    }
+
+    public function getHeight()
+    {
+        return $this->getDimY();
     }
 }
