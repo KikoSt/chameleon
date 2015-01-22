@@ -416,3 +416,54 @@ input.filesize-warning {
     margin-top:  100px;
     width: 90%;
 }
+
+.manager_info_row {
+    margin: 10px;
+    border: 1px solid #555555;
+    width: 600px;
+}
+
+.manager_info_row .info_row_header {
+    background-color: #999999;
+    padding: 4px;
+    padding-left: 10px;
+}
+
+.manager_info_row .info_row_body {
+    background-color: #eeeeee;
+    padding: 4px;
+    padding-left: 15px;
+    overflow: hidden;
+    font-size: .9em;
+}
+
+.manager_element_body {
+    padding: 4px;
+    padding-left: 10px;
+    margin: 10px;
+    background-color: #9a9a9a;
+    width: 400px;
+    height: 430px;
+    overflow: hidden;
+    float: left;
+}
+
+.manager_element_name {
+    padding-left: 0px;
+    padding-top: 5px;
+    padding-bottom: 20px;
+    font-size: .9em;
+    font-weight: bold;
+}
+
+.manager_element_preview {
+    background: #777777;
+    width: 350px;
+    height: 350px;
+    margin: 12px;
+    text-align: center;
+}
+
+.manager_element_preview img {
+    margin-top:auto;
+}

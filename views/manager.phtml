@@ -1,5 +1,12 @@
 <?php include('navigation.inc.php');?>
-
+<!--
+<form>
+    <select>
+        <option>
+        </option>
+    </select>
+</form>
+-->
 <?php
     if(!is_object($this->elements) || count($this->elements) === 0):
 ?>
@@ -9,30 +16,102 @@
 ?>
 <div class="container margin-left-150">
     <div id="managerView">
-    <?php
-        echo 'Company: ';
+        <div class="manager_info_row">
+            <div class="info_row_header">
+                Company:
+            </div>
+            <div class="info_row_body">
+        <?php
+        $count = 0;
         foreach($this->elements->getCompanyIds() AS $companyId):
-        echo $companyId . '; ';
+            $count++;
+            echo $companyId;
+            if($count < count($this->elements->getCompanyIds())):
+                echo '; ';
+            endif;
         endforeach;
-        echo '<br />';
-        echo 'Advertiser: ';
+        ?>
+            </div>
+        </div>
+        <div class="manager_info_row">
+            <div class="info_row_header">
+                Advertiser:
+            </div>
+            <div class="info_row_body">
+        <?php
+        $count = 0;
         foreach($this->elements->getAdvertiserIds() AS $advertiserId):
-        echo $advertiserId . '; ';
+            $count++;
+            echo $advertiserId;
+            if($count < count($this->elements->getAdvertiserIds())):
+                echo ';';
+            endif;
+            $count++;
         endforeach;
-        echo '<br />';
-        echo '<br />';
+        ?>
+            </div>
+        </div>
+        <div class="manager_info_row">
+            <div class="info_row_header">
+                Categories:
+            </div>
+            <div class="info_row_body">
+        <?php
+        $count = 0;
+        foreach($this->elements->getCategoryIds() AS $categoryId):
+            $count++;
+            echo $categoryId;
+            if($count < count($this->elements->getCategoryIds())):
+                echo '; ';
+            endif;
+        endforeach;
+        ?>
+            </div>
+        </div>
+
+        <?php
+        $count = 0;
         foreach($this->elements as $key => $element):
-    ?>
-        - <?php echo $element->getName(); ?>
-        <br />
+        ?>
+        <div class="manager_element_body">
+        <?php
+            $count++;
+
+            $width  = $element->getWidth();
+            $height = $element->getHeight();
+
+            $ratio = $width / $height;
+            $size = 350;
+
+            $targetWidth = $targetHeight = min($size, max($width, $height));
+
+            if($ratio < 1)
+            {
+                $targetWidth = $targetHeight * $ratio;
+            }
+            else
+            {
+                $targetHeight = $targetWidth / $ration;
+            }
+
+            $imgsrc = 'output/' . $element->getCompanyId() . '/' . $element->getAdvertiserId();
+            $imgsrc .= '/0/preview_' . $element->getId() . '_' . $element->getWidth() . 'x' . $element->getHeight() . '.gif';
+        ?>
+            <div class="manager_element_name">
+            <?php echo $element->getName(); ?>
+            </div>
+            <div class="manager_element_preview">
+            <img src="<?php echo $imgsrc; ?>" width="<?php echo $targetWidth; ?>" />
+            </div>
+        </div>
     <?php
         endforeach;
         endif;
     ?>
 
     <input type="hidden" id="advertiserId" name="advertiserId" value="<?php echo $this->advertiserId; ?>">
-    <input type="hidden" id="companyId"  name="companyId" value="<?php echo $this->companyId; ?>">
+    <input type="hidden" id="companyId"    name="companyId" value="<?php echo $this->companyId; ?>">
     </div>
 </div>
 
-<script type="text/JavaScript" src="js/overview.js"></script>
+<script type="text/JavaScript" src="js/manager.js"></script>
