@@ -173,14 +173,12 @@ abstract class ElementCollection implements Iterator
 
 
 
-    // Those methods should not be calles from externally, so they are protected
-
     // if there's only one company ID, the company ID for the collection can be used like any single value property, using the
     // set/get accessor methods. As soon as there had been more ID's added using the add method, it's no longer possible to 'set'
     // the id.
     // NOTE: It is highly recommended to use the collection in one way only. Either use set/get and never add multiple id's using
     // the add method, or use add/remove only and the corresponding getCompanyIds method ...
-    protected function setCompanyId($companyId)
+    public function setCompanyId($companyId)
     {
         if(count($this->companyIds) > 1)
         {
@@ -188,11 +186,11 @@ abstract class ElementCollection implements Iterator
         }
         else
         {
-            $this->companyIds[0] = $companyId;
+            $this->registerCompanyId($companyId);
         }
     }
 
-    protected function setAdvertiserId($advertiserId)
+    public function setAdvertiserId($advertiserId)
     {
         if(count($this->advertiserIds) > 1)
         {
@@ -200,11 +198,11 @@ abstract class ElementCollection implements Iterator
         }
         else
         {
-            $this->advertiserIds[0] = $advertiserId;
+            $this->registerAdvertiserId($advertiserId);
         }
     }
 
-    protected function setCategoryId($categoryId)
+    public function setCategoryId($categoryId)
     {
         if(count($this->categoryIds) > 1)
         {
@@ -212,7 +210,7 @@ abstract class ElementCollection implements Iterator
         }
         else
         {
-            $this->categoryIds[0] = $categoryId;
+            $this->registerCategoryId($categoryId);
         }
     }
 
