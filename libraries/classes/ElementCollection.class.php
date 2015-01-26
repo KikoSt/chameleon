@@ -68,7 +68,7 @@ abstract class ElementCollection implements Iterator
             $this->elements[$index]           = $element;
             $this->properties['uid'][$index]  = $element->{'get' . $this->uidName}();
             $this->properties['name'][$index] = $element->getName();
-            $this->addAdvertiserId($element->getAdvertiserId());
+            $this->registerAdvertiserId($element->getAdvertiserId());
 
             $this->properties['width'][$index] = $element->getWidth();
             $this->properties['height'][$index] = $element->getHeight();
@@ -189,9 +189,10 @@ abstract class ElementCollection implements Iterator
         }
     }
 
-    // TODO: Actually, I don't really like to implicitely take advantage of the lose typing in php ... but it's the
-    // fastest way I can think of right now
-    protected function addCompanyId($companyId)
+    // in order to keep track of the id's here, we use the id itself as a key and the corresponding value as a counter,
+    // increasing it whenever another element with a given id is added. When removing an element with a given id, the
+    // counter is reduced by one, the respective id can be completely removed when the counter hits zero
+    protected function registerCompanyId($companyId)
     {
         if(!isset($this->companyIds[$companyId]))
         {
@@ -200,7 +201,7 @@ abstract class ElementCollection implements Iterator
         $this->companyIds[$companyId]++;
     }
 
-    protected function addAdvertiserId($advertiserId)
+    protected function registerAdvertiserId($advertiserId)
     {
         if(!isset($this->advertiserIds[$advertiserId]))
         {
@@ -209,7 +210,7 @@ abstract class ElementCollection implements Iterator
         $this->advertiserIds[$advertiserId]++;
     }
 
-    protected function addCategoryId($categoryId)
+    protected function registerCategoryId($categoryId)
     {
         if(!isset($this->categoryIds[$categoryId]))
         {
