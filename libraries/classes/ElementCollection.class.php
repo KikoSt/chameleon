@@ -144,7 +144,9 @@ abstract class ElementCollection implements Iterator
         {
             throw new Exception('Multiple companyId\'s set already, no unabiguous reference possible. Please use method getCompanyIds() instead');
         }
-        return $this->companyIds[0];
+        reset($this->companyIds);
+        $companyId = key($this->companyIds);
+        return $companyId;
     }
 
     public function getAdvertiserId()
@@ -153,7 +155,9 @@ abstract class ElementCollection implements Iterator
         {
             throw new Exception('Multiple advertiserId\'s set already, no unabiguous reference possible. Please use method getAdvertiserIds() instead');
         }
-        return $this->advertiserIds[0];
+        reset($this->advertiserIds);
+        $advertiserId = key($this->advertiserIds);
+        return $advertiserId;
     }
 
     public function getCategoryId()
@@ -162,7 +166,9 @@ abstract class ElementCollection implements Iterator
         {
             throw new Exception('Multiple categoryId\'s set already, no unabiguous reference possible. Please use method getCategoryIds() instead');
         }
-        return $this->categoryIds[0];
+        reset($this->categoryIds);
+        $categoryId = key($this->categoryIds);
+        return $categoryId;
     }
 
 
