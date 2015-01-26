@@ -25,14 +25,14 @@ class TemplateCollection extends ElementCollection
 
         // TODO: where do we get this info from?
         $element->setCompanyId(170);
-        $this->addCompanyId(170); // $element->getCompanyId());
+        $this->registerCompanyId(170); // $element->getCompanyId());
 
         // we cannot use any other "simple" array operations here since we're counting the number of
         // elements with each category id to be able to decide whether or not we can remove a category
         // id completely from the list here in the collection
         foreach($element->getCategoryIds() as $categoryId)
         {
-            $this->addCategoryId($categoryId);
+            $this->registerCategoryId($categoryId);
         }
     }
 
