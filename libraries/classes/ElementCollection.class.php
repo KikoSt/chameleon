@@ -56,6 +56,8 @@ abstract class ElementCollection implements Iterator
     protected $companyIds; // ID's of all company contained in this collection
     private   $uidName; // name of the unique identifier in the derived class. NOT mutual after object creation!
 
+    private   $filterList; // dictionary: property : value
+    private   $sortList;   // dictionary: property : 'asc' or 'desc'
 
     public function __construct($uidName)
     {
@@ -68,6 +70,9 @@ abstract class ElementCollection implements Iterator
         $this->elements      = array();
         $this->properties    = array();
         $this->propertyList  = array();
+
+        $this->filterList    = array();
+        $this->sortList      = array();
 
         $this->uidName = $uidName;
 
