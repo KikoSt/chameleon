@@ -29,6 +29,7 @@ class Manager extends Controller
             $template = $connector->getTemplateById($templateId);
             $this->templateCollection->addElement($template);
         }
+
         $this->view->elements = $this->templateCollection;
         $this->view->message = 'Guten Tag, guten Tag!';
     }

@@ -70,7 +70,7 @@ abstract class ElementCollection implements Iterator
             $this->properties['name'][$index] = $element->getName();
             $this->registerAdvertiserId($element->getAdvertiserId());
 
-            $this->properties['width'][$index] = $element->getWidth();
+            $this->properties['width'][$index]  = $element->getWidth();
             $this->properties['height'][$index] = $element->getHeight();
         }
         // adding all required properties to the corresponding dictionaries will be done in the subclasses
@@ -155,7 +155,7 @@ abstract class ElementCollection implements Iterator
     // the add method, or use add/remove only and the corresponding getCompanyIds method ...
     protected function setCompanyId($companyId)
     {
-        if(count($this->companyIds) > 0)
+        if(count($this->companyIds) > 1)
         {
             throw new Exception('Multiple companyId\'s set already, no unabiguous change possible. Please use method addcompanyId() instead');
         }
@@ -167,7 +167,7 @@ abstract class ElementCollection implements Iterator
 
     protected function setAdvertiserId($advertiserId)
     {
-        if(count($this->advertiserIds) > 0)
+        if(count($this->advertiserIds) > 1)
         {
             throw new Exception('Multiple advertiserId\'s set already, no unabiguous change possible. Please use method addAdvertiserId() instead');
         }
@@ -179,7 +179,7 @@ abstract class ElementCollection implements Iterator
 
     protected function setCategoryId($categoryId)
     {
-        if(count($this->categoryIds) > 0)
+        if(count($this->categoryIds) > 1)
         {
             throw new Exception('Multiple categoryId\'s set already, no unabiguous change possible. Please use method addCategoryId() instead');
         }
@@ -218,7 +218,9 @@ abstract class ElementCollection implements Iterator
         }
         $this->categoryIds[$categoryId]++;
     }
+    // END of ID registration methods
 
+    // decrease the corresponding id counter by one. if counter hits zero, remove id entirely from list
     protected function removeCompanyId($companyId)
     {
         if(($key = array_search($companyId, $this->companyIds)) !== false)
@@ -235,7 +237,11 @@ abstract class ElementCollection implements Iterator
     {
         if(($key = array_search($advertiserId, $this->advertiserIds)) !== false)
         {
-            unset($this->advertiserIds[$key]);
+            $this->advertiserIds[$key]--;
+            if($this->advertiserIds[$key] <= 0)
+            {
+                unset($this->advertiserIds[$key]);
+            }
         }
     }
 
@@ -243,7 +249,11 @@ abstract class ElementCollection implements Iterator
     {
         if(($key = array_search($categoryId, $this->categoryIds)) !== false)
         {
-            unset($this->categoryIds[$key]);
+            $this->categoryIds[$key]--;
+            if($this->categoryIds[$key] <= 0)
+            {
+                unset($this->categoryIds[$key]);
+            }
         }
     }
 
