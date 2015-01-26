@@ -30,17 +30,32 @@
  *
  * The company and advertiser id(s) are also an important specific of any collection, so they are stored here, too.
  * Since it's at least imaginable that there are more than one company and/or more than one advertiser, any number of
- * id's can be stored.
+ * ids can be stored.
+ *
+ * All three values (advertiserId(s), companyId(s), categoryId(s)) are defining the collection.
+ * At least one companyId has to be set before the data can be loaded.
+ * The following situations are imaginable:
+ *
+ * only companyId set:
+ * -> get ALL elements for ALL advertisers and ALL categories with the given companyId(s)
+ *
+ * companyId and advertiserId set:
+ * -> get ALL elements for ALL categories with the given companyId(s) and advertiserId(s)
+ *
+ * companyId, advertiserId and categoryId set:
+ * -> get ALL elements for ALL categories with the given companyId(s), advertiserId(s) and categoryId(s)
+ *
  */
 abstract class ElementCollection implements Iterator
 {
-    private $position = 0;
-    private $elements;
-    private $properties;
-    private $propertyList;
-    private $advertiserIds; // ID's of all advertisers contained in this collection
-    private $companyIds; // ID's of all company contained in this collection
-    private $uidName; // name of the unique identifier in the derived class. NOT mutual after object creation!
+    private   $position = 0;
+    private   $elements;
+    private   $properties;
+    private   $propertyList;
+    protected $advertiserIds; // ID's of all advertisers contained in this collection
+    protected $companyIds; // ID's of all company contained in this collection
+    private   $uidName; // name of the unique identifier in the derived class. NOT mutual after object creation!
+
 
     public function __construct($uidName)
     {
@@ -220,6 +235,8 @@ abstract class ElementCollection implements Iterator
         $this->categoryIds[$categoryId]++;
     }
     // END of ID registration methods
+
+
 
     // decrease the corresponding id counter by one. if counter hits zero, remove id entirely from list
     protected function removeCompanyId($companyId)
