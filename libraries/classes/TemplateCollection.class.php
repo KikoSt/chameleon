@@ -19,6 +19,60 @@ class TemplateCollection extends ElementCollection
         parent::__construct('id');
     }
 
+
+
+    public function loadCollectionData()
+    {
+        if(count($this->companyIds) <= 0)
+        {
+            throw new Exception('no companyIds provided, request failed!');
+        }
+        else if(count($this->advertiserIds) <= 0)
+        {
+            throw new Exception('no advertiserIds provided, request failed!');
+        }
+        else if(count($this->advertiserIds) <= 0)
+        {
+            throw new Exception('no advertiserIds provided, request failed!');
+        }
+        $connector = new APIConnector();
+
+        foreach($this->companyIds AS $companyId => $count)
+        {
+            foreach($this->advertiserIds AS $advertiserId => $count)
+            {
+                $connector->setAdvertiserId($advertiserId);
+                $connector->setCompanyId($companyId);
+
+                $templateIds = $this->getTemplateIds();
+                foreach($templateIds AS $templateId)
+                {
+                    $template = $connector->getTemplateById($templateId);
+                    $this->addElement($template);
+                }
+            }
+        }
+    }
+
+
+    private function getTemplateIds()
+    {
+        $connector = new APIConnector();
+        $connector->setAdvertiserId($this->getAdvertiserId());
+        $connector->setCompanyId($this->getCompanyId());
+
+        $templateIds = array();
+
+        $templates = $connector->getTemplates();
+
+        foreach($templates AS $template)
+        {
+            $templateIds[] = $template->getId();
+        }
+
+        return $templateIds;
+    }
+
     public function addElement($element)
     {
         parent::addElement($element);

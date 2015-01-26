@@ -100,6 +100,7 @@ abstract class ElementCollection implements Iterator
         }
     }
 
+    abstract function loadCollectionData();
 
     // public accessor methods
     public function getCompanyIds()
