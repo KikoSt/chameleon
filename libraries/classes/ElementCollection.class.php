@@ -15,35 +15,41 @@
  * the elements list is not ordered at all, containing all elements with a numeric key that is used as index in
  * the respective property lists:
  *
- * [0] -> element_1
- * [1] -> element_2
- * ...
- * [n-1] -> element_n
+ * elements = array(0 => 134, 1 => 5, 2 => 117, 3 => 205);
  *
- * $properties[<property_name>][0] = [element_x_id]
- * $properties[<property_name>][1] = [element_y_id]
- * $properties[<property_name>][2] = [element_z_id]
+ * template[0][companyId] = 100;
+ * template[0][advertiserId] = 4711;
+ * template[0][categoryIds] = array(1, 2, 3, 4);
  *
- * $properties[<other_property_name>][0] = [element_z_id]
- * $properties[<other_property_name>][1] = [element_x_id]
- * $properties[<other_property_name>][2] = [element_y_id]
+ * template[1][companyId] = 100;
+ * template[1][advertiserId] = 0815;
+ * template[1][categoryIds] = array(2, 3, 5);
  *
- * The company and advertiser id(s) are also an important specific of any collection, so they are stored here, too.
- * Since it's at least imaginable that there are more than one company and/or more than one advertiser, any number of
- * ids can be stored.
+ * template[2][companyId] = 100;
+ * template[2][advertiserId] = 4711;
+ * template[2][categoryIds] = array(3, 4, 5);
  *
- * All three values (advertiserId(s), companyId(s), categoryId(s)) are defining the collection.
- * At least one companyId has to be set before the data can be loaded.
- * The following situations are imaginable:
+ * template[3][companyId] = 100;
+ * template[3][advertiserId] = 9911;
+ * template[3][categoryIds] = array(4);
  *
- * only companyId set:
- * -> get ALL elements for ALL advertisers and ALL categories with the given companyId(s)
+ * =>
  *
- * companyId and advertiserId set:
- * -> get ALL elements for ALL categories with the given companyId(s) and advertiserId(s)
+ * this->companyIds[100] = array(0, 1, 2, 3);
+ * this->advertiserIds[4711] = array(0, 2);
+ * this->categoryIds[1] = array(0);
+ * this->categoryIds[2] = array(0, 1);
+ * this->categoryIds[3] = array(0, 1, 2);
+ * this->categoryIds[4] = array(0, 2, 3);
  *
- * companyId, advertiserId and categoryId set:
- * -> get ALL elements for ALL categories with the given companyId(s), advertiserId(s) and categoryId(s)
+ * OR
+ *
+ * this->properties[companyId][100] = array(0, 1, 2, 3);
+ * this->properties[advertiserId][4711] = array(0, 2);
+ * this->properties[categoryId][1] = array(0);
+ * this->properties[categoryId][2] = array(0, 1);
+ * this->properties[categoryId][3] = array(0, 1, 2);
+ * this->properties[categoryId][4] = array(0, 2, 3);
  *
  */
 abstract class ElementCollection implements Iterator
