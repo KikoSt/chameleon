@@ -17,38 +17,58 @@ class TemplateCollection extends ElementCollection
     public function __construct()
     {
         parent::__construct('id');
+        $this->filterNameMappings = array(
+                                            'categoryId' => 'categoryIds',
+                                            'companyId'  => 'companyId'
+                                            );
     }
 
 
 
     public function loadCollectionData()
     {
-        if(count($this->companyIds) <= 0)
-        {
-            throw new Exception('no companyIds provided, request failed!');
-        }
-        else if(count($this->advertiserIds) <= 0)
-        {
-            throw new Exception('no advertiserIds provided, request failed!');
-        }
-        else if(count($this->advertiserIds) <= 0)
-        {
-            throw new Exception('no advertiserIds provided, request failed!');
-        }
+        define('EXCLUDE', true);
+
         $connector = new APIConnector();
 
-        foreach($this->companyIds AS $companyId => $count)
-        {
-            foreach($this->advertiserIds AS $advertiserId => $count)
-            {
-                $connector->setAdvertiserId($advertiserId);
-                $connector->setCompanyId($companyId);
+        $connector->setAdvertiserId($this->getAdvertiserId());
+        $connector->setCompanyId($this->getCompanyId());
 
-                $templateIds = $this->getTemplateIds();
-                foreach($templateIds AS $templateId)
+        $templateIds = $this->getTemplateIds();
+        foreach($templateIds AS $templateId)
+        {
+            $template = $connector->getTemplateById($templateId);
+            $template->setCompanyId($this->getCompanyId());
+            $this->addElement($template);
+        }
+
+        foreach($this->elements AS $key => $element)
+        {
+            $discard = EXCLUDE;
+            foreach($this->filterList AS $key => $value)
+            {
+                $key = $this->filterNameMappings[$key];
+                $func = 'get' . ucfirst($key);
+                if(method_exists($element, $func))
                 {
-                    $template = $connector->getTemplateById($templateId);
-                    $this->addElement($template);
+                    $filterProp = $element->$func();
+                    if(is_array($filterProp) && in_array($value, $filterProp))
+                    {
+                        echo 'Filtered value ' . $key . ' = ' . $value . " found\n";
+                        $discard = !EXCLUDE;
+                    }
+                    else
+                    {
+                        $discard = EXCLUDE;
+                    }
+                }
+                else
+                {
+                    echo 'Oh!';
+                }
+                if($discard)
+                {
+                    unset($this->elements[$key]);
                 }
             }
         }
