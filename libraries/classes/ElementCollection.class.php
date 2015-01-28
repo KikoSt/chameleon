@@ -54,24 +54,21 @@
  */
 abstract class ElementCollection implements Iterator
 {
-    private   $position = 0;
-    private   $elements;
-    private   $properties;
-    private   $propertyList;
-    protected $advertiserIds; // ID's of all advertisers contained in this collection
-    protected $companyIds; // ID's of all company contained in this collection
-    private   $uidName; // name of the unique identifier in the derived class. NOT mutual after object creation!
+    protected $companyId;
+    protected $advertiserId;
 
-    private   $filterList; // dictionary: property : value
-    private   $sortList;   // dictionary: property : 'asc' or 'desc'
+    protected $position = 0;
+    protected $elements;
+    protected $properties;
+    protected $propertyList;
+    protected $uidName;       // name of the unique identifier in the derived class. NOT mutual after object creation!
+
+    protected $filterList;    // dictionary: property : value
+    protected $sortList;      // dictionary: property : 'asc' or 'desc'
 
     public function __construct($uidName)
     {
         $this->position = 0;
-
-        $this->advertiserIds = array();
-        $this->companyIds    = array();
-        $this->categoryIds   = array();
 
         $this->elements      = array();
         $this->properties    = array();
