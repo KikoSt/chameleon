@@ -1,5 +1,33 @@
 <?php
 
+/**
+ * calculateRatioSize
+ *
+ * calculate new width and height maintaining the aspect ratio of an image using a given max size (will be either width
+ * or height)
+ *
+ * @param mixed $width
+ * @param mixed $height
+ * @param mixed $max
+ * @access public
+ * @return void
+ */
+function calculateRatioSize($width, $height, $max)
+{
+    $ratio = $width / $height;
+    $targetWidth = $targetHeight = min($max, max($width, $height));
+
+    if($ratio < 1)
+    {
+        $targetWidth = $targetHeight * $ratio;
+    }
+    else
+    {
+        $targetHeight = $targetWidth / $ratio;
+    }
+
+    return array($targetWidth, $targetHeight);
+}
 
 function getRequestVar($identifier, $exceptionOnMissing=true)
 {
