@@ -165,6 +165,7 @@ abstract class ElementCollection implements Iterator
 
 
 
+    // Wrapper functions for main properties
     public function getCompanyIds()
     {
         return array_keys($this->properties['companyId']);
@@ -180,7 +181,11 @@ abstract class ElementCollection implements Iterator
         return array_keys($this->properties['categoryId']);
     }
 
-
+    // TODO: temporary!
+    public function getElements()
+    {
+        return $this->elements;
+    }
 
 
 //    public function removeElement($elementUid)
