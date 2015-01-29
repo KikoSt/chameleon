@@ -103,6 +103,37 @@ abstract class ElementCollection implements Iterator
         return $index;
     }
 
+    public function removeElement($elementId)
+    {
+        // get internal id from elementId
+        $elementIndex = $this->properties['uid'][$elementId][0];
+        foreach($this->properties AS $propName => $value)
+        {
+            unset($value);
+            $this->unregisterProperty($propName, $elementIndex);
+        }
+        unset($this->elements[$elementIndex]);
+    }
+
+    public function unregisterProperty($property, $elementIndex)
+    {
+        foreach($this->properties[$property] AS $key => $indexArray)
+        {
+            // $deleteResults = array_keys($this->properties[$property][$key], $elementIndex);
+            foreach($indexArray AS $foundkey => $value)
+            {
+                if($value == $elementIndex)
+                {
+                    unset($this->properties[$property][$key][$foundkey]);
+                    if(count($this->properties[$property][$key]) < 1)
+                    {
+                        unset($this->properties[$property][$key]);
+                    }
+                }
+            }
+        }
+    }
+
     public function registerProperty($property, $value, $index)
     {
         if(!isset($this->properties[$property]) || !is_array($this->properties[$property]))
