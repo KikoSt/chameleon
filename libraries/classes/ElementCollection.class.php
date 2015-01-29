@@ -63,26 +63,40 @@ abstract class ElementCollection implements Iterator
     protected $propertyList;
     protected $uidName;       // name of the unique identifier in the derived class. NOT mutual after object creation!
 
-    protected $filterList;    // dictionary: property : value
+    protected $includeFilterList;    // dictionary: property : value
+    protected $excludeFilterList;    // dictionary: property : value
     protected $sortList;      // dictionary: property : 'asc' or 'desc'
 
     public function __construct($uidName)
     {
         $this->position = 0;
 
-        $this->elements      = array();
-        $this->properties    = array();
-        $this->propertyList  = array();
+        $this->elements          = array();
+        $this->properties        = array();
+        $this->propertyList      = array();
 
-        $this->filterList    = array();
-        $this->sortList      = array();
+        $this->includeFilterList = array();
+        $this->excludeFilterList = array();
+        $this->sortList          = array();
 
         $this->uidName = $uidName;
     }
 
-    public function addFilter($propertyName, $value)
+    public function addIncludeFilter($propertyName, $value)
     {
-        $this->filterList[$propertyName] = $value;
+        if(!array_key_exists($propertyName, $this->includeFilterList))
+        {
+            $this->includeFilterList[$propertyName] = array();
+        }
+        $this->includeFilterList[$propertyName][] = $value;
+    }
+
+    public function addExcludeFilter($propertyName, $value)
+    {
+        if(!array_key_exists($propertyName, $this->excludeFilterList))
+        {
+            $this->excludeFilterList[$propertyName][] = $value;
+        }
     }
 
 
@@ -184,197 +198,15 @@ abstract class ElementCollection implements Iterator
     // TODO: temporary!
     public function getElements()
     {
-        return $this->elements;
+        $result = array();
+        // apply filters
+        // $filterList =
+        // apply sorting
+
+        return $result;
     }
 
 
-//    public function removeElement($elementUid)
-//    {
-//        // check if element with given ID exists and retrieve the key if it does
-//        if(($key = array_search($elementUid, $this->properties['uid'])) !== false)
-//        {
-//            $element = $this->elements[$key];
-//            // remove this element
-//            unset($this->properties['name'][$key]);
-//            unset($this->properties['uid'][$key]);
-//
-//            // REMOVAL here means that the value stored for the respective
-//            // id(s) (company, advertiser, categories) will be reduced by 1;
-//            // if the value is zero, the field will be unset completely
-//            $this->removeCompanyId($this->elements[$key]->getCompanyId());
-//            $this->removeAdvertiserId($this->elements[$key]->getAdvertiserId());
-//            $this->removeCategoryIds($this->elements[$key]->getAdvertiserId());
-//            // remove ALL corresponding category IDs
-//
-//            // finally, remove the element itself ...
-//            unset($this->elements[$key]);
-//            unset($element);
-//        }
-//    }
-//
-//    abstract function loadCollectionData();
-//
-//    // public accessor methods
-//    public function getCompanyIds()
-//    {
-//        return array_keys($this->companyIds);
-//    }
-//
-//    public function getAdvertiserIds()
-//    {
-//        return array_keys($this->advertiserIds);
-//    }
-//
-//    public function getCategoryIds()
-//    {
-//        return array_keys($this->categoryIds);
-//    }
-//
-//    public function getCompanyId()
-//    {
-//        if(count($this->companyIds) > 1)
-//        {
-//            throw new Exception('Multiple companyId\'s set already, no unabiguous reference possible. Please use method getCompanyIds() instead');
-//        }
-//        reset($this->companyIds);
-//        $companyId = key($this->companyIds);
-//        return $companyId;
-//    }
-//
-//    public function getAdvertiserId()
-//    {
-//        if(count($this->advertiserIds) > 1)
-//        {
-//            throw new Exception('Multiple advertiserId\'s set already, no unabiguous reference possible. Please use method getAdvertiserIds() instead');
-//        }
-//        reset($this->advertiserIds);
-//        $advertiserId = key($this->advertiserIds);
-//        return $advertiserId;
-//    }
-//
-//    public function getCategoryId()
-//    {
-//        if(count($this->categoryIds) > 1)
-//        {
-//            throw new Exception('Multiple categoryId\'s set already, no unabiguous reference possible. Please use method getCategoryIds() instead');
-//        }
-//        reset($this->categoryIds);
-//        $categoryId = key($this->categoryIds);
-//        return $categoryId;
-//    }
-//
-//
-//
-//    // if there's only one company ID, the company ID for the collection can be used like any single value property, using the
-//    // set/get accessor methods. As soon as there had been more ID's added using the add method, it's no longer possible to 'set'
-//    // the id.
-//    // NOTE: It is highly recommended to use the collection in one way only. Either use set/get and never add multiple id's using
-//    // the add method, or use add/remove only and the corresponding getCompanyIds method ...
-//    public function setCompanyId($companyId)
-//    {
-//        if(count($this->companyIds) > 1)
-//        {
-//            throw new Exception('Multiple companyId\'s set already, no unabiguous change possible. Please use method addcompanyId() instead');
-//        }
-//        else
-//        {
-//            $this->registerCompanyId($companyId);
-//        }
-//    }
-//
-//    public function setAdvertiserId($advertiserId)
-//    {
-//        if(count($this->advertiserIds) > 1)
-//        {
-//            throw new Exception('Multiple advertiserId\'s set already, no unabiguous change possible. Please use method addAdvertiserId() instead');
-//        }
-//        else
-//        {
-//            $this->registerAdvertiserId($advertiserId);
-//        }
-//    }
-//
-//    public function setCategoryId($categoryId)
-//    {
-//        if(count($this->categoryIds) > 1)
-//        {
-//            throw new Exception('Multiple categoryId\'s set already, no unabiguous change possible. Please use method addCategoryId() instead');
-//        }
-//        else
-//        {
-//            $this->registerCategoryId($categoryId);
-//        }
-//    }
-//
-//    // in order to keep track of the id's here, we use the id itself as a key and the corresponding value as a counter,
-//    // increasing it whenever another element with a given id is added. When removing an element with a given id, the
-//    // counter is reduced by one, the respective id can be completely removed when the counter hits zero
-//    protected function registerCompanyId($companyId)
-//    {
-//        if(!isset($this->companyIds[$companyId]))
-//        {
-//             $this->companyIds[$companyId] = 0;
-//        }
-//        $this->companyIds[$companyId]++;
-//    }
-//
-//    protected function registerAdvertiserId($advertiserId)
-//    {
-//        if(!isset($this->advertiserIds[$advertiserId]))
-//        {
-//             $this->advertiserIds[$advertiserId] = 0;
-//        }
-//        $this->advertiserIds[$advertiserId]++;
-//    }
-//
-//    protected function registerCategoryId($categoryId)
-//    {
-//        if(!isset($this->categoryIds[$categoryId]))
-//        {
-//             $this->categoryIds[$categoryId] = 0;
-//        }
-//        $this->categoryIds[$categoryId]++;
-//    }
-//    // END of ID registration methods
-//
-//
-//
-//    // decrease the corresponding id counter by one. if counter hits zero, remove id entirely from list
-//    protected function removeCompanyId($companyId)
-//    {
-//        if(($key = array_search($companyId, $this->companyIds)) !== false)
-//        {
-//            $this->companyIds[$key]--;
-//            if($this->companyIds[$key] <= 0)
-//            {
-//                unset($this->companyIds[$key]);
-//            }
-//        }
-//    }
-//
-//    protected function removeAdvertiserId($advertiserId)
-//    {
-//        if(($key = array_search($advertiserId, $this->advertiserIds)) !== false)
-//        {
-//            $this->advertiserIds[$key]--;
-//            if($this->advertiserIds[$key] <= 0)
-//            {
-//                unset($this->advertiserIds[$key]);
-//            }
-//        }
-//    }
-//
-//    protected function removeCategoryId($categoryId)
-//    {
-//        if(($key = array_search($categoryId, $this->categoryIds)) !== false)
-//        {
-//            $this->categoryIds[$key]--;
-//            if($this->categoryIds[$key] <= 0)
-//            {
-//                unset($this->categoryIds[$key]);
-//            }
-//        }
-//    }
 
     /* ****************** *
      *  ITERATOR methods  *
@@ -382,7 +214,42 @@ abstract class ElementCollection implements Iterator
 
     function current()
     {
-        return $this->elements[$this->position];
+        $valids = array();
+        // // include filter specify that the data displayed includes ONLY information specified in the filter
+        if(count($this->includeFilterList) > 0)
+        {
+            foreach($this->includeFilterList AS $key => $filterValue)
+            {
+                // now we need the index for $filterProperty where $value = $key
+        //         // echo 'Key = ' . $key . ', ' . print_r($filterValue, 1) . "\n\n<br />";
+                $elementList = $this->properties[$key][$filterValue[0]];
+                $valids = $valids + array_values($elementList);
+            }
+        }
+        else
+        {
+            $valids = array_keys($this->properties['uid']);
+            $valids = array_values($this->properties['uid']);
+
+            echo '<span style="font-size:.7em">';
+            foreach($valids AS $validId)
+            {
+                echo '{{ ' . $validId[0] . ' }}';
+            }
+            echo '<br />';
+            echo '</span>';
+
+        }
+
+        if(array_search($this->position, $valids))
+        {
+            return $this->elements[$this->position];
+        }
+        else
+        {
+            $this->position++;
+            $this->current();
+        }
     }
 
     function key()

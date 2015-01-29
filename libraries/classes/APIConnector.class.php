@@ -1,5 +1,6 @@
 <?php
 require_once(__ROOT__ . 'config/apiconfig.inc.php');
+require_once(__ROOT__ . 'Bootstrap.php');
 
 /**
  * Handles the API connections to the bidder
