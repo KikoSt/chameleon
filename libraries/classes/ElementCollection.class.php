@@ -15,236 +15,366 @@
  * the elements list is not ordered at all, containing all elements with a numeric key that is used as index in
  * the respective property lists:
  *
- * [0] -> element_1
- * [1] -> element_2
- * ...
- * [n-1] -> element_n
+ * elements = array(0 => 134, 1 => 5, 2 => 117, 3 => 205);
  *
- * $properties[<property_name>][0] = [element_x_id]
- * $properties[<property_name>][1] = [element_y_id]
- * $properties[<property_name>][2] = [element_z_id]
+ * template[0][companyId] = 100;
+ * template[0][advertiserId] = 4711;
+ * template[0][categoryIds] = array(1, 2, 3, 4);
  *
- * $properties[<other_property_name>][0] = [element_z_id]
- * $properties[<other_property_name>][1] = [element_x_id]
- * $properties[<other_property_name>][2] = [element_y_id]
+ * template[1][companyId] = 100;
+ * template[1][advertiserId] = 0815;
+ * template[1][categoryIds] = array(2, 3, 5);
  *
- * The company and advertiser id(s) are also an important specific of any collection, so they are stored here, too.
- * Since it's at least imaginable that there are more than one company and/or more than one advertiser, any number of
- * id's can be stored.
+ * template[2][companyId] = 100;
+ * template[2][advertiserId] = 4711;
+ * template[2][categoryIds] = array(3, 4, 5);
+ *
+ * template[3][companyId] = 100;
+ * template[3][advertiserId] = 9911;
+ * template[3][categoryIds] = array(4);
+ *
+ * =>
+ *
+ * this->companyIds[100] = array(0, 1, 2, 3);
+ * this->advertiserIds[4711] = array(0, 2);
+ * this->categoryIds[1] = array(0);
+ * this->categoryIds[2] = array(0, 1);
+ * this->categoryIds[3] = array(0, 1, 2);
+ * this->categoryIds[4] = array(0, 2, 3);
+ *
+ * OR
+ *
+ * this->properties[companyId][100] = array(0, 1, 2, 3);
+ * this->properties[advertiserId][4711] = array(0, 2);
+ * this->properties[categoryId][1] = array(0);
+ * this->properties[categoryId][2] = array(0, 1);
+ * this->properties[categoryId][3] = array(0, 1, 2);
+ * this->properties[categoryId][4] = array(0, 2, 3);
+ *
  */
 abstract class ElementCollection implements Iterator
 {
-    private $position = 0;
-    private $elements;
-    private $properties;
-    private $propertyList;
-    private $advertiserIds; // ID's of all advertisers contained in this collection
-    private $companyIds; // ID's of all company contained in this collection
-    private $uidName; // name of the unique identifier in the derived class. NOT mutual after object creation!
+    protected $companyId;
+    protected $advertiserId;
+
+    protected $position = 0;
+    protected $elements;
+    protected $properties;
+    protected $propertyList;
+    protected $uidName;       // name of the unique identifier in the derived class. NOT mutual after object creation!
+
+    protected $filterList;    // dictionary: property : value
+    protected $sortList;      // dictionary: property : 'asc' or 'desc'
 
     public function __construct($uidName)
     {
         $this->position = 0;
 
-        $this->advertiserIds = array();
-        $this->companyIds    = array();
-        $this->categoryIds   = array();
-
         $this->elements      = array();
         $this->properties    = array();
         $this->propertyList  = array();
 
-        $this->uidName = $uidName;
+        $this->filterList    = array();
+        $this->sortList      = array();
 
-        $this->properties['uid']   = array();
-        $this->properties['name'] = array();
+        $this->uidName = $uidName;
     }
+
+    public function addFilter($propertyName, $value)
+    {
+        $this->filterList[$propertyName] = $value;
+    }
+
 
     public function addElement($element)
     {
         if(array_search($element, $this->elements) === false)
         {
             $index = count($this->elements);
-            $this->elements[$index]           = $element;
-            $this->properties['uid'][$index]  = $element->{'get' . $this->uidName}();
-            $this->properties['name'][$index] = $element->getName();
-            $this->addAdvertiserId($element->getAdvertiserId());
-
-            $this->properties['width'][$index] = $element->getWidth();
-            $this->properties['height'][$index] = $element->getHeight();
+            $this->elements[$index] = $element;
+            $this->registerProperty('uid',          $element->{'get' . $this->uidName}(), $index);
+            $this->registerProperty('name',         $element->getName(),                  $index);
+            $this->registerProperty('advertiserId', $element->getAdvertiserId(),          $index);
+            $this->registerProperty('companyId',    $element->getCompanyId(),             $index);
+            $this->registerProperty('width',        $element->getWidth(),                 $index);
+            $this->registerProperty('height',       $element->getHeight(),                $index);
         }
         // adding all required properties to the corresponding dictionaries will be done in the subclasses
+        return $index;
     }
 
-    public function removeElement($elementUid)
+    public function removeElement($elementId)
     {
-        // check if element with given ID exists and retrieve the key if it does
-        if(($key = array_search($elementUid, $this->properties['uid'])) !== false)
+        // get internal id from elementId
+        $elementIndex = $this->properties['uid'][$elementId][0];
+        foreach($this->properties AS $propName => $value)
         {
-            $element = $this->elements[$key];
-            // remove this element
-            unset($this->properties['name'][$key]);
-            unset($this->properties['uid'][$key]);
-
-            // REMOVAL here means that the value stored for the respective
-            // id(s) (company, advertiser, categories) will be reduced by 1;
-            // if the value is zero, the field will be unset completely
-            $this->removeCompanyId($this->elements[$key]->getCompanyId());
-            $this->removeAdvertiserId($this->elements[$key]->getAdvertiserId());
-            $this->removeCategoryIds($this->elements[$key]->getAdvertiserId());
-            // remove ALL corresponding category IDs
-
-            // finally, remove the element itself ...
-            unset($this->elements[$key]);
-            unset($element);
+            unset($value);
+            $this->unregisterProperty($propName, $elementIndex);
         }
+        unset($this->elements[$elementIndex]);
     }
 
-
-    // public accessor methods
-    public function getCompanyIds()
+    public function unregisterProperty($property, $elementIndex)
     {
-        return array_keys($this->companyIds);
-    }
-
-    public function getAdvertiserIds()
-    {
-        return array_keys($this->advertiserIds);
-    }
-
-    public function getCategoryIds()
-    {
-        return array_keys($this->categoryIds);
-    }
-
-    public function getCompanyId()
-    {
-        if(count($this->companyIds) > 1)
+        foreach($this->properties[$property] AS $key => $indexArray)
         {
-            throw new Exception('Multiple companyId\'s set already, no unabiguous reference possible. Please use method getCompanyIds() instead');
-        }
-        return $this->companyIds[0];
-    }
-
-    public function getAdvertiserId()
-    {
-        if(count($this->advertiserIds) > 1)
-        {
-            throw new Exception('Multiple advertiserId\'s set already, no unabiguous reference possible. Please use method getAdvertiserIds() instead');
-        }
-        return $this->advertiserIds[0];
-    }
-
-    public function getCategoryId()
-    {
-        if(count($this->categoryIds) > 1)
-        {
-            throw new Exception('Multiple categoryId\'s set already, no unabiguous reference possible. Please use method getCategoryIds() instead');
-        }
-        return $this->categoryIds[0];
-    }
-
-
-
-    // Those methods should not be calles from externally, so they are protected
-
-    // if there's only one company ID, the company ID for the collection can be used like any single value property, using the
-    // set/get accessor methods. As soon as there had been more ID's added using the add method, it's no longer possible to 'set'
-    // the id.
-    // NOTE: It is highly recommended to use the collection in one way only. Either use set/get and never add multiple id's using
-    // the add method, or use add/remove only and the corresponding getCompanyIds method ...
-    protected function setCompanyId($companyId)
-    {
-        if(count($this->companyIds) > 0)
-        {
-            throw new Exception('Multiple companyId\'s set already, no unabiguous change possible. Please use method addcompanyId() instead');
-        }
-        else
-        {
-            $this->companyIds[0] = $companyId;
-        }
-    }
-
-    protected function setAdvertiserId($advertiserId)
-    {
-        if(count($this->advertiserIds) > 0)
-        {
-            throw new Exception('Multiple advertiserId\'s set already, no unabiguous change possible. Please use method addAdvertiserId() instead');
-        }
-        else
-        {
-            $this->advertiserIds[0] = $advertiserId;
-        }
-    }
-
-    protected function setCategoryId($categoryId)
-    {
-        if(count($this->categoryIds) > 0)
-        {
-            throw new Exception('Multiple categoryId\'s set already, no unabiguous change possible. Please use method addCategoryId() instead');
-        }
-        else
-        {
-            $this->categoryIds[0] = $categoryId;
-        }
-    }
-
-    // TODO: Actually, I don't really like to implicitely take advantage of the lose typing in php ... but it's the
-    // fastest way I can think of right now
-    protected function addCompanyId($companyId)
-    {
-        if(!isset($this->companyIds[$companyId]))
-        {
-             $this->companyIds[$companyId] = 0;
-        }
-        $this->companyIds[$companyId]++;
-    }
-
-    protected function addAdvertiserId($advertiserId)
-    {
-        if(!isset($this->advertiserIds[$advertiserId]))
-        {
-             $this->advertiserIds[$advertiserId] = 0;
-        }
-        $this->advertiserIds[$advertiserId]++;
-    }
-
-    protected function addCategoryId($categoryId)
-    {
-        if(!isset($this->categoryIds[$categoryId]))
-        {
-             $this->categoryIds[$categoryId] = 0;
-        }
-        $this->categoryIds[$categoryId]++;
-    }
-
-    protected function removeCompanyId($companyId)
-    {
-        if(($key = array_search($companyId, $this->companyIds)) !== false)
-        {
-            $this->companyIds[$key]--;
-            if($this->companyIds[$key] <= 0)
+            // $deleteResults = array_keys($this->properties[$property][$key], $elementIndex);
+            foreach($indexArray AS $foundkey => $value)
             {
-                unset($this->companyIds[$key]);
+                if($value == $elementIndex)
+                {
+                    unset($this->properties[$property][$key][$foundkey]);
+                    if(count($this->properties[$property][$key]) < 1)
+                    {
+                        unset($this->properties[$property][$key]);
+                    }
+                }
             }
         }
     }
 
-    protected function removeAdvertiserId($advertiserId)
+    public function registerProperty($property, $value, $index)
     {
-        if(($key = array_search($advertiserId, $this->advertiserIds)) !== false)
+        if(!isset($this->properties[$property]) || !is_array($this->properties[$property]))
         {
-            unset($this->advertiserIds[$key]);
+            $this->properties[$property] = array();
         }
+        $this->properties[$property][$value][] = $index;
     }
 
-    protected function removeCategoryId($categoryId)
+    public function setCompanyId($companyId)
     {
-        if(($key = array_search($categoryId, $this->categoryIds)) !== false)
-        {
-            unset($this->categoryIds[$key]);
-        }
+        $this->companyId = $companyId;
     }
+
+    public function setAdvertiserId($advertiserId)
+    {
+        $this->advertiserId = $advertiserId;
+    }
+
+    public function getCompanyId()
+    {
+        return $this->companyId;
+    }
+
+    public function getAdvertiserId()
+    {
+        return $this->advertiserId;
+    }
+
+
+
+    // Wrapper functions for main properties
+    public function getCompanyIds()
+    {
+        return array_keys($this->properties['companyId']);
+    }
+
+    public function getAdvertiserIds()
+    {
+        return array_keys($this->properties['advertiserId']);
+    }
+
+    public function getCategoryIds()
+    {
+        return array_keys($this->properties['categoryId']);
+    }
+
+    // TODO: temporary!
+    public function getElements()
+    {
+        return $this->elements;
+    }
+
+
+//    public function removeElement($elementUid)
+//    {
+//        // check if element with given ID exists and retrieve the key if it does
+//        if(($key = array_search($elementUid, $this->properties['uid'])) !== false)
+//        {
+//            $element = $this->elements[$key];
+//            // remove this element
+//            unset($this->properties['name'][$key]);
+//            unset($this->properties['uid'][$key]);
+//
+//            // REMOVAL here means that the value stored for the respective
+//            // id(s) (company, advertiser, categories) will be reduced by 1;
+//            // if the value is zero, the field will be unset completely
+//            $this->removeCompanyId($this->elements[$key]->getCompanyId());
+//            $this->removeAdvertiserId($this->elements[$key]->getAdvertiserId());
+//            $this->removeCategoryIds($this->elements[$key]->getAdvertiserId());
+//            // remove ALL corresponding category IDs
+//
+//            // finally, remove the element itself ...
+//            unset($this->elements[$key]);
+//            unset($element);
+//        }
+//    }
+//
+//    abstract function loadCollectionData();
+//
+//    // public accessor methods
+//    public function getCompanyIds()
+//    {
+//        return array_keys($this->companyIds);
+//    }
+//
+//    public function getAdvertiserIds()
+//    {
+//        return array_keys($this->advertiserIds);
+//    }
+//
+//    public function getCategoryIds()
+//    {
+//        return array_keys($this->categoryIds);
+//    }
+//
+//    public function getCompanyId()
+//    {
+//        if(count($this->companyIds) > 1)
+//        {
+//            throw new Exception('Multiple companyId\'s set already, no unabiguous reference possible. Please use method getCompanyIds() instead');
+//        }
+//        reset($this->companyIds);
+//        $companyId = key($this->companyIds);
+//        return $companyId;
+//    }
+//
+//    public function getAdvertiserId()
+//    {
+//        if(count($this->advertiserIds) > 1)
+//        {
+//            throw new Exception('Multiple advertiserId\'s set already, no unabiguous reference possible. Please use method getAdvertiserIds() instead');
+//        }
+//        reset($this->advertiserIds);
+//        $advertiserId = key($this->advertiserIds);
+//        return $advertiserId;
+//    }
+//
+//    public function getCategoryId()
+//    {
+//        if(count($this->categoryIds) > 1)
+//        {
+//            throw new Exception('Multiple categoryId\'s set already, no unabiguous reference possible. Please use method getCategoryIds() instead');
+//        }
+//        reset($this->categoryIds);
+//        $categoryId = key($this->categoryIds);
+//        return $categoryId;
+//    }
+//
+//
+//
+//    // if there's only one company ID, the company ID for the collection can be used like any single value property, using the
+//    // set/get accessor methods. As soon as there had been more ID's added using the add method, it's no longer possible to 'set'
+//    // the id.
+//    // NOTE: It is highly recommended to use the collection in one way only. Either use set/get and never add multiple id's using
+//    // the add method, or use add/remove only and the corresponding getCompanyIds method ...
+//    public function setCompanyId($companyId)
+//    {
+//        if(count($this->companyIds) > 1)
+//        {
+//            throw new Exception('Multiple companyId\'s set already, no unabiguous change possible. Please use method addcompanyId() instead');
+//        }
+//        else
+//        {
+//            $this->registerCompanyId($companyId);
+//        }
+//    }
+//
+//    public function setAdvertiserId($advertiserId)
+//    {
+//        if(count($this->advertiserIds) > 1)
+//        {
+//            throw new Exception('Multiple advertiserId\'s set already, no unabiguous change possible. Please use method addAdvertiserId() instead');
+//        }
+//        else
+//        {
+//            $this->registerAdvertiserId($advertiserId);
+//        }
+//    }
+//
+//    public function setCategoryId($categoryId)
+//    {
+//        if(count($this->categoryIds) > 1)
+//        {
+//            throw new Exception('Multiple categoryId\'s set already, no unabiguous change possible. Please use method addCategoryId() instead');
+//        }
+//        else
+//        {
+//            $this->registerCategoryId($categoryId);
+//        }
+//    }
+//
+//    // in order to keep track of the id's here, we use the id itself as a key and the corresponding value as a counter,
+//    // increasing it whenever another element with a given id is added. When removing an element with a given id, the
+//    // counter is reduced by one, the respective id can be completely removed when the counter hits zero
+//    protected function registerCompanyId($companyId)
+//    {
+//        if(!isset($this->companyIds[$companyId]))
+//        {
+//             $this->companyIds[$companyId] = 0;
+//        }
+//        $this->companyIds[$companyId]++;
+//    }
+//
+//    protected function registerAdvertiserId($advertiserId)
+//    {
+//        if(!isset($this->advertiserIds[$advertiserId]))
+//        {
+//             $this->advertiserIds[$advertiserId] = 0;
+//        }
+//        $this->advertiserIds[$advertiserId]++;
+//    }
+//
+//    protected function registerCategoryId($categoryId)
+//    {
+//        if(!isset($this->categoryIds[$categoryId]))
+//        {
+//             $this->categoryIds[$categoryId] = 0;
+//        }
+//        $this->categoryIds[$categoryId]++;
+//    }
+//    // END of ID registration methods
+//
+//
+//
+//    // decrease the corresponding id counter by one. if counter hits zero, remove id entirely from list
+//    protected function removeCompanyId($companyId)
+//    {
+//        if(($key = array_search($companyId, $this->companyIds)) !== false)
+//        {
+//            $this->companyIds[$key]--;
+//            if($this->companyIds[$key] <= 0)
+//            {
+//                unset($this->companyIds[$key]);
+//            }
+//        }
+//    }
+//
+//    protected function removeAdvertiserId($advertiserId)
+//    {
+//        if(($key = array_search($advertiserId, $this->advertiserIds)) !== false)
+//        {
+//            $this->advertiserIds[$key]--;
+//            if($this->advertiserIds[$key] <= 0)
+//            {
+//                unset($this->advertiserIds[$key]);
+//            }
+//        }
+//    }
+//
+//    protected function removeCategoryId($categoryId)
+//    {
+//        if(($key = array_search($categoryId, $this->categoryIds)) !== false)
+//        {
+//            $this->categoryIds[$key]--;
+//            if($this->categoryIds[$key] <= 0)
+//            {
+//                unset($this->categoryIds[$key]);
+//            }
+//        }
+//    }
 
     /* ****************** *
      *  ITERATOR methods  *
@@ -262,7 +392,10 @@ abstract class ElementCollection implements Iterator
 
     function next()
     {
-        ++$this->position;
+        do
+        {
+            ++$this->position;
+        } while(!isset($this->elements[$this->position]) && $this->position <= max(array_keys($this->elements)));
     }
 
     function rewind()

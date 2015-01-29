@@ -17,22 +17,89 @@ class TemplateCollection extends ElementCollection
     public function __construct()
     {
         parent::__construct('id');
+        $this->filterNameMappings = array(
+                                            'categoryId' => 'categoryIds',
+                                            'companyId'  => 'companyId'
+                                            );
+    }
+
+
+
+    public function loadCollectionData()
+    {
+        define('EXCLUDE', true);
+
+        $connector = new APIConnector();
+
+        $connector->setAdvertiserId($this->getAdvertiserId());
+        $connector->setCompanyId($this->getCompanyId());
+
+        $templateIds = $this->getTemplateIds();
+        foreach($templateIds AS $templateId)
+        {
+            $template = $connector->getTemplateById($templateId);
+            $template->setCompanyId($this->getCompanyId());
+            $this->addElement($template);
+        }
+
+        foreach($this->elements AS $key => $element)
+        {
+            $discard = EXCLUDE;
+            foreach($this->filterList AS $key => $value)
+            {
+                $key = $this->filterNameMappings[$key];
+                $func = 'get' . ucfirst($key);
+                if(method_exists($element, $func))
+                {
+                    $filterProp = $element->$func();
+                    if(is_array($filterProp) && in_array($value, $filterProp))
+                    {
+                        echo 'Filtered value ' . $key . ' = ' . $value . " found\n";
+                        $discard = !EXCLUDE;
+                    }
+                    else
+                    {
+                        $discard = EXCLUDE;
+                    }
+                }
+                else
+                {
+                    echo 'Oh!';
+                }
+                if($discard)
+                {
+                    unset($this->elements[$key]);
+                }
+            }
+        }
+    }
+
+
+    private function getTemplateIds()
+    {
+        $connector = new APIConnector();
+        $connector->setAdvertiserId($this->getAdvertiserId());
+        $connector->setCompanyId($this->getCompanyId());
+
+        $templateIds = array();
+
+        $templates = $connector->getTemplates();
+
+        foreach($templates AS $template)
+        {
+            $templateIds[] = $template->getId();
+        }
+
+        return $templateIds;
     }
 
     public function addElement($element)
     {
-        parent::addElement($element);
+        $index = parent::addElement($element);
 
-        // TODO: where do we get this info from?
-        $element->setCompanyId(170);
-        $this->addCompanyId(170); // $element->getCompanyId());
-
-        // we cannot use any other "simple" array operations here since we're counting the number of
-        // elements with each category id to be able to decide whether or not we can remove a category
-        // id completely from the list here in the collection
         foreach($element->getCategoryIds() as $categoryId)
         {
-            $this->addCategoryId($categoryId);
+            $this->registerProperty('categoryId', $categoryId, $index);
         }
     }
 

@@ -40,10 +40,11 @@
             <div class="info_row_body">
         <?php
         $count = 0;
-        foreach($this->elements->getAdvertiserIds() AS $advertiserId):
+        $advertiserIdList = $this->elements->getAdvertiserIds();
+        foreach($advertiserIdList AS $advertiserId):
             $count++;
             echo $advertiserId;
-            if($count < count($this->elements->getAdvertiserIds())):
+            if($count < count($advertiserIdList)):
                 echo ';';
             endif;
             $count++;
@@ -75,24 +76,7 @@
         ?>
         <div class="manager_element_body">
         <?php
-            $count++;
-
-            $width  = $element->getWidth();
-            $height = $element->getHeight();
-
-            $ratio = $width / $height;
-            $size = 350;
-
-            $targetWidth = $targetHeight = min($size, max($width, $height));
-
-            if($ratio < 1)
-            {
-                $targetWidth = $targetHeight * $ratio;
-            }
-            else
-            {
-                $targetHeight = $targetWidth / $ration;
-            }
+            list($targetWidth, $targetHeight) = calculateRatioSize($element->getWidth(), $element->getHeight(), 350);
 
             $imgsrc = 'output/' . $element->getCompanyId() . '/' . $element->getAdvertiserId();
             $imgsrc .= '/0/preview_' . $element->getId() . '_' . $element->getWidth() . 'x' . $element->getHeight() . '.gif';
@@ -102,6 +86,12 @@
             </div>
             <div class="manager_element_preview">
             <img src="<?php echo $imgsrc; ?>" width="<?php echo $targetWidth; ?>" />
+            </div>
+            <div class="template_info_box">
+            <strong>Categories:</strong><br />
+                <?php foreach($element->getCategoryIds() AS $categoryId) :  ?>
+                <?php echo $categoryId ?>;
+                <?php endforeach; ?>
             </div>
         </div>
     <?php
