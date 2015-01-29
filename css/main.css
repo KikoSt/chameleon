@@ -443,7 +443,7 @@ input.filesize-warning {
     margin: 10px;
     background-color: #9a9a9a;
     width: 400px;
-    min-height: 530px;
+    height: 530px;
     overflow: hidden;
     font-size: .9em;
     float: left;

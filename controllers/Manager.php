@@ -22,7 +22,13 @@ class Manager extends Controller
         $this->templateCollection->setCompanyId($this->companyId);
         $this->templateCollection->setAdvertiserId($this->advertiserId);
 
+        // $this->templateCollection->addFilter('categoryId', 167514);
+
         $this->templateCollection->loadCollectionData();
+
+ //       $this->templateCollection->removeElement(223);
+        $this->templateCollection->removeElement(118);
+        $this->templateCollection->removeElement(223);
 
         $this->view->elements = $this->templateCollection;
         $this->view->message = 'Guten Tag, guten Tag!';
