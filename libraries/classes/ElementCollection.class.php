@@ -387,7 +387,10 @@ abstract class ElementCollection implements Iterator
 
     function next()
     {
-        ++$this->position;
+        do
+        {
+            ++$this->position;
+        } while(!isset($this->elements[$this->position]) && $this->position <= max(array_keys($this->elements)));
     }
 
     function rewind()
