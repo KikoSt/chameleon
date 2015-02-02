@@ -82,6 +82,11 @@ abstract class ElementCollection implements Iterator
         $this->uidName = $uidName;
     }
 
+    public function getIncludeFilterList()
+    {
+        return $this->includeFilterList;
+    }
+
     public function addIncludeFilter($propertyName, $value)
     {
         if(!array_key_exists($propertyName, $this->includeFilterList))
