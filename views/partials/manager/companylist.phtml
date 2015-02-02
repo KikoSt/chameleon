@@ -1,0 +1,16 @@
+        <div class="manager_info_row">
+            <?php include('info_header.phtml'); ?>
+            <div class="info_row_body">
+        <?php
+        $count = 0;
+        foreach($this->elements->getCompanyIds() AS $companyId):
+            $count++;
+            echo $companyId;
+            if($count < count($this->elements->getCompanyIds())):
+                echo '; ';
+            endif;
+        endforeach;
+        ?>
+            </div>
+        </div>
+

@@ -1,0 +1,18 @@
+        <div class="manager_info_row">
+            <?php include('info_header.phtml'); ?>
+            <div class="info_row_body">
+        <?php
+        $count = 0;
+        foreach($this->elements->getCategoryIds() AS $categoryId):
+            $count++;
+            echo $categoryId;
+            if($count < count($this->elements->getCategoryIds())):
+                echo '; ';
+            endif;
+        endforeach;
+        ?>
+            </div>
+        </div>
+
+
+

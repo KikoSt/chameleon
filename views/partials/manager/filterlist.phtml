@@ -1,0 +1,29 @@
+        <div class="manager_info_row">
+            <?php include('info_header.phtml'); ?>
+            <div class="info_row_body">
+                <table border ="1">
+        <?php
+        foreach($this->elements->getIncludeFilterList() AS $infilter => $infiltervalues)
+        {
+            $count = 0;
+            ?>
+                    <tr>
+                        <td rowspan="<?php echo count($infiltervalues); ?>">
+                            <?php echo $infilter . ': '; ?>
+                        </td>
+            <?php
+            foreach($infiltervalues AS $infiltervalue)
+            {
+                if($count > 0)
+                {
+                    echo '<tr>';
+                }
+                echo '<td>' . $infiltervalue . '</td></tr>';
+            }
+        }
+        ?>
+                </table>
+            </div>
+        </div>
+
+

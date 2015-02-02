@@ -1,0 +1,18 @@
+        <div class="manager_info_row">
+            <?php include('info_header.phtml'); ?>
+            <div class="info_row_body">
+        <?php
+        $count = 0;
+        $advertiserIdList = $this->elements->getAdvertiserIds();
+        foreach($advertiserIdList AS $advertiserId):
+            $count++;
+            echo $advertiserId;
+            if($count < count($advertiserIdList)):
+                echo ';';
+            endif;
+            $count++;
+        endforeach;
+        ?>
+            </div>
+        </div>
+
