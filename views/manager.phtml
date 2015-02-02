@@ -70,6 +70,23 @@
             </div>
         </div>
 
+        <div class="manager_info_row">
+            <div class="info_row_header">
+                Filter:
+            </div>
+            <div class="info_row_body">
+        <?php
+        foreach($this->elements->getIncludeFilterList() AS $infilter => $infiltervalues)
+        {
+            echo $infilter . ': ';
+            foreach($infiltervalues AS $infiltervalue)
+            {
+                echo $infiltervalue . '<br />';
+            }
+        }
+        ?>
+            </div>
+        </div>
         <?php
         $count = 0;
         foreach($this->elements as $key => $element):
