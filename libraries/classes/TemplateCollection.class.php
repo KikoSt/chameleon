@@ -42,6 +42,7 @@ class TemplateCollection extends ElementCollection
             $this->addElement($template);
         }
 
+        /*
         foreach($this->elements AS $key => $element)
         {
             $discard = EXCLUDE;
@@ -72,6 +73,7 @@ class TemplateCollection extends ElementCollection
                 }
             }
         }
+        */
     }
 
 
