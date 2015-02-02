@@ -214,42 +214,35 @@ abstract class ElementCollection implements Iterator
 
     function current()
     {
+        // return $this->elements[$this->position];
         $valids = array();
         // // include filter specify that the data displayed includes ONLY information specified in the filter
         if(count($this->includeFilterList) > 0)
         {
-            foreach($this->includeFilterList AS $key => $filterValue)
+            foreach($this->includeFilterList AS $key => $filterValues)
             {
-                // now we need the index for $filterProperty where $value = $key
-        //         // echo 'Key = ' . $key . ', ' . print_r($filterValue, 1) . "\n\n<br />";
-                $elementList = $this->properties[$key][$filterValue[0]];
-                $valids = $valids + array_values($elementList);
+                foreach($filterValues AS $dummy => $filterValue)
+                {
+                    unset($dummy);
+                    // now we need the index for $filterProperty where $value = $key
+                    $elementList = $this->properties[$key][$filterValue];
+                    $valids = array_merge($valids, array_values($elementList));
+                }
+            }
+            if(false === array_search($this->position, $valids, true))
+            {
+                $this->position++;
+                if($this->position >= max(array_keys($this->elements)))
+                {
+                    if(isset($this->elements[$this->position]))
+                    {
+                        return $this->elements[$this->position];
+                    }
+                }
+                $this->current();
             }
         }
-        else
-        {
-            $valids = array_keys($this->properties['uid']);
-            $valids = array_values($this->properties['uid']);
-
-            echo '<span style="font-size:.7em">';
-            foreach($valids AS $validId)
-            {
-                echo '{{ ' . $validId[0] . ' }}';
-            }
-            echo '<br />';
-            echo '</span>';
-
-        }
-
-        if(array_search($this->position, $valids))
-        {
-            return $this->elements[$this->position];
-        }
-        else
-        {
-            $this->position++;
-            $this->current();
-        }
+        return $this->elements[$this->position];
     }
 
     function key()
