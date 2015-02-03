@@ -1,0 +1,43 @@
+        <div class="manager_info_row">
+            <?php include('info_header.phtml'); ?>
+            <div class="info_row_body">
+            <form>
+                <select id="filter_property_select">
+                    <?php
+                    foreach($this->elements->getPropertyList() AS $property):
+                        if($property !== 'uid' && $property !== 'name'):
+                        ?>
+                    <option><?php echo $property; ?></option>
+                        <?php
+                        endif;
+                    endforeach; ?>
+                </select>
+                    <?php
+                    foreach($this->elements->getFilterableList() AS $property):
+                        ?>
+                    <select class="filter_value_select" id="filter_value_select_<?php echo $property; ?>">
+                        <?php
+                        foreach($this->elements->getPropertyValues($property) AS $value):
+                        ?>
+                            <option><?php echo $value; ?></option>
+                        <?php
+                        endforeach;
+                    ?>
+                    </select>
+                    <?php
+                    endforeach;
+                    ?>
+            </form>
+            [+]
+
+            </div>
+        </div>
+
+        <script>
+            $('#filter_value_select_advertiserId').show();
+            $('#filter_property_select').change(function() {
+                var prop = $("#filter_property_select option:selected").text();
+                $('.filter_value_select').hide();
+                $('#filter_value_select_' + prop).show();
+            });
+        </script>
