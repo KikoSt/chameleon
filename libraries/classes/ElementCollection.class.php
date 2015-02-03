@@ -61,11 +61,14 @@ abstract class ElementCollection implements Iterator
     protected $elements;
     protected $properties;
     protected $propertyList;
-    protected $uidName;       // name of the unique identifier in the derived class. NOT mutual after object creation!
+    protected $uidName;             // name of the unique identifier in the derived class. NOT mutual after object creation!
 
-    protected $includeFilterList;    // dictionary: property : value
-    protected $excludeFilterList;    // dictionary: property : value
-    protected $sortList;      // dictionary: property : 'asc' or 'desc'
+    protected $includeFilterList;   // dictionary: property : value
+    protected $excludeFilterList;   // dictionary: property : value
+    protected $sortList;            // dictionary: property : 'asc' or 'desc'
+
+    protected $sortable;
+    protected $filterable;
 
     public function __construct($uidName)
     {
@@ -79,14 +82,52 @@ abstract class ElementCollection implements Iterator
         $this->excludeFilterList = array();
         $this->sortList          = array();
 
+        $this->filterable = array('companyId', 'advertiserId', 'categoryId', 'width', 'height');
+        $this->sortable   = array('companyId', 'advertiserId', 'categoryId', 'width', 'height');
+
         $this->uidName = $uidName;
     }
 
+    /**
+     * getIncludeFilterList
+     *
+     * @access public
+     * @return void
+     */
     public function getIncludeFilterList()
     {
         return $this->includeFilterList;
     }
 
+
+    public function getFilterableList()
+    {
+        return $this->filterable;
+    }
+
+
+    public function getPropertyValues($property)
+    {
+        if(key_exists($property, $this->properties))
+        {
+            $result = array_keys($this->properties[$property]);
+        }
+        else
+        {
+            $result = false;
+        }
+        return $result;
+    }
+
+
+    /**
+     * addIncludeFilter
+     *
+     * @param mixed $propertyName
+     * @param mixed $value
+     * @access public
+     * @return void
+     */
     public function addIncludeFilter($propertyName, $value)
     {
         if(!array_key_exists($propertyName, $this->includeFilterList))
@@ -96,6 +137,15 @@ abstract class ElementCollection implements Iterator
         $this->includeFilterList[$propertyName][] = $value;
     }
 
+
+    /**
+     * addExcludeFilter
+     *
+     * @param mixed $propertyName
+     * @param mixed $value
+     * @access public
+     * @return void
+     */
     public function addExcludeFilter($propertyName, $value)
     {
         if(!array_key_exists($propertyName, $this->excludeFilterList))
@@ -104,6 +154,17 @@ abstract class ElementCollection implements Iterator
         }
     }
 
+
+    /**
+     * getPropertyList
+     *
+     * @access public
+     * @return void
+     */
+    public function getPropertyList()
+    {
+        return array_keys($this->properties);
+    }
 
     public function addElement($element)
     {
