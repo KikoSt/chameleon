@@ -41,39 +41,6 @@ class TemplateCollection extends ElementCollection
             $template->setCompanyId($this->getCompanyId());
             $this->addElement($template);
         }
-
-        /*
-        foreach($this->elements AS $key => $element)
-        {
-            $discard = EXCLUDE;
-            foreach($this->filterList AS $key => $value)
-            {
-                $key = $this->filterNameMappings[$key];
-                $func = 'get' . ucfirst($key);
-                if(method_exists($element, $func))
-                {
-                    $filterProp = $element->$func();
-                    if(is_array($filterProp) && in_array($value, $filterProp))
-                    {
-                        echo 'Filtered value ' . $key . ' = ' . $value . " found\n";
-                        $discard = !EXCLUDE;
-                    }
-                    else
-                    {
-                        $discard = EXCLUDE;
-                    }
-                }
-                else
-                {
-                    echo 'Oh!';
-                }
-                if($discard)
-                {
-                    unset($this->elements[$key]);
-                }
-            }
-        }
-        */
     }
 
 
