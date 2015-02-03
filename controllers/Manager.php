@@ -22,8 +22,10 @@ class Manager extends Controller
         $this->templateCollection->setCompanyId($this->companyId);
         $this->templateCollection->setAdvertiserId($this->advertiserId);
 
-        $this->templateCollection->addIncludeFilter('categoryId', 167622);
-        $this->templateCollection->addIncludeFilter('categoryId', 167514);
+        // $this->templateCollection->addIncludeFilter('width', 750);
+        // $this->templateCollection->addIncludeFilter('categoryId', 167622);
+        // $this->templateCollection->addIncludeFilter('categoryId', 167736);
+        $this->templateCollection->addIncludeFilter('categoryId', 169192);
         // $this->templateCollection->addIncludeFilter('advertiserId', 122);
 
         $this->templateCollection->loadCollectionData();
