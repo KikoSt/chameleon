@@ -474,3 +474,27 @@ input.filesize-warning {
     padding: 10px;
     text-align: left;
 }
+
+.info_row_body > table {
+}
+
+.info_row_body td {
+    padding-bottom: 5px;
+    padding-right: 10px;
+}
+
+.manager_template_menu {
+    width: 350px;
+}
+
+.manager_template_menu button {
+    height: 20px;
+    background: #666666;
+    font-size: .75em;
+    border: 1px solid #bbbbbb;
+    color: #eeeeee;
+}
+
+.filter_value_select {
+    display: none;
+}

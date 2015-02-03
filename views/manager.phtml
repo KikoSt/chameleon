@@ -1,13 +1,6 @@
-<?php include('navigation.inc.php');?>
-<!--
-<form>
-    <select>
-        <option>
-        </option>
-    </select>
-</form>
--->
 <?php
+    include('navigation.inc.php');
+
     if(!is_object($this->elements) || count($this->elements) === 0):
 ?>
     <p class="notification"><?php echo $this->message; ?></p>
@@ -16,103 +9,38 @@
 ?>
 <div class="container margin-left-150">
     <div id="managerView">
-        <div class="manager_info_row">
-            <div class="info_row_header">
-                Company:
-            </div>
-            <div class="info_row_body">
         <?php
-        $count = 0;
-        foreach($this->elements->getCompanyIds() AS $companyId):
-            $count++;
-            echo $companyId;
-            if($count < count($this->elements->getCompanyIds())):
-                echo '; ';
-            endif;
-        endforeach;
+        $section = 'Company';
+        include('partials/manager/companylist.phtml');
+        $section = 'Advertiser';
+        include('partials/manager/advertiserlist.phtml');
+        $section = 'Categories';
+        include('partials/manager/categorylist.phtml');
+        $section = 'Active filters';
+        include('partials/manager/filterlist.phtml');
+        $section = 'Apply filter';
+        include('partials/manager/applyFilter.phtml');
         ?>
-            </div>
-        </div>
-        <div class="manager_info_row">
-            <div class="info_row_header">
-                Advertiser:
-            </div>
-            <div class="info_row_body">
-        <?php
-        $count = 0;
-        $advertiserIdList = $this->elements->getAdvertiserIds();
-        foreach($advertiserIdList AS $advertiserId):
-            $count++;
-            echo $advertiserId;
-            if($count < count($advertiserIdList)):
-                echo ';';
-            endif;
-            $count++;
-        endforeach;
-        ?>
-            </div>
-        </div>
-        <div class="manager_info_row">
-            <div class="info_row_header">
-                Categories:
-            </div>
-            <div class="info_row_body">
-        <?php
-        $count = 0;
-        foreach($this->elements->getCategoryIds() AS $categoryId):
-            $count++;
-            echo $categoryId;
-            if($count < count($this->elements->getCategoryIds())):
-                echo '; ';
-            endif;
-        endforeach;
-        ?>
-            </div>
-        </div>
 
-        <div class="manager_info_row">
-            <div class="info_row_header">
-                Filter:
-            </div>
-            <div class="info_row_body">
+        <!-- display templates -->
+
         <?php
-        foreach($this->elements->getIncludeFilterList() AS $infilter => $infiltervalues)
+        $tcount = 0;
+        foreach($this->elements as $key => $element)
         {
-            echo $infilter . ': ';
-            foreach($infiltervalues AS $infiltervalue)
-            {
-                echo $infiltervalue . '<br />';
-            }
+            //right now, the iterator may also return FALSE.
+            // TODO: change the iterator to prevent this kind of logic
+            //       here in the template!!!
+            //if(!is_null($element))
+            //{
+                $tcount++;
+                include('partials/manager/template.phtml');
+            // }
         }
-        ?>
-            </div>
-        </div>
-        <?php
-        $count = 0;
-        foreach($this->elements as $key => $element):
-        ?>
-        <div class="manager_element_body">
-        <?php
-            list($targetWidth, $targetHeight) = calculateRatioSize($element->getWidth(), $element->getHeight(), 350);
-
-            $imgsrc = 'output/' . $element->getCompanyId() . '/' . $element->getAdvertiserId();
-            $imgsrc .= '/0/preview_' . $element->getId() . '_' . $element->getWidth() . 'x' . $element->getHeight() . '.gif';
-        ?>
-            <div class="manager_element_name">
-            <?php echo $element->getName(); ?>
-            </div>
-            <div class="manager_element_preview">
-            <img src="<?php echo $imgsrc; ?>" width="<?php echo $targetWidth; ?>" />
-            </div>
-            <div class="template_info_box">
-            <strong>Categories:</strong><br />
-                <?php foreach($element->getCategoryIds() AS $categoryId) :  ?>
-                <?php echo $categoryId ?>;
-                <?php endforeach; ?>
-            </div>
-        </div>
-    <?php
-        endforeach;
+        if($tcount === 0)
+        {
+            echo '<b>No templates found! Please check your input and filter settings!</b>';
+        }
         endif;
     ?>
 
