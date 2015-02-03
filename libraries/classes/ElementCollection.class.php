@@ -280,35 +280,8 @@ abstract class ElementCollection implements Iterator
 
     function current()
     {
-        // return $this->elements[$this->position];
-        $valids = array();
-        // // include filter specify that the data displayed includes ONLY information specified in the filter
-        if(count($this->includeFilterList) > 0)
-        {
-            foreach($this->includeFilterList AS $key => $filterValues)
-            {
-                foreach($filterValues AS $dummy => $filterValue)
-                {
-                    unset($dummy);
-                    // now we need the index for $filterProperty where $value = $key
-                    $elementList = $this->properties[$key][$filterValue];
-                    $valids = array_merge($valids, array_values($elementList));
-                }
-            }
-            if(false === array_search($this->position, $valids, true))
-            {
-                $this->position++;
-                if($this->position >= max(array_keys($this->elements)))
-                {
-                    if(isset($this->elements[$this->position]))
-                    {
-                        return $this->elements[$this->position];
-                    }
-                }
-                $this->current();
-            }
-        }
         return $this->elements[$this->position];
+        // return $this->elements[$this->position];
     }
 
     function key()
@@ -321,12 +294,60 @@ abstract class ElementCollection implements Iterator
         do
         {
             ++$this->position;
-        } while(!isset($this->elements[$this->position]) && $this->position <= max(array_keys($this->elements)));
+
+            $isValid = false;
+            // if element had been removed we don't even have to check filters!
+            if(count($this->includeFilterList) > 0)
+            {
+                // element exists, so check filters!
+                $valids = array();
+                // include filter specify that the data displayed includes ONLY information specified in the filter
+                // every property that has to be filtered (advertiserId, categoryId, width ...)
+                foreach($this->includeFilterList AS $key => $filterValues)
+                {
+                    // ... can have multiple filter values
+                    // get list of all valid elements, i.e. elements that remain when all filters are applied
+                    foreach($filterValues AS $dummy => $filterValue)
+                    {
+                        $filterMethod = 'or';
+                        unset($dummy);
+                        // now we need the index for $filterProperty where $value = $key
+                        $elementList = $this->properties[$key][$filterValue];
+                        if($filterMethod === 'or')
+                        {
+                            $valids = array_merge($valids, array_values($elementList));
+                        }
+                        elseif($filterMethod === 'and')
+                        {
+                            if(count($valids) == 0)
+                            {
+                                $valids = array_values($elementList);
+                            }
+                            $valids = array_intersect($valids, array_values($elementList));
+                        }
+                    }
+                }
+                if(false === array_search($this->position, $valids, true) || is_null(array_search($this->position, $valids, true)))
+                {
+                    $isValid = false;
+                }
+                else
+                {
+                    // if there is no filter, every element is valid
+                    $isValid = true;
+                }
+            }
+            else
+            {
+                $isValid = true;
+            }
+        } while($isValid === false && $this->position <= max(array_keys($this->elements)));
     }
 
     function rewind()
     {
-        $this->position = 0;
+        $this->position = -1;
+        $this->next();
     }
 
     function valid()
