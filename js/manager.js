@@ -28,7 +28,7 @@ $(document).ready(function()
 
         if($('.filter[name=' + prop + ']').length == 0) {
             newNode = '<input type="hidden" class="filter" name="' + prop + '" value="" />';
-            $('.filter').last().append(newNode);
+            $('#filterlist').append(newNode);
         }
 
         var curFilterValue = $('.filter[name=' + prop + ']').val();
@@ -47,7 +47,14 @@ $(document).ready(function()
 
         // gather current filters
 
-        var filterdata = {'filter' : 'lalalala'};
+        var filterdata = {};
+        filterdata['filters'] = {};
+        $('.filter').each(function(index) {
+            console.log($(this).attr('name') + ': ' + $(this).val());
+            filterdata['filters'][$(this).attr('name')] = $(this).val();
+        });
+        filterdata['companyId'] = 170;
+        filterdata['advertiserId'] = 122;
 
         $.ajax({
             type: "POST",
@@ -55,7 +62,35 @@ $(document).ready(function()
             dateType: "json",
             url: "/chameleon/ajax/getFilteredCollection.php"
         }).done(function(response) {
-            console.log('done');
+            var response = JSON.parse(response);
+            $('#templates_container').html('');
+            for(var i=0; i<response.length; i++) {
+                var element = response[i];
+                var newNode = '<div class="manager_element_body">';
+                newNode += '<div class="manager_element_name">' + element.name + '</div>';
+                newNode += '<div class="manager_template_menu">';
+                newNode += '<span id="" class="fa fa-file-image-o fa-lg" style="margin-top: 3px"></span>';
+                newNode += '<a href="?page=editor&templateId=' + element.id + '">';
+                newNode += '<span id="" class="fa fa-edit fa-lg" style="margin-top: 3px"></span>';
+                newNode += '</a>';
+
+                newNode += '</div>';
+                newNode += '<div class="manager_element_preview">';
+                newNode += '<img src="' + element.imgpath + '" width="' + element.displayWidth + '" />';
+                newNode += '</div>';
+
+                newNode += '<div class="template_info_box">';
+                newNode += '<strong>Categories:</strong><br />';
+                for(var j=0; j<element.categoryIds.length; j++) {
+                    newNode += element.categoryIds[j] + '; ';
+                }
+                newNode += '</div>';
+
+                newNode += '</div>';
+
+
+                $('#templates_container').append(newNode);
+            }
         }).fail(function(response) {
             console.log('fail');
         });
