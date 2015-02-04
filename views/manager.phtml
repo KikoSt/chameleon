@@ -24,6 +24,7 @@
 
         <!-- display templates -->
 
+        <div id="templates_container">
         <?php
         $tcount = 0;
         foreach($this->elements as $key => $element)
@@ -43,6 +44,7 @@
         }
         endif;
     ?>
+        </div>
 
     <input type="hidden" id="advertiserId" name="advertiserId" value="<?php echo $this->advertiserId; ?>">
     <input type="hidden" id="companyId"    name="companyId" value="<?php echo $this->companyId; ?>">
