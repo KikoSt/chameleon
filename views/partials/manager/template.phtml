@@ -9,8 +9,10 @@
             <?php echo $element->getName(); ?>
             </div>
             <div class="manager_template_menu">
-                <button value="edit">edit</button>
-                <button value="show creatives">show creatives</button>
+                    <span id="" class="fa fa-file-image-o fa-lg" style="margin-top: 3px"></span>
+                <a href="?page=editor&templateId=<?php echo $element->getId(); ?>">
+                <span id="" class="fa fa-edit fa-lg" style="margin-top: 3px"></span>
+                </a>
             </div>
             <div class="manager_element_preview">
             <img src="<?php echo $imgsrc; ?>" width="<?php echo $targetWidth; ?>" />

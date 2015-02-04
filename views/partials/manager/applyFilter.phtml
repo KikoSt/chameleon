@@ -28,16 +28,6 @@
                     endforeach;
                     ?>
             </form>
-            [+]
-
+                <span id="btn_add_filter" class="fa fa-plus-square-o fa-sm" style="margin-top: 3px"></span>
             </div>
         </div>
-
-        <script>
-            $('#filter_value_select_advertiserId').show();
-            $('#filter_property_select').change(function() {
-                var prop = $("#filter_property_select option:selected").text();
-                $('.filter_value_select').hide();
-                $('#filter_value_select_' + prop).show();
-            });
-        </script>
