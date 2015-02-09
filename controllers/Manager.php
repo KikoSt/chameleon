@@ -14,18 +14,18 @@ class Manager extends Controller
 
         // $this->view->creativeDirectory = $this->getCreatives($templateIds);
 
-        $this->view->companyId         = $this->companyId;
-        $this->view->advertiserId      = $this->advertiserId;
-        $this->view->page              = 'manage';
+        $this->view->setCompanyId($this->companyId);
+        $this->view->setAdvertiserId($this->advertiserId);
+        $this->view->setPage('manage');
 
         $this->templateCollection = new TemplateCollection();
         $this->templateCollection->setCompanyId($this->companyId);
         $this->templateCollection->setAdvertiserId($this->advertiserId);
 
-        // $this->templateCollection->addIncludeFilter('width', 750);
-        // $this->templateCollection->addIncludeFilter('categoryId', 167622);
-        // $this->templateCollection->addIncludeFilter('categoryId', 167736);
-        $this->templateCollection->addIncludeFilter('categoryId', 169192);
+//        $this->templateCollection->addIncludeFilter('width', 750);
+        $this->templateCollection->addIncludeFilter('categoryId', 167622);
+        $this->templateCollection->addIncludeFilter('categoryId', 167736);
+        // $this->templateCollection->addIncludeFilter('categoryId', 169192);
         // $this->templateCollection->addIncludeFilter('advertiserId', 122);
 
         $this->templateCollection->loadCollectionData();
@@ -34,8 +34,8 @@ class Manager extends Controller
         // $this->templateCollection->removeElement(118);
         // $this->templateCollection->removeElement(223);
 
-        $this->view->elements = $this->templateCollection;
-        $this->view->message = 'Guten Tag, guten Tag!';
+        $this->view->setElements($this->templateCollection);
+        $this->view->setMessage('Guten Tag, guten Tag!');
     }
 
     public function display()

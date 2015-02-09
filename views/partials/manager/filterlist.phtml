@@ -11,7 +11,11 @@
                 <div class="active_filter_values" id="<?php echo $infilter; ?>_filter_values">
                     <?php
                     foreach($infiltervalues AS $infiltervalue):
-                        echo $infiltervalue . '<br />';
+                        echo $infiltervalue;
+                        ?>
+                        <span id="<?php echo $infilter; ?>_<?php echo $infiltervalue; ?>" class="btn_remove_filter fa fa-minus-square-o fa-sm" style="margin-top: 3px"></span>
+                        <br />
+                        <?php
                     endforeach;
                     ?>
                 </div>

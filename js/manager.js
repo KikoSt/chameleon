@@ -9,11 +9,18 @@ $(document).ready(function()
 
     $('#filter_property_select').change(function() {
         var prop = $("#filter_property_select option:selected").text();
+        // hide all
         $('.filter_value_select').hide();
+        // show appropriate
         $('#filter_value_select_' + prop).show();
     });
 
-    $('#btn_add_filter').click(function() {
+    $('.btn_remove_filter').on('click', function() {
+        console.log($(this).attr('id'));
+
+    });
+
+    $('.btn_add_filter').on('click', function() {
         var prop  = $("#filter_property_select option:selected").text();
         var value = $("#filter_value_select_" + prop + " option:selected").text();
 
@@ -22,6 +29,7 @@ $(document).ready(function()
             var newNode = '<div class="active_filter_label">' + prop + '</div>';
             newNode += '<div class="active_filter_values" id="' + prop + '_filter_values">';
             newNode += '</div>';
+            newNode += ' <span id="btn_remove_filter" class="fa fa-minus-square-o fa-sm" style="margin-top: 3px"></span>';
             newNode += '<br />';
             $('#filterlist').append(newNode);
         }
@@ -60,7 +68,7 @@ $(document).ready(function()
             type: "POST",
             data: filterdata,
             dateType: "json",
-            url: "/chameleon/ajax/getFilteredCollection.php"
+            url: "/ajax/getFilteredCollection.php"
         }).done(function(response) {
             var response = JSON.parse(response);
             $('#templates_container').html('');
