@@ -77,7 +77,7 @@ class Overview extends Controller
                     {
                         // we just omit "failing" templates here, rendering the overview with all
                         // intact templates
-                        continue;
+                        // continue;
                     }
 
                     // $container->saveSvg();
@@ -134,8 +134,8 @@ class Overview extends Controller
             }
         }
 
-        $this->view->previews = $previews;
-        $this->view->page = 'overview';
+        $this->view->setPreviews($previews);
+        $this->view->setPage('overview');
 
         return $this->view;
     }

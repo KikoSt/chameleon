@@ -10,7 +10,7 @@
 <div class="container margin-left-150">
     <div id="overviewView">
     <?php
-        foreach($this->previews as $preview):
+        foreach($this->getPreviews() as $preview):
     ?>
             <div id="template_<?php echo $preview->templateId; ?>" class="row template">
                 <div class="thumbnail thumbnail-half col-md-2">
@@ -47,16 +47,16 @@
                 $templateSubscriptions = $preview->templateSubscription;
                 include('categoryAlignmentModal.inc.php');
             ?>
-            <input type="hidden" id="templateId"  name="templateId" value="<?php echo $preview->templateId; ?>">
-            <input type="hidden" name="templateName" value="<?php echo $preview->templateName; ?>">
+            <input type="hidden" id="templateId"   name="templateId"   value="<?php echo $preview->templateId; ?>">
+            <input type="hidden" id="templateName" name="templateName" value="<?php echo $preview->templateName; ?>">
 
     <?php
         endforeach;
         endif;
     ?>
 
-    <input type="hidden" id="advertiserId" name="advertiserId" value="<?php echo $preview->advertiserId; ?>">
-    <input type="hidden" id="companyId"  name="companyId" value="<?php echo $preview->companyId; ?>">
+    <input type="hidden" id="advertiserId" name="advertiserId" value="<?php echo $this->advertiserId; ?>">
+    <input type="hidden" id="companyId"    name="companyId"    value="<?php echo $this->companyId; ?>">
 
     </div>
 

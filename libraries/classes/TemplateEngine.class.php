@@ -31,6 +31,8 @@ class TemplateEngine
         $this->pagesAvailable = array('overview', 'editor', 'manage');
         $this->template = $template;
         $this->page = 'overview'; // fallback
+
+        $this->previews = array();
     }
 
     public function __toString()
@@ -95,7 +97,7 @@ class TemplateEngine
     }
 
     // PREVIEWS
-    public function setPreviews($previes)
+    public function setPreviews($previews)
     {
         $this->previews = $previews;
     }

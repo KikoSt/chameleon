@@ -94,9 +94,19 @@ abstract class ElementCollection implements Iterator
      * @access public
      * @return void
      */
-    public function getIncludeFilterList()
+    public function getIncludeFilterList($sortOrder=null)
     {
-        return $this->includeFilterList;
+        $result = $this->includeFilterList;
+
+        if($sortOrder === 'ASC')
+        {
+            $result = asort($result);
+        }
+        else if($sortOrder === 'DESC')
+        {
+            $result = arsort($result);
+        }
+        return $result;
     }
 
 
@@ -106,7 +116,7 @@ abstract class ElementCollection implements Iterator
     }
 
 
-    public function getPropertyValues($property)
+    public function getPropertyValues($property, $sortOrder=null)
     {
         if(key_exists($property, $this->properties))
         {

@@ -98,8 +98,8 @@ class GfxImage extends GfXComponent
         {
             return false;
         }
-        $imagePath = str_replace('http:/', 'http://', $this->getImagePath());
-        $image = new Imagick($imagePath);
+        $imagePath   = str_replace('http:/', 'http://', $this->getImagePath());
+        $image       = new Imagick($imagePath);
         $dimensions  = $image->getImageGeometry();
         $imgWidth    = $dimensions['width'];
         $imgHeight   = $dimensions['height'];
