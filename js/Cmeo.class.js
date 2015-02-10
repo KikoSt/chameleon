@@ -190,7 +190,7 @@ Cmeo.prototype.deleteTemplate = function(templateId){
                 type: 'POST',
                 data: metaData,
                 dataType: "json",
-                url:  '/chameleon/ajax/deleteTemplate.php'
+                url:  '/ajax/deleteTemplate.php'
             }).done(function(response){
 
                 //todo change if API exception handling is changed
@@ -263,7 +263,7 @@ Cmeo.prototype.createExamples = function(templateId){
         type: "POST",
         data: metaData,
         dataType: "json",
-        url: "/chameleon/ajax/getProductIdByTemplateId.php"
+        url: "/ajax/getProductIdByTemplateId.php"
     }).done(function (response)
     {
         var productIds = response.productIds;
@@ -312,7 +312,7 @@ Cmeo.prototype.generateCreatives = function(data) {
         type: "POST",
         data: data,
         dataType: "json",
-        url: "/chameleon/ajax/create.php"
+        url: "/ajax/create.php"
     }).done(function (response)
     {
         console.log('Done!');

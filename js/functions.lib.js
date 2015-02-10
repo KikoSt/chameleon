@@ -34,7 +34,7 @@ function getTemplatePreview(output, metaData) {
         type: "POST",
         data: metaData,
         dataType: "json",
-        url: "/chameleon/ajax/renderPreview.php"
+        url: "/ajax/renderPreview.php"
     }).done(function (file){
         console.log('Done!');
     });
@@ -55,11 +55,11 @@ function getRenderedGif(output, metaData){
         type: "POST",
         data: metaData,
         dataType: "json",
-        url: "/chameleon/ajax/renderPreview.php"
+        url: "/ajax/renderPreview.php"
     }).done(function (file){
         $('.active').removeClass('active');
         var previewNode = '<div id="' + metaData.templateId + '_' + count + '" class="item active">';
-        previewNode    += '<img src="'  + window.location.origin + '/chameleon/' + file + '" alt="..."';
+        previewNode    += '<img src="'  + window.location.origin + '/' + file + '" alt="..."';
         previewNode    += 'style="max-height: 320px;">';
         previewNode    += '</div>';
         $(previewNode).appendTo('#previewcarousel-' + metaData.templateId);

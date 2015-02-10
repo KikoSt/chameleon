@@ -9,7 +9,7 @@ else
     $basedir = $_SERVER['DOCUMENT_ROOT'] . '/';
 }
 
-define('ROOT_DIR', $basedir . 'chameleon/');
+define('ROOT_DIR', $basedir . '');
 
 define('ASSET_DIR', ROOT_DIR . 'assets');
 define('OUTPUT_DIR', ROOT_DIR . 'output');
@@ -31,11 +31,11 @@ define('IMGCACHE_DIR', ROOT_DIR . 'imgcache');
 
 if(isset($_SERVER['SERVER_NAME']))
 {
-    define('BASE_DIR', 'http://' . $_SERVER['SERVER_NAME'] . '/chameleon');
+    define('BASE_DIR', 'http://' . $_SERVER['SERVER_NAME'] . '');
 }
 else
 {
-    define('BASE_DIR', '/var/www/chameleon/');
+    define('BASE_DIR', '/var/www/');
 }
 
 define('PREVIEW_NAME', 'preview_<templateId>_<width>x<height>');
