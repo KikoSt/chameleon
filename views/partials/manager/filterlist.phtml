@@ -7,7 +7,7 @@
             <?php else:
             foreach($this->elements->getIncludeFilterList() AS $infilter => $infiltervalues):
             ?>
-                <div class="active_filter_label"><?php echo $infilter . ': '; ?></div>
+                <div class="active_filter_label" name="<?php echo $infilter; ?>"><?php echo $infilter . ': '; ?></div>
                 <div class="active_filter_values" id="<?php echo $infilter; ?>_filter_values">
                     <?php
                     foreach($infiltervalues AS $infiltervalue):
