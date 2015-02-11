@@ -19,10 +19,12 @@ $(document).ready(function()
      * @return void
      */
     function handleFilterlistClick(e) {
-        var params = $(e.target).attr('id').split('_');
+        console.log($(e.target).parent());
+        var params = $(e.target).parent().attr('id').split('_');
         var property = params[0];
         var value = params[1];
         filterValues = removeFilterValue(property, value);
+
         console.log('Property = ' + property + '; Value = ' + value);
     }
 
@@ -51,12 +53,20 @@ $(document).ready(function()
         $('#' + property + '_filter_values').html('');
 
         // and recreate it with the new values
-        console.log(filterValues);
         filterlist = '';
         $.each(filterValues, function(index, value) {
-            filterlist += value;
+
+            // add the container for label AND remove button
+            filterlist += '<div class="filter_entry" id="' + property + '_' + value + '">';
+
+            // add the label
+            filterlist += '<span>' + value + '</span>';
+
+            // add the remove button
             filterlist += ' <span id="' + property + '_' + value + '" class="btn_remove_filter fa fa-minus-square-o fa-sm" style="margin-top: 3px"></span>';
-            filterlist += '<br />';
+
+            // close the container div
+            filterlist += '</div>';
         });
         $('#' + property + '_filter_values').html(filterlist);
         $('.filter[name=' + property + ']').val(filterValues.join(';'));
@@ -154,12 +164,31 @@ $(document).ready(function()
         var property  = $("#filter_property_select option:selected").text();
         var value     = $("#filter_value_select_" + property + " option:selected").text();
 
+        /**
+         *
+         * (1)       <div class="active_filter_label" name="[property_name]">
+         *  |           [property_name]
+         *  |        </div>
+         * (1)       <div class="active_filter_values" id="[property_name]_filter_values">
+         *  |           // for each value
+         *  |   (2)     <div class="filter_entry" id="[property_name]_[value]">
+         *  |    |          <span>[value]</span>
+         *  |    |          <span class="btn_remove_filter [FONT_AWESOME MINUS]></span>
+         *  |   (2)     </div>
+         * (1)       </div>
+         *
+         * (3)       <input type="hidden" class="filter" name="property" value="[value;value]" />
+         *
+         **/
+
+        // (1) if the property has no active filters, add a container for it
+
         // if there are currently no values, we have to add another container
         if($('#' + property + '_filter_values').length == 0) {
             $('#filterlist').append(createNewFilterDomNode(property, value));
         }
 
-        // if there is currently no (hidden) value container for this property, create one
+        // (3) if there is currently no (hidden) value container for this property, create one
         if($('.filter[name=' + property + ']').length == 0) {
             newNode = '<input type="hidden" class="filter" name="' + property + '" value="" />';
             $('#filterlist').append(newNode);
@@ -198,6 +227,27 @@ $(document).ready(function()
     }
 
     /**
+     * createNewFilterDomNode
+     *
+     * @param property $property
+     * @param value $value
+     * @access public
+     * @return void
+     */
+    function createNewFilterDomNode(property, value) {
+        var newNode = '<div class="active_filter_label" name="' + property + '">' + property + '</div>';
+        newNode += '<div class="active_filter_values" id="' + property + '_filter_values">';
+        newNode += '<div class="filter_entry" id="' + property + '_' + value + '">';
+        newNode += '<span>' + value + '</span>';
+        newNode += ' <span class="btn_remove_filter fa fa-minus-square-o fa-sm" style="margin-top: 3px"></span>';
+        newNode += '</div>';
+        newNode += '</div>';
+
+        return newNode;
+    }
+
+
+    /**
      * createTemplatePreviewBoxNode
      *
      * @param element $element
@@ -224,28 +274,10 @@ $(document).ready(function()
             newNode += element.categoryIds[j] + '; ';
         }
         newNode += '</div>';
-
         newNode += '</div>';
 
         return newNode;
     }
 
 
-    /**
-     * createNewFilterDomNode
-     *
-     * @param property $property
-     * @param value $value
-     * @access public
-     * @return void
-     */
-    function createNewFilterDomNode(property, value) {
-        var newNode = '<div class="active_filter_label" name="' + property + '">' + property + '</div>';
-        newNode += '<div class="active_filter_values" id="' + property + '_filter_values">';
-        newNode += '</div>';
-        newNode += ' <span id="' + property + '_' + value + '" class="btn_remove_filter fa fa-minus-square-o fa-sm" style="margin-top: 3px"></span>';
-        newNode += '<br />';
-
-        return newNode;
-    }
 });
