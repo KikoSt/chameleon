@@ -10,7 +10,7 @@ class Manager extends Controller
 
     public function create()
     {
-        $this->view = $this->setLayout('views/manager.phtml')->getView();
+        $this->view = $this->setLayout('views/manager_dyn.phtml')->getView();
 
         // $this->view->creativeDirectory = $this->getCreatives($templateIds);
 
