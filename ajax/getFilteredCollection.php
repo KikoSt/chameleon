@@ -29,6 +29,7 @@ foreach($filters AS $property => $values)
     }
 
 }
+
 foreach($collection AS $template)
 {
     $element = new StdClass();
@@ -44,7 +45,6 @@ foreach($collection AS $template)
     $element->imgpath = 'output/'  . $companyId . '/' . $advertiserId;
     $element->imgpath .= '/0/preview_' . $template->getId() . '_' . $template->getWidth() . 'x' . $template->getHeight() . '.gif';
     $element->categoryIds   = $template->getCategoryIds();
-//    var_dump($template->getCategoryIds());
     $result[] = $element;
 }
 

@@ -2,10 +2,12 @@ $(document).ready(function()
 {
     var output = '';
 
-    $('#filter_property_select').on('change', handleFilterSelect() );
+    $('#filter_property_select').on('change', handleFilterSelect);
     $('.btn_add_filter').on('click', handleAddFilter )
     // event handling delegated to container element!
     $('#filterlist').on('click', handleFilterlistClick);
+
+    handleFilterSelect();
 
 
     /**
@@ -19,13 +21,10 @@ $(document).ready(function()
      * @return void
      */
     function handleFilterlistClick(e) {
-        console.log($(e.target).parent());
         var params = $(e.target).parent().attr('id').split('_');
         var property = params[0];
         var value = params[1];
         filterValues = removeFilterValue(property, value);
-
-        console.log('Property = ' + property + '; Value = ' + value);
     }
 
 
@@ -75,6 +74,9 @@ $(document).ready(function()
             $('.active_filter_label[name=' + property + ']').remove();
         }
 
+        var filterdata = getFilterdata();
+        reloadFilteredCollection(filterdata);
+
         return filterValues;
     }
 
@@ -87,7 +89,7 @@ $(document).ready(function()
      * @return void
      */
     function removeFilterProperty(property) {
-        console.log('Removing property ' + property);
+        $('.filter[name=' + property + ']').remove();
     }
 
 
@@ -181,34 +183,44 @@ $(document).ready(function()
          *
          **/
 
-        // (1) if the property has no active filters, add a container for it
-
-        // if there are currently no values, we have to add another container
+        // (1) if the property has no ACTIVE FILTERs, add a container for it
+        // if there are currently no VALUES, we have to add another container
         if($('#' + property + '_filter_values').length == 0) {
             $('#filterlist').append(createNewFilterDomNode(property, value));
         }
 
         // (3) if there is currently no (hidden) value container for this property, create one
         if($('.filter[name=' + property + ']').length == 0) {
-            newNode = '<input type="hidden" class="filter" name="' + property + '" value="" />';
+            newNode = '<input type="hidden" class="filter" name="' + property + '" value="' + value + '" />';
             $('#filterlist').append(newNode);
         }
 
         // sort array ascending
         curFilterValues = addFilterValue(property, value).sort();
-        $('.filter[name=' + property + ']').val(curFilterValues.join(';'));
+        // $('.filter[name=' + property + ']').val(curFilterValues.join(';'));
 
-        $('#' + property + '_filter_values').html(curFilterValues.join('<br />'));
+        // $('#' + property + '_filter_values').html(curFilterValues.join('<br />'));
 
+        var filterdata = getFilterdata();
+        reloadFilteredCollection(filterdata);
+    }
+
+    function getFilterdata() {
         // gather current filters
         var filterdata = {};
         filterdata['filters'] = {};
+
         $('.filter').each(function(index) {
             filterdata['filters'][$(this).attr('name')] = $(this).val();
         });
-        filterdata['companyId'] = $('.companyId');
-        filterdata['advertiserId'] = $('.advertiserId');
 
+        filterdata['companyId']    = $('#companyId').attr('value');
+        filterdata['advertiserId'] = $('#advertiserId').attr('value');
+
+        return filterdata;
+    }
+
+    function reloadFilteredCollection(filterdata) {
         $.ajax({
             type: "POST",
             data: filterdata,
@@ -221,8 +233,8 @@ $(document).ready(function()
                 var element = response[i];
                 $('#templates_container').append(createTemplatePreviewBoxNode(element));
             }
+            delete(response);
         }).fail(function(response) {
-            console.log('fail');
         });
     }
 
@@ -278,6 +290,4 @@ $(document).ready(function()
 
         return newNode;
     }
-
-
 });
